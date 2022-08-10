@@ -1,6 +1,6 @@
-#include "effect_manager.h"
+#include "effekseer_effect_manager.h"
 //初期化
-void EffectManager::initialize(Graphics& graphics)
+void EffekseerEffectManager::initialize(Graphics& graphics)
 {
 	// エフェクトのレンダラーの作成
 	effekseer_renderer = EffekseerRendererDX11::Renderer::Create(graphics.get_device().Get(),
@@ -27,7 +27,7 @@ void EffectManager::initialize(Graphics& graphics)
 	effekseer_manager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
 }
 
-void EffectManager::finalize()
+void EffekseerEffectManager::finalize()
 {
 	if(effekseer_manager.Get() != NULL)
 	{
@@ -40,12 +40,12 @@ void EffectManager::finalize()
 	}
 }
 
-void EffectManager::update(Graphics& graphics, float elapsed_time)
+void EffekseerEffectManager::update(Graphics& graphics, float elapsed_time)
 {
 	effekseer_manager->Update(elapsed_time * 60.0f);
 }
 
-void EffectManager::render(Camera& camera)
+void EffekseerEffectManager::render(Camera& camera)
 {
 	//ビュー＆プロジェクション行列をEffekseerレンダラに設定
 	effekseer_renderer->SetCameraMatrix(*reinterpret_cast<const Effekseer::Matrix44*>(&camera.get_view()));

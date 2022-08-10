@@ -7,16 +7,16 @@
 #include "camera.h"
 
 //エフェクトマネージャー
-class EffectManager
+class EffekseerEffectManager
 {
 private:
-	EffectManager(){}
-	~EffectManager(){}
+	EffekseerEffectManager(){}
+	~EffekseerEffectManager(){}
 
 public:
-	static EffectManager& Instance()
+	static EffekseerEffectManager& Instance()
 	{
-		static EffectManager instance;
+		static EffekseerEffectManager instance;
 		return instance;
 	}
 

@@ -5,7 +5,6 @@
 #include "stage.h"
 #include "camera.h"
 #include "post_effects.h"
-#include "effect.h"
 #include "gpu_particle.h"
 #include "particle.h"
 #include "lambert_shader.h"
@@ -30,7 +29,6 @@ private:
 	std::unique_ptr<Stage> stage = nullptr;
 	DirectX::XMFLOAT3 chara_pos{};
 	std::unique_ptr<PostEffects> post_effect;
-	std::unique_ptr<Effect> sample_effect;
 	std::unique_ptr<GPU_Particles> gpu_particle;
 	std::unique_ptr<field_spark_particles> field_spark_particle;
 	std::unique_ptr<LambertShader> lambert_shader;

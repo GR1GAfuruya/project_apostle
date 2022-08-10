@@ -1,8 +1,8 @@
 #pragma once
 #include "framebuffer.h"
-#include "gaussian_blur.h"
 #include "constant.h"
 #include "bloom.h"
+#include "graphics.h"
 #define POST_EFFECT PostEffects::POST_EFFECTS
 class PostEffects
 {

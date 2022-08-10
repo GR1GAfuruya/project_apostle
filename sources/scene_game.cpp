@@ -1,8 +1,6 @@
 #include "scene_game.h"
 
 #include "device.h"
-#include "test_scene.h"
-#include "effect_manager.h"
 #include "imgui_include.h"
 #include "scene_loading.h"
 #include "scene_manager.h"
@@ -23,7 +21,6 @@ void SceneGame::initialize(Graphics& graphics)
 	camera = std::make_unique<Camera>(graphics);
 	player = std::make_unique<Player>(graphics, camera.get());
 	post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
-	sample_effect = std::make_unique<Effect>(".\\resources\\Effects\\enemy_vernier.efk");
 	gpu_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),600000);
 	gpu_particle->initialize(graphics.get_dc().Get());
 	field_spark_particle = std::make_unique<field_spark_particles>(graphics.get_device().Get(), player->get_position());
@@ -52,7 +49,6 @@ void SceneGame::initialize(Graphics& graphics)
 
 void SceneGame::finalize()
 {
-	EffectManager::Instance().finalize();
 	StageManager::Instance().Clear();
 }
 
@@ -65,7 +61,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	player->update(graphics, elapsed_time, camera.get(),stage.get());
 	stageManager.update( elapsed_time);
 
-	EffectManager::Instance().update(graphics, elapsed_time);
 	gpu_particle->update(graphics.get_dc().Get(),elapsed_time);
 	//particles->update(graphics,elapsed_time);
 		Mouse& mouse = Device::instance().get_mouse();
@@ -113,7 +108,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
 	player->render_d(graphics,elapsed_time,camera.get());
 	
-	EffectManager::Instance().render(*camera.get());
 	stageManager.render(elapsed_time, graphics);
 	//graphics.set_graphic_state_priset(DEPTH_ST::ZT_ON_ZW_OFF, BLEND_ST::ALPHA, RASTERIZER_ST::CULL_NONE);
 	//particles->render(graphics);
@@ -157,14 +151,12 @@ void SceneGame::debug_gui()
 	ImGui::DragFloat3("pos", &chara_pos.x);
 	ImGui::End();
 
-	ImGui::Begin("effect");
+	/*ImGui::Begin("effect");
 	if (ImGui::Button("play"))
 	{
-		sample_effect->play(player->get_position());
 	}
 	if (ImGui::Button("stop"))
 	{
-		sample_effect.release();
 	}
 	if (sample_effect)
 	{
@@ -175,7 +167,7 @@ void SceneGame::debug_gui()
 		sample_effect->set_angle(angle);
 		sample_effect->set_position(pos);
 	}
-	ImGui::End();
+	ImGui::End();*/
 #endif // USE_IMGUI
 	camera->debug_gui();
 }

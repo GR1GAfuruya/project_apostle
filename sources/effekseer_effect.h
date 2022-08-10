@@ -2,11 +2,11 @@
 #include <DirectXMath.h>
 #include <Effekseer.h>
 
-class Effect
+class EffekseerEffect
 {
 public:
-	Effect(const char* filename);
-	~Effect();
+	EffekseerEffect(Graphics& graphics, const char* filename);
+	~EffekseerEffect();
 
 	//çƒê∂
 	void play(const DirectX::XMFLOAT3& position, float scale = 1.0f);

@@ -3,7 +3,7 @@
 #include <map>
 #include <wrl.h>
 #include "shader.h"
-
+#include <mutex>
 CONST LONG SCREEN_WIDTH{ 1280 };
 CONST LONG SCREEN_HEIGHT{ 720 };
 
@@ -97,5 +97,12 @@ public:
 	void set_graphic_state_priset( DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer);
 	void set_graphic_state_priset( DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer,SHADER_TYPES shader);
 	void shader_activate(SHADER_TYPES sh, RENDER_TYPE rt);
+
+	//ミューテックス取得
+	std::mutex& get_mutex() { return mutex; }
+
+
+private:
+	std::mutex mutex;
 };
 

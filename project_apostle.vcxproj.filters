@@ -117,9 +117,6 @@
     <ClCompile Include="sources\main.cpp">
       <Filter>sources\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="sources\object_mesh.cpp">
-      <Filter>sources\Models</Filter>
-    </ClCompile>
     <ClCompile Include="sources\skeletal_mesh.cpp">
       <Filter>sources\Models</Filter>
     </ClCompile>
@@ -168,10 +165,10 @@
     <ClCompile Include="sources\graphics.cpp">
       <Filter>sources\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="sources\effect.cpp">
+    <ClCompile Include="sources\effekseer_effect.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="sources\effect_manager.cpp">
+    <ClCompile Include="sources\effekseer_effect_manager.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\post_effects.cpp">
@@ -180,25 +177,16 @@
     <ClCompile Include="sources\collision.cpp">
       <Filter>sources\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="sources\test_scene.cpp">
-      <Filter>sources\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="sources\move_behavior.cpp">
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\aura.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="sources\gpu_particle.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\thunder.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\trail.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\fire.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\particle.cpp">
@@ -233,9 +221,6 @@
     </ClCompile>
     <ClCompile Include="sources\PBR_shader.cpp">
       <Filter>sources\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\gaussian_blur.cpp">
-      <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\bloom.cpp">
       <Filter>sources\Effects</Filter>
@@ -276,6 +261,9 @@
     <ClCompile Include="sources\field_spark_particle.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="..\OriginLibrary\sources\gpu_particle.cpp">
+      <Filter>sources\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\constant.h">
@@ -301,9 +289,6 @@
     </ClInclude>
     <ClInclude Include="sources\misc.h">
       <Filter>sources\Framework</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\object_mesh.h">
-      <Filter>sources\Models</Filter>
     </ClInclude>
     <ClInclude Include="sources\skeletal_mesh.h">
       <Filter>sources\Models</Filter>
@@ -365,10 +350,10 @@
     <ClInclude Include="sources\user.h">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="sources\effect.h">
+    <ClInclude Include="sources\effekseer_effect.h">
       <Filter>sources\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="sources\effect_manager.h">
+    <ClInclude Include="sources\effekseer_effect_manager.h">
       <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\post_effects.h">
@@ -376,9 +361,6 @@
     </ClInclude>
     <ClInclude Include="sources\collision.h">
       <Filter>sources\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\test_scene.h">
-      <Filter>sources\Scene</Filter>
     </ClInclude>
     <ClInclude Include="sources\move_behavior.h">
       <Filter>sources</Filter>
@@ -397,9 +379,6 @@
     </ClInclude>
     <ClInclude Include="sources\Operators.h">
       <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\fire.h">
-      <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\particle.h">
       <Filter>sources\Effects</Filter>
@@ -433,9 +412,6 @@
     </ClInclude>
     <ClInclude Include="sources\PBR_shader.h">
       <Filter>sources\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\gaussian_blur.h">
-      <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\bloom.h">
       <Filter>sources\Effects</Filter>
@@ -625,15 +601,6 @@
     <FxCompile Include="HLSL\post_effects.hlsl">
       <Filter>Shaders\PostEffect</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\gaussian_blurX_vs.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gaussian_blur_ps.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gaussian_blurY_vs.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_convolution_ps.hlsl">
       <Filter>Shaders\PostEffect\Gauss</Filter>
     </FxCompile>
@@ -719,9 +686,6 @@
     </None>
     <None Include="HLSL\PBR_function.hlsli">
       <Filter>Shaders\Mesh\PBR</Filter>
-    </None>
-    <None Include="HLSL\gaussian_blur.hlsli">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
     </None>
     <None Include="HLSL\field_spark_particles.hlsli">
       <Filter>Shaders\Effect\Particle\FieldSpark</Filter>

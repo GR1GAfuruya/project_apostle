@@ -1,5 +1,5 @@
 #include "framework.h"
-#include "effect_manager.h"
+#include "effekseer_effect_manager.h"
 #include "scene_title.h"
 #include <array>
 #include <d3dcompiler.h>
@@ -18,7 +18,7 @@ bool framework::initialize()
 
 	graphics->initialize(hwnd);
 	//エフェクトマネージャー初期化
-	EffectManager::Instance().initialize(*graphics);
+	EffekseerEffectManager::Instance().initialize(*graphics);
 	SceneManager::instance().change_scene(*graphics, new SceneTitle(*graphics));
 	return true;
 }
@@ -58,6 +58,9 @@ BOOL framework::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)
 
 void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 {
+	//別スレッド中にデバイスコンテキストが使われていた場合に
+	//同時アクセスしないように排他制御する
+	std::lock_guard<std::mutex> lock(graphics->get_mutex());
 	{
 		ID3D11RenderTargetView* null_render_target_views[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT]{};
 		graphics->get_dc()->OMSetRenderTargets(_countof(null_render_target_views), null_render_target_views, 0);
@@ -212,5 +215,5 @@ int framework::run()
 
 framework::~framework()
 {
-	EffectManager::Instance().finalize();
+	EffekseerEffectManager::Instance().finalize();
 }

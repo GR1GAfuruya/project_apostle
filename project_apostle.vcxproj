@@ -195,6 +195,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\OriginLibrary\sources\gpu_particle.cpp" />
     <ClCompile Include="external\imgui\imgui.cpp" />
     <ClCompile Include="external\imgui\imgui_demo.cpp" />
     <ClCompile Include="external\imgui\imgui_draw.cpp" />
@@ -208,9 +209,6 @@
     <ClCompile Include="sources\camera.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
     <ClCompile Include="sources\field_spark_particle.cpp" />
-    <ClCompile Include="sources\fire.cpp" />
-    <ClCompile Include="sources\gaussian_blur.cpp" />
-    <ClCompile Include="sources\gpu_particle.cpp" />
     <ClCompile Include="sources\g_buffer.cpp" />
     <ClCompile Include="sources\lambert_shader.cpp" />
     <ClCompile Include="sources\light_manager.cpp" />
@@ -220,8 +218,8 @@
     <ClCompile Include="sources\player_move.cpp" />
     <ClCompile Include="sources\collision.cpp" />
     <ClCompile Include="sources\device.cpp" />
-    <ClCompile Include="sources\effect.cpp" />
-    <ClCompile Include="sources\effect_manager.cpp" />
+    <ClCompile Include="sources\effekseer_effect.cpp" />
+    <ClCompile Include="sources\effekseer_effect_manager.cpp" />
     <ClCompile Include="sources\framebuffer.cpp" />
     <ClCompile Include="sources\framework.cpp" />
     <ClCompile Include="sources\fullscreen_quad.cpp" />
@@ -231,7 +229,6 @@
     <ClCompile Include="sources\main.cpp" />
     <ClCompile Include="sources\mouse.cpp" />
     <ClCompile Include="sources\move_behavior.cpp" />
-    <ClCompile Include="sources\object_mesh.cpp" />
     <ClCompile Include="sources\player.cpp" />
     <ClCompile Include="sources\light.cpp" />
     <ClCompile Include="sources\post_effects.cpp" />
@@ -250,7 +247,6 @@
     <ClCompile Include="sources\stage_main.cpp" />
     <ClCompile Include="sources\stage_manager.cpp" />
     <ClCompile Include="sources\static_mesh.cpp" />
-    <ClCompile Include="sources\test_scene.cpp" />
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\thunder.cpp" />
     <ClCompile Include="sources\trail.cpp" />
@@ -269,8 +265,6 @@
     <ClInclude Include="sources\camera.h" />
     <ClInclude Include="sources\deferred_renderer.h" />
     <ClInclude Include="sources\field_spark_particle.h" />
-    <ClInclude Include="sources\fire.h" />
-    <ClInclude Include="sources\gaussian_blur.h" />
     <ClInclude Include="sources\g_buffer.h" />
     <ClInclude Include="sources\lambert_shader.h" />
     <ClInclude Include="sources\light_manager.h" />
@@ -283,8 +277,8 @@
     <ClInclude Include="sources\player_move.h" />
     <ClInclude Include="sources\constant.h" />
     <ClInclude Include="sources\device.h" />
-    <ClInclude Include="sources\effect.h" />
-    <ClInclude Include="sources\effect_manager.h" />
+    <ClInclude Include="sources\effekseer_effect.h" />
+    <ClInclude Include="sources\effekseer_effect_manager.h" />
     <ClInclude Include="sources\framebuffer.h" />
     <ClInclude Include="sources\framework.h" />
     <ClInclude Include="sources\fullscreen_quad.h" />
@@ -295,7 +289,6 @@
     <ClInclude Include="sources\imgui_include.h" />
     <ClInclude Include="sources\misc.h" />
     <ClInclude Include="sources\mouse.h" />
-    <ClInclude Include="sources\object_mesh.h" />
     <ClInclude Include="sources\player.h" />
     <ClInclude Include="sources\light.h" />
     <ClInclude Include="sources\post_effects.h" />
@@ -316,7 +309,6 @@
     <ClInclude Include="sources\stage_main.h" />
     <ClInclude Include="sources\stage_manager.h" />
     <ClInclude Include="sources\static_mesh.h" />
-    <ClInclude Include="sources\test_scene.h" />
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />
     <ClInclude Include="sources\trail.h" />
@@ -498,12 +490,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\gaussian_blurX_vs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_convolution_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -515,18 +501,6 @@
     <FxCompile Include="HLSL\gaussian_blur_horizontal_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="HLSL\gaussian_blur_ps.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="HLSL\gaussian_blurY_vs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_vertical_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -866,7 +840,6 @@
     <None Include="HLSL\constants.hlsli" />
     <None Include="HLSL\field_spark_particles.hlsli" />
     <None Include="HLSL\fullscreen_quad.hlsli" />
-    <None Include="HLSL\gaussian_blur.hlsli" />
     <None Include="HLSL\geometric_primitive.hlsli" />
     <None Include="HLSL\grass.hlsli" />
     <None Include="HLSL\noise.hlsli" />
