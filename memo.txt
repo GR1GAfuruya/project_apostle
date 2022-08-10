@@ -1,0 +1,50 @@
+
+//////シェーダーのコンパイル
+#ifdef USE_IMGUI
+	ImGui::Begin("compile_shader");
+	const char* shader_types[] = { "vs","ps", "ds", "hs", "cs", "gs", };
+	static int item_current = 0;
+	ImGui::Combo("shader", &item_current, shader_types, IM_ARRAYSIZE(shader_types));
+	std::string shader_type = shader_types[item_current];
+	std::string version = "_5_0";
+
+	if (ImGui::Button("compile"))
+	{
+		TCHAR name[MAX_PATH];
+		if (get_file_name(hwnd, name, sizeof(name) / sizeof(TCHAR), TCHAR()))
+		{
+			std::wstring s;
+			s = name;
+
+			std::array<D3D_SHADER_MACRO, 2> macros = { {
+	  {"DEFINE_MACRO", "float4(0, 1, 1, 1)"},
+	  {nullptr, nullptr},
+	} };
+
+			UINT compileFlag = 0;
+			//    compileFlag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+			compileFlag |= D3DCOMPILE_DEBUG | D3DCOMPILE_ENABLE_STRICTNESS;
+			const char* entryPoint = "main";
+			const char* shaderTarget = (shader_type + version).c_str();
+			Microsoft::WRL::ComPtr<ID3DBlob> pShaderBlob, pErrorMsg = nullptr;
+			//シェーダのコンパイル
+			D3DCompileFromFile(
+				s.c_str(),
+				macros.data(),
+				nullptr,
+				entryPoint,
+				shaderTarget,
+				compileFlag,
+				0,
+				pShaderBlob.GetAddressOf(),
+				pErrorMsg.GetAddressOf());
+			//ID3D11ComputeShaderの作成
+			graphics->get_device()->CreatePixelShader(
+				pShaderBlob->GetBufferPointer(),
+				pShaderBlob->GetBufferSize(),
+				nullptr,
+				&pixel_shader);
+		}
+	}
+	ImGui::End();
+#endif
