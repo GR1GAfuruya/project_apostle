@@ -51,12 +51,8 @@ Thumbs.db
 
 # others
 *.vs
-*cereal-master
-*DirectXTK-master
+*external
 *resources
-*imgui
-*FBX SDK
 *x64
 *shaders
-*Effekseer162c
 imgui.ini
