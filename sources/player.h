@@ -31,11 +31,14 @@ public:
 //アニメーション
 	enum  PlayerAnimation
 	{
-		PLAYER_IDLE = 12,
+		PLAYER_IDLE,
 		PLAYER_WALK,
+		PLAYER_ROLL,
+		PLAYER_ATK_AIR,
+		PLAYER_ATK_MAGIC,
+		PLAYER_ATK_LOW,
 		PLAYER_JUMP,
-		PLAYER_FALL,
-		PLAYER_LANDING,
+	
 	};
 
 	enum class State
@@ -88,6 +91,7 @@ protected:
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
+	std::unique_ptr <SkeletalMesh> slash;
 	float move_speed = 15.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 

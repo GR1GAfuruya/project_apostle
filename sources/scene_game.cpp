@@ -123,7 +123,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	///						フォワードレンダリング					///
 	//////////////////////////////////////////////////////////////////
 	graphics.shader_activate(Graphics::SHADER_TYPES::LAMBERT, RENDER_TYPE::Forward);
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	//前後処理を正しく行うためディファ―ドの深度ステンシルビューを使用する
 	//ポストエフェクトによりレンダーターゲットビューが変わっているので対応させる
 	ID3D11RenderTargetView* render_target_views{};

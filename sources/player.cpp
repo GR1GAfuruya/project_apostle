@@ -17,8 +17,10 @@ void Player::initialize()
 Player::Player(Graphics& graphics, Camera* camera)
 {
 	//model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/player_twentyfource.fbx", 60.0f);
-	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
-	model->play_animation(20, true);
+	//model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
+	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 60.0f);
+	slash = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/SlashMesh.fbx", 60.0f);
+	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
 	scale.x = scale.y = scale.z = 0.05f;
 	radius = 1.0f;
@@ -80,6 +82,8 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
+	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale * 2, orientation, position + DirectX::XMFLOAT3{ 5, 5, 5});
+	//graphics.shader->render(graphics.get_dc().Get(), slash.get(), world);
 	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
 }
 
@@ -124,13 +128,13 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 void Player::transition_idle_state()
 {
 	p_update = &Player::update_idle_state;
-	model->play_animation(20, true);
+	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 }
 
 void Player::transition_attack_state()
 {
 	p_update = &Player::update_attack_state;
-	model->play_animation(PlayerAnimation::PLAYER_WALK, false);
+	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
 	
 }
 
@@ -140,7 +144,7 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 
 void Player::update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
-	if (model->anime_param.current_time > 2.0f && model->anime_param.current_time < 2.2f)
+	if (model->anime_param.current_time > 0.7f && model->anime_param.current_time < 0.8f)
 	{
 
 		Attack(graphics, elapsed_time);
@@ -183,7 +187,7 @@ void Player::input_jump()
 		{
 			Jump(jump_speed);
 			is_ground = false;//ジャンプしても地面についているというありえない状況を回避するため
-			model->play_animation(2, false, 1.0f);
+			model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 1.0f);
 			++jump_count;
 		}
 	}
@@ -257,7 +261,7 @@ void Player::debug_gui()
 				ImGui::Combo("anime", &item_current, anime_item, IM_ARRAYSIZE(anime_item)); ImGui::Checkbox("is_loop", &loop);
 				if (ImGui::Button("play", { 80,20 }))
 				{
-					model->play_animation(item_current + 12, loop, 0.1f);
+					model->play_animation(item_current, loop, 0.1f);
 				}
 				string s;
 				ImGui::DragInt("index", &model->anime_param.current_index);

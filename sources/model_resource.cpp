@@ -360,7 +360,7 @@ void ModelResource::fetch_materials(const char* fbx_filename, FbxScene* fbx_scen
 				std::string ao_map_filename = "";
 				if (color_map_filename.find("Color.png") != std::string::npos)
 				{
-					ao_map_filename = color_map_filename.erase(color_map_filename.find("Color.png")) + "Ao.png";
+					ao_map_filename = color_map_filename.erase(color_map_filename.find("Color.png")) + "AO.png";
 				}
 				std::filesystem::path fbm_filename(fbx_filename);
 				fbm_filename.remove_filename();
