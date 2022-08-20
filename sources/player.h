@@ -1,5 +1,5 @@
 #pragma once
-
+#include "framework.h"
 #include "camera.h"
 #include "player_move.h"
 #include "skeletal_mesh.h"
@@ -38,37 +38,58 @@ public:
 		PLAYER_ATK_MAGIC,
 		PLAYER_ATK_LOW,
 		PLAYER_JUMP,
-	
+		PLAYER_ATK_COMBO1,
+		PLAYER_ATK_COMBO2,
+		PLAYER_ATK_COMBO3,
 	};
 
 	enum class State
 	{
 		IDLE,
 		MOVE,
+		ROLL,
 		JUMP,
 		FALL,
 		LANDING,
 	};
 	DirectX::XMFLOAT3 get_camera_target_pos() { return DirectX::XMFLOAT3(position.x, position.y + height, position.z); }
+
+
+	//--------定数--------//
+	 //攻撃1撃目の猶予時間
+	static constexpr float ATTACK_TYPE1_MAX_TIME = 0.3f;
+	//攻撃2撃目の猶予時間
+	static constexpr float ATTACK_TYPE2_MAX_TIME = 0.2f;
+	//攻撃3撃目の猶予時間
+	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
+
+
+
 private:
 	//////遷移
 	void transition_idle_state();
 	void transition_attack_state();
-	//void transition_move_state();
-	//void transition_jump_state();
+	void transition_attack_combo1_state();
+	void transition_attack_combo2_state();
+	void transition_attack_combo3_state();
+	void transition_move_state();
+	void transition_jump_state();
 	//void transition_fall_state();
 	//void transition_landing_state();
 
 
 	//////アニメーションアップデート
-	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera);
-	void update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera);
-	//void update_move_state(float elapsed_time, Camera* camera);
-	//void update_jump_state(float elapsed_time, Camera* camera);
+	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
 	//void update_fall_state(float elapsed_time, Camera* camera);
 	//void update_landing_state(float elapsed_time, Camera* camera);
 
-	typedef void (Player::* p_Update)(Graphics& graphics,float elapsed_time, Camera* camera);
+	typedef void (Player::* p_Update)(Graphics& graphics,float elapsed_time, Camera* camera, Stage* stage);
 	p_Update p_update = &Player::update_idle_state;
 
 	void Attack(Graphics& graphics, float elapsed_time);
@@ -78,6 +99,11 @@ private:
 	std::unique_ptr<Aura> aura = nullptr;
 
 	State state;
+
+	GamePad* game_pad;
+	Mouse* mouse;
+	/*GamePad& game_pad;
+	Mouse& mouse ;*/
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
@@ -92,16 +118,19 @@ protected:
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
 	std::unique_ptr <SkeletalMesh> slash;
-	float move_speed = 15.0f;
+	float move_speed = 30.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 
-	float jump_speed = 10.0f;
+	//ジャンプスピード
+	float jump_speed = 35.0f;
+	//現何回ジャンプしてるか
 	int jump_count = 0;
+	//ジャンプ可能回数
 	int jump_limit = 1;
 
-	DirectX::XMFLOAT3 ending_target_pos{};
+	//攻撃時間
+	float attack_time;
 
-	//Effect* hitEffect = nullptr;
 	std::unique_ptr<GPU_Particles> attack1;
 
 	bool display_player_imgui = false;

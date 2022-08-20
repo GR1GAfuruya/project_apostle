@@ -92,7 +92,20 @@ void Camera::update(float elapsed_time)
 		if (mouse.get_button() & mouse.BTN_K) angle.x -= DirectX::XMConvertToRadians(100) * elapsed_time;
 		if (mouse.get_button() & mouse.BTN_L) angle.y += DirectX::XMConvertToRadians(100) * elapsed_time;
 		if (mouse.get_button() & mouse.BTN_J) angle.y -= DirectX::XMConvertToRadians(100) * elapsed_time;
-			
+
+		GamePad& game_pad = Device::instance().get_game_pad();
+		float ax = game_pad.get_axis_RX();
+		float ay = game_pad.get_axis_RY();
+		//カメラ縦操作
+		if (ay > 0.1f || ay < 0.1f)
+		{
+			angle.x += ay * DirectX::XMConvertToRadians(CAMERA_SPEED_Y) * elapsed_time;
+		}
+		//カメラ横操作
+		if (ax > 0.1f || ax < 0.1f)
+		{
+			angle.y += ax * DirectX::XMConvertToRadians(CAMERA_SPEED_X) * elapsed_time;
+		}
 #ifdef USE_IMGUI
 		if (display_camera_imgui)
 		{
@@ -276,6 +289,17 @@ void Camera::calc_free_target()
 		if (mouse.get_button() & (mouse.BTN_W | mouse.BTN_UP)) { ay = 1; }	 //前移動
 		if (mouse.get_button() & (mouse.BTN_S | mouse.BTN_DOWN)) { ay = -1; }    //後ろ移動
 	}
+
+	//GamePad& game_pad = Device::instance().get_game_pad();
+
+	//float ax{};
+	//float ay{};
+	//{
+	//	if (game_pad.get_button() & (game_pad.BTN_A )) { ax = -1; }    //左移動
+	//	if (game_pad.get_button() & (game_pad.BTN_D)) { ax = 1; }	 //右移動
+	//	if (game_pad.get_button() & (game_pad.BTN_W)) { ay = 1; }	 //前移動
+	//	if (game_pad.get_button() & (game_pad.BTN_S )) { ay = -1; }    //後ろ移動
+	//}
 }
 
 

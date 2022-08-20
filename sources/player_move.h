@@ -116,10 +116,10 @@ protected:
 
 	float invinsible_timer = 0.0f;
 	//–€ŽC—Í
-	float friction = 0.8f;
+	float friction = 1.0f;
 	//‰Á‘¬“x
-	float acceleration = 1.0f;
-	float max_move_speed = 15.0f;
+	float acceleration = 1.5f;
+	float max_move_speed = 30.0f;
 	float move_vec_x = 0.0f;
 	float move_vec_z = 0.0f;
 

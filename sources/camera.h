@@ -107,4 +107,7 @@ private:
     DirectX::XMFLOAT4X4 projection;
     DirectX::XMFLOAT4X4 view_projection;
     bool display_camera_imgui = true;
+
+    constexpr static float CAMERA_SPEED_X = 90;
+    constexpr static float CAMERA_SPEED_Y = 90;
 };

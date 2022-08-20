@@ -1,4 +1,4 @@
-﻿#include "framework.h"
+﻿
 #include"player.h"
 #include"camera.h"
 #include "shader.h"
@@ -16,9 +16,7 @@ void Player::initialize()
 
 Player::Player(Graphics& graphics, Camera* camera)
 {
-	//model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/player_twentyfource.fbx", 60.0f);
-	//model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
-	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 60.0f);
+	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
 	slash = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/SlashMesh.fbx", 60.0f);
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
@@ -29,6 +27,10 @@ Player::Player(Graphics& graphics, Camera* camera)
 	aura = std::make_unique<Aura>(graphics);
 	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get());
 	attack1.get()->initialize(graphics.get_dc().Get());
+	
+	mouse = &Device::instance().get_mouse();
+
+	game_pad = &Device::instance().get_game_pad();
 
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
@@ -38,7 +40,6 @@ Player::Player(Graphics& graphics, Camera* camera)
 //デストラクタ
 Player::~Player()
 {
-
 }
 
 
@@ -46,20 +47,9 @@ Player::~Player()
 //更新処理
 void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage)
 {
+	//更新処理
+	(this->*p_update)(graphics, elapsed_time, camera,stage);
 	
-	input_move(elapsed_time,camera);
-	input_jump();
-
-	//攻撃入力
-	Mouse& mouse = Device::instance().get_mouse();
-	if (mouse.get_button_down() & mouse.BTN_RIGHT_CLICK) //スペースを押したらジャンプ
-	{
-		model->play_animation(PlayerAnimation::PLAYER_WALK, false);
-		transition_attack_state();
-	}
-	(this->*p_update)(graphics, elapsed_time, camera);
-	//速力処理更新
-	update_velocity(elapsed_time,position,stage);
 	//オブジェクト行列を更新
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
@@ -100,30 +90,31 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 
 	//カメラ右方向ベクトルをXZ単位ベクトルに変換
 
-	float camerarightlengh = sqrtf((camera->get_right().x * camera->get_right().x) + (camera->get_right().z * camera->get_right().z));
-	DirectX::XMFLOAT3 camera_right_normal{};
-	if (camerarightlengh > 0.0f)
+	float camera_forward_x = camera->get_forward().x;
+	float camera_forward_z = camera->get_forward().z;
+	float camera_forward_lengh = sqrtf(camera_forward_x * camera_forward_x + camera_forward_z * camera_forward_z);
+	if (camera_forward_lengh > 0.0f)
 	{
-		camera_right_normal = Math::Normalize(camera->get_right());
+		camera_forward_x /= camera_forward_lengh;
+		camera_forward_z /= camera_forward_lengh;
 	}
 
-	float cameraforwardlength = sqrtf((camera->get_forward().x * camera->get_forward().x) + (camera->get_forward().z * camera->get_forward().z));
-	DirectX::XMFLOAT3 camera_forward_normal{};
-	if (cameraforwardlength > 0.0f)
+	float camera_right_x = camera->get_right().x;
+	float camera_right_z = camera->get_right().z;
+	float camera_right_lengh = sqrtf(camera_right_x * camera_right_x + camera_right_z * camera_right_z);
+
+	if (camera_right_lengh > 0.0f)
 	{
-		camera_forward_normal = Math::Normalize(camera->get_forward());
+		camera_right_x /= camera_right_lengh;
+		camera_right_z /= camera_right_lengh;
 	}
 
 	DirectX::XMFLOAT3 vec{};
-	vec.x = (camera_forward_normal.x * ay) + (camera_right_normal.x * ax);
-	vec.y = (camera_forward_normal.y * ay) + (camera_right_normal.y * ax);
-	vec.z = (camera_forward_normal.z * ay) + (camera_right_normal.z * ax);
+	vec.x = (camera_forward_x * ay) + (camera_right_x * ax);
+	vec.z = (camera_forward_z * ay) + (camera_right_z * ax);
 
 	return vec;
 }
-
-
-
 
 void Player::transition_idle_state()
 {
@@ -138,21 +129,162 @@ void Player::transition_attack_state()
 	
 }
 
-void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::transition_attack_combo1_state()
 {
+	p_update = &Player::update_attack_combo1_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1);
 }
 
-void Player::update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::transition_attack_combo2_state()
 {
-	if (model->anime_param.current_time > 0.7f && model->anime_param.current_time < 0.8f)
-	{
+	p_update = &Player::update_attack_combo2_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1);
+}
 
+void Player::transition_attack_combo3_state()
+{
+	p_update = &Player::update_attack_combo3_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1);
+}
+
+void Player::transition_move_state()
+{
+	p_update = &Player::update_move_state;
+	model->play_animation(PlayerAnimation::PLAYER_WALK, true);
+}
+
+void Player::transition_jump_state()
+{
+	p_update = &Player::update_jump_state;
+	model->play_animation(PlayerAnimation::PLAYER_JUMP, false,0.1);
+}
+
+void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (input_move(elapsed_time, camera))
+	{
+		transition_move_state();
+	}
+	input_jump();
+
+	//攻撃入力
+	
+	if (game_pad->get_button_down() & game_pad->BTN_X)
+	{
+		transition_attack_combo1_state();
+	}
+
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->anime_param.frame_index > 43/2)
+	{
 		Attack(graphics, elapsed_time);
 	}
 	if (model->is_end_animation())
 	{
 		transition_idle_state();
 	}
+
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	//
+	if (model->anime_param.frame_index > 55/2)
+	{
+		if (model->is_end_animation())
+		{
+			transition_idle_state();
+		}
+		
+		if (game_pad->get_button() & game_pad->BTN_X)
+		{
+			transition_attack_combo2_state();
+		}
+		
+	}
+
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	
+	if (model->anime_param.frame_index > 66/2)
+	{
+		if (model->is_end_animation())
+		{
+			transition_idle_state();
+			
+		}
+
+		if (game_pad->get_button() & game_pad->BTN_X)
+		{
+			transition_attack_combo3_state();
+		}
+
+	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	
+	if (model->anime_param.frame_index > 120/2)
+	{
+		if (model->is_end_animation())
+		{
+			transition_idle_state();
+		}
+
+		if (game_pad->get_button() & game_pad->BTN_X)
+		{
+			transition_attack_state();
+		}
+
+	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (!input_move(elapsed_time, camera) && is_ground)
+	{
+		transition_idle_state();
+	}
+
+	input_jump();
+
+	//攻撃入力
+	if (game_pad->get_button() & game_pad->BTN_X)
+	{
+		transition_attack_combo1_state();
+	}
+
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	input_move(elapsed_time, camera);
+
+	if(is_ground)
+	{
+		transition_idle_state();
+	}
+
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 }
 
 void Player::Attack(Graphics& graphics, float elapsed_time)
@@ -180,14 +312,14 @@ bool Player::input_move(float elapsedTime, Camera* camera)
 
 void Player::input_jump()
 {
-	Mouse& mouse = Device::instance().get_mouse();
-	if (mouse.get_button_down() & mouse.BTN_SPACE) //スペースを押したらジャンプ
+	if (game_pad->get_button_down() & game_pad->BTN_A) //スペースを押したらジャンプ
 	{
 		if (jump_count < jump_limit)
 		{
+			transition_jump_state();
 			Jump(jump_speed);
 			is_ground = false;//ジャンプしても地面についているというありえない状況を回避するため
-			model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 1.0f);
+		
 			++jump_count;
 		}
 	}
@@ -197,10 +329,10 @@ void Player::on_landing()
 {
 	jump_count = 0;
 	//transition_landing_state();
-	if (velocity.y < gravity * 8.0f)// 坂道歩いているときは遷移しない程度に調整
+	if (velocity.y < gravity * 30.0f)// 坂道歩いているときは遷移しない程度に調整
 	{
 		// 着地ステートへ遷移
-		//transition_landing_state();
+		transition_idle_state();
 	}
 
 }
@@ -236,7 +368,7 @@ void Player::debug_gui()
 				DirectX::XMFLOAT3 forward;
 				DirectX::XMStoreFloat3(&forward, get_posture_forward_vec(orientation));
 				ImGui::DragFloat3("forward", &forward.x);
-				const char* state_c[] = { "IDLE","MOVE","JUMP","FALL","LANDING","PULL","PUSH","GRAB","THRUST","GRAB_SPHERE_LIGHT","PULL_SPHERE_LIGHT","GRAB_SPHERE_LIGHT","E_IDLE","E_MOVE"};
+				const char* state_c[] = { "IDLE","MOVE","JUMP","FALL","LANDING"};
 
 				ImGui::Text(state_c[static_cast<int>(state)]);
 				ImGui::DragFloat3("velocity:", &velocity.x);
