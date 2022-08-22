@@ -18,17 +18,13 @@ public:
 	Shader(ID3D11Device* device) {}
 	virtual ~Shader() {}
 
-	//描画タイプ
-	enum class RenderType
-	{
-		Forward,
-		Deferred
-	};
-
 	// 描画開始
-	virtual void active(ID3D11DeviceContext* immediate_context, RenderType rt) = 0;
-	virtual void render(ID3D11DeviceContext* immediate_context, SkeletalMesh* model, const DirectX::XMFLOAT4X4& world = {}) = 0;
+	virtual void active(ID3D11DeviceContext* immediate_context);
+
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> f_pixel_shader;//デフォルトはフォワードレンダリング
 };
+
 
 using namespace std;
 

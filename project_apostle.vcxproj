@@ -212,6 +212,7 @@
     <ClCompile Include="sources\g_buffer.cpp" />
     <ClCompile Include="sources\lambert_shader.cpp" />
     <ClCompile Include="sources\light_manager.cpp" />
+    <ClCompile Include="sources\mesh_shader.cpp" />
     <ClCompile Include="sources\model_resource.cpp" />
     <ClCompile Include="sources\particle.cpp" />
     <ClCompile Include="sources\PBR_shader.cpp" />
@@ -241,6 +242,7 @@
     <ClCompile Include="sources\skeletal_mesh.cpp" />
     <ClCompile Include="sources\skin_particles.cpp" />
     <ClCompile Include="sources\sky_box.cpp" />
+    <ClCompile Include="sources\slash.cpp" />
     <ClCompile Include="sources\sprite.cpp" />
     <ClCompile Include="sources\sprite_batch.cpp" />
     <ClCompile Include="sources\SpriteDissolve.cpp" />
@@ -268,6 +270,7 @@
     <ClInclude Include="sources\g_buffer.h" />
     <ClInclude Include="sources\lambert_shader.h" />
     <ClInclude Include="sources\light_manager.h" />
+    <ClInclude Include="sources\mesh_shader.h" />
     <ClInclude Include="sources\model_resource.h" />
     <ClInclude Include="sources\move_behavior.h" />
     <ClInclude Include="sources\Operators.h" />
@@ -302,6 +305,7 @@
     <ClInclude Include="sources\skeletal_mesh.h" />
     <ClInclude Include="sources\skin_particles.h" />
     <ClInclude Include="sources\sky_box.h" />
+    <ClInclude Include="sources\slash.h" />
     <ClInclude Include="sources\sprite.h" />
     <ClInclude Include="sources\sprite_batch.h" />
     <ClInclude Include="sources\SpriteDissolve.h" />
@@ -718,6 +722,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="HLSL\slash_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\slash_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="HLSL\sprite_dissolve_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -849,6 +865,7 @@
     <None Include="HLSL\ramp_shader.hlsli" />
     <None Include="HLSL\shading_functions.hlsli" />
     <None Include="HLSL\default_mesh.hlsli" />
+    <None Include="HLSL\slash.hlsli" />
     <None Include="HLSL\sprite.hlsli" />
     <None Include="HLSL\sprite_dissolve.hlsli" />
     <None Include="HLSL\static_mesh.hlsli" />

@@ -226,7 +226,7 @@ void PlayerMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float spee
 	//回転角（angle）が微小な場合は、回転を行わない
 	if (fabs(angle) > 1e-8f)
 	{
-		//③回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
+		//回転軸（axis）と回転角（angle）から回転クオータニオン（q）を求める
 		float cross{ forw.x * m_vec.z - forw.z * m_vec.x };
 
 		//クオータニオンは回転の仕方(どの向きに)
@@ -287,8 +287,6 @@ void PlayerMove::update_vertical_velocity(float elapsedFrame)
 using namespace DirectX;
 void PlayerMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)
 {
-	
-
 	// キャラクターの下方向の移動量
 	float my = velocity.y * elapsed_time;
 

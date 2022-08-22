@@ -77,6 +77,8 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		graphics->get_dc()->PSSetSamplers(1, 1, graphics->get_sampler_state(ST_SAMPLER::LINEAR).GetAddressOf());
 		graphics->get_dc()->PSSetSamplers(2, 1, graphics->get_sampler_state(ST_SAMPLER::ANISOTROPIC).GetAddressOf());
 		graphics->get_dc()->PSSetSamplers(3, 1, graphics->get_sampler_state(ST_SAMPLER::LINEAR_BORDER_BLACK).GetAddressOf());
+		graphics->get_dc()->PSSetSamplers(4, 1, graphics->get_sampler_state(ST_SAMPLER::LINEAR_BORDER_WHITE).GetAddressOf());
+		graphics->get_dc()->PSSetSamplers(5, 1, graphics->get_sampler_state(ST_SAMPLER::CLAMP).GetAddressOf());
 
 		graphics->set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE );
 	}

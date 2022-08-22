@@ -97,6 +97,30 @@
     <Filter Include="Shaders\Effect\Particle\FieldSpark">
       <UniqueIdentifier>{7043982d-7bd3-4f9b-8583-d18110b31235}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Effect\Slash">
+      <UniqueIdentifier>{1b894f44-b6d2-4571-ae42-fddb53a36e63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Thunder">
+      <UniqueIdentifier>{3c4f444e-db8b-4c74-b586-10cb6d6638a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Effekseer">
+      <UniqueIdentifier>{3632d23b-1fce-43e1-88a8-b724665f2f6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Slash">
+      <UniqueIdentifier>{ca17d845-d09c-4338-a485-e2ff4b4aa987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Light">
+      <UniqueIdentifier>{cf080af7-6f4f-4e28-b163-2c0a7a2adec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Particle">
+      <UniqueIdentifier>{9cec6113-21e9-4ad4-a227-2f0bc708ced9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Camera">
+      <UniqueIdentifier>{7b2c2161-2e6e-43fb-a5b4-67ae54e56e36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Mesh\lambert">
+      <UniqueIdentifier>{f4c2f54b-84e3-46c1-8607-704edac40247}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -141,9 +165,6 @@
     <ClCompile Include="sources\scene_game.cpp">
       <Filter>sources\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="sources\camera.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="sources\game_pad.cpp">
       <Filter>sources\Device</Filter>
     </ClCompile>
@@ -165,12 +186,6 @@
     <ClCompile Include="sources\graphics.cpp">
       <Filter>sources\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="sources\effekseer_effect.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\effekseer_effect_manager.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\post_effects.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
@@ -183,13 +198,7 @@
     <ClCompile Include="sources\aura.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="sources\thunder.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\trail.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\particle.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\shader.cpp">
@@ -258,11 +267,32 @@
     <ClCompile Include="sources\skin_particles.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="sources\effekseer_effect.cpp">
+      <Filter>sources\Effects\Effekseer</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\effekseer_effect_manager.cpp">
+      <Filter>sources\Effects\Effekseer</Filter>
+    </ClCompile>
     <ClCompile Include="sources\field_spark_particle.cpp">
-      <Filter>sources\Effects</Filter>
+      <Filter>sources\Effects\Particle</Filter>
     </ClCompile>
     <ClCompile Include="..\OriginLibrary\sources\gpu_particle.cpp">
-      <Filter>sources\Effects</Filter>
+      <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\particle.cpp">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\thunder.cpp">
+      <Filter>sources\Effects\Thunder</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\camera.cpp">
+      <Filter>sources\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\slash.cpp">
+      <Filter>sources\Effects\Slash</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mesh_shader.cpp">
+      <Filter>sources\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +347,6 @@
     <ClInclude Include="sources\scene_game.h">
       <Filter>sources\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="sources\camera.h">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="sources\game_pad.h">
       <Filter>sources\Device</Filter>
     </ClInclude>
@@ -350,12 +377,6 @@
     <ClInclude Include="sources\user.h">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="sources\effekseer_effect.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\effekseer_effect_manager.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\post_effects.h">
       <Filter>sources\Effects</Filter>
     </ClInclude>
@@ -368,20 +389,11 @@
     <ClInclude Include="sources\aura.h">
       <Filter>sources\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="sources\gpu_particle.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\thunder.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\trail.h">
       <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\Operators.h">
       <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\particle.h">
-      <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\shader.h">
       <Filter>sources\Shader</Filter>
@@ -449,8 +461,32 @@
     <ClInclude Include="sources\skin_particles.h">
       <Filter>sources\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="sources\effekseer_effect.h">
+      <Filter>sources\Effects\Effekseer</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\effekseer_effect_manager.h">
+      <Filter>sources\Effects\Effekseer</Filter>
+    </ClInclude>
     <ClInclude Include="sources\field_spark_particle.h">
-      <Filter>sources\Effects</Filter>
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\gpu_particle.h">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\particle.h">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\thunder.h">
+      <Filter>sources\Effects\Thunder</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\camera.h">
+      <Filter>sources\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\slash.h">
+      <Filter>sources\Effects\Slash</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mesh_shader.h">
+      <Filter>sources\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -640,6 +676,12 @@
     <FxCompile Include="HLSL\field_spark_particles_ps.hlsl">
       <Filter>Shaders\Effect\Particle\FieldSpark</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\slash_ps.hlsl">
+      <Filter>Shaders\Effect\Slash</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\slash_vs.hlsl">
+      <Filter>Shaders\Effect\Slash</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\constants.hlsli">
@@ -689,6 +731,9 @@
     </None>
     <None Include="HLSL\field_spark_particles.hlsli">
       <Filter>Shaders\Effect\Particle\FieldSpark</Filter>
+    </None>
+    <None Include="HLSL\slash.hlsli">
+      <Filter>Shaders\Effect\Slash</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

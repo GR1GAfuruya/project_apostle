@@ -121,6 +121,27 @@ void Graphics::initialize(HWND hwnd)
 	sampler_desc.BorderColor[2] = 0;
 	sampler_desc.BorderColor[3] = 0;
 	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
+	
+	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.BorderColor[0] = 1;
+	sampler_desc.BorderColor[1] = 1;
+	sampler_desc.BorderColor[2] = 1;
+	sampler_desc.BorderColor[3] = 1;
+	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_WHITE)].GetAddressOf());
+
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	sampler_desc.BorderColor[0] = 0;
+	sampler_desc.BorderColor[1] = 0;
+	sampler_desc.BorderColor[2] = 0;
+	sampler_desc.BorderColor[3] = 0;
+	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::CLAMP)].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	//-----------------------------------------------//
 	//					深度テスト					//
@@ -237,7 +258,7 @@ void Graphics::initialize(HWND hwnd)
 	
 		// シェーダーの登録
 		{
-			std::shared_ptr<Shader> shader;//シェアードポインタで作成　エラー出る
+			std::shared_ptr<MeshShader> shader;//シェアードポインタで作成　エラー出る
 			//Shader* shader = nullptr; //生ポインタで作成　メモリリークでる
 			// LAMBERT
 			

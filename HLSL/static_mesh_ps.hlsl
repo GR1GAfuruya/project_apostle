@@ -1,32 +1,39 @@
 #include "static_mesh.hlsli"
+#include "constants.hlsli"
+#include "shading_functions.hlsli"
+#define POINT 0
+#define LINEAR 1
+#define ANISOTROPIC 2
+SamplerState sampler_states[3] : register(s0);
+Texture2D texture_maps[4] : register(t0);
 
-Texture2D color_map : register(t0);
-Texture2D normal_map : register(t1);
-SamplerState point_sampler_state : register(s0);
-SamplerState liner_sampler_state : register(s1);
-SamplerState anisotropic_sampler_state : register(s2);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
-    float4 color = color_map.Sample(liner_sampler_state, pin.texcoord); //マテリアルテクスチャのカラーをフェッチ
-    //UNIT16
+   //UNIT29 鏡面反射
+    float4 color = texture_maps[0].Sample(sampler_states[ANISOTROPIC], pin.texcoord);
+
     float alpha = color.a;
+    return color;
+    // Inverse gamma process
+    const float GAMMA = 2.2;
+    color.rgb = pow(color.rgb, GAMMA);
+
+
     float3 N = normalize(pin.world_normal.xyz);
-    
-    float3 T = float3(1.0001, 0, 0);    //１だとちょうど重なった時に不具合が出るから？
-    float3 B = normalize(cross(N, T));
-    T = normalize(cross(B, N));
-    
-    float4 normal = normal_map.Sample(liner_sampler_state, pin.texcoord);
-    normal = (normal * 2.0) - 1.0f;
-    normal.w = 0;
+    float3 T = normalize(pin.world_tangent.xyz);
+    float sigma = pin.world_tangent.w;
+    T = normalize(T - dot(N, T));
+    float3 B = normalize(cross(N, T) * sigma);
+
+    float4 normal = texture_maps[1].Sample(sampler_states[LINEAR], pin.texcoord);
+    normal = (normal * 2.0) - 1.0;
     N = normalize((normal.x * T) + (normal.y * B) + (normal.z * N));
-    
-    float3 L = normalize(-light_direction.xyz); //入射光の逆ベクトルを正規化
-    float3 diffuse = color.rgb * max(0, dot(N, L)); //拡散反射率の計算をしテクスチャに反映
-    
+
+    float3 L = normalize(-light_direction.xyz);
+    float3 diffuse = color.rgb * max(0, dot(N, L));
     float3 V = normalize(camera_position.xyz - pin.world_position.xyz);
     float3 specular = pow(max(0, dot(N, normalize(V + L))), 128);
-    
     return float4(diffuse + specular, alpha) * pin.color;
+
 }
