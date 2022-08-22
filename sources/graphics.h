@@ -2,7 +2,7 @@
 #include<d3d11.h>
 #include <map>
 #include <wrl.h>
-#include "shader.h"
+#include "mesh_shader.h"
 #include <mutex>
 CONST LONG SCREEN_WIDTH{ 1280 };
 CONST LONG SCREEN_HEIGHT{ 720 };
@@ -12,14 +12,14 @@ CONST LONG SCREEN_HEIGHT{ 720 };
 #define ST_BLEND Graphics::BLEND_STATE
 #define ST_RASTERIZER Graphics::RASTERIZER
 #define SHADER_TYPE Graphics::SHADER_TYPES
-#define RENDER_TYPE Shader::RenderType
+#define RENDER_TYPE MeshShader::RenderType
 class Graphics
 {
 public:
 	//------------<定数>-----------//
 	//
 	//サンプラーステート
-	enum class SAMPLER_STATE { POINT, LINEAR, ANISOTROPIC, LINEAR_BORDER_BLACK/*UNIT.32*/ };
+	enum class SAMPLER_STATE { POINT, LINEAR, ANISOTROPIC, LINEAR_BORDER_BLACK, LINEAR_BORDER_WHITE, CLAMP };
 	//Zステンシルステート
 	enum class DEPTH_STENCIL_STATE { ZT_ON_ZW_ON, ZT_ON_ZW_OFF, ZT_OFF_ZW_ON, ZT_OFF_ZW_OFF , DEPTH_STENCIL_COUNT};
 	//ブレンドステート
@@ -78,7 +78,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;			//レンダーターゲットビューを出力結合ステージにバインドできる
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;		//深度ステンシルビューインターフェイスは、深度ステンシルテスト中にテクスチャーリソースにアクセスする。
 
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_states[4];
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_states[5];
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::DEPTH_STENCIL_COUNT)];
 
@@ -86,11 +86,11 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizer_states[static_cast<int>(RASTERIZER::RASTERIZER_COUNT)];
 	//--maps--//
-	std::map<SHADER_TYPES, std::shared_ptr<Shader>> shaders;
+	std::map<SHADER_TYPES, std::shared_ptr<MeshShader>> shaders;
 	//std::map<SHADER_TYPES, Shader* > shaders;
 public:
 	//Shader* shader = nullptr;
-	std::shared_ptr<Shader> shader = nullptr;
+	std::shared_ptr<MeshShader> shader = nullptr;
 	void set_depth_state(DEPTH_STENCIL_STATE z_stencil);
 	void set_blend_state( BLEND_STATE blend);
 	void set_rasterizer_state(RASTERIZER rasterizer);

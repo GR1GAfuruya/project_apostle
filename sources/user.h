@@ -474,22 +474,22 @@ namespace Math
     //--------------------------------------------------------------
     //  戻り値：スケール倍したベクトル
     //--------------------------------------------------------------
-      inline DirectX::XMFLOAT3 vector_scale(DirectX::XMFLOAT3 V_,float scale)
+    inline DirectX::XMFLOAT3 vector_scale(DirectX::XMFLOAT3 V_, float scale)
     {
         auto VL = DirectX::XMLoadFloat3(&V_);
-        VL = DirectX::XMVectorScale(VL,scale);
+        VL = DirectX::XMVectorScale(VL, scale);
         DirectX::XMFLOAT3 ret;
         DirectX::XMStoreFloat3(&ret, VL);
         return ret;
     }
 
-      inline DirectX::XMFLOAT3 vector_scale(DirectX::XMVECTOR V_, float scale)
-      {
-          V_ = DirectX::XMVectorScale(V_, scale);
-          DirectX::XMFLOAT3 ret;
-          DirectX::XMStoreFloat3(&ret, V_);
-          return ret;
-      }
+    inline DirectX::XMFLOAT3 vector_scale(DirectX::XMVECTOR V_, float scale)
+    {
+        V_ = DirectX::XMVectorScale(V_, scale);
+        DirectX::XMFLOAT3 ret;
+        DirectX::XMStoreFloat3(&ret, V_);
+        return ret;
+    }
     //--------------------------------------------------------------
     //  クォータニオン回転
     //--------------------------------------------------------------
@@ -499,7 +499,7 @@ namespace Math
     //--------------------------------------------------------------
     //  戻り値：回転後の姿勢
     //--------------------------------------------------------------
-    inline DirectX::XMFLOAT4 RotQuaternion(DirectX::XMFLOAT4 Orientation_,DirectX::XMFLOAT3 Axis_,float Radian_)
+    inline DirectX::XMFLOAT4 rot_quaternion(DirectX::XMFLOAT4 Orientation_, DirectX::XMFLOAT3 Axis_, float Radian_)
     {
 
         if (fabs(Radian_) > 1e-8f)
@@ -519,6 +519,116 @@ namespace Math
         return Orientation_;
     }
 
+    inline DirectX::XMFLOAT4 rot_quaternion(DirectX::XMFLOAT4 Orientation_, DirectX::XMFLOAT3 Axis_, float Radian_,float elapsed_time,float rate = 10)
+    {
+        if (fabs(Radian_) > 1e-8f)
+        {
+            // 変換
+            const auto Axis = DirectX::XMLoadFloat3(&Axis_);
+            auto oriV = DirectX::XMLoadFloat4(&Orientation_);
+
+            // 回転クォータニオンを算出
+            const auto rotQua = DirectX::XMQuaternionRotationAxis(Axis, Radian_);
+            DirectX::XMVECTOR End = DirectX::XMQuaternionMultiply(oriV, rotQua);
+            oriV = DirectX::XMQuaternionSlerp(oriV, End, rate * elapsed_time);
+
+            DirectX::XMFLOAT4 ret{};
+            DirectX::XMStoreFloat4(&ret, oriV);
+            return ret;
+        }
+        return Orientation_;
+    }
+
+    //--------------------------------------------------------------
+    //  ベクトル取得
+    //--------------------------------------------------------------
+    //右ベクトル取得
+    inline DirectX::XMVECTOR get_posture_right_vec(DirectX::XMFLOAT4 orientation)
+    {
+        DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+        DirectX::XMVECTOR right;
+        DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
+        DirectX::XMFLOAT4X4 m4x4 = {};
+        DirectX::XMStoreFloat4x4(&m4x4, m);
+
+        right = { m4x4._11, m4x4._12, m4x4._13 };
+        right = DirectX::XMVector3Normalize(right);
+        return right;
+    }
+
+    //上ベクトル取得
+    inline DirectX::XMVECTOR get_posture_up_vec(DirectX::XMFLOAT4 orientation)
+    {
+        DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+        DirectX::XMVECTOR up;
+        DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
+        DirectX::XMFLOAT4X4 m4x4 = {};
+        DirectX::XMStoreFloat4x4(&m4x4, m);
+
+        up = { m4x4._21, m4x4._22, m4x4._23 };
+        up = DirectX::XMVector3Normalize(up);
+        return up;
+    }
+
+    //前ベクトル取得
+    inline DirectX::XMVECTOR get_posture_forward_vec(DirectX::XMFLOAT4 orientation)
+    {
+        DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+        DirectX::XMVECTOR forward;
+        DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
+        DirectX::XMFLOAT4X4 m4x4 = {};
+        DirectX::XMStoreFloat4x4(&m4x4, m);
+        forward = { m4x4._31, m4x4._32, m4x4._33 };
+        forward = DirectX::XMVector3Normalize(forward);
+        return forward;
+    }
+
+    //右ベクトル取得
+    inline DirectX::XMFLOAT3 get_posture_right(DirectX::XMFLOAT4 orientation)
+    {
+        DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+        DirectX::XMVECTOR right;
+        DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
+        DirectX::XMFLOAT4X4 m4x4 = {};
+        DirectX::XMStoreFloat4x4(&m4x4, m);
+
+        right = { m4x4._11, m4x4._12, m4x4._13 };
+        right = DirectX::XMVector3Normalize(right);
+        DirectX::XMFLOAT3 v;
+        DirectX::XMStoreFloat3(&v, right);
+        return v;
+    }
+
+    //上ベクトル取得
+    inline DirectX::XMFLOAT3 get_posture_up(DirectX::XMFLOAT4 orientation)
+    {
+        DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+        DirectX::XMVECTOR up;
+        DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
+        DirectX::XMFLOAT4X4 m4x4 = {};
+        DirectX::XMStoreFloat4x4(&m4x4, m);
+
+        up = { m4x4._21, m4x4._22, m4x4._23 };
+        up = DirectX::XMVector3Normalize(up);
+        DirectX::XMFLOAT3 v;
+        DirectX::XMStoreFloat3(&v, up);
+        return v;
+    }
+
+    //前ベクトル取得
+    inline DirectX::XMFLOAT3 get_posture_forward(DirectX::XMFLOAT4 orientation)
+    {
+        DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+        DirectX::XMVECTOR forward;
+        DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
+        DirectX::XMFLOAT4X4 m4x4 = {};
+        DirectX::XMStoreFloat4x4(&m4x4, m);
+        forward = { m4x4._31, m4x4._32, m4x4._33 };
+        forward = DirectX::XMVector3Normalize(forward);
+        DirectX::XMFLOAT3 v;
+        DirectX::XMStoreFloat3(&v, forward);
+        return v;
+    }
 
     inline DirectX::XMFLOAT3 HermiteFloat3(std::vector<DirectX::XMFLOAT3>& controllPoints, float ratio)
     {
@@ -599,8 +709,28 @@ namespace Math
         return out;
     }
 
-}
 
+
+
+    //--------------------------------------------------------------
+    //  逆ベクトルを返す
+    //--------------------------------------------------------------
+    inline DirectX::XMFLOAT3 rev_vec(DirectX::XMVECTOR vec)
+    {
+        DirectX::XMFLOAT3 fin_vec;
+
+        DirectX::XMVECTOR Rev = { -1,-1,-1 };
+
+        DirectX::XMStoreFloat3(&fin_vec, DirectX::XMVectorMultiply(vec, Rev));
+        return fin_vec;
+    }
+
+    inline DirectX::XMVECTOR rev_vec_v(DirectX::XMVECTOR vec)
+    {
+        DirectX::XMVECTOR Rev = { -1,-1,-1 };
+        return     DirectX::XMVectorMultiply(vec, Rev);
+    }
+}
 //--------------------------------------------------------------
 //  strBit16    整数を2進数（16bit）のstringに変換する
 //--------------------------------------------------------------

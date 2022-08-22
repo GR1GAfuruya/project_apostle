@@ -5,6 +5,7 @@
 #include "skeletal_mesh.h"
 #include "aura.h"
 #include "gpu_particle.h"
+#include "slash.h"
 //#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public PlayerMove
@@ -117,7 +118,6 @@ protected:
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
-	std::unique_ptr <SkeletalMesh> slash;
 	float move_speed = 30.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 
@@ -132,6 +132,7 @@ protected:
 	float attack_time;
 
 	std::unique_ptr<GPU_Particles> attack1;
+	std::unique_ptr<Slash> slash_efect;
 
 	bool display_player_imgui = false;
 /// </summary>

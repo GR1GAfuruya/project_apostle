@@ -131,11 +131,11 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,
 		deferred->get_dsv());
 
-	skybox->render(graphics);
+	//skybox->render(graphics);
 	graphics.set_depth_state(ST_DEPTH::ZT_ON_ZW_OFF);
 	player->render_f(graphics, elapsed_time, camera.get());
-	gpu_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
-	field_spark_particle->render(graphics.get_dc().Get());
+	//gpu_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
+	//field_spark_particle->render(graphics.get_dc().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE);
 	post_effect->end(graphics.get_dc().Get());
 

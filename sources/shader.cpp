@@ -236,4 +236,8 @@ void compile_shader(ID3D11Device* device, const wchar_t* shader_name, ID3D11Pixe
 #endif
 }
 
-
+void Shader::active(ID3D11DeviceContext* immediate_context)
+{
+	immediate_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
+	immediate_context->PSSetShader(f_pixel_shader.Get(), nullptr, 0);
+}
