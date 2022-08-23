@@ -16,24 +16,34 @@ Slash::Slash(ID3D11Device* device)
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 	D3D11_TEXTURE2D_DESC texture_desc{};
-	load_texture_from_file(device, L"./resources/Effects/Slash/slash.png", shader_resource_view.ReleaseAndGetAddressOf(), &texture_desc);
-	//load_texture_from_file(device, L"./resources/Sprite/kouboutest.png", shader_resource_view.ReleaseAndGetAddressOf(), &texture_desc);
+	load_texture_from_file(device, L"./resources/Effects/Slash/slash.png", shader_resource_views[0].ReleaseAndGetAddressOf(), &texture_desc);
+	load_texture_from_file(device, L"./resources/Effects/Textures/Traill3_output.png", shader_resource_views[1].ReleaseAndGetAddressOf(), &texture_desc);
 	scale = { 0.1f, 0.1f, 0.1f };
 }
 
 void Slash::update(float elapsed_time)
 {
-	if (slash_timer > 0.12f)
+	if (slash_timer >= SLASH_MAX_TIME)
 	{
 		slash_timer = 0;
 		slash = false;
 	}
 
+	float alpha = 0.0f;
 	if (slash)
 	{
+		alpha = fabsf((cosf(slash_timer / SLASH_MAX_TIME)));
 		slash_timer += elapsed_time;
-		orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), DirectX::XMConvertToRadians(-180), elapsed_time, 10);
+		if (dir)
+		{
+			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), -60, elapsed_time, 10);
+		}
+		else
+		{
+			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), 60, elapsed_time, 10);
+		}
 	}
+		constance->data.particle_color.w = Math::clamp(alpha,0.0f,1.0f);
 }
 
 void Slash::render(Graphics& graphics)
@@ -43,19 +53,23 @@ void Slash::render(Graphics& graphics)
 	ImGui::Begin("slash");
 	ImGui::DragFloat2("dir", &constance->data.scroll_direction.x, 0.1);
 	ImGui::DragFloat("speed", &constance->data.scroll_speed, 0.1);
+	ImGui::DragFloat4("particle_color", &constance->data.particle_color.x, 0.1);
 	ImGui::DragFloat3("position", &position.x, 0.1);
 	ImGui::DragFloat3("scale", &scale.x, 0.1);
 	ImGui::End();
 #endif
+	//シェーダーをアクティブ状態に
 	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
-	//shader->active(graphics.get_dc().Get(), RENDER_TYPE::Forward);
-	constance->bind(graphics.get_dc().Get(), 2, CB_FLAG::VS);
+	//定数バッファ送信
+	constance->bind(graphics.get_dc().Get(), 2, CB_FLAG::PS_VS);
+	graphics.get_dc().Get()->PSSetShaderResources(0, 1, shader_resource_views[0].GetAddressOf());
+	graphics.get_dc().Get()->PSSetShaderResources(1, 1, shader_resource_views[1].GetAddressOf());
+	//if(slash)
 	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, orientation, position);
-	graphics.get_dc().Get()->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
-	if(slash)shader->render(graphics.get_dc().Get(), model.get(), world);
+	shader->render(graphics.get_dc().Get(), model.get(), world);
 }
 
-void Slash::launch(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec)
+void Slash::launch(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction)
 {
 	position = pos;
 	// XMVECTORクラスへ変換
@@ -102,11 +116,6 @@ void Slash::launch(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, Direc
 
 		orientation = Math::rot_quaternion(orientation, axis, angle);
 	}
-
-	// orientationVecからorientationを更新
-	DirectX::XMStoreFloat4(&orientation, orientationVec);
-
-	end_slash_vec = Math::rev_vec(Math::get_posture_right_vec(orientation));
-
+	dir = direction;
 	slash = true;
 }

@@ -5,12 +5,12 @@ using namespace DirectX;
 
 
 #include "resource_manager.h"
+#include "user.h"
 
 
 SkeletalMesh::SkeletalMesh(ID3D11Device* device, const char* fbx_filename, float sampling_rate, bool triangulate)
 {
 	model_resource = ResourceManager::instance().load_model_resource(device, fbx_filename, triangulate, sampling_rate);
-	
 }
 
 //-----------------------------------------------//
@@ -145,6 +145,45 @@ void SkeletalMesh::blend_animations(const animation::keyframe* keyframes[2], flo
 
 }
 
+const skeleton::bone& SkeletalMesh::get_bone_by_name(std::string name)
+{
+	skeleton::bone dummy = {};
+	for (const ModelResource::mesh& mesh : model_resource->get_meshes())
+	{
+		const size_t bone_count{ mesh.bind_pose.bones.size() };
+		_ASSERT_EXPR(bone_count < MAX_BONES, L"The value of the 'bone_count' has exceeded MAX_BONES.");
+		for (int bone_index = 0; bone_index < bone_count; ++bone_index)
+		{
+			const skeleton::bone& bone = mesh.bind_pose.bones.at(bone_index);
+			if (bone.name == name)
+			{
+				return bone;
+			}
+		}
+	}
+	_ASSERT_EXPR(false, "指定された名前のボーンがありません");
+	return dummy;
+}
 
+void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT3& up)
+{
+	if (&anime_param.animation_keyframe && (&anime_param.animation_keyframe)->nodes.size() > 0)
+	{
+		const animation::keyframe::node& bone_node{ (&anime_param.animation_keyframe)->nodes.at(bone.node_index) };
+		DirectX::XMFLOAT4X4 w;
+		XMStoreFloat4x4(&w, XMLoadFloat4x4(&bone_node.global_transform) * XMLoadFloat4x4(&world));
 
+		pos = { w._41,w._42,w._43 };
+		DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
+
+		DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
+		DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
+		DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
+
+		DirectX::XMFLOAT4X4 r = {};
+		DirectX::XMStoreFloat4x4(&r, R);
+		DirectX::XMVECTOR right_vec = { r._11, r._12, r._13 };
+		XMStoreFloat3(&up, right_vec);
+	}
+}
 

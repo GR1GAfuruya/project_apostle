@@ -45,9 +45,11 @@ public:
 	//アニメーション間の補完計算
 	void blend_animations(const animation::keyframe* keyframes[2], float factor, animation::keyframe& keyframe);
 
-
-
 	std::shared_ptr<ModelResource> model_resource;
+	void fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT3& up);
+
+	const skeleton::bone& get_bone_by_name(std::string name);
+
 };
 
 

@@ -76,10 +76,10 @@ PS_OUT main(VS_OUT pin) : SV_TARGET
     float3 specColor = albedo_color.rgb;
 
     // ‹à‘®“x
-    float metallic = metallic_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
+    float metallic = metallic_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).a;
    
     // ŠŠ‚ç‚©‚³
-    float smooth = smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).g;
+    float smooth = smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
 
     float4 ao_map = ambient_oclusion_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
 

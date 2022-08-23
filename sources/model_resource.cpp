@@ -316,38 +316,55 @@ void ModelResource::fetch_materials(const char* fbx_filename, FbxScene* fbx_scen
 			}
 			// metal map
 			{
-				std::string color_map_filename = material.texture_filenames[0];
-				std::string metallic_map_filename = "";
-				if (color_map_filename.find("Color.png") != std::string::npos)
+				std::string color_map_filename_png = material.texture_filenames[0];
+				std::string color_map_filename_tga = color_map_filename_png;
+				std::string metallic_map_filename_png = "";
+				std::string metallic_map_filename_tga = "";
+				if (color_map_filename_png.find("Color.png") != std::string::npos)
 				{
-					metallic_map_filename = color_map_filename.erase(color_map_filename.find("Color.png")) + "M.tga";
+					metallic_map_filename_png = color_map_filename_png.erase(color_map_filename_png.find("Color.png")) + "M.png";
+					metallic_map_filename_tga = color_map_filename_tga.erase(color_map_filename_tga.find("Color.png")) + "M.tga";
 				}
 				std::filesystem::path fbm_filename(fbx_filename);
 				fbm_filename.remove_filename();
-				std::string s = fbm_filename.string() + metallic_map_filename;
-				if (std::filesystem::exists(s.c_str()))
+				std::string s_p = fbm_filename.string() + metallic_map_filename_png;
+				std::string s_t = fbm_filename.string() + metallic_map_filename_tga;
+				if (std::filesystem::exists(s_p.c_str()))
 				{
-					material.texture_filenames[2] = metallic_map_filename;
+					material.texture_filenames[2] = metallic_map_filename_png;
+				}
+				else if (std::filesystem::exists(s_t.c_str()))
+				{
+					material.texture_filenames[2] = metallic_map_filename_tga;
 				}
 				else
 				{
 					material.texture_filenames[2] = "";
 				}
 			}
+
 			// Roughness map
 			{
-				std::string color_map_filename = material.texture_filenames[0];
-				std::string roughness_map_filename = "";
-				if (color_map_filename.find("Color.png") != std::string::npos)
+				std::string color_map_filename_png = material.texture_filenames[0];
+				std::string color_map_filename_tga = color_map_filename_png;
+				std::string roughness_map_filename_png = "";
+				std::string roughness_map_filename_tga = "";
+				if (color_map_filename_png.find("Color.png") != std::string::npos)
 				{
-					roughness_map_filename = color_map_filename.erase(color_map_filename.find("Color.png")) + "M.tga";
+					roughness_map_filename_png = color_map_filename_png.erase(color_map_filename_png.find("Color.png")) + "M.png";
+					roughness_map_filename_tga = color_map_filename_tga.erase(color_map_filename_tga.find("Color.png")) + "M.tga";
 				}
 				std::filesystem::path fbm_filename(fbx_filename);
 				fbm_filename.remove_filename();
-				std::string s = fbm_filename.string() + roughness_map_filename;
-				if (std::filesystem::exists(s.c_str()))
+				std::string s_p = fbm_filename.string() + roughness_map_filename_png;
+				std::string s_t = fbm_filename.string() + roughness_map_filename_tga;
+				if (std::filesystem::exists(s_p.c_str()))
 				{
-					material.texture_filenames[3] = roughness_map_filename;
+					material.texture_filenames[3] = roughness_map_filename_png;
+				}
+				else if (std::filesystem::exists(s_t.c_str()))
+				{
+					material.texture_filenames[3] = roughness_map_filename_tga;
 				}
 				else
 				{
@@ -631,6 +648,7 @@ void ModelResource::fetch_skeleton(FbxMesh* fbx_mesh, skeleton& bind_pose)
 		}
 	}
 }
+
 
 //-----------------------------------------------//
 //アニメーション情報の抽出
