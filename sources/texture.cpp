@@ -25,7 +25,7 @@ HRESULT load_texture_from_file(ID3D11Device* device, const wchar_t* filename,
 #endif // 0
 
 	std::filesystem::path dds_filename(filename);
-	dds_filename.replace_extension("dds");
+	dds_filename.replace_extension("DDS");
 	if (std::filesystem::exists(dds_filename.c_str()))
 	{
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> immediate_context;
@@ -46,8 +46,6 @@ HRESULT load_texture_from_file(ID3D11Device* device, const wchar_t* filename,
 	hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	texture2d->GetDesc(texture2dDesc);
-
-	
 
 	return hr;
 }

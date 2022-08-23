@@ -92,7 +92,7 @@ private:
     DirectX::XMFLOAT3 right;
 
     bool is_move;
-    float attend_rate = 3.0f; // 減衰比率
+    float attend_rate = 4.0f; // 減衰比率
     float cape_vision = 45.0f;//視野角
     float roll_speed = DirectX::XMConvertToRadians(90);
 

@@ -12,6 +12,7 @@ void Player::initialize()
 	position = { 0.0f, 0.0f,0.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	jump_count = 1;
+	
 }
 
 Player::Player(Graphics& graphics, Camera* camera)
@@ -29,9 +30,9 @@ Player::Player(Graphics& graphics, Camera* camera)
 	attack1.get()->initialize(graphics.get_dc().Get());
 	
 	mouse = &Device::instance().get_mouse();
-
 	game_pad = &Device::instance().get_game_pad();
 
+	sword_hand = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 	
@@ -66,17 +67,14 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	// 拡大縮小（S）・回転（R）・平行移動（T）行列を計算する
 	// スタティックメッシュ
-	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, orientation, position);
+	world = Math::calc_world_matrix(scale, orientation, position);
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
 }
 
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
-	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale * 2, orientation, position + DirectX::XMFLOAT3{ 5, 5, 5});
-	//graphics.shader->render(graphics.get_dc().Get(), slash.get(), world);
 	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
-
 }
 
 
@@ -197,10 +195,14 @@ void Player::update_attack_state(Graphics& graphics, float elapsed_time, Camera*
 
 void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
-	 
+	DirectX::XMFLOAT3 sword_pos, up;
+	model->fech_by_bone(world, sword_hand, sword_pos,up);
 	DirectX::XMVECTOR slash_dir_vec = get_posture_forward_vec(orientation);
-	DirectX::XMVECTOR slash_slope_vec = get_posture_up_vec(orientation);
-	if (model->anime_param.frame_index == 10 / 2) slash_efect->launch(get_camera_target_pos(), slash_dir_vec, slash_slope_vec);
+	DirectX::XMVECTOR slash_slope_vec =DirectX::XMVectorMultiply(get_posture_right_vec(orientation),get_posture_up_vec(orientation));
+	if (model->anime_param.frame_index == 20 / 2)
+	{
+		slash_efect->launch(sword_pos + (up * 3.2f), DirectX::XMLoadFloat3(&up), slash_slope_vec,true);
+	}
 	if (model->anime_param.frame_index > 55/2)
 	{
 		if (model->is_end_animation())
@@ -221,9 +223,11 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 
 void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
+	DirectX::XMFLOAT3 sword_pos, up;
+	model->fech_by_bone(world, sword_hand, sword_pos, up);
 	DirectX::XMVECTOR slash_dir_vec = get_posture_forward_vec(orientation);
 	DirectX::XMVECTOR slash_slope_vec = get_posture_up_vec(orientation);
-	if (model->anime_param.frame_index == 10 / 2) slash_efect->launch(get_camera_target_pos(), slash_dir_vec, slash_slope_vec);
+	if (model->anime_param.frame_index == 20 / 2) slash_efect->launch(sword_pos + (up * 1.2f), slash_dir_vec, slash_slope_vec, false);
 
 	if (model->anime_param.frame_index > 66/2)
 	{
@@ -245,9 +249,19 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 
 void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
+	DirectX::XMFLOAT3 sword_pos, up;
+	model->fech_by_bone(world, sword_hand, sword_pos, up);
 	DirectX::XMVECTOR slash_dir_vec = get_posture_forward_vec(orientation);
 	DirectX::XMVECTOR slash_slope_vec = get_posture_up_vec(orientation);
-	if (model->anime_param.frame_index == 10 / 2) slash_efect->launch(get_camera_target_pos(), slash_dir_vec, slash_slope_vec);
+	//一振り目の斬撃
+	if (model->anime_param.frame_index == 40 / 2)
+		slash_efect->launch(sword_pos, DirectX::XMLoadFloat3(&up), slash_slope_vec, false);
+	//二振り目の斬撃
+	if (model->anime_param.frame_index == 60 / 2)
+		slash_efect->launch(sword_pos, DirectX::XMLoadFloat3(&up), slash_slope_vec, true);
+	//三振り目の斬撃
+	if (model->anime_param.frame_index == 80 / 2)
+		slash_efect->launch(sword_pos, DirectX::XMLoadFloat3(&up), slash_slope_vec, false);
 
 	if (model->anime_param.frame_index > 120/2)
 	{

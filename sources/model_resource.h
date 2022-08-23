@@ -117,8 +117,6 @@ struct skeleton
 	}
 
 };
-
-//UNIT25
 struct animation
 {
 
@@ -332,7 +330,6 @@ private:
 	scene scene_view;
 	std::vector<animation> animation_clips;
 
-
 	void create_com_objects(ID3D11Device* device, const char* fbx_filename);
 	//ÉQÉbÉ^Å[
 public:
@@ -357,5 +354,6 @@ protected:
 	FbxNode* FindFbxNodeByUniqueId(FbxNode* fbx_node, uint64_t id);
 
 	FbxNode* FindFbxNodeByUniqueId(FbxScene* fbx_scene, uint64_t id);
+
 
 };

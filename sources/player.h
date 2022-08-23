@@ -105,7 +105,7 @@ private:
 	Mouse* mouse;
 	/*GamePad& game_pad;
 	Mouse& mouse ;*/
-
+	DirectX::XMFLOAT4X4 world;
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
 	const DirectX::XMFLOAT3 get_move_vec(Camera* camera) const;
@@ -133,7 +133,8 @@ protected:
 
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr<Slash> slash_efect;
-
+	skeleton::bone sword_hand;
+	
 	bool display_player_imgui = false;
 /// </summary>
 	//当たり判定用変数

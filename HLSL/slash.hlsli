@@ -11,6 +11,14 @@ cbuffer BONE_CONSTANT_BUFFER : register(b1)
 };
 
 
+cbuffer SLASH_CONSTANT_BUFFER : register(b2)
+{
+    float2 scroll_direction;
+    float scroll_speed;
+
+    float4 particle_color;
+}
+
 struct VS_IN
 {
     float4 position : POSITION;
@@ -32,9 +40,3 @@ struct VS_OUT
     float4 color : COLOR;
 };
 
-
-cbuffer SLASH_CONSTANT_BUFFER : register(b2)
-{
-    float2 scroll_direction;
-    float scroll_speed;
-}
