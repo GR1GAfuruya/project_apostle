@@ -1,7 +1,7 @@
 #include "slash.hlsli"
 #include "constants.hlsli"
 SamplerState sampler_border_black : register(s3);
-Texture2D texture_maps[4] : register(t0);
+Texture2D texture_maps[4] : register(t20);
 
 
 float4 main(VS_OUT pin) : SV_TARGET

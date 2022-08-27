@@ -1,14 +1,13 @@
 #pragma once
-#include "framework.h"
+#include "device.h"
 #include "camera.h"
-#include "player_move.h"
+#include "charactor_move.h"
 #include "skeletal_mesh.h"
-#include "aura.h"
 #include "gpu_particle.h"
 #include "slash.h"
 //#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
-class Player final :public PlayerMove
+class Player final :public CharactorMove
 {
 public:
 	Player(Graphics& graphics, Camera* camera);
@@ -90,21 +89,19 @@ private:
 	//void update_fall_state(float elapsed_time, Camera* camera);
 	//void update_landing_state(float elapsed_time, Camera* camera);
 
-	typedef void (Player::* p_Update)(Graphics& graphics,float elapsed_time, Camera* camera, Stage* stage);
-	p_Update p_update = &Player::update_idle_state;
+	typedef void (Player::* ActUpdate)(Graphics& graphics,float elapsed_time, Camera* camera, Stage* stage);
+	ActUpdate p_update = &Player::update_idle_state;
 
 	void Attack(Graphics& graphics, float elapsed_time);
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 		
-	std::unique_ptr<Aura> aura = nullptr;
 
 	State state;
 
 	GamePad* game_pad;
 	Mouse* mouse;
-	/*GamePad& game_pad;
-	Mouse& mouse ;*/
+	
 	DirectX::XMFLOAT4X4 world;
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);

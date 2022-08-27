@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "sprite_batch.h"
 #include "player.h"
+#include "boss.h"
 #include "stage.h"
 #include "camera.h"
 #include "post_effects.h"
@@ -26,6 +27,7 @@ public:
 private:
 	std::unique_ptr<Camera> camera = nullptr;
 	std::unique_ptr<Player> player = nullptr;
+	std::unique_ptr<Boss> boss = nullptr;
 	std::unique_ptr<Stage> stage = nullptr;
 	DirectX::XMFLOAT3 chara_pos{};
 	std::unique_ptr<PostEffects> post_effect;

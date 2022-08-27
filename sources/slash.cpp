@@ -21,7 +21,7 @@ Slash::Slash(ID3D11Device* device)
 	scale = { 0.1f, 0.1f, 0.1f };
 }
 
-void Slash::update(float elapsed_time)
+void Slash::update(Graphics& graphics, float elapsed_time)
 {
 	if (slash_timer >= SLASH_MAX_TIME)
 	{
@@ -62,14 +62,14 @@ void Slash::render(Graphics& graphics)
 	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
 	//定数バッファ送信
 	constance->bind(graphics.get_dc().Get(), 2, CB_FLAG::PS_VS);
-	graphics.get_dc().Get()->PSSetShaderResources(0, 1, shader_resource_views[0].GetAddressOf());
-	graphics.get_dc().Get()->PSSetShaderResources(1, 1, shader_resource_views[1].GetAddressOf());
+	graphics.get_dc().Get()->PSSetShaderResources(20, 1, shader_resource_views[0].GetAddressOf());
+	graphics.get_dc().Get()->PSSetShaderResources(21, 1, shader_resource_views[1].GetAddressOf());
 	//if(slash)
 	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, orientation, position);
 	shader->render(graphics.get_dc().Get(), model.get(), world);
 }
 
-void Slash::launch(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction)
+void Slash::play(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction)
 {
 	position = pos;
 	// XMVECTORクラスへ変換

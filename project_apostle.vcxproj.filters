@@ -121,6 +121,27 @@
     <Filter Include="Shaders\Mesh\lambert">
       <UniqueIdentifier>{f4c2f54b-84e3-46c1-8607-704edac40247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Charactor\Boss">
+      <UniqueIdentifier>{c69ae893-1ae0-4d91-a062-e27ae936927f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Player">
+      <UniqueIdentifier>{4b835f94-b299-4bbb-b458-3436d68e52b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\BossEffect\Attack1">
+      <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\PostEffects">
+      <UniqueIdentifier>{aa4a1f7b-7194-480f-a024-4c46d037d94b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\BossEffects">
+      <UniqueIdentifier>{df664513-4e97-4cfe-934b-bb9925c96237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\BossEffects\ChargeAttack">
+      <UniqueIdentifier>{ccafdc37-edf3-4a9e-8b6c-067edae44093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Aura">
+      <UniqueIdentifier>{6970ad62-40fa-45e5-b9a9-21cf2915752f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -177,26 +198,17 @@
     <ClCompile Include="sources\device.cpp">
       <Filter>sources\Device</Filter>
     </ClCompile>
-    <ClCompile Include="sources\player_move.cpp">
-      <Filter>sources\Charactor</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\player.cpp">
+    <ClCompile Include="sources\charactor_move.cpp">
       <Filter>sources\Charactor</Filter>
     </ClCompile>
     <ClCompile Include="sources\graphics.cpp">
       <Filter>sources\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\post_effects.cpp">
-      <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\collision.cpp">
       <Filter>sources\Collision</Filter>
     </ClCompile>
     <ClCompile Include="sources\move_behavior.cpp">
       <Filter>sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\aura.cpp">
-      <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\trail.cpp">
       <Filter>sources\Effects</Filter>
@@ -213,26 +225,17 @@
     <ClCompile Include="sources\model_resource.cpp">
       <Filter>sources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="sources\light.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\g_buffer.cpp">
       <Filter>sources\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="sources\deferred_renderer.cpp">
       <Filter>sources\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="sources\light_manager.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\sky_box.cpp">
       <Filter>sources\Stage</Filter>
     </ClCompile>
     <ClCompile Include="sources\PBR_shader.cpp">
       <Filter>sources\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\bloom.cpp">
-      <Filter>sources\Effects</Filter>
     </ClCompile>
     <ClCompile Include="sources\stage_main.cpp">
       <Filter>sources\Stage</Filter>
@@ -293,6 +296,42 @@
     </ClCompile>
     <ClCompile Include="sources\mesh_shader.cpp">
       <Filter>sources\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss.cpp">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_action.cpp">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\player.cpp">
+      <Filter>sources\Charactor\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\player_action.cpp">
+      <Filter>sources\Charactor\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\bloom.cpp">
+      <Filter>sources\Effects\PostEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\post_effects.cpp">
+      <Filter>sources\Effects\PostEffects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\light.cpp">
+      <Filter>sources\Effects\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\light_manager.cpp">
+      <Filter>sources\Effects\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\sphere.cpp">
+      <Filter>sources\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\effect_base.cpp">
+      <Filter>sources\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\aura.cpp">
+      <Filter>sources\Effects\Aura</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_charge_attack.cpp">
+      <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -362,10 +401,7 @@
     <ClInclude Include="sources\imgui_include.h">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="sources\player_move.h">
-      <Filter>sources\Charactor</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\player.h">
+    <ClInclude Include="sources\charactor_move.h">
       <Filter>sources\Charactor</Filter>
     </ClInclude>
     <ClInclude Include="sources\stage.h">
@@ -377,17 +413,11 @@
     <ClInclude Include="sources\user.h">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="sources\post_effects.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\collision.h">
       <Filter>sources\Collision</Filter>
     </ClInclude>
     <ClInclude Include="sources\move_behavior.h">
       <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\aura.h">
-      <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\trail.h">
       <Filter>sources\Effects</Filter>
@@ -407,26 +437,17 @@
     <ClInclude Include="sources\model_resource.h">
       <Filter>sources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="sources\light.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\g_buffer.h">
       <Filter>sources\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="sources\deferred_renderer.h">
       <Filter>sources\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="sources\light_manager.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\sky_box.h">
       <Filter>sources\Stage</Filter>
     </ClInclude>
     <ClInclude Include="sources\PBR_shader.h">
       <Filter>sources\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\bloom.h">
-      <Filter>sources\Effects</Filter>
     </ClInclude>
     <ClInclude Include="sources\stage_main.h">
       <Filter>sources\Stage</Filter>
@@ -487,6 +508,36 @@
     </ClInclude>
     <ClInclude Include="sources\mesh_shader.h">
       <Filter>sources\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\player.h">
+      <Filter>sources\Charactor\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss.h">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\bloom.h">
+      <Filter>sources\Effects\PostEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\post_effects.h">
+      <Filter>sources\Effects\PostEffects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\light.h">
+      <Filter>sources\Effects\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\light_manager.h">
+      <Filter>sources\Effects\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_charge_attack.h">
+      <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\sphere.h">
+      <Filter>sources\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\effect_base.h">
+      <Filter>sources\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\aura.h">
+      <Filter>sources\Effects\Aura</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -661,12 +712,6 @@
     <FxCompile Include="HLSL\tone_map_ps.hlsl">
       <Filter>Shaders\PostEffect</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\boss_attack1_emit_cs.hlsl">
-      <Filter>Shaders\Effect\BossEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\boss_attack1_update_cs.hlsl">
-      <Filter>Shaders\Effect\BossEffect</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\field_spark_particles_cs.hlsl">
       <Filter>Shaders\Effect\Particle\FieldSpark</Filter>
     </FxCompile>
@@ -681,6 +726,15 @@
     </FxCompile>
     <FxCompile Include="HLSL\slash_vs.hlsl">
       <Filter>Shaders\Effect\Slash</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\boss_attack1_emit_cs.hlsl">
+      <Filter>Shaders\Effect\BossEffect\Attack1</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\boss_attack1_update_cs.hlsl">
+      <Filter>Shaders\Effect\BossEffect\Attack1</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\core_ps.hlsl">
+      <Filter>Shaders\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
