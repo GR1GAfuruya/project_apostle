@@ -20,6 +20,7 @@ void SceneGame::initialize(Graphics& graphics)
 
 	camera = std::make_unique<Camera>(graphics);
 	player = std::make_unique<Player>(graphics, camera.get());
+	boss = std::make_unique<Boss>(graphics);
 	post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
 	gpu_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),600000);
 	gpu_particle->initialize(graphics.get_dc().Get());
@@ -59,6 +60,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_camera_target_pos());
 	player->update(graphics, elapsed_time, camera.get(),stage.get());
+	boss->update(graphics, elapsed_time, stage.get());
 	stageManager.update( elapsed_time);
 
 	gpu_particle->update(graphics.get_dc().Get(),elapsed_time);
@@ -107,6 +109,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
 	player->render_d(graphics,elapsed_time,camera.get());
+	boss->render_d(graphics,elapsed_time);
 	
 	stageManager.render(elapsed_time, graphics);
 	//graphics.set_graphic_state_priset(DEPTH_ST::ZT_ON_ZW_OFF, BLEND_ST::ALPHA, RASTERIZER_ST::CULL_NONE);
@@ -134,6 +137,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//skybox->render(graphics);
 	graphics.set_depth_state(ST_DEPTH::ZT_ON_ZW_OFF);
 	player->render_f(graphics, elapsed_time, camera.get());
+	boss->render_f(graphics, elapsed_time);
 	gpu_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	field_spark_particle->render(graphics.get_dc().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE);

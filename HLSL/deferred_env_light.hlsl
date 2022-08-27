@@ -57,12 +57,10 @@ float4 main(VS_OUT pin) : SV_TARGET
 	//1-R	1	0.9	   0.75		0.6   0.0
 	//1-	1   0.55   0.28     0.19  0.0
     float level = pow(roughness, 4.0);
-    level = 1.0 - level;
+    level =  level;
     level *= 11;
 	//ミップマップを利用してぼかし
     float4 light = env_map.SampleLevel(sampler_states[LINEAR], uv, level);
-	//トーンマップ
-   // light.rgb = light.rgb / (500 + light.rgb);
-    //return float4(0,0,0, 1.0);
+	
     return float4(light.rgb, 1.0);
 }

@@ -290,9 +290,16 @@ namespace Math
     //--------------------------------------------------------------
     //  戻り値：aからbに向かう正規化されたベクトル
     //--------------------------------------------------------------
-    inline const DirectX::XMVECTOR& calc_vector_AtoB_normalize(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+    inline const DirectX::XMVECTOR& calc_vector_AtoB_normalize_vec(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
     {
         return DirectX::XMVector3Normalize(calc_vector_AtoB(a, b));
+    }
+
+    inline const DirectX::XMFLOAT3& calc_vector_AtoB_normalize(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+    {
+        DirectX::XMFLOAT3 v;
+        DirectX::XMStoreFloat3(&v, DirectX::XMVector3Normalize(calc_vector_AtoB(a, b)));
+        return v;
     }
     //--------------------------------------------------------------
     //  二点からベクトルを算出する(正規化)
@@ -531,6 +538,35 @@ namespace Math
             const auto rotQua = DirectX::XMQuaternionRotationAxis(Axis, Radian_);
             DirectX::XMVECTOR End = DirectX::XMQuaternionMultiply(oriV, rotQua);
             oriV = DirectX::XMQuaternionSlerp(oriV, End, rate * elapsed_time);
+
+            DirectX::XMFLOAT4 ret{};
+            DirectX::XMStoreFloat4(&ret, oriV);
+            return ret;
+        }
+        return Orientation_;
+    }
+
+    inline DirectX::XMFLOAT4 rot_quaternion_dir(DirectX::XMFLOAT4 Orientation_, DirectX::XMFLOAT3 OriAxis_, DirectX::XMFLOAT3 DirVec_)
+    {
+        //法線のベクトル
+        DirectX::XMVECTOR ori_axis = DirectX::XMLoadFloat3(&OriAxis_);
+        DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&DirVec_);
+        Normal = DirectX::XMVector3Normalize(Normal);
+        //軸ベクトル算出
+        DirectX::XMVECTOR axis;	//回転軸
+        float angle;			//回転角
+        axis = DirectX::XMVector3Cross(ori_axis, Normal);
+        DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(ori_axis, Normal);
+        DirectX::XMStoreFloat(&angle, Ang);
+        angle = acosf(angle);
+        if (fabs(angle) > 1e-8f)
+        {
+            // 変換
+            auto oriV = DirectX::XMLoadFloat4(&Orientation_);
+
+            // 回転クォータニオンを算出
+            const auto rotQua = DirectX::XMQuaternionRotationAxis(axis, angle);
+            oriV = DirectX::XMQuaternionMultiply(oriV, rotQua);
 
             DirectX::XMFLOAT4 ret{};
             DirectX::XMStoreFloat4(&ret, oriV);

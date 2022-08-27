@@ -3,11 +3,11 @@
 #include <DirectXMath.h>
 #include "move_behavior.h"
 //キャラクター
-class PlayerMove :public MoveBehavior
+class CharactorMove :public MoveBehavior
 {
 public:
-	PlayerMove() {}
-	virtual ~PlayerMove(){}
+	CharactorMove() {}
+	virtual ~CharactorMove(){}
 	//行列更新処理
 	void update_transform();
 	//行列更新処理

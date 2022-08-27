@@ -10,6 +10,13 @@ cbuffer BONE_CONSTANT_BUFFER : register(b1)
     row_major float4x4 bone_transforms[MAX_BONES]; //É{Å[ÉìçsóÒ
 };
 
+cbuffer AURA_CONSTANT_BUFFER : register(b9)
+{
+   float4 particle_color;
+   float2 scroll_direction;
+   float scroll_speed;
+   float thirethold;
+};
 
 struct VS_IN
 {
@@ -30,5 +37,5 @@ struct VS_OUT
     float4 world_tangent : TANGENT;
     float2 texcoord : TEXCOORD;
     float4 color : COLOR;
-    float4 meta_position : META_POSITION;
 };
+

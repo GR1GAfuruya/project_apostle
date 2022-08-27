@@ -1,10 +1,10 @@
-#include"player_move.h"
+#include"charactor_move.h"
 
 #include "stage_manager.h"
 #include "user.h"
 
 //行列更新処理
-void PlayerMove::update_transform()
+void CharactorMove::update_transform()
 {
 	//スケール行列を作成
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -24,7 +24,7 @@ void PlayerMove::update_transform()
 }
 
 //クオータニオン用のUpdateTransform
-void PlayerMove::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::XMFLOAT3& pos)
+void CharactorMove::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::XMFLOAT3& pos)
 {
 	//スケール行列を作成
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -41,7 +41,7 @@ void PlayerMove::update_transform(const DirectX::XMFLOAT4& orien, const DirectX:
 
 
 //右ベクトル取得
-DirectX::XMVECTOR PlayerMove::get_posture_right_vec(DirectX::XMFLOAT4 orientation)
+DirectX::XMVECTOR CharactorMove::get_posture_right_vec(DirectX::XMFLOAT4 orientation)
 {
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 	DirectX::XMVECTOR right;
@@ -55,7 +55,7 @@ DirectX::XMVECTOR PlayerMove::get_posture_right_vec(DirectX::XMFLOAT4 orientatio
 }
 
 //上ベクトル取得
-DirectX::XMVECTOR PlayerMove::get_posture_up_vec(DirectX::XMFLOAT4 orientation)
+DirectX::XMVECTOR CharactorMove::get_posture_up_vec(DirectX::XMFLOAT4 orientation)
 {
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 	DirectX::XMVECTOR up;
@@ -69,7 +69,7 @@ DirectX::XMVECTOR PlayerMove::get_posture_up_vec(DirectX::XMFLOAT4 orientation)
 }
 
 //前ベクトル取得
-DirectX::XMVECTOR PlayerMove::get_posture_forward_vec(DirectX::XMFLOAT4 orientation)
+DirectX::XMVECTOR CharactorMove::get_posture_forward_vec(DirectX::XMFLOAT4 orientation)
 {
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 	DirectX::XMVECTOR forward;
@@ -101,7 +101,7 @@ void Character::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::
 #endif // 0
 
 
-void PlayerMove::add_impulse(const DirectX::XMFLOAT3& impulse)
+void CharactorMove::add_impulse(const DirectX::XMFLOAT3& impulse)
 {
 	//速力に力を加える
 	velocity.x += impulse.x;
@@ -110,7 +110,7 @@ void PlayerMove::add_impulse(const DirectX::XMFLOAT3& impulse)
 
 }
 
-bool PlayerMove::apply_damage(int damage, float invinsibleTime)
+bool CharactorMove::apply_damage(int damage, float invinsibleTime)
 {
 	//ダメージが0の場合は健康状態を変更する必要がない
 	if (damage == 0)return false;
@@ -144,7 +144,7 @@ bool PlayerMove::apply_damage(int damage, float invinsibleTime)
 
 
 
-void PlayerMove::Move(float vx, float vz, float speed)
+void CharactorMove::Move(float vx, float vz, float speed)
 {
 	//移動方向ベクトルを設定
 	move_vec_x = vx;
@@ -154,7 +154,7 @@ void PlayerMove::Move(float vx, float vz, float speed)
 	max_move_speed = speed;
 }
 
-void PlayerMove::Turn(float elapsedTime, float vx, float vz, float speed)
+void CharactorMove::Turn(float elapsedTime, float vx, float vz, float speed)
 {
 	speed *= elapsedTime;
 	float length = sqrtf(vx * vx + vz * vz);
@@ -194,7 +194,7 @@ void PlayerMove::Turn(float elapsedTime, float vx, float vz, float speed)
 	angle.z = fmod(angle.z, DirectX::XMConvertToRadians(360.0f));
 }
 
-void PlayerMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed, DirectX::XMFLOAT4& orien)
+void CharactorMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed, DirectX::XMFLOAT4& orien)
 {
 	// XMVECTORクラスへ変換
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orien);
@@ -254,12 +254,12 @@ void PlayerMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float spee
 	DirectX::XMStoreFloat4(&orientation, orientationVec);
 }
 
-void PlayerMove::Jump(float speed)
+void CharactorMove::Jump(float speed)
 {
 	//上方向の力を設定
 	velocity.y = speed;
 }
-void PlayerMove::update_velocity(float elapsedTime, DirectX::XMFLOAT3& position, Stage* stage)
+void CharactorMove::update_velocity(float elapsedTime, DirectX::XMFLOAT3& position, Stage* stage)
 {
 	//経過フレーム
 	float elapsedFrame = 60.0f * elapsedTime;
@@ -279,13 +279,13 @@ void PlayerMove::update_velocity(float elapsedTime, DirectX::XMFLOAT3& position,
 
 }
 
-void PlayerMove::update_vertical_velocity(float elapsedFrame)
+void CharactorMove::update_vertical_velocity(float elapsedFrame)
 {
 	velocity.y += gravity * elapsedFrame;
 }
 
 using namespace DirectX;
-void PlayerMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)
+void CharactorMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)
 {
 	// キャラクターの下方向の移動量
 	float my = velocity.y * elapsed_time;
@@ -370,7 +370,7 @@ void PlayerMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& pos
 
 }
 
-void PlayerMove::update_hrizontal_velocity(float elapsed_frame)
+void CharactorMove::update_hrizontal_velocity(float elapsed_frame)
 {
 	//XZ平面の速力を減速する
 	float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
@@ -430,7 +430,7 @@ void PlayerMove::update_hrizontal_velocity(float elapsed_frame)
 }
 
 
-void PlayerMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position, Stage* stage)
+void CharactorMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position, Stage* stage)
 {
 
 	// 水平速力計算
@@ -496,7 +496,7 @@ void PlayerMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& po
 
 
 
-void PlayerMove::update_invicible_timer(float elapsedTime)
+void CharactorMove::update_invicible_timer(float elapsedTime)
 {
 	if (invinsible_timer > 0.0f)
 	{

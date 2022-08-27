@@ -1,10 +1,8 @@
 #pragma once
 #include "skeletal_mesh.h"
 #include "constant.h"
-#include "shader.h"
-#include "graphics.h"
-#include "mesh_shader.h"
-class Slash
+#include "effect_base.h"
+class Slash : public EffecttBase
 {
 public:
 	Slash(ID3D11Device* device);
@@ -18,21 +16,17 @@ public:
 		DirectX::XMFLOAT4 particle_color = {0,1,0,1};
 	};
 
-	
-	void update(float elapsed_time);
+	void play(DirectX::XMFLOAT3 pos) {}
+	void play(DirectX::XMFLOAT3 pos,DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction);
+	void stop() {};
+	void update(Graphics& graphics, float elapsed_time);
 	void render(Graphics& graphics);
-	void launch(DirectX::XMFLOAT3 pos,DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction);
-	//位置設定
-	void set_position(const DirectX::XMFLOAT3& position) { this->position = position; }
-
+	
 	std::unique_ptr<Constants<SlashConstance>> constance;
 private:
 	std::unique_ptr<MeshShader> shader;
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
-	DirectX::XMFLOAT3 scale;
 
 	
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
