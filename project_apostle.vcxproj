@@ -195,7 +195,6 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\OriginLibrary\sources\gpu_particle.cpp" />
     <ClCompile Include="external\imgui\imgui.cpp" />
     <ClCompile Include="external\imgui\imgui_demo.cpp" />
     <ClCompile Include="external\imgui\imgui_draw.cpp" />
@@ -213,6 +212,7 @@
     <ClCompile Include="sources\deferred_renderer.cpp" />
     <ClCompile Include="sources\effect_base.cpp" />
     <ClCompile Include="sources\field_spark_particle.cpp" />
+    <ClCompile Include="sources\gpu_particle.cpp" />
     <ClCompile Include="sources\g_buffer.cpp" />
     <ClCompile Include="sources\lambert_shader.cpp" />
     <ClCompile Include="sources\light_manager.cpp" />

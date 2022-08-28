@@ -101,6 +101,7 @@ void Boss::transition_skill_2_start_state()
 {
 	act_update = &Boss::update_skill_2_start_state;
 	model->play_animation(BossAnimation::SKILL_2_START, false);
+	efc_charge_attack->play({ position.x,position.y + 50,position.z });
 }
 
 void Boss::transition_skill_3_state()
@@ -174,6 +175,13 @@ void Boss::update_groggy_start_state(Graphics& graphics, float elapsed_time, Sta
 
 void Boss::update_idle_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	//テスト用！！！！！！
+	charge_time += elapsed_time;
+	if (charge_time > 5)
+	{
+		charge_time = 0;
+		transition_skill_2_start_state();
+	}
 }
 
 void Boss::update_run_state(Graphics& graphics, float elapsed_time, Stage* stage)
@@ -186,14 +194,29 @@ void Boss::update_skill_1_state(Graphics& graphics, float elapsed_time, Stage* s
 
 void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
 }
 
 void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	charge_time += elapsed_time;
+	if (charge_time > 10)
+	{
+		efc_charge_attack->stop();
+		charge_time = 0;
+		transition_skill_2_end_state();
+	}
 }
 
 void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_skill_2_loop_state();
+	}
 }
 
 void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time, Stage* stage)

@@ -12,6 +12,9 @@ public:
 	void update(Graphics& graphics, float elapsed_time);
 	void render(Graphics& graphics);
 
+private:
+	//地面からコアに伸びる支柱
 	std::unique_ptr<Aura> aura[6];
+	//コア
 	std::unique_ptr<Sphere> core;
 };

@@ -18,7 +18,7 @@ public:
 
 	void play(DirectX::XMFLOAT3 pos) {}
 	void play(DirectX::XMFLOAT3 pos,DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction);
-	void stop() {};
+	void stop();
 	void update(Graphics& graphics, float elapsed_time);
 	void render(Graphics& graphics);
 	
@@ -34,7 +34,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_views[4];
 	bool dir = false;//aŒ‚•ûŒü‚ª‰EŒü‚«‚È‚çfalse¶‚È‚çtrue
 	bool slash;
-	float slash_timer;
+	float slash_timer = 0.14;
 	bool display_slash_imgui = true;
-	static constexpr float SLASH_MAX_TIME = 0.12f;
 };

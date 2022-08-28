@@ -666,6 +666,18 @@ namespace Math
         return v;
     }
 
+    //クォータニオンを世界軸に合わせる
+    inline DirectX::XMFLOAT4 orientation_reset()
+    {
+        DirectX::XMFLOAT4 ori;
+        DirectX::XMFLOAT4X4 standard = { 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1 };
+        DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&standard);
+        DirectX::XMVECTOR O = DirectX::XMQuaternionRotationMatrix(R);
+        DirectX::XMStoreFloat4(&ori, O);
+        return ori;
+    }
+
+
     inline DirectX::XMFLOAT3 HermiteFloat3(std::vector<DirectX::XMFLOAT3>& controllPoints, float ratio)
     {
         using namespace DirectX;

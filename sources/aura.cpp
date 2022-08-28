@@ -27,7 +27,7 @@ void Aura::play(DirectX::XMFLOAT3 pos)
 
 void Aura::stop()
 {
-	active = false;
+	EffecttBase::stop();
 	aura_constants->data.scroll_speed = 0;
 }
 

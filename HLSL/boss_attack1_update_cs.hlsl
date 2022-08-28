@@ -22,8 +22,10 @@ void main(uint3 DTid : SV_DispatchThreadID)
         }
         p.streak_factor = 0.2;
         p.position += p.velocity * delta_time;
+        //生存時間
         p.life_time = max(0, p.life_time - delta_time);
         p.time += delta_time;
+        //アルファ設定
         p.color.a = lerp(1, 0, 1.0 - (p.life_time / 1.0));
         
         //速度が上がりすぎないようクランプ

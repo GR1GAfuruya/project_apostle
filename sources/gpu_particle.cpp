@@ -88,9 +88,9 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 	load_texture_from_file(device, L"./resources/Effects/Textures/Particle04.png", texture.ReleaseAndGetAddressOf(), &texture2d_desc);
 	particle_constants->data.emitter.emit_life = 0;
 	//particle_constants->data.emitter.emit_life_time = 5;
-	particle_constants->data.emitter.emit_rate = 16;
+	particle_constants->data.emitter.emit_rate = 1600;
 	particle_constants->data.emitter.emit_count = 0;
-	particle_constants->data.particle_size = { 0.5f,0.5f };
+	particle_constants->data.particle_size = { 0.2f,0.2f };
 	particle_constants->data.particle_count = static_cast<uint32_t>(particle_count);
 }
 
@@ -184,6 +184,7 @@ void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 	ImGui::DragFloat3("pos", &particle_constants->data.emitter.pos.x);
 	ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x,0.1);
 	ImGui::DragFloat("rate", &particle_constants->data.emitter.emit_rate);
+	ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
 	int active_particle = static_cast<int>(particle_count) - particle_constants->data.particle_count;
 	ImGui::DragInt("active_count", &active_particle);
 	ImGui::DragInt("count", &particle_constants->data.particle_count);

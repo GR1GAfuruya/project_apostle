@@ -23,24 +23,24 @@ Slash::Slash(ID3D11Device* device)
 
 void Slash::update(Graphics& graphics, float elapsed_time)
 {
-	if (slash_timer >= SLASH_MAX_TIME)
+	if (life_time >= slash_timer)
 	{
-		slash_timer = 0;
+		life_time = 0;
 		slash = false;
 	}
 
 	float alpha = 0.0f;
 	if (slash)
 	{
-		alpha = fabsf((cosf(slash_timer / SLASH_MAX_TIME)));
-		slash_timer += elapsed_time;
+		alpha = fabsf((cosf(life_time / slash_timer)));
+		life_time += elapsed_time;
 		if (dir)
 		{
-			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), -60, elapsed_time, 10);
+			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), -60, elapsed_time, 20);
 		}
 		else
 		{
-			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), 60, elapsed_time, 10);
+			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), 60, elapsed_time, 20);
 		}
 	}
 		constance->data.particle_color.w = Math::clamp(alpha,0.0f,1.0f);
@@ -56,6 +56,7 @@ void Slash::render(Graphics& graphics)
 	ImGui::DragFloat4("particle_color", &constance->data.particle_color.x, 0.1);
 	ImGui::DragFloat3("position", &position.x, 0.1);
 	ImGui::DragFloat3("scale", &scale.x, 0.1);
+	
 	ImGui::End();
 #endif
 	//シェーダーをアクティブ状態に
@@ -71,29 +72,24 @@ void Slash::render(Graphics& graphics)
 
 void Slash::play(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction)
 {
+	//位置設定
 	position = pos;
+	//基準軸のリセット
+	orientation = Math::orientation_reset();
 	// XMVECTORクラスへ変換
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-	if (DirectX::XMVector3Equal(slash_dir_vec, DirectX::XMVectorZero())) return; //もしmove_vecがゼロベクトルならリターン
 	
 	DirectX::XMVECTOR forward, up;
-	DirectX::XMFLOAT3 axis;
-	DirectX::XMVECTOR Axis;	//回転軸
+	DirectX::XMFLOAT3 axis;//回転軸
 	float angle;			//回転角
 	DirectX::XMVECTOR Ang;
-
 	//正規化
 	slash_dir_vec = DirectX::XMVector3Normalize(slash_dir_vec);
 	//Y軸回転
 	{
-		up = Math::get_posture_up_vec(orientation);
 		forward = Math::get_posture_forward_vec(orientation);
-		up = DirectX::XMVector3Normalize(up);
-		forward = DirectX::XMVector3Normalize(forward);
 
-
-		Axis = up;
-		DirectX::XMStoreFloat3(&axis, Axis);
+		axis = Math::get_posture_up(orientation);
 		DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(forward, slash_dir_vec);
 		DirectX::XMStoreFloat(&angle, Ang);
 		angle = acosf(angle);
@@ -104,12 +100,7 @@ void Slash::play(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX
 	//Z軸回転
 	{
 		up = Math::get_posture_up_vec(orientation);
-		forward = Math::get_posture_forward_vec(orientation);
-		up = DirectX::XMVector3Normalize(up);
-		forward = DirectX::XMVector3Normalize(forward);
-		
-		Axis = forward;
-		DirectX::XMStoreFloat3(&axis, Axis);
+		axis = Math::get_posture_forward(orientation); 
 		Ang = DirectX::XMVector3Dot(up, slope_vec);
 		DirectX::XMStoreFloat(&angle, Ang);
 		angle = acosf(angle);
@@ -118,4 +109,8 @@ void Slash::play(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX
 	}
 	dir = direction;
 	slash = true;
+}
+
+void Slash::stop()
+{
 }

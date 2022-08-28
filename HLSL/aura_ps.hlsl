@@ -1,3 +1,4 @@
+
 #include "aura.hlsli"
 #include "constants.hlsli"
 SamplerState sampler_border_black : register(s1);

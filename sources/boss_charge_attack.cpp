@@ -11,13 +11,20 @@ ChargeAttack::ChargeAttack(Graphics& grapghics)
 
 void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 {
+	//アクティブ状態に
+	active = true;
+	//タイマーリセット
+	life_time = 0.0f;
+
+	//コア位置設定
 	position = pos;
 	DirectX::XMFLOAT3 core_pos = { position.x,position.y + 10,position.z };
 	core->play(core_pos);
 	core->set_scale( 0);
 	core->constants->data.particle_color = { 3.0f,0.6f,0.0f,0.8f };
 	core->constants->data.scroll_direction = { 1.0f,-1.0f };
-	//コアへ延びるエフェクトのプレイ時の処理
+	//コアへ延びるエフェクトのプレイ時の処理　
+	//ボス周りに3角形の位置
 	DirectX::XMFLOAT3 pillar_point[3];
 	pillar_point[0] = { position.x - 10,position.y - 10,position.z - 10 };
 	pillar_point[1] = { position.x + 10,position.y - 10,position.z - 10 };
@@ -30,7 +37,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		DirectX::XMFLOAT3 aura_forward = Math::get_posture_forward(aura_q);
 		DirectX::XMFLOAT3 vec;
 
-
+		//支柱の位置設定、地面からコアの向きに傾ける
 		switch (i % 3)
 		{
 		case 0:
@@ -51,6 +58,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		default:
 			break;
 		}
+		//2本のうちの1つの角度をずらして螺旋っぽく
 		if (i == 0 || i == 1 || i == 2)
 		{
 			aura[i]->set_orientation(Math::rot_quaternion(aura[i]->get_orientation(), Math::get_posture_forward(aura[i]->get_orientation()), DirectX::XMConvertToRadians(180)));
@@ -75,15 +83,18 @@ void ChargeAttack::stop()
 
 void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 {
-	float core_s = lerp(core->get_scale().x, 0.3f, 0.2f * elapsed_time);
-	core->set_scale(core_s);
-	core->constants->data.scroll_speed += elapsed_time;
-	core->update(graphics, elapsed_time);
-	for (int i = 0; i < 6; i++)
+	if (active)
 	{
-		aura[i]->update(graphics, elapsed_time);
-		aura[i]->aura_constants->data.scroll_speed += elapsed_time;
+		float core_s = lerp(core->get_scale().x, 0.3f, 0.2f * elapsed_time);
+		core->set_scale(core_s);
+		core->constants->data.scroll_speed += elapsed_time;
+		core->update(graphics, elapsed_time);
+		for (int i = 0; i < 6; i++)
+		{
+			aura[i]->update(graphics, elapsed_time);
+			aura[i]->aura_constants->data.scroll_speed += elapsed_time;
 
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 
 SceneTitle::SceneTitle(Graphics& graphics)
 {
-	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(),L".\\resources\\Sprite\\title.jpg",1);
+	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(),L".\\resources\\Sprite\\title.png",1);
 }
 
 void SceneTitle::initialize(Graphics& graphics)
@@ -20,7 +20,8 @@ void SceneTitle::finalize()
 void SceneTitle::update(float elapsedTime, Graphics& graphics)
 {
 	Mouse& mouse = Device::instance().get_mouse();
-	if (mouse.get_button() & mouse.BTN_Z)
+	GamePad& game_pad = Device::instance().get_game_pad();
+	if (mouse.get_button() & mouse.BTN_Z || game_pad.get_button() & game_pad.BTN_A)
 	{
 		SceneManager::instance().change_scene(graphics,new SceneLoading(new SceneGame(graphics)));
 	}

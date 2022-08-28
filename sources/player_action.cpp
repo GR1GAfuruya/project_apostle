@@ -113,7 +113,7 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 	model->fech_by_bone(world, sword_hand, sword_pos, up);
 	DirectX::XMVECTOR slash_dir_vec = get_posture_forward_vec(orientation);
 	DirectX::XMVECTOR slash_slope_vec = get_posture_up_vec(orientation);
-	if (model->anime_param.frame_index == 20 / 2) slash_efect->play(sword_pos + (up * 1.2f), slash_dir_vec, slash_slope_vec, false);
+	if (model->anime_param.frame_index == 21 / 2) slash_efect->play(sword_pos + (up * 1.2f), slash_dir_vec, slash_slope_vec, true);
 
 	if (model->anime_param.frame_index > 66 / 2)
 	{
@@ -144,7 +144,7 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 		slash_efect->play(sword_pos, DirectX::XMLoadFloat3(&up), slash_slope_vec, false);
 	//“ñU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 60 / 2)
-		slash_efect->play(sword_pos, DirectX::XMLoadFloat3(&up), slash_slope_vec, true);
+		slash_efect->play(sword_pos, DirectX::XMLoadFloat3(&up), slash_dir_vec, true);
 	//ŽOU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 80 / 2)
 		slash_efect->play(sword_pos, DirectX::XMLoadFloat3(&up), slash_slope_vec, false);

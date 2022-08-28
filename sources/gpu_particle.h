@@ -35,13 +35,13 @@ public:
 
 	struct PARTICLE_CONSTANTS 
 	{
-		Emitter emitter;
-		DirectX::XMFLOAT2 particle_size;
+		Emitter emitter{};
+		DirectX::XMFLOAT2 particle_size = {0.1,0.1};
 		int particle_count;
 		float pad2;
 		DirectX::XMFLOAT3 angle{};
 		float pad3;
-		
+		DirectX::XMFLOAT4 particle_color = { 0,0,0,1.0 };
 	};
 	std::unique_ptr<Constants<PARTICLE_CONSTANTS>> particle_constants{};
 
@@ -59,11 +59,11 @@ public:
 	void render(ID3D11DeviceContext * dc, ID3D11Device* device);
 	UINT get_particle_pool_count(ID3D11DeviceContext* dc) const;
 
-	const int THREAD_NUM_X =16;
 
 	void set_emit_pos(DirectX::XMFLOAT3 pos) { particle_constants->data.emitter.pos = pos; }
 
 private:
+	const int THREAD_NUM_X =16;
 	size_t particle_count{ 0 };
 	//実体が入るバッファー
 	Microsoft::WRL::ComPtr<ID3D11Buffer> particle_buffer;
