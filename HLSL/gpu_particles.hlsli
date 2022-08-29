@@ -34,10 +34,10 @@ struct Emitter
 cbuffer PARTICLE_CONSTANTS : register(b9)
 {
     Emitter emitter;
-
     float2 particle_size;
     uint particle_count;
     float3 angle;
+    float4 particle_color;
 };
 
 #include "noise.hlsli"

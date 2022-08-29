@@ -16,12 +16,13 @@ public:
 		DirectX::XMFLOAT4 particle_color = {0,1,0,1};
 	};
 
-	void play(DirectX::XMFLOAT3 pos) {}
-	void play(DirectX::XMFLOAT3 pos,DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction);
-	void stop() {};
+	void play(DirectX::XMFLOAT3 pos);
+	void play(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 slash_dir_vec, float tilt_degree, bool direction);
+	void stop();
 	void update(Graphics& graphics, float elapsed_time);
 	void render(Graphics& graphics);
 	
+	void set_rotate_rate(float rate) { rotate_rate = rate; }
 	std::unique_ptr<Constants<SlashConstance>> constance;
 private:
 	std::unique_ptr<MeshShader> shader;
@@ -33,8 +34,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_views[4];
 	bool dir = false;//éaåÇï˚å¸Ç™âEå¸Ç´Ç»ÇÁfalseç∂Ç»ÇÁtrue
-	bool slash;
-	float slash_timer;
+	float rotate_rate = 20;
 	bool display_slash_imgui = true;
-	static constexpr float SLASH_MAX_TIME = 0.12f;
 };

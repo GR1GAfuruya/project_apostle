@@ -19,6 +19,8 @@ Player::Player(Graphics& graphics, Camera* camera)
 {
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
 	slash_efect = std::make_unique<Slash>(graphics.get_device().Get());
+	slash_efect->set_scale(0.15f);
+	slash_efect->constance->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
 	scale.x = scale.y = scale.z = 0.05f;
@@ -27,7 +29,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	jump_speed = 27.0f;
 	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get());
 	attack1.get()->initialize(graphics.get_dc().Get());
-	
+	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
@@ -173,7 +175,7 @@ void Player::debug_gui()
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
-	imgui_menu_bar("objects", "player", display_player_imgui);
+	imgui_menu_bar("charactor", "player", display_player_imgui);
 	if (display_player_imgui)
 	{
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))

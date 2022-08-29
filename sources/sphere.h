@@ -20,7 +20,7 @@ private:
 		float scroll_speed{};
 		float thirethold{};
 	};
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_views[2];
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textures[2];
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;

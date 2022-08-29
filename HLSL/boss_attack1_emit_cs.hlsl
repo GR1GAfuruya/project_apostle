@@ -29,8 +29,7 @@ void main()
     p.scale.xy = particle_size.xy;
     p.scale.z = 1;
     p.angle = angle;
-   // float rand = step(random(id / time), 0.5);
         
-    p.color = float4(10, 1, 0.0, 0.7);
+    p.color = particle_color;
     particle_buffer[id] = p;
 }

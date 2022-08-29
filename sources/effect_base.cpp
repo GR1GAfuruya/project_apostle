@@ -1,5 +1,10 @@
 #include "effect_base.h"
 #include "user.h"
+void EffecttBase::stop()
+{
+	active = false;
+	life_time = 0;
+}
 void EffecttBase::update(Graphics& graphics, float elapsed_time)
 {
 }

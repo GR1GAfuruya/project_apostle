@@ -6,7 +6,7 @@ Boss::Boss(Graphics& graphics)
 	efc_charge_attack = make_unique<ChargeAttack>(graphics);
 	scale.x = scale.y = scale.z = 0.1f;
 	transition_idle_state();
-	efc_charge_attack->play({ position.x,position.y + 50,position.z });
+	
 	
 }
 
@@ -16,10 +16,11 @@ void Boss::initialize()
 
 void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 {
-
+	(this->*act_update)(graphics, elapsed_time, stage);
 	model->update_animation(elapsed_time);
 	update_velocity(elapsed_time, position, stage);
 	efc_charge_attack->update(graphics, elapsed_time);
+	debug_gui();
 }
 
 void Boss::render_d(Graphics& graphics, float elapsed_time)
@@ -35,5 +36,19 @@ void Boss::render_f(Graphics& graphics, float elapsed_time)
 
 void Boss::debug_gui()
 {
+
+#if USE_IMGUI
+	imgui_menu_bar("charactor", "boss", display_imgui);
+	if (display_imgui)
+	{
+		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
+		{
+
+			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
+			ImGui::DragInt("hp", &health);
+		}
+		ImGui::End();
+	}
+#endif
 }
 
