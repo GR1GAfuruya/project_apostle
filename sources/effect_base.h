@@ -31,6 +31,8 @@ public:
 	void set_scale(DirectX::XMFLOAT3 s) { scale = s; }
 	void set_scale(float s) { scale = { s,s,s }; }
 	void set_velocity(DirectX::XMFLOAT3 v) { velosity = v; }
+	void set_life_span(float l) { life_span = l; }
+	void set_is_loop(bool loop) { is_loop = loop; }
 	void set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang);
 	void set_rotate_quaternion(AXIS axis, float ang);
 	//Getter
@@ -38,6 +40,7 @@ public:
 	DirectX::XMFLOAT4 get_orientation() { return orientation; }
 	DirectX::XMFLOAT3 get_scale() { return scale; }
 	DirectX::XMFLOAT3 get_velosity() { return velosity; }
+	float get_life_time() { return life_time; }
 	bool get_active() { return active; }
 protected:
 	
@@ -55,8 +58,12 @@ protected:
 	DirectX::XMFLOAT3 velosity = {0,0,0};
 	//生存時間
 	float life_time = 0;
+	//寿命
+	float life_span = 0;
 	//アクティブ状態か
 	bool active = false;
+	//ループ再生するかどうか
+	bool is_loop = false;
 	//デバッグGUIフラグ
 	bool display_imgui = true;
 };

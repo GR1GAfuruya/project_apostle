@@ -1,6 +1,7 @@
 #pragma once
 #include "aura.h"
 #include "sphere.h"
+#include "slash.h"
 class ChargeAttack : public EffecttBase
 {
 public:
@@ -17,4 +18,6 @@ private:
 	std::unique_ptr<Aura> aura[6];
 	//ÉRÉA
 	std::unique_ptr<Sphere> core;
+	//
+	std::unique_ptr<Slash> prominence[2];
 };

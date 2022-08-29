@@ -33,8 +33,25 @@ void Aura::stop()
 
 void Aura::update(Graphics& graphics,float elapsed_time)
 {
-	orientation = Math::rot_quaternion(orientation, Math::get_posture_forward(orientation), DirectX::XMConvertToRadians(rot_speed * elapsed_time));
-   
+	//アクティブ状態なら
+	if (active)
+	{
+		//更新処理
+		orientation = Math::rot_quaternion(orientation, Math::get_posture_forward(orientation), DirectX::XMConvertToRadians(rot_speed * elapsed_time));
+		//寿命処理
+		if (life_time > life_span)
+		{
+			if (is_loop)
+			{
+				life_time = 0;
+			}
+			else
+			{
+				stop();
+			}
+		}
+	}
+  
 }
 
 void Aura::render(Graphics& graphics)
@@ -52,17 +69,17 @@ void Aura::render(Graphics& graphics)
 	ImGui::Checkbox("play", &active);
 	ImGui::End();
 #endif
-	//エフェクトがアクティブ状態になっていたら描画
-	if (active)
-	{
-		//シェーダーをアクティブ状態に
-		shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
-		//定数バッファ送信
-		aura_constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
-		graphics.get_dc().Get()->PSSetShaderResources(20, 1, shader_resource_views[0].GetAddressOf());
-		graphics.get_dc().Get()->PSSetShaderResources(21, 1, shader_resource_views[1].GetAddressOf());
-		//if(slash)
-		DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, orientation, position);
-		shader->render(graphics.get_dc().Get(), model.get(), world);
-	}
+	//エフェクトがアクティブ状態の場合のみ描画
+	if (!active) return;
+
+	//シェーダーをアクティブ状態に
+	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
+	//定数バッファ送信
+	aura_constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
+	graphics.get_dc().Get()->PSSetShaderResources(20, 1, shader_resource_views[0].GetAddressOf());
+	graphics.get_dc().Get()->PSSetShaderResources(21, 1, shader_resource_views[1].GetAddressOf());
+	//if(slash)
+	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, orientation, position);
+	shader->render(graphics.get_dc().Get(), model.get(), world);
+
 }

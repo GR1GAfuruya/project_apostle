@@ -19,31 +19,43 @@ Slash::Slash(ID3D11Device* device)
 	load_texture_from_file(device, L"./resources/Effects/Slash/slash.png", shader_resource_views[0].ReleaseAndGetAddressOf(), &texture_desc);
 	load_texture_from_file(device, L"./resources/Effects/Textures/Traill3_output.png", shader_resource_views[1].ReleaseAndGetAddressOf(), &texture_desc);
 	scale = { 0.1f, 0.1f, 0.1f };
+	life_span = 0.14;
+}
+
+
+
+void Slash::stop()
+{
+	EffecttBase::stop();
 }
 
 void Slash::update(Graphics& graphics, float elapsed_time)
 {
-	if (life_time >= slash_timer)
+	if (active)
 	{
-		life_time = 0;
-		slash = false;
-	}
-
-	float alpha = 0.0f;
-	if (slash)
-	{
-		alpha = fabsf((cosf(life_time / slash_timer)));
 		life_time += elapsed_time;
 		if (dir)
 		{
-			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), -60, elapsed_time, 20);
+			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), -60, elapsed_time, rotate_rate);
 		}
 		else
 		{
-			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), 60, elapsed_time, 20);
+			orientation = Math::rot_quaternion(orientation, Math::get_posture_up(orientation), 60, elapsed_time, rotate_rate);
+		}
+
+		//寿命処理
+		if (life_time > life_span)
+		{
+			if (is_loop)
+			{
+				life_time = 0;
+			}
+			else
+			{
+				stop();
+			}
 		}
 	}
-		constance->data.particle_color.w = Math::clamp(alpha,0.0f,1.0f);
 }
 
 void Slash::render(Graphics& graphics)
@@ -53,12 +65,15 @@ void Slash::render(Graphics& graphics)
 	ImGui::Begin("slash");
 	ImGui::DragFloat2("dir", &constance->data.scroll_direction.x, 0.1);
 	ImGui::DragFloat("speed", &constance->data.scroll_speed, 0.1);
+	ImGui::DragFloat4("ori", &orientation.x, 0.1);
 	ImGui::DragFloat4("particle_color", &constance->data.particle_color.x, 0.1);
 	ImGui::DragFloat3("position", &position.x, 0.1);
 	ImGui::DragFloat3("scale", &scale.x, 0.1);
 	
 	ImGui::End();
 #endif
+	if (!active) return;
+	
 	//シェーダーをアクティブ状態に
 	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
 	//定数バッファ送信
@@ -70,47 +85,39 @@ void Slash::render(Graphics& graphics)
 	shader->render(graphics.get_dc().Get(), model.get(), world);
 }
 
-void Slash::play(DirectX::XMFLOAT3 pos, DirectX::XMVECTOR slash_dir_vec, DirectX::XMVECTOR slope_vec, bool direction)
+void Slash::play(DirectX::XMFLOAT3 pos)
+{
+	active = true;
+	position = pos;
+	orientation = Math::orientation_reset();
+}
+
+void Slash::play(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 slash_dir_vec, float tilt_degree, bool direction)
 {
 	//位置設定
 	position = pos;
+
+	active = true;
 	//基準軸のリセット
 	orientation = Math::orientation_reset();
-	// XMVECTORクラスへ変換
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 	
 	DirectX::XMVECTOR forward, up;
-	DirectX::XMFLOAT3 axis;//回転軸
 	float angle;			//回転角
 	DirectX::XMVECTOR Ang;
 	//正規化
-	slash_dir_vec = DirectX::XMVector3Normalize(slash_dir_vec);
+	DirectX::XMVECTOR Dir = DirectX::XMLoadFloat3(&slash_dir_vec);
 	//Y軸回転
 	{
-		forward = Math::get_posture_forward_vec(orientation);
-
-		axis = Math::get_posture_up(orientation);
-		DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(forward, slash_dir_vec);
+		forward = Math::rev_vec_v(Math::get_posture_right_vec(orientation));
+		Ang = DirectX::XMVector3Dot(forward, Dir);
 		DirectX::XMStoreFloat(&angle, Ang);
 		angle = acosf(angle);
-
-		orientation = Math::rot_quaternion(orientation, axis, angle);
+		set_rotate_quaternion(AXIS::UP, angle);
 	}
 
-	//Z軸回転
+	//X軸回転
 	{
-		up = Math::get_posture_up_vec(orientation);
-		axis = Math::get_posture_forward(orientation); 
-		Ang = DirectX::XMVector3Dot(up, slope_vec);
-		DirectX::XMStoreFloat(&angle, Ang);
-		angle = acosf(angle);
-
-		orientation = Math::rot_quaternion(orientation, axis, angle);
+		set_rotate_quaternion(AXIS::RIGHT, tilt_degree);
 	}
 	dir = direction;
-	slash = true;
-}
-
-void Slash::stop()
-{
 }

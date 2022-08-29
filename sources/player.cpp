@@ -20,7 +20,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
 	slash_efect = std::make_unique<Slash>(graphics.get_device().Get());
 	slash_efect->set_scale(0.15f);
-	slash_efect->constance->data.particle_color = { 1.8f,1.8f,5.2f,0.0f };
+	slash_efect->constance->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
 	scale.x = scale.y = scale.z = 0.05f;
