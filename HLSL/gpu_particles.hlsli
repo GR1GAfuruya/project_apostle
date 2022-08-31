@@ -25,6 +25,7 @@ struct Emitter
 {
     float3 pos;
     float emit_life; // エミッターの寿命
+    float3 velocity;
     float emit_life_time; // エミッターの年齢
     float emit_time; //生成されてからの時間
     float emit_rate; // 1秒間に何発発生するか

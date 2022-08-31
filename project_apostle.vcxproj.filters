@@ -12,9 +12,6 @@
     <Filter Include="Shaders\Mesh">
       <UniqueIdentifier>{86bb4e0d-5514-4d4f-8167-96cde3315a03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\PostEffect">
-      <UniqueIdentifier>{1dcc6f28-a0fd-4a0f-986a-b8b9e300f369}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Sprite">
       <UniqueIdentifier>{63f1494e-5734-4644-bfd0-6e9da7d3916f}</UniqueIdentifier>
     </Filter>
@@ -85,9 +82,6 @@
     <Filter Include="Shaders\Mesh\PBR">
       <UniqueIdentifier>{434ffea4-9fc4-421e-887d-6d7bdf04534a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\PostEffect\Gauss">
-      <UniqueIdentifier>{6caf5430-5e90-4c6c-a043-06df7e96fd24}</UniqueIdentifier>
-    </Filter>
     <Filter Include="imgui">
       <UniqueIdentifier>{d3d6761c-3f53-4ce3-a33c-5d6222010c45}</UniqueIdentifier>
     </Filter>
@@ -141,6 +135,15 @@
     </Filter>
     <Filter Include="sources\Effects\Aura">
       <UniqueIdentifier>{6970ad62-40fa-45e5-b9a9-21cf2915752f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\BossEffect\ChargeAttack">
+      <UniqueIdentifier>{6b63490c-b332-4eee-93b1-6ef957c513a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\PostEffect">
+      <UniqueIdentifier>{1dcc6f28-a0fd-4a0f-986a-b8b9e300f369}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\PostEffect\Gauss">
+      <UniqueIdentifier>{6caf5430-5e90-4c6c-a043-06df7e96fd24}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -551,16 +554,16 @@
       <Filter>Shaders\Sprite</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\luminance_extraction_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\fullscreen_quad_vs.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\fullscreen_quad_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\blur_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\geometric_primitive_ps.hlsl">
       <Filter>Shaders\Mesh</Filter>
@@ -575,13 +578,13 @@
       <Filter>Shaders\Sprite</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\noisy_signal_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\radial_blur_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\radial_blur_vs.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\default_mesh_ps.hlsl">
       <Filter>Shaders\Mesh\default</Filter>
@@ -611,7 +614,7 @@
       <Filter>Shaders\Mesh\ramp</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\lambert_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\default_ps.hlsl">
       <Filter>Shaders\Mesh</Filter>
@@ -653,7 +656,7 @@
       <Filter>Shaders\Effect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\color_filter_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gpu_particles_init_cs.hlsl">
       <Filter>Shaders\Effect\Particle</Filter>
@@ -686,22 +689,22 @@
       <Filter>Shaders\defferd</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\post_effects.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_convolution_ps.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
+      <Filter>Shaders\Effect\PostEffect\Gauss</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_downsampling_ps.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
+      <Filter>Shaders\Effect\PostEffect\Gauss</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_horizontal_ps.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
+      <Filter>Shaders\Effect\PostEffect\Gauss</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gaussian_blur_vertical_ps.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
+      <Filter>Shaders\Effect\PostEffect\Gauss</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\bloom_extraction_ps.hlsl">
-      <Filter>Shaders\PostEffect\Gauss</Filter>
+      <Filter>Shaders\Effect\PostEffect\Gauss</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\deferred_env_light.hlsl">
       <Filter>Shaders\defferd</Filter>
@@ -710,7 +713,7 @@
       <Filter>Shaders\defferd</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\tone_map_ps.hlsl">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\field_spark_particles_cs.hlsl">
       <Filter>Shaders\Effect\Particle\FieldSpark</Filter>
@@ -736,6 +739,12 @@
     <FxCompile Include="HLSL\core_ps.hlsl">
       <Filter>Shaders\Effect</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\boss_charge_attack_emit.hlsl">
+      <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\boss_charge_attack_update.hlsl">
+      <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\constants.hlsli">
@@ -745,7 +754,7 @@
       <Filter>Shaders\Sprite</Filter>
     </None>
     <None Include="HLSL\fullscreen_quad.hlsli">
-      <Filter>Shaders\PostEffect</Filter>
+      <Filter>Shaders\Effect\PostEffect</Filter>
     </None>
     <None Include="HLSL\geometric_primitive.hlsli">
       <Filter>Shaders\Mesh</Filter>
@@ -788,6 +797,9 @@
     </None>
     <None Include="HLSL\slash.hlsli">
       <Filter>Shaders\Effect\Slash</Filter>
+    </None>
+    <None Include="HLSL\boss_charge_attack.hlsli">
+      <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

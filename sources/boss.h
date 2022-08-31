@@ -101,7 +101,7 @@ private:
 	std::unique_ptr<ChargeAttack> efc_charge_attack;
 
 	DirectX::XMFLOAT4X4 world;
-	float charge_time = 0;
+	float action_time = 0;
 	float move_speed = 30.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 	bool display_imgui = true;;

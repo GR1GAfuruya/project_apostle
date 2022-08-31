@@ -1,4 +1,5 @@
 #include "fullscreen_quad.hlsli"
+
 #include "constants.hlsli"
 Texture2D originall_texture : register(t0);
 
@@ -175,7 +176,7 @@ float4 main(VS_OUT pin) : SV_Target0
 {
     float4 sampled_color = originall_texture.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
     float4 color = sampled_color;
-
     color = color_filter(color);
+   // color.rgb = simple_reinhard_tonemapping(color.rgb, 1.5);
     return color;
 }

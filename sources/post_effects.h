@@ -43,7 +43,7 @@ public:
 	std::unique_ptr<Bloom> bloom;
 	//元画像保存用フレームバッファー
 	std::unique_ptr<FrameBuffer> original_frame_buffer;
-	std::unique_ptr<FrameBuffer> luminance_frame_buffer;
+	std::unique_ptr<FrameBuffer> post_effect_frame_buffer;
 	//std::unique_ptr<FrameBuffer> original;
 	std::unique_ptr<FullscreenQuad> luminance;
 	std::unique_ptr<FullscreenQuad> final_sprite;

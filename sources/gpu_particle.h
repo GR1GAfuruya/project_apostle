@@ -4,6 +4,7 @@
 #include <wrl.h>
 #include <directxmath.h>
 #include <memory>
+#include <vector>
 #include "constant.h"
 class GPU_Particles
 {
@@ -12,12 +13,13 @@ public:
 	struct Emitter
 	{
 		DirectX::XMFLOAT3 pos = { 0,5,0 };
-
 		float emit_life = 0; // エミッターの寿命
+		DirectX::XMFLOAT3 velocity = { 0,0,0 };
 		float emit_life_time = 0; // エミッターの年齢
 		float emit_time = 0;//生成されてからの時間
 		float emit_rate = 0; // 1秒間に何発発生するか
 		int emit_count = 0;  // 現在の発生カウント
+		float max_particle;//このエミッタが放出するパーティクルの最大数
 	};
 
 	struct PARTICLE_DATA
@@ -53,18 +55,26 @@ public:
 	virtual ~GPU_Particles() = default;
 
 	void initialize(ID3D11DeviceContext* dc);
-	void launch_emitter(ID3D11DeviceContext* dc,float emit_life, Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
+	void launch_emitter(float emit_life = 0 , Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
+	//void launch_emitter_num(int emit_num = 0, Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
 	void particle_emit(ID3D11DeviceContext* dc);
 	void update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs = nullptr);
 	void render(ID3D11DeviceContext * dc, ID3D11Device* device);
 	UINT get_particle_pool_count(ID3D11DeviceContext* dc) const;
 
 
-	void set_emit_pos(DirectX::XMFLOAT3 pos) { particle_constants->data.emitter.pos = pos; }
+	void set_emitter_pos(DirectX::XMFLOAT3 pos) { substitution_emitter.pos = pos; }
+	void set_emitter_velocity(DirectX::XMFLOAT3 velocity) { substitution_emitter.velocity = velocity; }
+	void set_emitter_life_time(float life_time) { substitution_emitter.emit_life_time = life_time; }
+	void set_emitter_count(float count) { substitution_emitter.emit_count = count; }
+	void set_emitter_rate(float rate) { substitution_emitter.emit_rate =rate; }
 
 private:
 	const int THREAD_NUM_X =16;
-	size_t particle_count{ 0 };
+	size_t max_particle_count{ 0 };
+	int emit_num = 0;//発生させる回数
+	std::vector<std::unique_ptr<Emitter>> emitters;
+	Emitter substitution_emitter;
 	//実体が入るバッファー
 	Microsoft::WRL::ComPtr<ID3D11Buffer> particle_buffer;
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> particle_buffer_uav;

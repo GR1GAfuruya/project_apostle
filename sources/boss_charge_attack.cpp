@@ -1,18 +1,22 @@
 #include "boss_charge_attack.h"
 #include "user.h"
-ChargeAttack::ChargeAttack(Graphics& grapghics)
+ChargeAttack::ChargeAttack(Graphics& graphics)
 {
 	for (int i = 0; i < 6; i++)
 	{
-		aura[i] = make_unique<Aura>(grapghics.get_device().Get());
+		aura[i] = make_unique<Aura>(graphics.get_device().Get());
 	}
 
-	core = make_unique<Sphere>(grapghics.get_device().Get());
+	core = make_unique<Sphere>(graphics.get_device().Get());
 
 	for (int i = 0; i < 2; i++)
 	{
-		prominence[i] = make_unique<Slash>(grapghics.get_device().Get());
+		prominence[i] = make_unique<Slash>(graphics.get_device().Get());
 	}
+	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get());
+	particle.get()->initialize(graphics.get_dc().Get());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 }
 
 void ChargeAttack::play(DirectX::XMFLOAT3 pos)
@@ -32,7 +36,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	core->constants->data.scroll_direction = { 1.0f,-1.0f };
 	//コアへ延びるエフェクトのプレイ時の処理　
 	//ボス周りに3角形の位置
-	DirectX::XMFLOAT3 pillar_point[3];
+	DirectX::XMFLOAT3 pillar_point[3]{};
 	pillar_point[0] = { position.x - 10,position.y - 10,position.z - 10 };
 	pillar_point[1] = { position.x + 10,position.y - 10,position.z - 10 };
 	pillar_point[2] = { position.x, position.y - 10, position.z + 10 };
@@ -90,6 +94,15 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		prominence[1]->set_rotate_quaternion(AXIS::RIGHT, DirectX::XMConvertToRadians(-45));
 		
 	}
+	DirectX::XMFLOAT3 emit_pos{};
+	emit_pos.y = core_pos.y;
+	for (int theta = 0; theta < 360; theta += 30)
+	{
+		emit_pos.x = core_pos.x + cosf(DirectX::XMConvertToRadians(theta));
+		emit_pos.z = core_pos.z + cosf(DirectX::XMConvertToRadians(theta));
+		particle.get()->set_emit_pos(emit_pos);
+		particle.get()->launch_emitter(1.1, emit_cs);
+	}
 
 }
 
@@ -144,6 +157,9 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
+
+	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
+
 }
 
 void ChargeAttack::render(Graphics& graphics)
@@ -166,4 +182,6 @@ void ChargeAttack::render(Graphics& graphics)
 	{
 		prominence[i]->render(graphics);
 	}
+	particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
+
 }

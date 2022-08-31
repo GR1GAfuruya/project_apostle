@@ -2,6 +2,7 @@
 #include "aura.h"
 #include "sphere.h"
 #include "slash.h"
+#include "gpu_particle.h"
 class ChargeAttack : public EffecttBase
 {
 public:
@@ -20,4 +21,10 @@ private:
 	std::unique_ptr<Sphere> core;
 	//
 	std::unique_ptr<Slash> prominence[2];
+
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
+
+	std::unique_ptr<GPU_Particles> particle;
+
 };
