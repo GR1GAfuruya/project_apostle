@@ -2,16 +2,15 @@
 #include "user.h"
 Boss::Boss(Graphics& graphics)
 {
-	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60);
+	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
 	efc_charge_attack = make_unique<ChargeAttack>(graphics);
 	scale.x = scale.y = scale.z = 0.1f;
-	transition_idle_state();
-	
 	
 }
 
 void Boss::initialize()
 {
+	transition_idle_state();
 }
 
 void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)

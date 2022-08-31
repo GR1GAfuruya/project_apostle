@@ -176,10 +176,10 @@ void Boss::update_groggy_start_state(Graphics& graphics, float elapsed_time, Sta
 void Boss::update_idle_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	//テスト用！！！！！！
-	charge_time += elapsed_time;
-	if (charge_time > 5)
+	action_time += elapsed_time;
+	if (action_time > 5)
 	{
-		charge_time = 0;
+		action_time = 0;
 		transition_skill_2_start_state();
 	}
 }
@@ -202,11 +202,11 @@ void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stag
 
 void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
-	charge_time += elapsed_time;
-	if (charge_time > 10)
+	action_time += elapsed_time;
+	if (action_time > 10)
 	{
 		efc_charge_attack->stop();
-		charge_time = 0;
+		action_time = 0;
 		transition_skill_2_end_state();
 	}
 }

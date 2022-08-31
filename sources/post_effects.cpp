@@ -12,7 +12,7 @@ PostEffects::PostEffects(ID3D11Device* device)
 	original_frame_buffer = make_unique<FrameBuffer>(device,
 		SCREEN_WIDTH, SCREEN_HEIGHT);
 	//輝度抽出画像
-	luminance_frame_buffer = make_unique<FrameBuffer>(device,
+	post_effect_frame_buffer = make_unique<FrameBuffer>(device,
 		SCREEN_WIDTH, SCREEN_HEIGHT,FB_FLAG::COLOR);
 
 	//輝度抽出
@@ -58,7 +58,7 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 #if USE_IMGUI
 	ImGui::Begin("PostEffectImage");
 	ImGui::Text("lumina");
-	ImGui::Image(luminance_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+	ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 	ImGui::End();
 	//パラメータ設定
 	ImGui::Begin("PostEffect");
@@ -87,11 +87,17 @@ void PostEffects::blit(Graphics& graphics)
 	//定数バッファ設定
 	cb_post_effect->bind(graphics.get_dc().Get(), 5);
 	//レンダーターゲットを戻す
-	final_sprite->blit(graphics.get_dc().Get(), original_frame_buffer->get_color_map().GetAddressOf(), 0, 1,post_effects.Get());
+	post_effect_frame_buffer->clear(graphics.get_dc().Get(), FB_FLAG::COLOR);
+	post_effect_frame_buffer->activate(graphics.get_dc().Get(), FB_FLAG::COLOR);
+	final_sprite->blit(graphics.get_dc().Get(), original_frame_buffer->get_color_map().GetAddressOf(), 0, 1);
 
 	bloom->make(graphics.get_dc().Get(), original_frame_buffer->get_color_map().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
 	bloom->blit(graphics.get_dc().Get());
+	post_effect_frame_buffer->deactivate(graphics.get_dc().Get());
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+	final_sprite->blit(graphics.get_dc().Get(), post_effect_frame_buffer->get_color_map().GetAddressOf(), 0, 1, post_effects.Get());
+
 #if USE_IMGUI
 	if (display_post_effects_imgui)
 	{

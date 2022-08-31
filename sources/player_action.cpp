@@ -86,7 +86,7 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 	DirectX::XMFLOAT3 slash_dir_vec = Math::get_posture_forward(orientation);
 	if (model->anime_param.frame_index == 20 / 2)
 	{
-		slash_efect->play(sword_pos + (up * 3.2f), slash_dir_vec, 45, true);
+		slash_efect->play(sword_pos + (up * 3.2f), slash_dir_vec, 45, false);
 	}
 	if (model->anime_param.frame_index > 55 / 2)
 	{

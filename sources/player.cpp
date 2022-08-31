@@ -124,8 +124,10 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 	emit_pos.y = position.y + 3.0f;
 	//attack1.get()->particle_constants.get()->data.particle_size = { 0.1,0.6 };
 	//attack1.get()->particle_constants.get()->data.emitter.emit_rate = 1200.0f;
-	attack1.get()->set_emit_pos(emit_pos);
-	attack1.get()->launch_emitter(graphics.get_dc().Get(),0.5, emit_cs);
+	attack1.get()->set_emitter_pos(emit_pos);
+	attack1.get()->set_emitter_rate(1500);
+	attack1.get()->set_emitter_life_time = 1;;
+	attack1.get()->launch_emitter(1.1, emit_cs);
 }
 
 bool Player::input_move(float elapsedTime, Camera* camera)

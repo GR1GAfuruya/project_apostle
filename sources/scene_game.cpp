@@ -30,14 +30,14 @@ void SceneGame::initialize(Graphics& graphics)
 	light_manager = std::make_unique<LightManager>(graphics);
 	skybox = std::make_unique<SkyBox>(graphics);
 
-	std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(-19, 5, 12), 30, 0, 1, 0);
+	std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(-19.0f, 5.0f, 12.0f), 30.0f, 0.0f, 1.0f, 0.0f);
 	light_manager->register_light(p);
 	for (int i = 0; i < 1; i++)
 	{
-		std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(rand() % 100 - 50,
-			5,
-			rand() % 100 - 50),
-			30,
+		std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(rand() % 100 - 50.0f,
+			5.0f,
+			rand() % 100 - 50.0f),
+			30.0f,
 			rand() % 500 * 0.01f,
 			rand() % 500 * 0.01f,
 			rand() % 500 * 0.01f);
@@ -140,7 +140,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	boss->render_f(graphics, elapsed_time);
 	gpu_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	field_spark_particle->render(graphics.get_dc().Get());
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	post_effect->end(graphics.get_dc().Get());
 
 	post_effect->blit(graphics);

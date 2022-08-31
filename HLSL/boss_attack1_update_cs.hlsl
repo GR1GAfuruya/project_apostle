@@ -18,8 +18,14 @@ void main(uint3 DTid : SV_DispatchThreadID)
         p.velocity.y = grav;
         if(p.time > 0.5)
         {
-            p.velocity.xz += CurlNoise(p).xz ;
+            p.velocity.xz += CurlNoise(p).xz;
         }
+        
+        //速度が上がりすぎないようクランプ
+        p.velocity.x = clamp(p.velocity.x, -100, 100);
+        p.velocity.y = clamp(p.velocity.y, -100, 100);
+        p.velocity.z = clamp(p.velocity.z, -100, 100);
+        
         p.streak_factor = 0.2;
         p.position += p.velocity * delta_time;
         //生存時間
@@ -27,11 +33,6 @@ void main(uint3 DTid : SV_DispatchThreadID)
         p.time += delta_time;
         //アルファ設定
         p.color.a = lerp(1, 0, 1.0 - (p.life_time / 1.0));
-        
-        //速度が上がりすぎないようクランプ
-        p.velocity.x = clamp(p.velocity.x, -100, 100);
-        p.velocity.y = clamp(p.velocity.y, -100, 100);
-        p.velocity.z = clamp(p.velocity.z, -100, 100);
         //寿命が尽きたら未使用リストへ戻す
         if (p.life_time <= 0)
         {
