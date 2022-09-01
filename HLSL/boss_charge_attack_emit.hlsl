@@ -14,10 +14,13 @@ void main( uint3 DTid : SV_DispatchThreadID )
     particle p = particle_buffer[id];
     p.is_active = true;
 
-    p.position = emitter.pos + (id % 32) /** random(10.0)*/;
+    p.position.x = emitter.pos.x + sin(id % 36)*3 ;
+    p.position.y = emitter.pos.y;
+    p.position.z = emitter.pos.z + cos(id % 36)*3 ;
     
+    p.velocity = sin(id % 16);
     p.velocity = CurlNoise(p);
-    
+    p.life_time = 5;
      //生成してからの時間をリセット
     p.time = 0;
     //パーティクルの大きさ
@@ -26,6 +29,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     p.angle = angle;
         
     p.color = particle_color;
+    p.color.a = 0;
     
     particle_buffer[id] = p;
 }

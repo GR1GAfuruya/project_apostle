@@ -14,9 +14,11 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 		prominence[i] = make_unique<Slash>(graphics.get_device().Get());
 	}
 	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get());
+	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
+
 	particle.get()->initialize(graphics.get_dc().Get());
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 }
 
 void ChargeAttack::play(DirectX::XMFLOAT3 pos)
@@ -25,7 +27,6 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	active = true;
 	//タイマーリセット
 	life_time = 0.0f;
-
 	//コア位置設定
 	position = pos;
 	DirectX::XMFLOAT3 core_pos = { position.x,position.y + 10,position.z };
@@ -96,14 +97,21 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	}
 	DirectX::XMFLOAT3 emit_pos{};
 	emit_pos.y = core_pos.y;
-	for (int theta = 0; theta < 360; theta += 30)
+	const float radius = 50.0f;
+	for (float theta = 0; theta < 360; theta += 60)
 	{
-		emit_pos.x = core_pos.x + cosf(DirectX::XMConvertToRadians(theta));
-		emit_pos.z = core_pos.z + cosf(DirectX::XMConvertToRadians(theta));
-		particle.get()->set_emit_pos(emit_pos);
-		particle.get()->launch_emitter(1.1, emit_cs);
+		emit_pos.x = core_pos.x + (radius * sinf(DirectX::XMConvertToRadians(theta)));
+		emit_pos.z = core_pos.z + (radius * cosf(DirectX::XMConvertToRadians(theta)));
+		particle.get()->set_emitter_pos(emit_pos);
+		particle.get()->set_emitter_rate(32);
+		particle.get()->set_emitter_life_time(7);
+		particle.get()->set_particle_life_time(life_time);
+		particle.get()->set_particle_size(DirectX::XMFLOAT2(0.2,0.2));
+		particle.get()->particle_constants->data.particle_color = { 3.0f,0.5f,0.0f,0.8f };
+		particle.get()->launch_emitter(emit_cs);
 	}
-
+	
+	constants->data.core_pos = core_pos;
 }
 
 void ChargeAttack::stop()
@@ -149,6 +157,7 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 		{
 			if (is_loop)
 			{
+				play(position);
 				life_time = 0;
 			}
 			else
@@ -157,7 +166,9 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
-
+	//constants->data.core_gravitation = 0.5f;
+	//constants->data.core_radius = 0.5f;
+	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
 	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
 
 }
@@ -169,6 +180,8 @@ void ChargeAttack::render(Graphics& graphics)
 	ImGui::Begin("boss_charge");
 	ImGui::DragFloat3("position", &position.x, 0.1);
 	ImGui::DragFloat3("scale", &scale.x, 0.1);
+	ImGui::DragFloat("core_gravitation", &constants->data.core_gravitation,0.1,0);
+	ImGui::DragFloat("core_radius", &constants->data.core_radius,1,0);
 	ImGui::Checkbox("play", &active);
 	ImGui::End();
 #endif

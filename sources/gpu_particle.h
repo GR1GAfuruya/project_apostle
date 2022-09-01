@@ -40,7 +40,7 @@ public:
 		Emitter emitter{};
 		DirectX::XMFLOAT2 particle_size = {0.1,0.1};
 		int particle_count;
-		float pad2;
+		float particle_life_time = 1;
 		DirectX::XMFLOAT3 angle{};
 		float pad3;
 		DirectX::XMFLOAT4 particle_color = { 0,0,0,1.0 };
@@ -55,19 +55,21 @@ public:
 	virtual ~GPU_Particles() = default;
 
 	void initialize(ID3D11DeviceContext* dc);
-	void launch_emitter(float emit_life = 0 , Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
-	//void launch_emitter_num(int emit_num = 0, Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
+	void launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
 	void particle_emit(ID3D11DeviceContext* dc);
 	void update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs = nullptr);
 	void render(ID3D11DeviceContext * dc, ID3D11Device* device);
+	void emitter_update(ID3D11DeviceContext* dc, float elapsed_time) ;
 	UINT get_particle_pool_count(ID3D11DeviceContext* dc) const;
 
 
 	void set_emitter_pos(DirectX::XMFLOAT3 pos) { substitution_emitter.pos = pos; }
 	void set_emitter_velocity(DirectX::XMFLOAT3 velocity) { substitution_emitter.velocity = velocity; }
-	void set_emitter_life_time(float life_time) { substitution_emitter.emit_life_time = life_time; }
-	void set_emitter_count(float count) { substitution_emitter.emit_count = count; }
-	void set_emitter_rate(float rate) { substitution_emitter.emit_rate =rate; }
+	void set_emitter_life_time(float life_time);
+	void set_emitter_count(float count);
+	void set_emitter_rate(float rate);
+	void set_particle_life_time(float life_time);
+	void set_particle_size(DirectX::XMFLOAT2 size);
 
 private:
 	const int THREAD_NUM_X =16;
