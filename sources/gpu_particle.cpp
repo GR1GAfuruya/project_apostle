@@ -29,7 +29,6 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 	hr = device->CreateBuffer(&buffer_desc, nullptr, particle_buffer.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-	
 	buffer_desc.ByteWidth = static_cast<UINT>(sizeof(UINT) * max_particle_count);
 	buffer_desc.StructureByteStride = sizeof(UINT);
 	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -86,10 +85,10 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 
 	D3D11_TEXTURE2D_DESC texture2d_desc{};
 	load_texture_from_file(device, L"./resources/Effects/Textures/Particle04.png", texture.ReleaseAndGetAddressOf(), &texture2d_desc);
-	particle_constants->data.emitter.emit_life = 0;
-	particle_constants->data.emitter.emit_life_time = 0;
-	particle_constants->data.emitter.emit_rate = 1600;
-	particle_constants->data.emitter.emit_count = 0;
+	substitution_emitter.emit_life = 0;
+	substitution_emitter.emit_life_time = 0;
+	substitution_emitter.emit_rate = 1600;
+	substitution_emitter.emit_count = 0;
 	particle_constants->data.particle_size = { 0.2f,0.2f };
 	particle_constants->data.particle_count = static_cast<uint32_t>(max_particle_count);
 }
@@ -148,23 +147,24 @@ void GPU_Particles::particle_emit(ID3D11DeviceContext* dc)
 	dc->CSSetUnorderedAccessViews(1, 1, &null_unordered_access_view, nullptr);
 }
 
-void GPU_Particles::launch_emitter(float emit_life, Microsoft::WRL::ComPtr<ID3D11ComputeShader>  replace_emit_cs)
+void GPU_Particles::launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader>  replace_emit_cs)
 {
 	if (replace_emit_cs)  emit_cs = replace_emit_cs;
-
+	//エミッター生成
 	std::unique_ptr<Emitter> emitter = make_unique<Emitter>();
 	*emitter = substitution_emitter;
-
+	//リストに追加
 	emitters.push_back(std::move(emitter));
 }
 
-void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs)
+
+//エミッターの更新
+void GPU_Particles::emitter_update(ID3D11DeviceContext* dc, float elapsed_time)
 {
-	//エミッターの寿命かカウントが尽きるまでパーティクル放出
+	//エミッターの寿命が尽きるまでパーティクル放出
 	for (auto& emitter : emitters)
 	{
 		emitter->emit_life_time -= elapsed_time;
-		emitter->emit_count++;
 		particle_constants->data.emitter = *emitter;
 		if (emitter->emit_life_time > 0)
 		{
@@ -173,9 +173,12 @@ void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11Co
 	}
 	emitters.erase(std::remove_if(std::begin(emitters), std::end(emitters),
 		[](std::unique_ptr<Emitter> const& e) { return e->emit_life_time <= 0; }), std::end(emitters));
-
-
+}
+void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs)
+{
 	//エミッターの更新
+	emitter_update(dc, elapsed_time);
+
 	//定数バッファをセット
 	particle_constants->bind(dc, 9, CB_FLAG::CS_GS);
 	//パーティクルの資料をコンピュートシェーダーに転送
@@ -199,11 +202,9 @@ void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 	get_particle_pool_count(dc);
 	ImGui::Begin("gpu_particle");
 	ImGui::DragFloat3("angle", &ang.x);
-	ImGui::DragFloat3("pos", &particle_constants->data.emitter.pos.x);
-	ImGui::DragFloat3("pos", &emi.pos.x);
+	ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
 	ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x,0.1);
-//	ImGui::DragFloat("rate", &particle_constants->data.emitter.emit_rate);
-	ImGui::DragFloat("rate", &emi.emit_rate);
+	ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
 	ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
 	int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
 	ImGui::DragInt("active_count", &active_particle);
@@ -244,6 +245,7 @@ void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 
 
 
+
 UINT GPU_Particles::get_particle_pool_count(ID3D11DeviceContext* dc) const
 {
 	HRESULT hr{ S_OK };
@@ -259,4 +261,34 @@ UINT GPU_Particles::get_particle_pool_count(ID3D11DeviceContext* dc) const
 	
 	particle_constants->data.particle_count = count;
 	return count;
+}
+
+void GPU_Particles::set_emitter_life_time(float life_time)
+{
+	_ASSERT_EXPR(life_time >= 0, u8"GPUParticleのlife_timeに不正な値が入力されました");
+	substitution_emitter.emit_life_time = life_time;
+}
+
+void GPU_Particles::set_emitter_count(float count)
+{
+	_ASSERT_EXPR(count >= 0, "GPUParticleのcountに不正な値が入力されました");
+	substitution_emitter.emit_count = count;
+}
+
+void GPU_Particles::set_emitter_rate(float rate)
+{
+	_ASSERT_EXPR(rate >= 0, "GPUParticleのrateに不正な値が入力されました");
+	substitution_emitter.emit_rate = rate;
+}
+
+void GPU_Particles::set_particle_life_time(float life_time)
+{
+	_ASSERT_EXPR(life_time >= 0, "GPUParticleのlife_timeに不正な値が入力されました");
+	particle_constants->data.particle_life_time = life_time;
+}
+
+void GPU_Particles::set_particle_size(DirectX::XMFLOAT2 size )
+{
+	_ASSERT_EXPR(size.x > 0 || size.y > 0, "GPUParticleのsizeに不正な値が入力されました");
+	particle_constants->data.particle_size = size;
 }

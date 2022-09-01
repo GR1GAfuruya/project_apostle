@@ -14,17 +14,20 @@ void main( uint3 DTid : SV_DispatchThreadID )
         float3 dir_vec = core_pos - p.position;
         float3 dir_norm_vec = normalize(dir_vec);
         
-        float3 core_grav_velocity = dir_norm_vec * core_gravitation;
+        float3 core_grav_velocity = dir_norm_vec * core_gravitation * (p.time / 5);
         p.velocity += core_grav_velocity;
         //カールノイズ
-        p.velocity += CurlNoise(p);
+        //p.velocity.y /= 2;
+        p.velocity += CurlNoise(p)/2;
+       
         //位置更新
         p.position += p.velocity * delta_time;
         //生存時間
         p.life_time = max(0, p.life_time - delta_time);
+        p.color.a = min(0.8, p.color.a + 0.2 * delta_time);
         p.time += delta_time;
          //寿命が尽きたら未使用リストへ戻す
-        if (length(dir_vec) < 5)
+        if (length(dir_vec) <= core_radius || p.life_time <= 0)
         {
             p.velocity = float3(0, 0, 0);
             p.is_active = false;

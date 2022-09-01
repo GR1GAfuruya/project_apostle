@@ -126,8 +126,8 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 	//attack1.get()->particle_constants.get()->data.emitter.emit_rate = 1200.0f;
 	attack1.get()->set_emitter_pos(emit_pos);
 	attack1.get()->set_emitter_rate(1500);
-	attack1.get()->set_emitter_life_time = 1;;
-	attack1.get()->launch_emitter(1.1, emit_cs);
+	attack1.get()->set_emitter_life_time(1);
+	attack1.get()->launch_emitter( emit_cs);
 }
 
 bool Player::input_move(float elapsedTime, Camera* camera)

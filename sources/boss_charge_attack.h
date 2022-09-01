@@ -15,6 +15,13 @@ public:
 	void render(Graphics& graphics);
 
 private:
+	struct ChargeAttackConstants
+	{
+		DirectX::XMFLOAT3 core_pos{};
+		float core_gravitation = 0.5;
+		float core_radius{};
+		DirectX::XMFLOAT3 pad{};
+	};
 	//地面からコアに伸びる支柱
 	std::unique_ptr<Aura> aura[6];
 	//コア
@@ -26,5 +33,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 
 	std::unique_ptr<GPU_Particles> particle;
+		
+	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
+
 
 };

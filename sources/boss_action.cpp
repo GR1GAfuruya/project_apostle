@@ -192,11 +192,11 @@ void Boss::update_skill_1_state(Graphics& graphics, float elapsed_time, Stage* s
 {
 }
 
-void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	if (model->is_end_animation())
 	{
-		transition_idle_state();
+		transition_skill_2_loop_state();
 	}
 }
 
@@ -211,11 +211,11 @@ void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Sta
 	}
 }
 
-void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	if (model->is_end_animation())
 	{
-		transition_skill_2_loop_state();
+		transition_idle_state();
 	}
 }
 

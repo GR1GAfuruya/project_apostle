@@ -139,7 +139,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_f(graphics, elapsed_time, camera.get());
 	boss->render_f(graphics, elapsed_time);
 	gpu_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
-	field_spark_particle->render(graphics.get_dc().Get());
+	//field_spark_particle->render(graphics.get_dc().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	post_effect->end(graphics.get_dc().Get());
 
