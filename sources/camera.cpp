@@ -4,7 +4,7 @@
 
 #include "user.h"
 Camera::Camera(Graphics& graphics)
-	: range(30.0f)
+	: range(20.0f)
 	, eye(5, 5, 5)
 	, angle(DirectX::XMConvertToRadians(14.0f), DirectX::XMConvertToRadians(90.0f), 0)
 	, target(30.0f, 10, 0)

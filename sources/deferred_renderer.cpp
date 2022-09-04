@@ -1,5 +1,6 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
+#include "texture.h"
 DeferredRenderer::DeferredRenderer(Graphics& graphics)
 {
 	//G-Buffer
@@ -25,6 +26,8 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	HRESULT hr;
 
 	deferred_screen = std::make_unique<FullscreenQuad>(graphics.get_device().Get());
+	D3D11_TEXTURE2D_DESC texture2d_desc{};
+	hr = load_texture_from_file(graphics.get_device().Get(), L"./resources/Sprite/emv_map.DDS", env_texture.ReleaseAndGetAddressOf(), &texture2d_desc);
 
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/final_sprite_ps.cso", final_sprite_ps.GetAddressOf());
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_env_light.cso", deferred_env_light.GetAddressOf());
@@ -55,6 +58,7 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 
 	UINT G_BUFFERS_NUM = ARRAYSIZE(g_buffers);
 	//環境ライト
+	graphics.get_dc().Get()->PSSetShaderResources(15, 1, env_texture.GetAddressOf());
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, deferred_env_light.Get());
 	//平行光、点光源ライトを描き込む
 	light_manager.draw(graphics, g_buffers, G_BUFFERS_NUM);

@@ -40,4 +40,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> cached_render_target_view;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> cached_depth_stencil_view;
 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> env_texture;
+
 };
