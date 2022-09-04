@@ -15,9 +15,9 @@ public:
 
 	void debug_gui();
 
-	std::vector<std::shared_ptr<Light>> lights;
 
 private:
+	std::vector<std::shared_ptr<Light>> lights;
 	std::unique_ptr<FullscreenQuad> light_screen;
 
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> deferred_light;

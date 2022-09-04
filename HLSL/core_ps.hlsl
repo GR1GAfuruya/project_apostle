@@ -1,4 +1,4 @@
-#include "aura.hlsli"
+#include "mesh_effect.hlsli"
 #include "constants.hlsli"
 SamplerState sampler_border_black : register(s1);
 Texture2D texture_maps : register(t20);

@@ -2,20 +2,20 @@
 #include "constant.h"
 #include "effect_base.h"
 #include "skeletal_mesh.h"
-class Aura: public EffecttBase
+class Wave : public EffecttBase
 {
 public:
-	Aura(ID3D11Device* device);
-	~Aura(){}
+	Wave(ID3D11Device* device);
+	~Wave() {}
 	void play(DirectX::XMFLOAT3 pos);
 	void stop();
-	void update(Graphics& graphics,float elapsed_time);
+	void update(Graphics& graphics, float elapsed_time);
 	void render(Graphics& graphics);
 	void debug_gui(const char* str_id);
 private:
-	struct AURA_CONSTANTS
+	struct CONSTANTS
 	{
-		DirectX::XMFLOAT4 particle_color = {0,0,0,1};
+		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
 		DirectX::XMFLOAT2 scroll_direction;
 		float scroll_speed;
 		float threshold;
@@ -25,6 +25,5 @@ private:
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
 public:
-	std::unique_ptr<Constants<AURA_CONSTANTS>> constants{};
-	float rot_speed = 0;
+	std::unique_ptr<Constants<CONSTANTS>> constants{};
 };

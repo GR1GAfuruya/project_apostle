@@ -10,20 +10,21 @@ public:
 
 	struct SlashConstance
 	{
+		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
 		DirectX::XMFLOAT2 scroll_direction;
 		float scroll_speed;
-		float pad;
-		DirectX::XMFLOAT4 particle_color = {0,1,0,1};
+		float thirethold;
 	};
 
-	void play(DirectX::XMFLOAT3 pos);
+	void play(DirectX::XMFLOAT3 pos)override;
 	void play(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 slash_dir_vec, float tilt_degree, bool direction);
-	void stop();
-	void update(Graphics& graphics, float elapsed_time);
-	void render(Graphics& graphics);
-	
+	void stop()override;
+	void update(Graphics& graphics, float elapsed_time)override;
+	void render(Graphics& graphics)override;
+	void debug_gui(const char* str_id);
+
 	void set_rotate_rate(float rate) { rotate_rate = rate; }
-	std::unique_ptr<Constants<SlashConstance>> constance;
+	std::unique_ptr<Constants<SlashConstance>> constants;
 private:
 	std::unique_ptr<MeshShader> shader;
 	// スケルタルメッシュの実体

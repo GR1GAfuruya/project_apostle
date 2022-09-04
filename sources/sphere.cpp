@@ -33,18 +33,7 @@ void Sphere::update(Graphics& graphics, float elapsed_time)
 
 void Sphere::render(Graphics& graphics)
 {
-#if USE_IMGUI
-	imgui_menu_bar("Effects", "sphere", display_imgui);
-	ImGui::Begin("sphere");
-	ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1);
-	ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1);
-	ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1);
-	ImGui::DragFloat3("position", &position.x, 0.1);
-	ImGui::DragFloat("scale", &scale.x, 0.1);
-	ImGui::Checkbox("play", &active);
-	ImGui::End();
-	scale = { scale.x,scale.x,scale.x };
-#endif
+
 	//エフェクトがアクティブ状態になっていたら描画
 	if (active)
 	{
@@ -58,4 +47,30 @@ void Sphere::render(Graphics& graphics)
 		DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, orientation, position);
 		shader->render(graphics.get_dc().Get(), model.get(), world);
 	}
+}
+
+void Sphere::debug_gui(const char* str_id)
+{
+#if USE_IMGUI
+	imgui_menu_bar("Effects", "sphere", display_imgui);
+	if (display_imgui)
+	{
+		string name = "sphere:" + to_string(*str_id);
+		ImGui::Begin(name.c_str());
+		ImGui::PushID(str_id);
+		/*これより下にパラメーター記述*/
+		
+		ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1);
+		ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1);
+		ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1);
+		ImGui::DragFloat3("position", &position.x, 0.1);
+		ImGui::DragFloat("scale", &scale.x, 0.1);
+		ImGui::Checkbox("play", &active);
+
+		set_scale(scale.x);
+		/*これより上にパラメーター記述*/
+		ImGui::PopID();
+		ImGui::End();
+	}
+#endif
 }

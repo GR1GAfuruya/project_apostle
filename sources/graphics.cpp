@@ -309,23 +309,10 @@ void Graphics::set_graphic_state_priset(DEPTH_STENCIL_STATE z_stencil, BLEND_STA
 
 }
 
-void Graphics::set_graphic_state_priset(DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer, SHADER_TYPES shader_type)
-{
-	// 深度ステンシルステートオブジェクト
-	immediate_context->OMSetDepthStencilState(depth_stencil_states[static_cast<int>(z_stencil)].Get(), 1);
-	// ブレンディングステートオブジェクト
-	immediate_context->OMSetBlendState(blend_states[static_cast<int>(blend)].Get(), nullptr, 0xFFFFFFFF);
-	// ラスタライザステート
-	immediate_context->RSSetState(rasterizer_states[static_cast<int>(rasterizer)].Get());
-
-	// シェーダー
-
-}
-
 void Graphics::shader_activate(SHADER_TYPES sh,RENDER_TYPE rt)
 {
 	//指定したシェーダーに切り替える
-	shader = shaders.at(sh);
+	shader = shaders.at(sh); 
 	//シェーダーをアクティブ状態に
 	//shader->active(immediate_context.Get());
 	if(shaders.at(sh))

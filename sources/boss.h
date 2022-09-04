@@ -5,6 +5,7 @@
 #include "slash.h"
 #include "aura.h"
 #include "boss_charge_attack.h"
+#include "light.h"
 class Boss :public CharactorMove
 {
 public:

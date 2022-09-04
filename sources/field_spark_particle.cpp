@@ -10,7 +10,7 @@ field_spark_particles::field_spark_particles(ID3D11Device* device, DirectX::XMFL
 	// Radius of outermost orbit 
 	float outermost_radius{ 90 };
 	// Interval between two particles
-	float interval{ 6.0f };
+	float interval{ 8.0f };
 	// Height of snowfall area
 	float spark_area_height{ 60 };
 	// Falling speed of snowflake

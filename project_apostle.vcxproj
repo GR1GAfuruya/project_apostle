@@ -257,7 +257,9 @@
     <ClCompile Include="sources\static_mesh.cpp" />
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\thunder.cpp" />
+    <ClCompile Include="sources\tornado.cpp" />
     <ClCompile Include="sources\trail.cpp" />
+    <ClCompile Include="sources\wave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\imgui\imconfig.h" />
@@ -325,9 +327,11 @@
     <ClInclude Include="sources\static_mesh.h" />
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />
+    <ClInclude Include="sources\tornado.h" />
     <ClInclude Include="sources\trail.h" />
     <ClInclude Include="sources\user.h" />
     <ClInclude Include="sources\collision.h" />
+    <ClInclude Include="sources\wave.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\aura_ps.hlsl">
@@ -886,9 +890,15 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
+    <FxCompile Include="HLSL\wave_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HLSL\aura.hlsli" />
+    <None Include="HLSL\mesh_effect.hlsli" />
     <None Include="HLSL\boss_charge_attack.hlsli" />
     <None Include="HLSL\constants.hlsli" />
     <None Include="HLSL\field_spark_particles.hlsli" />
@@ -902,7 +912,6 @@
     <None Include="HLSL\ramp_shader.hlsli" />
     <None Include="HLSL\shading_functions.hlsli" />
     <None Include="HLSL\default_mesh.hlsli" />
-    <None Include="HLSL\slash.hlsli" />
     <None Include="HLSL\sprite.hlsli" />
     <None Include="HLSL\sprite_dissolve.hlsli" />
     <None Include="HLSL\static_mesh.hlsli" />

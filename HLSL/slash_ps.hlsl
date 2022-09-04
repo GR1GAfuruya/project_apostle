@@ -1,4 +1,4 @@
-#include "slash.hlsli"
+#include "mesh_effect.hlsli"
 #include "constants.hlsli"
 SamplerState sampler_border_black : register(s3);
 Texture2D texture_maps[4] : register(t20);

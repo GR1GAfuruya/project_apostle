@@ -6,6 +6,7 @@ Boss::Boss(Graphics& graphics)
 	efc_charge_attack = make_unique<ChargeAttack>(graphics);
 	scale.x = scale.y = scale.z = 0.1f;
 	initialize();
+
 }
 
 void Boss::initialize()
@@ -31,6 +32,7 @@ void Boss::render_d(Graphics& graphics, float elapsed_time)
 void Boss::render_f(Graphics& graphics, float elapsed_time)
 {
 	efc_charge_attack->render(graphics);
+	
 }
 
 void Boss::debug_gui()
@@ -42,12 +44,12 @@ void Boss::debug_gui()
 	{
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
 		{
-
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
 			ImGui::DragInt("hp", &health);
 		}
 		ImGui::End();
 	}
+	efc_charge_attack->debug_gui("");
 #endif
 }
 

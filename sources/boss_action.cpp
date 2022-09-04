@@ -85,24 +85,30 @@ void Boss::transition_skill_1_state()
 	model->play_animation(BossAnimation::SKILL_1, false);
 }
 
-void Boss::transition_skill_2_end_state()
+void Boss::transition_skill_2_start_state()
 {
-	act_update = &Boss::update_skill_2_end_state;
-	model->play_animation(BossAnimation::SKILL_2_END, false);
+	act_update = &Boss::update_skill_2_start_state;
+	model->play_animation(BossAnimation::SKILL_2_START, false);
+	
 }
 
 void Boss::transition_skill_2_loop_state()
 {
 	act_update = &Boss::update_skill_2_loop_state;
 	model->play_animation(BossAnimation::SKILL_2_LOOP, true);
+	//チャージエフェクト発生
+	efc_charge_attack->play(position);
 }
 
-void Boss::transition_skill_2_start_state()
+void Boss::transition_skill_2_end_state()
 {
-	act_update = &Boss::update_skill_2_start_state;
-	model->play_animation(BossAnimation::SKILL_2_START, false);
-	efc_charge_attack->play({ position.x,position.y + 50,position.z });
+	act_update = &Boss::update_skill_2_end_state;
+	model->play_animation(BossAnimation::SKILL_2_END, false);
+	//チャージエフェクトのチャージ状態をマックスに
+	efc_charge_attack->set_charge_max_state();
 }
+
+
 
 void Boss::transition_skill_3_state()
 {
@@ -205,7 +211,6 @@ void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Sta
 	action_time += elapsed_time;
 	if (action_time > 10)
 	{
-		efc_charge_attack->stop();
 		action_time = 0;
 		transition_skill_2_end_state();
 	}
