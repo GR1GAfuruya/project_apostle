@@ -1,4 +1,4 @@
-#include "slash.hlsli"
+#include "mesh_effect.hlsli"
 #include "constants.hlsli"
 VS_OUT main(VS_IN vin)
 {

@@ -18,6 +18,8 @@ public:
 	//描画
 	virtual void render(Graphics& graphics) = 0;
 
+	virtual void debug_gui(const char* str_id) = 0;
+
 	//オブジェクトの軸
 	enum class AXIS
 	{

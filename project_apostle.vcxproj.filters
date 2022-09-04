@@ -145,6 +145,12 @@
     <Filter Include="Shaders\Effect\PostEffect\Gauss">
       <UniqueIdentifier>{6caf5430-5e90-4c6c-a043-06df7e96fd24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\Tornad">
+      <UniqueIdentifier>{80e974a4-46cb-4581-890d-f9aaa8123ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\wave">
+      <UniqueIdentifier>{caefddcc-b5a2-4d9a-80bb-45735e3cc244}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -335,6 +341,12 @@
     </ClCompile>
     <ClCompile Include="sources\gpu_particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\tornado.cpp">
+      <Filter>sources\Effects\Tornad</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\wave.cpp">
+      <Filter>sources\Effects\wave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -542,6 +554,12 @@
     <ClInclude Include="sources\skin_particles.h">
       <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="sources\tornado.h">
+      <Filter>sources\Effects\Tornad</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\wave.h">
+      <Filter>sources\Effects\wave</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\effect_ps.hlsl">
@@ -745,6 +763,9 @@
     <FxCompile Include="HLSL\boss_charge_attack_update.hlsl">
       <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\wave_ps.hlsl">
+      <Filter>Shaders\Effect\Aura</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\constants.hlsli">
@@ -783,7 +804,7 @@
     <None Include="HLSL\noise.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="HLSL\aura.hlsli">
+    <None Include="HLSL\mesh_effect.hlsli">
       <Filter>Shaders\Effect\Aura</Filter>
     </None>
     <None Include="HLSL\gpu_particles.hlsli">
@@ -794,9 +815,6 @@
     </None>
     <None Include="HLSL\field_spark_particles.hlsli">
       <Filter>Shaders\Effect\Particle\FieldSpark</Filter>
-    </None>
-    <None Include="HLSL\slash.hlsli">
-      <Filter>Shaders\Effect\Slash</Filter>
     </None>
     <None Include="HLSL\boss_charge_attack.hlsli">
       <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>

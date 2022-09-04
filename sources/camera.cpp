@@ -4,7 +4,7 @@
 
 #include "user.h"
 Camera::Camera(Graphics& graphics)
-	: range(50.0f)
+	: range(30.0f)
 	, eye(5, 5, 5)
 	, angle(DirectX::XMConvertToRadians(14.0f), DirectX::XMConvertToRadians(90.0f), 0)
 	, target(30.0f, 10, 0)
@@ -261,11 +261,12 @@ void Camera::debug_gui()
 		ImGui::DragFloat("range", &range, 0.2f);
 		DirectX::XMFLOAT3 a = { DirectX::XMConvertToDegrees(angle.x),DirectX::XMConvertToDegrees(angle.y),DirectX::XMConvertToDegrees(angle.z) };
 		ImGui::DragFloat2("angle", &a.x, 0.1f);
+		ImGui::DragFloat("cape_vision", &cape_vision, 0.1f);
 		angle = { DirectX::XMConvertToRadians(a.x),DirectX::XMConvertToRadians(a.y),DirectX::XMConvertToRadians(a.z) };
 		ImGui::DragFloat3("target", &target.x, 0.1f);
 		ImGui::DragFloat4("LightDirection", &light_direction.x, 0.01f, -1, 1);
 		ImGui::DragFloat("time", &scene_constant_buffer->data.time, 0.01f, -1, 1);
-		ImGui::DragFloat("time", &scene_constant_buffer->data.delta_time, 0.01f, -1, 1);
+		ImGui::DragFloat("delta_time", &scene_constant_buffer->data.delta_time, 0.01f, -1, 1);
 		if (ImGui::CollapsingHeader("color_picker", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::ColorPicker3("light_color", &light_color.x);

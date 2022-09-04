@@ -11,7 +11,8 @@ public:
 	void stop()override;
 	void update(Graphics& graphics, float elapsed_time)override;
 	void render(Graphics& graphics)override;
-	void set_scale(float s) { scale = { s,s,s }; }
+	void debug_gui(const char* str_id)override;
+
 private:
 	struct SPHERE_CONSTANTS
 	{

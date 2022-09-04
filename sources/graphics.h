@@ -95,7 +95,6 @@ public:
 	void set_blend_state( BLEND_STATE blend);
 	void set_rasterizer_state(RASTERIZER rasterizer);
 	void set_graphic_state_priset( DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer);
-	void set_graphic_state_priset( DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer,SHADER_TYPES shader);
 	void shader_activate(SHADER_TYPES sh, RENDER_TYPE rt);
 
 	//ミューテックス取得

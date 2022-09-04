@@ -20,7 +20,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
 	slash_efect = std::make_unique<Slash>(graphics.get_device().Get());
 	slash_efect->set_scale(0.15f);
-	slash_efect->constance->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
+	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
 	scale.x = scale.y = scale.z = 0.05f;
@@ -182,7 +182,7 @@ void Player::debug_gui()
 	{
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
-
+			
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -201,6 +201,7 @@ void Player::debug_gui()
 				DirectX::XMFLOAT3 forward;
 				DirectX::XMStoreFloat3(&forward, get_posture_forward_vec(orientation));
 				ImGui::DragFloat3("forward", &forward.x);
+				ImGui::DragFloat4("ori", &orientation.x);
 				const char* state_c[] = { "IDLE","MOVE","JUMP","FALL","LANDING"};
 
 				ImGui::Text(state_c[static_cast<int>(state)]);

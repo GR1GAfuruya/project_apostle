@@ -1,5 +1,5 @@
 #include "constants.hlsli"
-#include "aura.hlsli"
+#include "mesh_effect.hlsli"
 VS_OUT main(VS_IN vin)
 {
     float sigma = vin.tangent.w;
