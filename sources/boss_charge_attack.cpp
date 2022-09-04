@@ -97,6 +97,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 
 void ChargeAttack::stop()
 {
+	active = false;
 	for (int i = 0; i < 2; i++)
 	{
 		aura[i]->stop();
@@ -130,8 +131,8 @@ void ChargeAttack::render(Graphics& graphics)
 
 		wave->render(graphics);
 		particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
-	}
 		tornado->render(graphics);
+	}
 }
 
 void ChargeAttack::debug_gui(const char* str_id)
@@ -224,18 +225,18 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 {
 	//™X‚ÉÁ‚¦‚Ä‚¢‚­ŠÖ”
-	auto fade_out = [=](float alpha) {return (std::max)(alpha - 3.0f * elapsed_time, 0.0f); };
+	auto fade_out = [=](float alpha) {return (std::max)(alpha - 7.0f * elapsed_time, 0.0f); };
 	
 	
 	wave->constants->data.particle_color.w = fade_out(wave->constants->data.particle_color.w);
 	wave->constants->data.scroll_speed += elapsed_time;
-	wave->constants->data.threshold = (std::min)(wave->constants->data.threshold + 3.0f * elapsed_time, 1.0f);
+	wave->constants->data.threshold = (std::min)(wave->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
 
-	float expand = 10 * elapsed_time;
+	float expand = 30 * elapsed_time;
 	tornado->set_scale({ tornado->get_scale().x + expand,tornado->get_scale().y + expand,tornado->get_scale().z + expand });
 
 	tornado->set_rotate_quaternion(AXIS::FORWARD, 360 * elapsed_time);
-	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + 3.0f * elapsed_time, 1.0f);
+	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
 	
-	if (wave->constants->data.particle_color.w < 0.1f) stop();
+	if (tornado->constants->data.threshold > 0.9f) stop();
 }

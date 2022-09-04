@@ -50,7 +50,7 @@ private:
 	std::unique_ptr<GPU_Particles> particle;
 		
 	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
-	const float ATTACK_TIME = 5.0f;
+	const float ATTACK_TIME = 2.0f;
 	bool is_charge_max = false;
 	float attack_time = 0.0f;
 	static constexpr DirectX::XMFLOAT4 FIRE_COLOR = { 3.0f, 0.6f, 0.0f, 0.8f };
