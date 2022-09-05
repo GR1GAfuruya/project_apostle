@@ -38,5 +38,6 @@ private:
 	std::unique_ptr<DeferredRenderer> deferred;
 	std::unique_ptr<LightManager> light_manager;
 	std::unique_ptr<SkyBox> skybox;
+	std::unique_ptr<SpriteBatch> operation_ui;
 
 };

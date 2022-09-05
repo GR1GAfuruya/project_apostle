@@ -10,6 +10,6 @@ VS_OUT main(VS_IN vin)
     vout.world_normal = normalize(mul(vin.normal, world));
     vout.world_tangent = normalize(mul(vin.tangent, world));
     vout.world_tangent.w = sigma;
-    vout.texcoord = vin.texcoord + scroll_direction * scroll_speed;
+    vout.texcoord = vin.texcoord/* + scroll_direction * scroll_speed*/;
     return vout;
 }

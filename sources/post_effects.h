@@ -31,7 +31,7 @@ public:
 		// Н╩УxТ▓Ро
 		float saturation = 1;
 		// Ц╛УxТ▓Ро
-		float brightness = 0.8;
+		float brightness = 1.3f;
 		float pad3;
 	};
 
