@@ -10,7 +10,7 @@ Tornado::Tornado(ID3D11Device* device)
 
 	create_vs_from_cso(device, "shaders/aura_vs.cso",
 		vertex_shader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
-	create_ps_from_cso(device, "shaders/aura_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
+	create_ps_from_cso(device, "shaders/fire_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
 	constants = std::make_unique<Constants<CONSTANTS>>(device);
 	D3D11_TEXTURE2D_DESC texture2d_desc{};
 	load_texture_from_file(device, L"./resources/Effects/Textures/Traill2_output.png", shader_resource_views[0].ReleaseAndGetAddressOf(), &texture2d_desc);

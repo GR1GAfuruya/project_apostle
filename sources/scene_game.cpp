@@ -25,6 +25,8 @@ void SceneGame::initialize(Graphics& graphics)
 	gpu_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),600000);
 	gpu_particle->initialize(graphics.get_dc().Get());
 	field_spark_particle = std::make_unique<field_spark_particles>(graphics.get_device().Get(), player->get_position());
+	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\operations.png", 1);
+
 	//particles = std::make_unique<Particles>(graphics);
 	deferred = std::make_unique<DeferredRenderer>(graphics);
 	light_manager = std::make_unique<LightManager>(graphics);
@@ -109,7 +111,11 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	post_effect->end(graphics.get_dc().Get());
 
 	post_effect->blit(graphics);
-	debug_gui();
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+
+	operation_ui->begin(graphics.get_dc().Get());
+	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
+	operation_ui->end(graphics.get_dc().Get());	debug_gui();
 	
 }
 

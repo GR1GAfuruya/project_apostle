@@ -5,6 +5,7 @@
 #include "skeletal_mesh.h"
 #include "gpu_particle.h"
 #include "slash.h"
+#include "tornado.h"
 //#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public CharactorMove
@@ -131,7 +132,8 @@ protected:
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr<Slash> slash_efect;
 	skeleton::bone sword_hand;
-	
+	std::unique_ptr<Tornado> tornado;
+
 	bool display_player_imgui = false;
 /// </summary>
 	//当たり判定用変数

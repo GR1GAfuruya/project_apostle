@@ -213,6 +213,8 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	wave_scale.y = lerp(wave_scale.y, 100.0f, 5.0f * elapsed_time);
 	wave->set_scale(wave_scale);
 	wave->constants->data.scroll_speed += elapsed_time;
+	wave->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
+
 
 	float scale_z = lerp(tornado->get_scale().z, 50.0f, 5.0f * elapsed_time);
 	tornado->set_scale({ tornado->get_scale().x,tornado->get_scale().y,scale_z });
@@ -227,10 +229,11 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 	//™X‚ÉÁ‚¦‚Ä‚¢‚­ŠÖ”
 	auto fade_out = [=](float alpha) {return (std::max)(alpha - 7.0f * elapsed_time, 0.0f); };
 	
-	
 	wave->constants->data.particle_color.w = fade_out(wave->constants->data.particle_color.w);
 	wave->constants->data.scroll_speed += elapsed_time;
 	wave->constants->data.threshold = (std::min)(wave->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
+	wave->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
+
 
 	float expand = 30 * elapsed_time;
 	tornado->set_scale({ tornado->get_scale().x + expand,tornado->get_scale().y + expand,tornado->get_scale().z + expand });
