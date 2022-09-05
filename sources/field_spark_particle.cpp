@@ -1,7 +1,7 @@
 #include "field_spark_particle.h"
 
 #include <random>
-
+#include "user.h"
 #include "shader.h"
 #include "misc.h"
 
@@ -105,7 +105,7 @@ static UINT align(UINT num, UINT alignment)
 {
 	return (num + (alignment - 1)) & ~(alignment - 1);
 }
-void field_spark_particles::integrate(ID3D11DeviceContext* dc, float elapsed_time, DirectX::XMFLOAT3 eye_position)
+void field_spark_particles::update(ID3D11DeviceContext* dc, float elapsed_time, DirectX::XMFLOAT3 eye_position)
 {
 	HRESULT hr{ S_OK };
 
@@ -142,4 +142,15 @@ void field_spark_particles::render(ID3D11DeviceContext* dc)
 	dc->VSSetShader(NULL, NULL, 0);
 	dc->PSSetShader(NULL, NULL, 0);
 	dc->GSSetShader(NULL, NULL, 0);
+
+#ifdef USE_IMGUI
+	imgui_menu_bar("Effects", "gpu_particles", display_imgui);
+	if (display_imgui)
+	{
+		int p_num = static_cast<uint32_t>(spark_particle_count);
+		ImGui::Begin("field_spark");
+		ImGui::DragInt("particlenum", &p_num);
+		ImGui::End();
+	}
+#endif
 }

@@ -40,47 +40,6 @@ void CharactorMove::update_transform(const DirectX::XMFLOAT4& orien, const Direc
 }
 
 
-//右ベクトル取得
-DirectX::XMVECTOR CharactorMove::get_posture_right_vec(DirectX::XMFLOAT4 orientation)
-{
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-	DirectX::XMVECTOR right;
-	DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
-	DirectX::XMFLOAT4X4 m4x4 = {};
-	DirectX::XMStoreFloat4x4(&m4x4, m);
-
-	right = { m4x4._11, m4x4._12, m4x4._13 };
-	right = DirectX::XMVector3Normalize(right);
-	return right;
-}
-
-//上ベクトル取得
-DirectX::XMVECTOR CharactorMove::get_posture_up_vec(DirectX::XMFLOAT4 orientation)
-{
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-	DirectX::XMVECTOR up;
-	DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
-	DirectX::XMFLOAT4X4 m4x4 = {};
-	DirectX::XMStoreFloat4x4(&m4x4, m);
-
-	up = { m4x4._21, m4x4._22, m4x4._23 };
-	up = DirectX::XMVector3Normalize(up);
-	return up;
-}
-
-//前ベクトル取得
-DirectX::XMVECTOR CharactorMove::get_posture_forward_vec(DirectX::XMFLOAT4 orientation)
-{
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-	DirectX::XMVECTOR forward;
-	DirectX::XMMATRIX m = DirectX::XMMatrixRotationQuaternion(orientationVec);
-	DirectX::XMFLOAT4X4 m4x4 = {};
-	DirectX::XMStoreFloat4x4(&m4x4, m);
-	forward = { m4x4._31, m4x4._32, m4x4._33 };
-	forward = DirectX::XMVector3Normalize(forward);
-	return forward;
-}
-
 //SceneGrath 親子行列
 #if 0
 void Character::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT4X4& tran)
@@ -202,8 +161,8 @@ void CharactorMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float s
 	if (DirectX::XMVector3Equal(MoveVec, DirectX::XMVectorZero())) return; //もしmove_vecがゼロベクトルならリターン
 	DirectX::XMVECTOR forward, up;
 
-	up = get_posture_up_vec(orien);
-	forward = get_posture_forward_vec(orien);
+	up = Math::get_posture_up_vec(orien);
+	forward = Math::get_posture_forward_vec(orien);
 
 	up = DirectX::XMVector3Normalize(up);
 	forward = DirectX::XMVector3Normalize(forward);
@@ -340,7 +299,7 @@ void CharactorMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& 
 		DirectX::XMVECTOR OrientationVec = DirectX::XMLoadFloat4(&orientation);
 
 		//上ベクトル
-		DirectX::XMVECTOR up = get_posture_up_vec(orientation);
+		DirectX::XMVECTOR up = Math::get_posture_up_vec(orientation);
 		//法線のベクトル
 		DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&slope_normal);
 		Normal = DirectX::XMVector3Normalize(Normal);
@@ -489,9 +448,6 @@ void CharactorMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3&
 		}
 		
 	}
-	////移動処理
-	//position.x += velocity.x * elapsed_time;
-	//position.z += velocity.z * elapsed_time;
 }
 
 

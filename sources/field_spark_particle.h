@@ -42,7 +42,7 @@ public:
 	field_spark_particles& operator=(field_spark_particles&&) noexcept = delete;
 	virtual ~field_spark_particles() = default;
 
-	void integrate(ID3D11DeviceContext* dc, float delta_time, DirectX::XMFLOAT3 eye_position);
+	void update(ID3D11DeviceContext* dc, float delta_time, DirectX::XMFLOAT3 eye_position);
 	void render(ID3D11DeviceContext* dc);
 
 private:
@@ -57,4 +57,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> compute_shader;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constant_buffer;
 
+	bool display_imgui = false;
 };

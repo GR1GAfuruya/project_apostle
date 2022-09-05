@@ -1,7 +1,7 @@
 #include "gpu_particle.h"
 
 #include <d3d11shader.h>
-
+#include "user.h"
 #include "imgui_include.h"
 #include <random>
 #include "shader.h"
@@ -174,6 +174,32 @@ void GPU_Particles::emitter_update(ID3D11DeviceContext* dc, float elapsed_time)
 	emitters.erase(std::remove_if(std::begin(emitters), std::end(emitters),
 		[](std::unique_ptr<Emitter> const& e) { return e->emit_life_time <= 0; }), std::end(emitters));
 }
+void GPU_Particles::debug_gui(const char* str_id)
+{
+	static DirectX::XMFLOAT3 ang = {};
+#ifdef USE_IMGUI
+	imgui_menu_bar("Effects", "gpu_particles", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin(str_id);
+		ImGui::PushID(str_id);
+		ImGui::DragFloat3("angle", &ang.x);
+		ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
+		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1);
+		ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
+		ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
+		int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
+		ImGui::DragInt("active_count", &active_particle);
+		ImGui::DragInt("count", &particle_constants->data.particle_count);
+
+		particle_constants->data.angle.x = DirectX::XMConvertToRadians(ang.x);
+		particle_constants->data.angle.y = DirectX::XMConvertToRadians(ang.y);
+		particle_constants->data.angle.z = DirectX::XMConvertToRadians(ang.z);
+		ImGui::PopID();
+		ImGui::End();
+	}
+#endif
+}
 void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs)
 {
 	//エミッターの更新
@@ -193,32 +219,17 @@ void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11Co
 	ID3D11UnorderedAccessView* null_unordered_access_view{};
 	dc->CSSetUnorderedAccessViews(0, 1, &null_unordered_access_view, nullptr);
 	dc->CSSetUnorderedAccessViews(1, 1, &null_unordered_access_view, nullptr);
+
+#if USE_IMGUI
+	//IMGUIようにカウント
+	get_particle_pool_count(dc);
+#endif
 }
 
 void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 {
-	static DirectX::XMFLOAT3 ang = {};
-#ifdef USE_IMGUI
-	get_particle_pool_count(dc);
-	ImGui::Begin("gpu_particle");
-	ImGui::DragFloat3("angle", &ang.x);
-	ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
-	ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x,0.1);
-	ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
-	ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
-	int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
-	ImGui::DragInt("active_count", &active_particle);
-	ImGui::DragInt("count", &particle_constants->data.particle_count);
-	if(ImGui::Button("reset"))
-	{
-		initialize(dc);
-	}
-	ImGui::End();
-#endif
-	particle_constants->data.angle.x = DirectX::XMConvertToRadians(ang.x);
-	particle_constants->data.angle.y = DirectX::XMConvertToRadians(ang.y);
-	particle_constants->data.angle.z = DirectX::XMConvertToRadians(ang.z);
-	const wchar_t* ps_hlsl = L"HLSL/gpu_particles_ps.hlsl";
+
+	
 	dc->VSSetShader(vertex_shader.Get(), NULL, 0);
 	dc->PSSetShader(pixel_shader.Get(), NULL, 0);
 	dc->GSSetShader(geometry_shader.Get(), NULL, 0);
@@ -230,10 +241,6 @@ void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 	dc->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	dc->Draw(static_cast<UINT>(max_particle_count), 0);
-
-	compile_shader(device, ps_hlsl, pixel_shader.Get());
-
-	
 
 	ID3D11ShaderResourceView* null_shader_resource_view{};
 	dc->GSSetShaderResources(9, 1, &null_shader_resource_view);

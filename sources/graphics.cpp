@@ -30,7 +30,7 @@ void Graphics::initialize(HWND hwnd)
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 	//②レンダーターゲットビューの作成
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer{};		//2D テクスチャー インターフェイスは、構造化されたメモリーであるテクセル データを管理します。https://docs.microsoft.com/ja-jp/previous-versions/direct-x/ee420038(v=vs.85)
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer{};		//2D テクスチャー インターフェイス:、構造化されたメモリーであるテクセル データを管理 https://docs.microsoft.com/ja-jp/previous-versions/direct-x/ee420038(v=vs.85)
 	hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<LPVOID*>(backBuffer.GetAddressOf()));
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 

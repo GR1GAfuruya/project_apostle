@@ -92,9 +92,9 @@ private:
     DirectX::XMFLOAT3 right;
 
     bool is_move;
-    float attend_rate = 4.0f; // 減衰比率
+    float attend_rate; // 減衰比率
     float cape_vision = 60.0f;//視野角
-    float roll_speed = DirectX::XMConvertToRadians(90);
+    float roll_speed = 90;
 
     float vertical_rotation_degree = 0;
     float horizon_rotation_degree = 0;
@@ -108,6 +108,4 @@ private:
     DirectX::XMFLOAT4X4 view_projection;
     bool display_camera_imgui = true;
 
-    constexpr static float CAMERA_SPEED_X = 90;
-    constexpr static float CAMERA_SPEED_Y = 90;
 };

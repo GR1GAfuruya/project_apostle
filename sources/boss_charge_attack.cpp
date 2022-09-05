@@ -9,8 +9,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	}
 
 	core = make_unique<Sphere>(graphics.get_device().Get());
-	life_span = 20;
-	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get());
+	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),150000);
 	wave = std::make_unique<Wave>(graphics.get_device().Get());
 	tornado = std::make_unique<Tornado>(graphics.get_device().Get());
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
@@ -156,6 +155,7 @@ void ChargeAttack::debug_gui(const char* str_id)
 
 	wave->debug_gui("wave");
 	tornado->debug_gui("tornad");
+	particle->debug_gui("boss_charge");
 }
 
 void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
@@ -191,7 +191,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	attack_time += elapsed_time;
 	auto fade_out = [=](float alpha) {return (std::max)(alpha - 0.5f * elapsed_time, 0.0f); };
 
-	const float core_s = lerp(core->get_scale().x, 0.0f, 0.5f * elapsed_time);
+	const float core_s = lerp(core->get_scale().x, 0.0f, 3.5f * elapsed_time);
 	core->set_scale(core_s);
 	core->constants->data.scroll_speed += elapsed_time;
 	core->update(graphics, elapsed_time);
@@ -215,7 +215,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	wave->constants->data.scroll_speed += elapsed_time;
 	wave->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
 
-
+	//竜巻エフェクト
 	float scale_z = lerp(tornado->get_scale().z, 50.0f, 5.0f * elapsed_time);
 	tornado->set_scale({ tornado->get_scale().x,tornado->get_scale().y,scale_z });
 	tornado->constants->data.scroll_speed += elapsed_time;

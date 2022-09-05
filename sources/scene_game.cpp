@@ -22,16 +22,14 @@ void SceneGame::initialize(Graphics& graphics)
 	player = std::make_unique<Player>(graphics, camera.get());
 	boss = std::make_unique<Boss>(graphics);
 	post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
-	gpu_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),600000);
-	gpu_particle->initialize(graphics.get_dc().Get());
 	field_spark_particle = std::make_unique<field_spark_particles>(graphics.get_device().Get(), player->get_position());
 	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\operations.png", 1);
 
-	//particles = std::make_unique<Particles>(graphics);
 	deferred = std::make_unique<DeferredRenderer>(graphics);
 	light_manager = std::make_unique<LightManager>(graphics);
 	skybox = std::make_unique<SkyBox>(graphics);
-
+	std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(1, -30, 1), 30.0f, 0.0f, 1.0f,1.0f);
+	light_manager->register_light(p);
 	std::shared_ptr<DirectionalLight> d = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(1, -1, 1), 0.4f, 0.0f, 0.0f);
 	light_manager->register_light(d);
 }
@@ -51,17 +49,15 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	boss->update(graphics, elapsed_time, stage.get());
 	stageManager.update(elapsed_time);
 
-	gpu_particle->update(graphics.get_dc().Get(), elapsed_time);
 	//particles->update(graphics,elapsed_time);
 	Mouse& mouse = Device::instance().get_mouse();
-	gpu_particle->particle_constants->data.emitter.pos = player->get_camera_target_pos();
 
-	field_spark_particle->integrate(graphics.get_dc().Get(), elapsed_time, player->get_position());
+	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
 
-
-	if (mouse.get_button() & mouse.BTN_Z)
+	//シーンリセット（仮置き）
+	if (mouse.get_button() & Mouse::BTN_ENTER)
 	{
-		//SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTest(graphics)));
+		scene_reset();
 	}
 }
 
@@ -79,13 +75,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	boss->render_d(graphics,elapsed_time);
 	
 	stageManager.render(elapsed_time, graphics);
-	//graphics.set_graphic_state_priset(DEPTH_ST::ZT_ON_ZW_OFF, BLEND_ST::ALPHA, RASTERIZER_ST::CULL_NONE);
-	//particles->render(graphics);
-	
-	
+	//
 	deferred->deactive(graphics,*light_manager);
 	//レンダーターゲットを戻す
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	post_effect->begin(graphics.get_dc().Get());
 	deferred->render(graphics);
 
@@ -98,21 +91,21 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//ポストエフェクトによりレンダーターゲットビューが変わっているので対応させる
 	ID3D11RenderTargetView* render_target_views{};
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
-	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,
-		deferred->get_dsv());
-
+	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,	deferred->get_dsv());
+	//スカイボックス
 	skybox->render(graphics);
-
+	//プレイヤー（フォワード）
 	player->render_f(graphics, elapsed_time, camera.get());
+	//ボス（フォワード）
 	boss->render_f(graphics, elapsed_time);
-	gpu_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
+	//ステージ上に舞う火花
 	field_spark_particle->render(graphics.get_dc().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+	//ポストエフェクト用のレンダーここまで
 	post_effect->end(graphics.get_dc().Get());
 
 	post_effect->blit(graphics);
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
-
+	//UI
 	operation_ui->begin(graphics.get_dc().Get());
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
 	operation_ui->end(graphics.get_dc().Get());	debug_gui();
@@ -121,28 +114,11 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 void SceneGame::debug_gui()
 {
-#ifdef USE_IMGUI
-	ImGui::Begin("Camera");
-	ImGui::DragFloat3("pos", &chara_pos.x);
-	ImGui::End();
-
-	/*ImGui::Begin("effect");
-	if (ImGui::Button("play"))
-	{
-	}
-	if (ImGui::Button("stop"))
-	{
-	}
-	if (sample_effect)
-	{
-		static  float angle = 0.0f;
-		static  DirectX::XMFLOAT3 pos = {};
-		ImGui::DragFloat("effec_angle", &angle);
-		ImGui::DragFloat3("effec_pos", &pos.x);
-		sample_effect->set_angle(angle);
-		sample_effect->set_position(pos);
-	}
-	ImGui::End();*/
-#endif // USE_IMGUI
 	camera->debug_gui();
+}
+
+void SceneGame::scene_reset()
+{
+	player->initialize();
+	boss->initialize();
 }

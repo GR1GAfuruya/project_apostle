@@ -45,6 +45,7 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 	float clearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clearColor);
 
+	//G-Buffer：カラー、ノーマル、ポジション、メタリック・スムース、ライト
 	ID3D11ShaderResourceView* g_buffers[5]
 	{
 		g_color->get_srv(),
