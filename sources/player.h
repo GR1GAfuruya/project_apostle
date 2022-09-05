@@ -75,7 +75,7 @@ private:
 	void transition_attack_combo3_state();
 	void transition_move_state();
 	void transition_jump_state();
-	//void transition_fall_state();
+	void transition_avoidance_state();
 	//void transition_landing_state();
 
 
@@ -87,6 +87,7 @@ private:
 	void update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
 	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
 	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
 	//void update_fall_state(float elapsed_time, Camera* camera);
 	//void update_landing_state(float elapsed_time, Camera* camera);
 
@@ -109,6 +110,8 @@ private:
 	const DirectX::XMFLOAT3 get_move_vec(Camera* camera) const;
 	//ジャンプ入力処理
 	void input_jump();
+	//回避入力
+	void input_avoidance();
 
 	//オブジェクトをつかむ
 protected:
@@ -125,14 +128,13 @@ protected:
 	int jump_count = 0;
 	//ジャンプ可能回数
 	int jump_limit = 1;
-
+	float avoidance_speed = 50;
 	//攻撃時間
 	float attack_time;
 
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr<Slash> slash_efect;
 	skeleton::bone sword_hand;
-	std::unique_ptr<Tornado> tornado;
 
 	bool display_player_imgui = false;
 /// </summary>

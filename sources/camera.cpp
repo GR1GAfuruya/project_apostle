@@ -9,7 +9,8 @@ Camera::Camera(Graphics& graphics)
 	, angle(DirectX::XMConvertToRadians(14.0f), DirectX::XMConvertToRadians(90.0f), 0)
 	, target(30.0f, 10, 0)
 	, light_direction(0.6f, -1, 0.1f, 0.7f)
-	, roll_speed(DirectX::XMConvertToRadians(90))
+	, roll_speed(100)
+	, attend_rate(8.0f)
 	, max_angle_x(DirectX::XMConvertToRadians(60))
 	, min_angle_x(DirectX::XMConvertToRadians(-60))
 	, view()
@@ -88,10 +89,10 @@ void Camera::update(float elapsed_time)
 		float aspect_ratio{ width / height };
 		static DirectX::XMFLOAT2 near_far = { 0.1f, 5000.0f };
 		Mouse& mouse = Device::instance().get_mouse();
-		if (mouse.get_button() & mouse.BTN_I) angle.x += DirectX::XMConvertToRadians(100) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_K) angle.x -= DirectX::XMConvertToRadians(100) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_L) angle.y += DirectX::XMConvertToRadians(100) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_J) angle.y -= DirectX::XMConvertToRadians(100) * elapsed_time;
+		if (mouse.get_button() & mouse.BTN_I) angle.x += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+		if (mouse.get_button() & mouse.BTN_K) angle.x -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+		if (mouse.get_button() & mouse.BTN_L) angle.y += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+		if (mouse.get_button() & mouse.BTN_J) angle.y -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 
 		GamePad& game_pad = Device::instance().get_game_pad();
 		float ax = game_pad.get_axis_RX();
@@ -99,12 +100,12 @@ void Camera::update(float elapsed_time)
 		//カメラ縦操作
 		if (ay > 0.1f || ay < 0.1f)
 		{
-			angle.x += ay * DirectX::XMConvertToRadians(CAMERA_SPEED_Y) * elapsed_time;
+			angle.x += ay * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 		}
 		//カメラ横操作
 		if (ax > 0.1f || ax < 0.1f)
 		{
-			angle.y += ax * DirectX::XMConvertToRadians(CAMERA_SPEED_X) * elapsed_time;
+			angle.y += ax * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 		}
 #ifdef USE_IMGUI
 		if (display_camera_imgui)
@@ -262,6 +263,8 @@ void Camera::debug_gui()
 		DirectX::XMFLOAT3 a = { DirectX::XMConvertToDegrees(angle.x),DirectX::XMConvertToDegrees(angle.y),DirectX::XMConvertToDegrees(angle.z) };
 		ImGui::DragFloat2("angle", &a.x, 0.1f);
 		ImGui::DragFloat("cape_vision", &cape_vision, 0.1f);
+		ImGui::DragFloat("attend_rate", &attend_rate, 0.1f);
+		ImGui::DragFloat("roll_speed", &roll_speed);
 		angle = { DirectX::XMConvertToRadians(a.x),DirectX::XMConvertToRadians(a.y),DirectX::XMConvertToRadians(a.z) };
 		ImGui::DragFloat3("target", &target.x, 0.1f);
 		ImGui::DragFloat4("LightDirection", &light_direction.x, 0.01f, -1, 1);

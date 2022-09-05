@@ -151,6 +151,9 @@
     <Filter Include="sources\Effects\wave">
       <UniqueIdentifier>{caefddcc-b5a2-4d9a-80bb-45735e3cc244}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Effect\PlayerEffect">
+      <UniqueIdentifier>{86571ec1-0504-499f-81ad-6d32f8abd92f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -765,6 +768,12 @@
     </FxCompile>
     <FxCompile Include="HLSL\wave_ps.hlsl">
       <Filter>Shaders\Effect\Aura</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\player_skill1_emit_cs.hlsl">
+      <Filter>Shaders\Effect\PlayerEffect</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\player_skill1_update_cs.hlsl">
+      <Filter>Shaders\Effect\PlayerEffect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

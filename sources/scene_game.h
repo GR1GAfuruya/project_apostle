@@ -24,6 +24,7 @@ public:
 	void update(float elapsedTime, Graphics& graphics) override;
 	void render(float elapsedTime, Graphics& graphics) override;
 	void debug_gui();
+	void scene_reset();
 private:
 	std::unique_ptr<Camera> camera = nullptr;
 	std::unique_ptr<Player> player = nullptr;
@@ -31,7 +32,6 @@ private:
 	std::unique_ptr<Stage> stage = nullptr;
 	DirectX::XMFLOAT3 chara_pos{};
 	std::unique_ptr<PostEffects> post_effect;
-	std::unique_ptr<GPU_Particles> gpu_particle;
 	std::unique_ptr<field_spark_particles> field_spark_particle;
 	std::unique_ptr<LambertShader> lambert_shader;
 	std::unique_ptr<Particles> particles;

@@ -22,13 +22,6 @@ public:
 	void update_hrizontal_velocity(float elapsed_time) override;
 	//水平移動更新処理
 	void update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage) override;
-	//クォータニオンでの姿勢ベクトル取得
-	//右ベクトル
-	DirectX::XMVECTOR get_posture_right_vec(DirectX::XMFLOAT4 orientation);
-	//上ベクトル
-	DirectX::XMVECTOR get_posture_up_vec(DirectX::XMFLOAT4 orientation);
-	//前ベクトル
-	DirectX::XMVECTOR get_posture_forward_vec(DirectX::XMFLOAT4 orientation);
 
 	//行列更新処理
 //	void update_transform(const DirectX::XMFLOAT4& orien, const DirectX::XMFLOAT3& pos = {1,1,1}, const DirectX::XMFLOAT4X4& transform = {});
@@ -105,9 +98,6 @@ protected:
 	DirectX::XMFLOAT3 velocity = { 0, 0, 0 };
 	//地面に当たっているか
 	bool is_ground = false;
-	bool is_hit_object = false;
-	bool player_vs_sphere = false;
-	bool is_pull_move = false;
 	//キャラの縦の大きさ
 	float height = 2.2f;
 	//体力
@@ -128,10 +118,6 @@ protected:
 	//法線
 	DirectX::XMFLOAT3 slope_normal = {};
 
-	//傾斜率
-	float slope_rate = 1.0f;
-	//プレイヤーのオブジェクトIDとユニークID
-	int object_id = 1;
-	int scape_hit = 0;//シーソーのどの位置に当たったか
+	
 
 };

@@ -44,13 +44,7 @@ void main(triangle GS_INPUT In[3], inout TriangleStream<PS_INPUT> triStream)
    0, 5, 4
     };
 
-
-
-
-
-
-
-
+    
 	//各頂点に配置する立方体の大きさをなんとなく算出
     float L01 = length(In[1].pos.xyz - In[0].pos.xyz);
     float L12 = length(In[2].pos.xyz - In[1].pos.xyz);

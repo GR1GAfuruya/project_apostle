@@ -10,7 +10,7 @@ StageMain::StageMain(Graphics& graphics)
 	//ステージモデルを読み込み
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\Stage\\Cave.fbx", 1);
 	//model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\ExampleStage\\ExampleStage.fbx", 1);
-	scale = { 0.4f, 0.4f, 0.4f };
+	scale = { 0.2f, 0.2f, 0.2f };
 	//scale = { 5.2f, 5.2f, 5.2f };
 }
 
