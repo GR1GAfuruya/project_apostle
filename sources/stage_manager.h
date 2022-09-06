@@ -25,7 +25,7 @@ public:
 	//ステージ全削除
 	void Clear();
 	//レイキャスト
-	bool Raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) ;
+	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) ;
 
 private:
 	std::vector<Stage*> stages;

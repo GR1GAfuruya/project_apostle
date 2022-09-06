@@ -262,7 +262,7 @@ void CharactorMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& 
 
 		//レイキャストによる地面判定
 		HitResult hit;
-		if (StageManager::Instance().Raycast(start, end, hit))
+		if (StageManager::Instance().ray_cast(start, end, hit))
 		{
 			//地面に設置している
 			position = hit.position;
@@ -406,7 +406,7 @@ void CharactorMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3&
 		DirectX::XMFLOAT3 start = { position.x - mx / 50.0f, position.y + stepOffset, position.z - mz / 50.0f };
 		DirectX::XMFLOAT3 end = { position.x + mx* 5.0f, start.y, position.z + mz * 5.0f};
 		HitResult hit;
-		if (StageManager::Instance().Raycast(start, end, hit))//何か壁があれば
+		if (StageManager::Instance().ray_cast(start, end, hit))//何か壁があれば
 		{
 			//壁までのベクトル
 			DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
@@ -427,7 +427,7 @@ void CharactorMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3&
 			DirectX::XMStoreFloat3(&correct, Correct);
 
 			HitResult hit2;
-			if (!StageManager::Instance().Raycast(start, correct, hit2))//何か壁があれば
+			if (!StageManager::Instance().ray_cast(start, correct, hit2))//何か壁があれば
 			{
 				position.x = correct.x;
 				//velocity.x = 0;

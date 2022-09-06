@@ -18,7 +18,7 @@ public:
 	void render(float elapsed_time, Graphics& graphics)override;
 
 	// レイキャスト
-	bool RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) override;
+	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) override;
 
 private:
 	std::unique_ptr<SkeletalMesh>  model = nullptr;
