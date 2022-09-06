@@ -11,6 +11,6 @@ public:
 
 	virtual void  render(float elapsed_time, Graphics& graphics) = 0;
 
-	virtual bool RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) = 0;
+	virtual bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) = 0;
 
 };

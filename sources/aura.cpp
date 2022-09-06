@@ -88,6 +88,7 @@ void Aura::debug_gui(const char* str_id)
 		ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1);
 		ImGui::DragFloat("rot_speed", &rot_speed);
 		ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1);
+		ImGui::DragFloat("threshold", &constants->data.threshold, 0.1);
 		ImGui::DragFloat3("position", &position.x, 0.1);
 		ImGui::DragFloat3("scale", &scale.x, 0.1);
 		ImGui::Checkbox("play", &active);

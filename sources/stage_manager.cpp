@@ -32,14 +32,14 @@ void StageManager::Register(class Stage* stage)
 
 
 
-bool StageManager::Raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)
+bool StageManager::ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)
 {
 	bool result = false;
 	hit.distance = FLT_MAX;
 	for (auto s : stages)
 	{
 		HitResult hr;
-		if(s->RayCast(start, end, hr))
+		if(s->ray_cast(start, end, hr))
 		{
 			hit = hr;
 			return true;

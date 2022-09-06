@@ -1,12 +1,13 @@
 ﻿#include "framework.h"
 #include "camera.h"
 #include "imgui_include.h"
-
+#include "Operators.h"
 #include "user.h"
+#include "stage_manager.h"
 Camera::Camera(Graphics& graphics)
 	: range(20.0f)
 	, eye(5, 5, 5)
-	, angle(DirectX::XMConvertToRadians(14.0f), DirectX::XMConvertToRadians(90.0f), 0)
+	, angle(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(-180.0f), 0)
 	, target(30.0f, 10, 0)
 	, light_direction(0.6f, -1, 0.1f, 0.7f)
 	, roll_speed(100)
@@ -50,11 +51,11 @@ Camera::Camera(Graphics& graphics)
 	}
 }
 
-void Camera::update(float elapsed_time)
+void Camera::update(float elapsed_time, Stage* stage)
 {
 	using namespace DirectX;
 	// 任意のアップデートを実行
-	(this->*p_update)(elapsed_time);
+	(this->*p_update)(elapsed_time,stage);
 
 	//カメラのパラメータ設定(全アップデート共通)
 	{
@@ -122,7 +123,7 @@ void Camera::update(float elapsed_time)
 
 
 
-void Camera::update_with_tracking(float elapsed_time)
+void Camera::update_with_tracking(float elapsed_time, Stage* stage)
 {
 	//X軸のカメラ回転を制限
 	//clamp(angle.x, minAngleX, maxAngleX);
@@ -136,16 +137,26 @@ void Camera::update_with_tracking(float elapsed_time)
 	DirectX::XMVECTOR Front = Transform.r[2];
 	DirectX::XMFLOAT3 front;
 	DirectX::XMStoreFloat3(&front, Front);
+
+	// レイキャスト(ターゲットと壁)
+	DirectX::XMFLOAT3 ray_target = target + DirectX::XMFLOAT3{0,-0.5,0};//めり込まないよう少し下に下げる
+	DirectX::XMFLOAT3 start = ray_target;
+	DirectX::XMFLOAT3 end = ray_target - front * DirectX::XMFLOAT3(range, range, range);
+	HitResult hit;
+	StageManager::Instance().ray_cast(start, end, hit);
+
+	hit.distance = (std::max)(hit.distance, 0.5f);
+	hit.distance = (std::min)(hit.distance, range);
 	//注視点から後ろベクトル方向に一定距離離れたカメラ視点を求める
 	DirectX::XMFLOAT3 pos;
-	pos.x = trakking_target.x - front.x * range;
-	pos.y = trakking_target.y - front.y * range;
-	pos.z = trakking_target.z - front.z * range;
+	pos.x = trakking_target.x - front.x * hit.distance;
+	pos.y = trakking_target.y - front.y * hit.distance;
+	pos.z = trakking_target.z - front.z * hit.distance;
 	eye = Math::lerp(eye, pos, attend_rate * elapsed_time);
 	target = trakking_target;
 }
 
-void Camera::update_with_euler_angles(float elapsed_time)
+void Camera::update_with_euler_angles(float elapsed_time, Stage* stage)
 {
 	using namespace DirectX;
 	// X軸のカメラ回転を制限
@@ -171,7 +182,7 @@ void Camera::update_with_euler_angles(float elapsed_time)
 
 }
 
-void Camera::update_with_quaternion(float elapsed_time)
+void Camera::update_with_quaternion(float elapsed_time, Stage* stage)
 {
 	using namespace DirectX;
 	// rangeの範囲制御

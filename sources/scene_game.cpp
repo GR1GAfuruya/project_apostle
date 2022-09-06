@@ -42,7 +42,7 @@ void SceneGame::finalize()
 void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
 	StageManager& stageManager = StageManager::Instance();
-	camera->update(elapsed_time);
+	camera->update(elapsed_time, stage.get());
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_camera_target_pos());
 	player->update(graphics, elapsed_time, camera.get(), stage.get());

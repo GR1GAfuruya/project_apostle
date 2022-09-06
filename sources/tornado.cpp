@@ -5,7 +5,7 @@
 #include "user.h"
 Tornado::Tornado(ID3D11Device* device)
 {
-	model = make_unique<SkeletalMesh>(device, "./resources/Effects/Meshes/eff_tornado.fbx");
+	model = make_unique<SkeletalMesh>(device, "./resources/Effects/Meshes/eff_tornado3.fbx");
 	shader = make_unique<MeshShader>(device);
 
 	create_vs_from_cso(device, "shaders/aura_vs.cso",
@@ -15,7 +15,6 @@ Tornado::Tornado(ID3D11Device* device)
 	D3D11_TEXTURE2D_DESC texture2d_desc{};
 	load_texture_from_file(device, L"./resources/Effects/Textures/Traill2_output.png", shader_resource_views[0].ReleaseAndGetAddressOf(), &texture2d_desc);
 	load_texture_from_file(device, L"./resources/TexMaps/Mask/dissolve_animation.png", shader_resource_views[1].ReleaseAndGetAddressOf(), &texture2d_desc);
-
 }
 
 
