@@ -154,6 +154,12 @@
     <Filter Include="Shaders\Effect\PlayerEffect">
       <UniqueIdentifier>{86571ec1-0504-499f-81ad-6d32f8abd92f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Debug">
+      <UniqueIdentifier>{cb9fd3cf-5102-4ff5-aeb6-62cd327400cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\debug">
+      <UniqueIdentifier>{bb5c8544-61fc-48e6-b286-7638bd64552a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -210,7 +216,7 @@
     <ClCompile Include="sources\device.cpp">
       <Filter>sources\Device</Filter>
     </ClCompile>
-    <ClCompile Include="sources\charactor_move.cpp">
+    <ClCompile Include="sources\charactor.cpp">
       <Filter>sources\Charactor</Filter>
     </ClCompile>
     <ClCompile Include="sources\graphics.cpp">
@@ -351,6 +357,15 @@
     <ClCompile Include="sources\wave.cpp">
       <Filter>sources\Effects\wave</Filter>
     </ClCompile>
+    <ClCompile Include="sources\debug_figures.cpp">
+      <Filter>sources\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\debug_flag.cpp">
+      <Filter>sources\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\generic_frequent_entities.cpp">
+      <Filter>sources\Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\constant.h">
@@ -419,7 +434,7 @@
     <ClInclude Include="sources\imgui_include.h">
       <Filter>sources</Filter>
     </ClInclude>
-    <ClInclude Include="sources\charactor_move.h">
+    <ClInclude Include="sources\charactor.h">
       <Filter>sources\Charactor</Filter>
     </ClInclude>
     <ClInclude Include="sources\stage.h">
@@ -562,6 +577,15 @@
     </ClInclude>
     <ClInclude Include="sources\wave.h">
       <Filter>sources\Effects\wave</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\debug_figures.h">
+      <Filter>sources\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\debug_flag.h">
+      <Filter>sources\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\generic_frequent_entities.h">
+      <Filter>sources\Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -775,6 +799,12 @@
     <FxCompile Include="HLSL\player_skill1_update_cs.hlsl">
       <Filter>Shaders\Effect\PlayerEffect</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\debug_figure_ps.hlsl">
+      <Filter>Shaders\debug</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\debug_figure_vs.hlsl">
+      <Filter>Shaders\debug</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\constants.hlsli">
@@ -827,6 +857,9 @@
     </None>
     <None Include="HLSL\boss_charge_attack.hlsli">
       <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
+    </None>
+    <None Include="HLSL\debug_figure.hlsli">
+      <Filter>Shaders\debug</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

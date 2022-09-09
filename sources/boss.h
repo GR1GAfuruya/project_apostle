@@ -1,12 +1,12 @@
 #pragma once
-#include "charactor_move.h"
+#include "charactor.h"
 #include "skeletal_mesh.h"
 #include "gpu_particle.h"
 #include "slash.h"
 #include "aura.h"
 #include "boss_charge_attack.h"
 #include "light.h"
-class Boss :public CharactorMove
+class Boss :public Charactor
 {
 public:
 	Boss(Graphics& graphics);
@@ -38,6 +38,14 @@ public:
 
 	};
 
+	struct BodyCollision
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 position_end;
+		float radius;
+		float height;
+	};
+	
 	void initialize();
 	void update(Graphics& graphics, float elapsed_time, Stage* stage);
 	//•`‰æˆ—
@@ -48,8 +56,9 @@ public:
 	//ƒfƒoƒbƒO—pGUI•`‰æ
 	void debug_gui();
 
+	void calc_attack_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
 private:
-	//////‘JˆÚ
+	//‘JˆÚ
 	void transition_air_bone_state();
 	void transition_attack_state();
 	void transition_damage_state();
@@ -105,5 +114,12 @@ private:
 	float action_time = 0;
 	float move_speed = 30.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
-	bool display_imgui = true;;
+	bool display_imgui = true;
+
+public:
+	BodyCollision boss_collision;
+
+	AddDamageFunc damaged_function;
+	int attack_power;
+	int attack_add_invisible_time;
 };

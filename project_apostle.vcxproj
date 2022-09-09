@@ -209,9 +209,12 @@
     <ClCompile Include="sources\boss_action.cpp" />
     <ClCompile Include="sources\boss_charge_attack.cpp" />
     <ClCompile Include="sources\camera.cpp" />
+    <ClCompile Include="sources\debug_figures.cpp" />
+    <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
     <ClCompile Include="sources\effect_base.cpp" />
     <ClCompile Include="sources\field_spark_particle.cpp" />
+    <ClCompile Include="sources\generic_frequent_entities.cpp" />
     <ClCompile Include="sources\gpu_particle.cpp" />
     <ClCompile Include="sources\g_buffer.cpp" />
     <ClCompile Include="sources\lambert_shader.cpp" />
@@ -220,7 +223,7 @@
     <ClCompile Include="sources\model_resource.cpp" />
     <ClCompile Include="sources\particle.cpp" />
     <ClCompile Include="sources\PBR_shader.cpp" />
-    <ClCompile Include="sources\charactor_move.cpp" />
+    <ClCompile Include="sources\charactor.cpp" />
     <ClCompile Include="sources\collision.cpp" />
     <ClCompile Include="sources\device.cpp" />
     <ClCompile Include="sources\effekseer_effect.cpp" />
@@ -275,9 +278,12 @@
     <ClInclude Include="sources\boss.h" />
     <ClInclude Include="sources\boss_charge_attack.h" />
     <ClInclude Include="sources\camera.h" />
+    <ClInclude Include="sources\debug_figures.h" />
+    <ClInclude Include="sources\debug_flag.h" />
     <ClInclude Include="sources\deferred_renderer.h" />
     <ClInclude Include="sources\effect_base.h" />
     <ClInclude Include="sources\field_spark_particle.h" />
+    <ClInclude Include="sources\generic_frequent_entities.h" />
     <ClInclude Include="sources\g_buffer.h" />
     <ClInclude Include="sources\lambert_shader.h" />
     <ClInclude Include="sources\light_manager.h" />
@@ -288,7 +294,7 @@
     <ClInclude Include="sources\gpu_particle.h" />
     <ClInclude Include="sources\particle.h" />
     <ClInclude Include="sources\PBR_shader.h" />
-    <ClInclude Include="sources\charactor_move.h" />
+    <ClInclude Include="sources\charactor.h" />
     <ClInclude Include="sources\constant.h" />
     <ClInclude Include="sources\device.h" />
     <ClInclude Include="sources\effekseer_effect.h" />
@@ -416,6 +422,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\debug_figure_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\debug_figure_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\default_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -906,6 +920,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="HLSL\debug_figure.hlsli" />
     <None Include="HLSL\mesh_effect.hlsli" />
     <None Include="HLSL\boss_charge_attack.hlsli" />
     <None Include="HLSL\constants.hlsli" />

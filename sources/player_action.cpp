@@ -8,9 +8,9 @@ void Player::transition_idle_state()
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 }
 
-void Player::transition_attack_state()
+void Player::transition_attack_combo4_state()
 {
-	p_update = &Player::update_attack_state;
+	p_update = &Player::update_attack_combo4_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
 
 }
@@ -66,21 +66,6 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 	if (game_pad->get_button_down() & game_pad->BTN_X)
 	{
 		transition_attack_combo1_state();
-	}
-
-	//速力処理更新
-	update_velocity(elapsed_time, position, stage);
-}
-
-void Player::update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-	if (model->anime_param.frame_index > 43 / 2)
-	{
-		Attack(graphics, elapsed_time);
-	}
-	if (model->is_end_animation())
-	{
-		transition_idle_state();
 	}
 
 	//速力処理更新
@@ -166,10 +151,25 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 
 		if (game_pad->get_button() & game_pad->BTN_X)
 		{
-			transition_attack_state();
+			transition_attack_combo4_state();
 		}
 
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_attack_combo4_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->anime_param.frame_index > 43 / 2)
+	{
+		Attack(graphics, elapsed_time);
+	}
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 }
@@ -207,7 +207,7 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	update_velocity(elapsed_time, position, stage);
 }
 
-	//回避
+//回避
 void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	//徐々に速度を落としていく
@@ -230,7 +230,6 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 	}
 
 	//遷移処理
-
 	if (model->anime_param.frame_index > 44 / 2)
 	{
 		if (input_move(elapsed_time, camera))

@@ -29,6 +29,9 @@ public:
     static const MouseButton BTN_LEFT         = (1 << 18);
     static const MouseButton BTN_DOWN         = (1 << 19);
     static const MouseButton BTN_RIGHT        = (1 << 20);
+    static const MouseButton BTN_F1        = (1 << 21);
+    static const MouseButton BTN_F2        = (1 << 22);
+    static const MouseButton BTN_F3        = (1 << 23);
 public:
     //--------< コンストラクタ/関数等 >--------//
     Mouse()

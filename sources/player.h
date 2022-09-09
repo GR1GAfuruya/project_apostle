@@ -1,14 +1,14 @@
 #pragma once
 #include "device.h"
 #include "camera.h"
-#include "charactor_move.h"
+#include "charactor.h"
 #include "skeletal_mesh.h"
 #include "gpu_particle.h"
 #include "slash.h"
 #include "tornado.h"
 //#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
-class Player final :public CharactorMove
+class Player final :public Charactor
 {
 public:
 	Player(Graphics& graphics, Camera* camera);
@@ -17,7 +17,7 @@ public:
 	//初期化処理
 	void initialize();
 	//更新処理
-	void update(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
 	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
@@ -25,11 +25,15 @@ public:
 	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
 	//デバッグ用GUI描画
 	void debug_gui();
+	//プレイヤーの腰当たりの位置
+	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + height, position.z); }
 
-	
+	//当たり判定
+	void calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position,float colider_radius, float colider_height);
 
-/////////////アニメーション////////////////
-//アニメーション
+	void calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
+	/////////////アニメーション////////////////
+	//アニメーション
 	enum  PlayerAnimation
 	{
 		PLAYER_IDLE,
@@ -53,8 +57,21 @@ public:
 		FALL,
 		LANDING,
 	};
-	DirectX::XMFLOAT3 get_camera_target_pos() { return DirectX::XMFLOAT3(position.x, position.y + height, position.z); }
 
+	
+	struct Capsule
+	{
+		DirectX::XMFLOAT3 start;
+		DirectX::XMFLOAT3 end;
+		float radius;
+	};
+
+	struct AttackParam
+	{
+		Capsule collision;
+		float power;//攻撃力
+		float invinsible_time;//攻撃対象に課す無敵時間
+	};
 
 	//--------定数--------//
 	 //攻撃1撃目の猶予時間
@@ -67,12 +84,13 @@ public:
 
 
 private:
+	//--------プライベート関数--------//
 	//////遷移
 	void transition_idle_state();
-	void transition_attack_state();
 	void transition_attack_combo1_state();
 	void transition_attack_combo2_state();
 	void transition_attack_combo3_state();
+	void transition_attack_combo4_state();
 	void transition_move_state();
 	void transition_jump_state();
 	void transition_avoidance_state();
@@ -81,30 +99,21 @@ private:
 
 	//////アニメーションアップデート
 	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
-	void update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
-	void update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
-	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
-	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
-	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage);
+	void update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_combo4_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	//void update_fall_state(float elapsed_time, Camera* camera);
 	//void update_landing_state(float elapsed_time, Camera* camera);
 
-	typedef void (Player::* ActUpdate)(Graphics& graphics,float elapsed_time, Camera* camera, Stage* stage);
+	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	ActUpdate p_update = &Player::update_idle_state;
-
+	//
 	void Attack(Graphics& graphics, float elapsed_time);
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
-		
 
-	State state;
-
-	GamePad* game_pad;
-	Mouse* mouse;
-	
-	DirectX::XMFLOAT4X4 world;
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
 	const DirectX::XMFLOAT3 get_move_vec(Camera* camera) const;
@@ -112,10 +121,22 @@ private:
 	void input_jump();
 	//回避入力
 	void input_avoidance();
-
-	//オブジェクトをつかむ
-protected:
+	//着地したか
 	void on_landing()override;
+
+	void on_damaged(int damage, float InvincibleTime);
+
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
+
+	State state;
+
+	GamePad* game_pad;
+	Mouse* mouse;
+
+	DirectX::XMFLOAT4X4 world;
+
+
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
@@ -135,9 +156,14 @@ protected:
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr<Slash> slash_efect;
 	skeleton::bone sword_hand;
+	skeleton::bone sword_bone;
 
 	bool display_player_imgui = false;
-/// </summary>
 	//当たり判定用変数
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };
+	AttackParam attack_sword_param;
+	public:
+	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
+	AddDamageFunc damaged_function;
+
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include "graphics.h"
-#include "Collision.h"
+#include "collision.h"
 class Stage
 {
 public:

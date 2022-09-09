@@ -24,6 +24,10 @@ static const int KeyMap[] =
 	VK_LEFT,
 	VK_DOWN,
 	VK_RIGHT,
+	VK_F1,
+	VK_F2,
+	VK_F3,
+	
 };
 
 void Mouse::update(HWND hwnd)
