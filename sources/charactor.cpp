@@ -1,10 +1,10 @@
-#include"charactor_move.h"
+#include"charactor.h"
 
 #include "stage_manager.h"
 #include "user.h"
 
 //行列更新処理
-void CharactorMove::update_transform()
+void Charactor::update_transform()
 {
 	//スケール行列を作成
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -24,7 +24,7 @@ void CharactorMove::update_transform()
 }
 
 //クオータニオン用のUpdateTransform
-void CharactorMove::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::XMFLOAT3& pos)
+void Charactor::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::XMFLOAT3& pos)
 {
 	//スケール行列を作成
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -60,7 +60,7 @@ void Character::update_transform(const DirectX::XMFLOAT4& orien, const DirectX::
 #endif // 0
 
 
-void CharactorMove::add_impulse(const DirectX::XMFLOAT3& impulse)
+void Charactor::add_impulse(const DirectX::XMFLOAT3& impulse)
 {
 	//速力に力を加える
 	velocity.x += impulse.x;
@@ -69,7 +69,7 @@ void CharactorMove::add_impulse(const DirectX::XMFLOAT3& impulse)
 
 }
 
-bool CharactorMove::apply_damage(int damage, float invinsibleTime)
+bool Charactor::apply_damage(int damage, float invinsibleTime)
 {
 	//ダメージが0の場合は健康状態を変更する必要がない
 	if (damage == 0)return false;
@@ -78,10 +78,10 @@ bool CharactorMove::apply_damage(int damage, float invinsibleTime)
 	if (health <= 0)return false;
 
 
-	if (invinsible_timer > 0.0f)return false;
+	if (invincible_timer > 0.0f)return false;
 
 	//無敵時間設定
-	invinsible_timer = invinsibleTime;
+	invincible_timer = invinsibleTime;
 	//ダメージ処理
 	health -= damage;
 
@@ -92,7 +92,7 @@ bool CharactorMove::apply_damage(int damage, float invinsibleTime)
 	}
 	else//ダメージ通知
 	{
-		on_damaged();
+		//on_damaged();
 	}
 
 	//健康状態が変更した場合はtrueを返す
@@ -103,7 +103,7 @@ bool CharactorMove::apply_damage(int damage, float invinsibleTime)
 
 
 
-void CharactorMove::Move(float vx, float vz, float speed)
+void Charactor::Move(float vx, float vz, float speed)
 {
 	//移動方向ベクトルを設定
 	move_vec_x = vx;
@@ -113,7 +113,7 @@ void CharactorMove::Move(float vx, float vz, float speed)
 	max_move_speed = speed;
 }
 
-void CharactorMove::Turn(float elapsedTime, float vx, float vz, float speed)
+void Charactor::Turn(float elapsedTime, float vx, float vz, float speed)
 {
 	speed *= elapsedTime;
 	float length = sqrtf(vx * vx + vz * vz);
@@ -153,7 +153,7 @@ void CharactorMove::Turn(float elapsedTime, float vx, float vz, float speed)
 	angle.z = fmod(angle.z, DirectX::XMConvertToRadians(360.0f));
 }
 
-void CharactorMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed, DirectX::XMFLOAT4& orien)
+void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed, DirectX::XMFLOAT4& orien)
 {
 	// XMVECTORクラスへ変換
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orien);
@@ -213,12 +213,12 @@ void CharactorMove::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float s
 	DirectX::XMStoreFloat4(&orientation, orientationVec);
 }
 
-void CharactorMove::Jump(float speed)
+void Charactor::Jump(float speed)
 {
 	//上方向の力を設定
 	velocity.y = speed;
 }
-void CharactorMove::update_velocity(float elapsedTime, DirectX::XMFLOAT3& position, Stage* stage)
+void Charactor::update_velocity(float elapsedTime, DirectX::XMFLOAT3& position, Stage* stage)
 {
 	//経過フレーム
 	float elapsedFrame = 60.0f * elapsedTime;
@@ -238,13 +238,13 @@ void CharactorMove::update_velocity(float elapsedTime, DirectX::XMFLOAT3& positi
 
 }
 
-void CharactorMove::update_vertical_velocity(float elapsedFrame)
+void Charactor::update_vertical_velocity(float elapsedFrame)
 {
 	velocity.y += gravity * elapsedFrame;
 }
 
 using namespace DirectX;
-void CharactorMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)
+void Charactor::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)
 {
 	// キャラクターの下方向の移動量
 	float my = velocity.y * elapsed_time;
@@ -329,7 +329,7 @@ void CharactorMove::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& 
 
 }
 
-void CharactorMove::update_hrizontal_velocity(float elapsed_frame)
+void Charactor::update_hrizontal_velocity(float elapsed_frame)
 {
 	//XZ平面の速力を減速する
 	float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
@@ -389,7 +389,7 @@ void CharactorMove::update_hrizontal_velocity(float elapsed_frame)
 }
 
 
-void CharactorMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position, Stage* stage)
+void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position, Stage* stage)
 {
 
 	// 水平速力計算
@@ -452,14 +452,14 @@ void CharactorMove::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3&
 
 
 
-void CharactorMove::update_invicible_timer(float elapsedTime)
+void Charactor::update_invicible_timer(float elapsedTime)
 {
-	if (invinsible_timer > 0.0f)
+	if (invincible_timer > 0.0f)
 	{
-		invinsible_timer -= elapsedTime;
+		invincible_timer -= elapsedTime;
 	}
 	else
 	{
-		invinsible_timer = 0.0f;
+		invincible_timer = 0.0f;
 	}
 }

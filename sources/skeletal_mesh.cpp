@@ -182,7 +182,7 @@ void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton
 
 		DirectX::XMFLOAT4X4 r = {};
 		DirectX::XMStoreFloat4x4(&r, R);
-		DirectX::XMVECTOR right_vec = { r._11, r._12, r._13 };
+		DirectX::XMVECTOR right_vec = { r._21, r._22, r._23 };
 		XMStoreFloat3(&up, right_vec);
 	}
 }

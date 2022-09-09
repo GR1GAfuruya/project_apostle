@@ -2,12 +2,16 @@
 
 #include <DirectXMath.h>
 #include "move_behavior.h"
+#include <functional>
+
+typedef std::function<void(int, float)> AddDamageFunc;
+
 //キャラクター
-class CharactorMove :public MoveBehavior
+class Charactor :public MoveBehavior
 {
 public:
-	CharactorMove() {}
-	virtual ~CharactorMove(){}
+	Charactor() {}
+	virtual ~Charactor(){}
 	//行列更新処理
 	void update_transform();
 	//行列更新処理
@@ -57,12 +61,6 @@ public:
 	void add_impulse(const DirectX::XMFLOAT3& impulse);
 	//ダメージを与える
 	bool apply_damage(int damage, float invincibleTime);
-protected:
-	float stepOffset = 0.7f;
-	//キャラの頭のてっぺん
-	float head_top = 1.0f;
-private:
-	
 
 protected:
 	//void Move(float elpsedTime, float vx, float vz, float speed);
@@ -74,37 +72,43 @@ protected:
 	//速力処理更新
 	void update_velocity(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage);
 	virtual void on_landing() {}
-	//ダメージを受けたときに呼ばれる
-	virtual void on_damaged(){}
 	//死亡したときに呼ばれる
 	virtual void OnDead() {}
 	void update_invicible_timer(float elapsed_time);
 
-protected:
+	
+
+//-----------変数--------------//
+
 	DirectX::XMFLOAT3	position = { 0, 0, 0 };
 	DirectX::XMFLOAT3	angle = { 0, 0, 0 };
 	DirectX::XMFLOAT3	scale = { 1, 1, 1 };
+	DirectX::XMFLOAT4 orientation{0,0,0,1};
 	DirectX::XMFLOAT4X4	transform = {
 	1, 0, 0, 0,
 	0, 1, 0, 0,
 	0, 0, 1, 0,
 	0, 0, 0, 1
 	};
-	DirectX::XMFLOAT4 orientation{0,0,0,1};
 
-	float radius = 0.5f;
+
+protected:
+	float stepOffset = 0.7f;
+	//キャラの頭のてっぺん
+	float head_top = 1.0f;
+	float radius = 1.0f;
 	//重力
 	float gravity = -1.0;
 	DirectX::XMFLOAT3 velocity = { 0, 0, 0 };
 	//地面に当たっているか
 	bool is_ground = false;
 	//キャラの縦の大きさ
-	float height = 2.2f;
+	float height = 2.6f;
 	//体力
 	int32_t health = 1000;
 	int32_t max_health = 1000;
 
-	float invinsible_timer = 0.0f;
+	float invincible_timer = 0.0f;
 	//摩擦力
 	float friction = 1.0f;
 	//加速度

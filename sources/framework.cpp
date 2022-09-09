@@ -17,6 +17,10 @@ bool framework::initialize()
 	graphics = std::make_unique<Graphics>();
 
 	graphics->initialize(hwnd);
+	entities_initialize(*graphics);
+
+	// debug_flags
+	debug_flags = std::make_unique<DebugFlag>();
 	//エフェクトマネージャー初期化
 	EffekseerEffectManager::Instance().initialize(*graphics);
 	SceneManager::instance().change_scene(*graphics, new SceneTitle(*graphics));
@@ -35,6 +39,8 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	Device::instance().update(hwnd, elapsed_time);
 	Device::instance().get_mouse().operation_activation();
 	Device::instance().get_game_pad().operation_activation();
+
+	debug_flags->update();
 	//シーンアップデート
 	SceneManager::instance().update(elapsed_time,*graphics);
 }
@@ -138,6 +144,8 @@ bool framework::uninitialize()
 	
 	//releaseAllTextures();
 	SceneManager::instance().clear();
+	entities_uninitialize(*graphics);
+
 	return true;
 }
 

@@ -13,7 +13,8 @@
 #include "light_manager.h"
 #include "sky_box.h"
 #include "field_spark_particle.h"
-class SceneGame :public Scene
+#include "generic_frequent_entities.h"
+class SceneGame :public Scene, public GenericFrequentEntities
 {
 public:
 	SceneGame(Graphics& graphics);

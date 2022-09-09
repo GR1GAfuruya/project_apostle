@@ -44,7 +44,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	StageManager& stageManager = StageManager::Instance();
 	camera->update(elapsed_time, stage.get());
 	camera->calc_view_projection(graphics, elapsed_time);
-	camera->set_trakking_target(player.get()->get_camera_target_pos());
+	camera->set_trakking_target(player.get()->get_waist_position());
 	player->update(graphics, elapsed_time, camera.get(), stage.get());
 	boss->update(graphics, elapsed_time, stage.get());
 	stageManager.update(elapsed_time);
@@ -53,6 +53,12 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	Mouse& mouse = Device::instance().get_mouse();
 
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
+
+	player->calc_collision_vs_enemy(boss->boss_collision.position, boss->boss_collision.radius, boss->boss_collision.height);
+
+	player->calc_attack_vs_enemy(boss->boss_collision.position, boss->boss_collision.position, boss->boss_collision.height/2, boss->damaged_function);
+	/*boss->calc_attack_vs_player(player->get_position(), { player->get_position().x,player->get_position().y + 5.0f,player->get_position().z }
+	, player->get_radius(), player->damaged_function);*/
 
 	//シーンリセット（仮置き）
 	if (mouse.get_button() & Mouse::BTN_ENTER)
@@ -64,7 +70,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 void SceneGame::render(float elapsed_time, Graphics& graphics)
 {
 	///////////////////////////////////////////////////////////////////
-	///						ディファ―ドレンダリング					///
+	///						ディファ―ドレンダリング				///
 	//////////////////////////////////////////////////////////////////
 	StageManager& stageManager = StageManager::Instance();
 	deferred->active(graphics);
@@ -105,10 +111,16 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	post_effect->end(graphics.get_dc().Get());
 
 	post_effect->blit(graphics);
+
 	//UI
 	operation_ui->begin(graphics.get_dc().Get());
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
 	operation_ui->end(graphics.get_dc().Get());	debug_gui();
+
+	//デバッグレンダー
+	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
+	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());
+	debug_figure->render_all_figures(graphics.get_dc().Get());
 	
 }
 

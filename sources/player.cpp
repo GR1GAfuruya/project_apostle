@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "Operators.h"
 #include "../external/magic_enum/include/magic_enum.hpp"
+#include "collision.h"
 void Player::initialize()
 {
 	//パラメーター初期化
@@ -15,13 +16,12 @@ void Player::initialize()
 	turn_speed = DirectX::XMConvertToRadians(720);
 	health = 1000;
 	max_health = 1000;
-	invinsible_timer = 0.0f;
+	invincible_timer = 0.0f;
 	jump_count = 1;
 	jump_speed = 27.0f;
 	scale.x = scale.y = scale.z = 0.05f;
 	radius = 1.0f;
 	height = 5.5f;
-	
 }
 
 Player::Player(Graphics& graphics, Camera* camera)
@@ -41,10 +41,12 @@ Player::Player(Graphics& graphics, Camera* camera)
 	game_pad = &Device::instance().get_game_pad();
 
 	sword_hand = model->get_bone_by_name("pelvis");
+	sword_bone = model->get_bone_by_name("thumb_01_r");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 	initialize();
 }
+
 
 //デストラクタ
 Player::~Player()
@@ -70,7 +72,12 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	//デバッグGUI描画
 	debug_gui();
 	attack1->debug_gui("player_attack1");
-	
+	DirectX::XMFLOAT3 pos = {}, up = {};
+	model->fech_by_bone(world, sword_bone, pos, up);
+
+	attack_sword_param.collision.start = pos;
+	attack_sword_param.collision.end = pos + Math::vector_scale(up, 4.5f);
+	attack_sword_param.collision.radius =0.5f;
 }
 
 //描画処理
@@ -189,7 +196,9 @@ void Player::on_landing()
 
 }
 
-
+void Player::on_damaged(int damage, float InvincibleTime)
+{
+}
 
 void Player::debug_gui()
 {
@@ -209,14 +218,6 @@ void Player::debug_gui()
 				//位置
 				ImGui::DragFloat3("Position", &position.x);
 				//回転
-				DirectX::XMFLOAT3 a{};
-				a.x = DirectX::XMConvertToDegrees(angle.x);
-				a.y = DirectX::XMConvertToDegrees(angle.y);
-				a.z = DirectX::XMConvertToDegrees(angle.z);
-				ImGui::DragFloat3("Angle", &a.x);
-				angle.x = DirectX::XMConvertToRadians(a.x);
-				angle.y = DirectX::XMConvertToRadians(a.y);
-				angle.z = DirectX::XMConvertToRadians(a.z);
 				DirectX::XMFLOAT3 forward;
 				DirectX::XMStoreFloat3(&forward, Math::get_posture_forward_vec(orientation));
 				ImGui::DragFloat3("forward", &forward.x);
@@ -231,7 +232,7 @@ void Player::debug_gui()
 				ImGui::DragFloat("height", &height);
 				ImGui::DragFloat("radius", &radius);
 				ImGui::DragFloat("gravity", &gravity);
-				ImGui::DragFloat("invinsible_timer", &invinsible_timer);
+				ImGui::DragFloat("invinsible_timer", &invincible_timer);
 				ImGui::DragFloat("maxMoveSpeed", &move_speed);
 				ImGui::DragFloat("avoidance_speed", &avoidance_speed);
 				ImGui::DragFloat("friction", &friction);
@@ -264,6 +265,16 @@ void Player::debug_gui()
 #endif // USE_IMGUI
 }
 
+void Player::calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position, float colider_radius,float colider_height)
+{
+	Collision::cylinder_vs_cylinder(colider_position, colider_radius, colider_height, position, radius, height, &position);
+}
 
-
+void Player::calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func)
+{
+	if (Collision::capsule_vs_capsule(capsule_start, capsule_end, colider_radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+	{
+		damaged_func(10, 0.1);
+	}
+}
 

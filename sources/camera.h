@@ -33,6 +33,12 @@ public:
     const DirectX::XMFLOAT3& get_trakking_target() const { return trakking_target; }
     // 角度
     void set_angle(const DirectX::XMFLOAT3& a) { angle = a; }
+    //視野角設定
+    void set_cape_vision(const float& cape) { this->cape_vision = cape; }
+    //遅延時間
+    void SetAttendRate(float rate) { attend_rate = rate; }
+    //対象との距離
+    const float& get_range() const { return range; }
     // 光のさす方向
     const DirectX::XMFLOAT4& get_light_direction() const { return light_direction; }
     // view
@@ -51,10 +57,7 @@ public:
     const float& get_cape_vision()const { return cape_vision; }
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
-    //視野角設定
-    void set_cape_vision(const float& cape) { this->cape_vision = cape; }
-
-    void SetAttendRate(float rate) { attend_rate = rate; }
+    
 
 private:
     void calc_free_target();

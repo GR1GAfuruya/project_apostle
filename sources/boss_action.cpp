@@ -239,3 +239,4 @@ void Boss::update_stun_state(Graphics& graphics, float elapsed_time, Stage* stag
 void Boss::update_walk_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 }
+

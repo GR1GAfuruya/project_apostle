@@ -90,8 +90,8 @@ void Camera::update(float elapsed_time, Stage* stage)
 		float aspect_ratio{ width / height };
 		static DirectX::XMFLOAT2 near_far = { 0.1f, 5000.0f };
 		Mouse& mouse = Device::instance().get_mouse();
-		if (mouse.get_button() & mouse.BTN_I) angle.x += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_K) angle.x -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+		if (mouse.get_button() & mouse.BTN_I) angle.x -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+		if (mouse.get_button() & mouse.BTN_K) angle.x += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 		if (mouse.get_button() & mouse.BTN_L) angle.y += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 		if (mouse.get_button() & mouse.BTN_J) angle.y -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 
@@ -101,7 +101,7 @@ void Camera::update(float elapsed_time, Stage* stage)
 		//カメラ縦操作
 		if (ay > 0.1f || ay < 0.1f)
 		{
-			angle.x += ay * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			angle.x -= ay * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 		}
 		//カメラ横操作
 		if (ax > 0.1f || ax < 0.1f)
@@ -147,6 +147,8 @@ void Camera::update_with_tracking(float elapsed_time, Stage* stage)
 
 	hit.distance = (std::max)(hit.distance, 0.5f);
 	hit.distance = (std::min)(hit.distance, range);
+
+
 	//注視点から後ろベクトル方向に一定距離離れたカメラ視点を求める
 	DirectX::XMFLOAT3 pos;
 	pos.x = trakking_target.x - front.x * hit.distance;
