@@ -258,6 +258,7 @@
     <ClCompile Include="sources\stage_main.cpp" />
     <ClCompile Include="sources\stage_manager.cpp" />
     <ClCompile Include="sources\static_mesh.cpp" />
+    <ClCompile Include="sources\sword.cpp" />
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\thunder.cpp" />
     <ClCompile Include="sources\tornado.cpp" />
@@ -331,6 +332,7 @@
     <ClInclude Include="sources\stage_main.h" />
     <ClInclude Include="sources\stage_manager.h" />
     <ClInclude Include="sources\static_mesh.h" />
+    <ClInclude Include="sources\sword.h" />
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />
     <ClInclude Include="sources\tornado.h" />

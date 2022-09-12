@@ -341,10 +341,8 @@ void Charactor::update_hrizontal_velocity(float elapsed_frame)
 		//–€ŽC‚É‚æ‚é‰¡•ûŒü‚ÌŒ¸‘¬ˆ—
 		if (length > friction)
 		{
-			float vx = velocity.x / length;
-			float vz = velocity.z / length;
-			velocity.x -= vx * friction;
-			velocity.z -= vz * friction;
+			(velocity.x < 0.0f) ? velocity.x += friction : velocity.x -= friction;
+			(velocity.z < 0.0f) ? velocity.z += friction : velocity.z -= friction;
 		}
 		else
 		{

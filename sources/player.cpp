@@ -22,26 +22,35 @@ void Player::initialize()
 	scale.x = scale.y = scale.z = 0.05f;
 	radius = 1.0f;
 	height = 5.5f;
+	friction = 2.0f;
+	acceleration = 3.5f;
+
+	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
+	state = State::IDLE;
+	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
+
+
 }
 
 Player::Player(Graphics& graphics, Camera* camera)
 {
+	//キャラクターモデル
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
-
+	//キャラが持つ剣
+	sword = std::make_unique<Sword>(graphics);
+	//攻撃時エフェクト
 	slash_efect = std::make_unique<Slash>(graphics.get_device().Get());
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
-	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-	state = State::IDLE;
+
 	
 	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
 	attack1.get()->initialize(graphics.get_dc().Get());
-	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
 	sword_hand = model->get_bone_by_name("pelvis");
-	sword_bone = model->get_bone_by_name("thumb_01_r");
+	sword_bone = model->get_bone_by_name("hand_r");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 	initialize();
@@ -67,17 +76,21 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	slash_efect->update(graphics,elapsed_time);
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
 
-	
 	model->update_animation(elapsed_time);
-	//デバッグGUI描画
-	debug_gui();
-	attack1->debug_gui("player_attack1");
-	DirectX::XMFLOAT3 pos = {}, up = {};
-	model->fech_by_bone(world, sword_bone, pos, up);
+	DirectX::XMFLOAT3 sword_pos;
+	//DirectX::XMFLOAT4 sword_hand_ori = { 0,0,0,1 };
+	DirectX::XMFLOAT4X4 sword_hand_ori = {};
+	model->fech_by_bone(transform, sword_bone, sword_pos, &sword_hand_ori);
 
-	attack_sword_param.collision.start = pos;
-	attack_sword_param.collision.end = pos + Math::vector_scale(up, 4.5f);
+	sword->set_position(sword_pos);
+	//sword->set_orientation(sword_hand_ori);
+	
+	DirectX::XMFLOAT3 up = { sword_hand_ori._11, sword_hand_ori._12, sword_hand_ori._13 };
+	sword->set_sword_dir(up);
+	attack_sword_param.collision.start = sword_pos;
+	attack_sword_param.collision.end = sword_pos + Math::vector_scale(up, 4.5f);
 	attack_sword_param.collision.radius =0.5f;
+	
 }
 
 //描画処理
@@ -85,14 +98,21 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	// 拡大縮小（S）・回転（R）・平行移動（T）行列を計算する
 	// スタティックメッシュ
-	world = Math::calc_world_matrix(scale, orientation, position);
-	graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
+	transform = Math::calc_world_matrix(scale, orientation, position);
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+	//剣描画
+	sword->render(graphics);
 }
 
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
 	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
+
+	attack1->debug_gui("player_attack1");
+	//デバッグGUI描画
+	debug_gui();
+
 }
 
 
@@ -104,10 +124,12 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 	float ax = game_pad.get_axis_LX();
 	float ay = game_pad.get_axis_LY();
 
-	//移動ベクトルはXZ平面に水平なベクトルになるようにする
-
+	//コントローラーのスティック入力値が一定以下なら入力をはじく
+	//if (fabs(ax) > 0.0f && fabs(ax) < 0.5f)  ax += -1.4f * (ax * ax) + 0.5f;
+	//if (fabs(ay) > 0.0f && fabs(ay) < 0.5f)  ay += -1.4f * (ay * ay) + 0.5f;
+	if (fabs(ax) < 0.5f)  ax = 0.0f;
+	if (fabs(ay) < 0.5f)  ay = 0.0f;
 	//カメラ右方向ベクトルをXZ単位ベクトルに変換
-
 	float camera_forward_x = camera->get_forward().x;
 	float camera_forward_z = camera->get_forward().z;
 	float camera_forward_lengh = sqrtf(camera_forward_x * camera_forward_x + camera_forward_z * camera_forward_z);
@@ -236,6 +258,7 @@ void Player::debug_gui()
 				ImGui::DragFloat("maxMoveSpeed", &move_speed);
 				ImGui::DragFloat("avoidance_speed", &avoidance_speed);
 				ImGui::DragFloat("friction", &friction);
+				ImGui::DragFloat("acceleration", &acceleration);
 				ImGui::DragFloat("jump_speed", &jump_speed);
 				ImGui::DragFloat("air_control", &air_control);
 				ImGui::Checkbox("is_ground", &is_ground);
@@ -255,6 +278,7 @@ void Player::debug_gui()
 				ImGui::DragInt("frame_index", &model->anime_param.frame_index);
 				ImGui::Checkbox("end_flag", &model->anime_param.end_flag);
 				ImGui::DragFloat("current_time", &model->anime_param.current_time);
+				ImGui::DragFloat("playback_speed", &model->anime_param.playback_speed,0.1f);
 				ImGui::DragFloat("blend_time", &model->anime_param.blend_time);
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 

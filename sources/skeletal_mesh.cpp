@@ -96,7 +96,7 @@ void SkeletalMesh::update_animation(float elapsed_time)
 			//アニメーションが終端まで行っていなければ時間を進める
 			if (!is_end_animation())
 			{
-				anime_param.current_time += elapsed_time;
+				anime_param.current_time += anime_param.playback_speed * elapsed_time;
 			}
 		}
 		anime_param.animation_keyframe = anime_param.animation.sequence.at(anime_param.frame_index);
@@ -112,6 +112,7 @@ void SkeletalMesh::play_animation(int index, bool loop, float blend_seconds)
 	anime_param.current_index = index;//どのアニメーションを再生するか設定
 	anime_param.frame_index = 0;
 	anime_param.current_time = 0.0f;//再生してからの時間
+	anime_param.playback_speed = 1.0f;//アニメーション再生速度を設定
 	anime_param.loop_flag = loop;//ループ再生するかどうかを設定
 	anime_param.end_flag = false;
 	anime_param.blend_time = 0.0f;
@@ -165,7 +166,33 @@ const skeleton::bone& SkeletalMesh::get_bone_by_name(std::string name)
 	return dummy;
 }
 
-void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT3& up)
+//void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4* ori)
+//{
+//	if (&anime_param.animation_keyframe && (&anime_param.animation_keyframe)->nodes.size() > 0)
+//	{
+//		const animation::keyframe::node& bone_node{ (&anime_param.animation_keyframe)->nodes.at(bone.node_index) };
+//		DirectX::XMFLOAT4X4 w;
+//		XMStoreFloat4x4(&w, XMLoadFloat4x4(&bone_node.global_transform) * XMLoadFloat4x4(&world));
+//
+//		pos = { w._41,w._42,w._43 };
+//		DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
+//
+//		DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
+//		DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
+//		DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
+//
+//		//引数により姿勢も要求されている場合
+//		if (ori)
+//		{
+//			DirectX::XMFLOAT4X4 r = {};
+//			DirectX::XMStoreFloat4x4(&r, R);
+//			////回転行列からクォータニオンに変換
+//			//Math::transform_rotatemat_to_quaternion(*ori, r);
+//		}
+//		
+//	}
+//}
+void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4X4* mat)
 {
 	if (&anime_param.animation_keyframe && (&anime_param.animation_keyframe)->nodes.size() > 0)
 	{
@@ -180,10 +207,14 @@ void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton
 		DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
 		DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
 
-		DirectX::XMFLOAT4X4 r = {};
-		DirectX::XMStoreFloat4x4(&r, R);
-		DirectX::XMVECTOR right_vec = { r._21, r._22, r._23 };
-		XMStoreFloat3(&up, right_vec);
+		//引数により姿勢も要求されている場合
+		if (mat)
+		{
+			DirectX::XMStoreFloat4x4(mat, R);
+			////回転行列からクォータニオンに変換
+			//Math::transform_rotatemat_to_quaternion(*ori, r);
+		}
+
 	}
 }
 

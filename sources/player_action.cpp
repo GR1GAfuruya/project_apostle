@@ -74,14 +74,16 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 
 void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
-	DirectX::XMFLOAT3 sword_pos, up;
-	model->fech_by_bone(world, sword_hand, sword_pos, up);
-	DirectX::XMFLOAT3 slash_dir_vec = Math::get_posture_forward(orientation);
+	DirectX::XMFLOAT3 sword_pos;
+	DirectX::XMFLOAT4X4 bone_ori = {};
+	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	DirectX::XMFLOAT3 slash_dir = Math::get_posture_forward(orientation);
+	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
 	if (model->anime_param.frame_index == 20 / 2)
 	{
-		slash_efect->play(sword_pos + (up * 3.2f), slash_dir_vec, 45, false);
+		slash_efect->play(sword_pos + (up * 3.2f), slash_dir, 45, false);
 	}
-	if (model->anime_param.frame_index > 45 / 2)
+	if (model->anime_param.frame_index > 40 / 2)
 	{
 		if (model->is_end_animation())
 		{
@@ -92,7 +94,6 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 		{
 			transition_attack_combo2_state();
 		}
-
 	}
 
 	//‘¬—Íˆ—XV
@@ -101,15 +102,17 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 
 void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
-	DirectX::XMFLOAT3 sword_pos, up;
-	model->fech_by_bone(world, sword_hand, sword_pos, up);
+	DirectX::XMFLOAT3 sword_pos;
+	DirectX::XMFLOAT4X4 bone_ori = {};
+	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
 	DirectX::XMFLOAT3 slash_dir = Math::get_posture_forward(orientation);
-	if (model->anime_param.frame_index == 21 / 2)
+	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
+	if (model->anime_param.frame_index == 17 / 2)
 	{
 		slash_efect->play(sword_pos + (up * 1.2f), slash_dir,10, true);
 	}
 
-	if (model->anime_param.frame_index > 55 / 2)
+	if (model->anime_param.frame_index > 45 / 2)
 	{
 		if (model->is_end_animation())
 		{
@@ -130,19 +133,19 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	DirectX::XMFLOAT3 sword_pos, up;
-	model->fech_by_bone(world, sword_hand, sword_pos, up);
+	model->fech_by_bone(transform, sword_hand, sword_pos);
 	DirectX::XMFLOAT3 slash_dir_vec = Math::get_posture_forward(orientation);
 	//ˆêU‚è–Ú‚ÌŽaŒ‚
-	if (model->anime_param.frame_index == 40 / 2)
+	if (model->anime_param.frame_index == 20 / 2)
 		slash_efect->play(sword_pos, slash_dir_vec, 25, false);
 	//“ñU‚è–Ú‚ÌŽaŒ‚
-	if (model->anime_param.frame_index == 60 / 2)
+	if (model->anime_param.frame_index == 30 / 2)
 		slash_efect->play(sword_pos, slash_dir_vec, 0, true);
 	//ŽOU‚è–Ú‚ÌŽaŒ‚
-	if (model->anime_param.frame_index == 80 / 2)
+	if (model->anime_param.frame_index == 55 / 2)
 		slash_efect->play(sword_pos, slash_dir_vec, -25, false);
 
-	if (model->anime_param.frame_index > 120 / 2)
+	if (model->anime_param.frame_index > 113 / 2)
 	{
 		if (model->is_end_animation())
 		{

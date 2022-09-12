@@ -81,7 +81,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	boss->render_d(graphics,elapsed_time);
 	
 	stageManager.render(elapsed_time, graphics);
-	//
+	//ここで各種ライティング（環境光、平行光、点光源）
 	deferred->deactive(graphics,*light_manager);
 	//レンダーターゲットを戻す
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
@@ -92,7 +92,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	///						フォワードレンダリング					///
 	//////////////////////////////////////////////////////////////////
 	graphics.shader_activate(Graphics::SHADER_TYPES::LAMBERT, RENDER_TYPE::Forward);
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	//前後処理を正しく行うためディファ―ドの深度ステンシルビューを使用する
 	//ポストエフェクトによりレンダーターゲットビューが変わっているので対応させる
 	ID3D11RenderTargetView* render_target_views{};

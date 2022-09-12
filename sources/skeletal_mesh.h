@@ -19,6 +19,7 @@ public:
 		int old_anime_index = 0;//直前に再生していたアニメーション
 		int current_index = 0;//再生するアニメーションの種類
 		int frame_index = 0;
+		float playback_speed = 0.0f;//そのアニメーションの再生速度
 		float current_time = 0.0f;//そのアニメーションが何秒であるか
 		bool loop_flag = false;//ループ再生するアニメーションか
 		bool end_flag = false;////アニメーションの終わりか
@@ -46,7 +47,8 @@ public:
 	void blend_animations(const animation::keyframe* keyframes[2], float factor, animation::keyframe& keyframe);
 
 	std::shared_ptr<ModelResource> model_resource;
-	void fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT3& up);
+	//void fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4* ori = nullptr);
+	void fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4X4* mat = nullptr);
 
 	const skeleton::bone& get_bone_by_name(std::string name);
 
