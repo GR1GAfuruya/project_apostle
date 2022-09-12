@@ -6,6 +6,7 @@
 #include "gpu_particle.h"
 #include "slash.h"
 #include "tornado.h"
+#include "sword.h"
 //#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
@@ -134,9 +135,6 @@ private:
 	GamePad* game_pad;
 	Mouse* mouse;
 
-	DirectX::XMFLOAT4X4 world;
-
-
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
@@ -155,6 +153,7 @@ private:
 
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr<Slash> slash_efect;
+	std::unique_ptr<Sword> sword;
 	skeleton::bone sword_hand;
 	skeleton::bone sword_bone;
 

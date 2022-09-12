@@ -2,12 +2,13 @@
 
 #include <DirectXMath.h>
 #include "move_behavior.h"
+#include "generic_frequent_entities.h"
 #include <functional>
 
 typedef std::function<void(int, float)> AddDamageFunc;
 
 //キャラクター
-class Charactor :public MoveBehavior
+class Charactor :public MoveBehavior,public GenericFrequentEntities
 {
 public:
 	Charactor() {}

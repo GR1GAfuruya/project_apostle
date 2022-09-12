@@ -70,7 +70,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		aura[i]->constants->data.scroll_direction.y = 1.5f;
 		aura[i]->constants->data.threshold = 0.0f;
 		aura[i]->rot_speed = 520;
-		aura[i]->set_scale({ 2.0f, 2.0f, 2.0f });
+		aura[i]->set_scale({ 2.0f, 2.0f, 1.5f });
 	}
 	aura[1]->set_rotate_quaternion(AXIS::FORWARD, 180);
 
@@ -128,9 +128,9 @@ void ChargeAttack::render(Graphics& graphics)
 		core->render(graphics);
 
 
+		tornado->render(graphics);
 		wave->render(graphics);
 		particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
-		tornado->render(graphics);
 	}
 }
 
@@ -220,8 +220,8 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	wave->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
 
 	//竜巻エフェクト
-	float scale_z = lerp(tornado->get_scale().z, 50.0f, 5.0f * elapsed_time);
-	tornado->set_scale({ tornado->get_scale().x,tornado->get_scale().y,scale_z });
+	float scale_z = lerp(tornado->get_scale().z, 45.0f, 5.0f * elapsed_time);
+	tornado->set_scale({ tornado->get_scale().x, tornado->get_scale().y, scale_z });
 	tornado->constants->data.scroll_speed += elapsed_time;
 	tornado->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
 

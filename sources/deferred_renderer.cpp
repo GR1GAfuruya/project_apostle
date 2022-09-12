@@ -70,8 +70,8 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 	graphics.get_dc()->OMSetRenderTargets(
 		1, &rtv, depth_stencil_view.Get());
 	graphics.get_dc()->ClearRenderTargetView(l_composite->get_rtv(), clearColor);
+	//
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, deferred_composite_light.Get());
-	//ブレンドステートを戻す
 
 	light_manager.debug_gui();
 }

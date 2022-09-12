@@ -160,6 +160,9 @@
     <Filter Include="Shaders\debug">
       <UniqueIdentifier>{bb5c8544-61fc-48e6-b286-7638bd64552a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Wepon">
+      <UniqueIdentifier>{dab4fd8d-dbcd-406b-9d17-ee0a49b16d2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -365,6 +368,9 @@
     </ClCompile>
     <ClCompile Include="sources\generic_frequent_entities.cpp">
       <Filter>sources\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\sword.cpp">
+      <Filter>sources\Wepon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -587,6 +593,9 @@
     <ClInclude Include="sources\generic_frequent_entities.h">
       <Filter>sources\Framework</Filter>
     </ClInclude>
+    <ClInclude Include="sources\sword.h">
+      <Filter>sources\Wepon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\effect_ps.hlsl">
@@ -790,9 +799,6 @@
     <FxCompile Include="HLSL\boss_charge_attack_update.hlsl">
       <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\wave_ps.hlsl">
-      <Filter>Shaders\Effect\Aura</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\player_skill1_emit_cs.hlsl">
       <Filter>Shaders\Effect\PlayerEffect</Filter>
     </FxCompile>
@@ -804,6 +810,9 @@
     </FxCompile>
     <FxCompile Include="HLSL\debug_figure_vs.hlsl">
       <Filter>Shaders\debug</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\wave_ps.hlsl">
+      <Filter>Shaders\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

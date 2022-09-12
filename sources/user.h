@@ -525,7 +525,13 @@ namespace Math
         }
         return Orientation_;
     }
-
+    //--------------------------------------------------------------
+   //
+   //  引数：現在の回転姿勢、軸、回転角,経過時間、レート
+   //
+   //--------------------------------------------------------------
+   //  戻り値：回転後の姿勢
+   //--------------------------------------------------------------
     inline DirectX::XMFLOAT4 rot_quaternion(DirectX::XMFLOAT4 Orientation_, DirectX::XMFLOAT3 Axis_, float Radian_,float elapsed_time,float rate = 10)
     {
         if (fabs(Radian_) > 1e-8f)
@@ -545,7 +551,13 @@ namespace Math
         }
         return Orientation_;
     }
-
+    //--------------------------------------------------------------
+   //
+   //  引数：現在の回転姿勢、軸、方向
+   //
+   //--------------------------------------------------------------
+   //  戻り値：指定方向への回転後の姿勢
+   //--------------------------------------------------------------
     inline DirectX::XMFLOAT4 rot_quaternion_dir(DirectX::XMFLOAT4 Orientation_, DirectX::XMFLOAT3 OriAxis_, DirectX::XMFLOAT3 DirVec_)
     {
         //法線のベクトル
@@ -574,7 +586,87 @@ namespace Math
         }
         return Orientation_;
     }
+    //--------------------------------------------------------------
+   //
+   //  引数：変換後の回転行列、変換元のクォータニオン
+   //
+   //--------------------------------------------------------------
+   //  クォータニオンから回転行列に変換
+   //--------------------------------------------------------------
+    inline void transform_quaternion_to_rotatemat(DirectX::XMFLOAT4X4& m,
+        DirectX::XMFLOAT4 q)
+    {
+        m._11 = 1.0f - 2.0f * q.y * q.y - 2.0f * q.z * q.z;
+        m._12 = 2.0f * q.x * q.y + 2.0f * q.w * q.z;
+        m._13 = 2.0f * q.x * q.z - 2.0f * q.w * q.y;
+        
+        m._21 = 2.0f * q.x * q.y - 2.0f * q.w * q.z;
+        m._22 = 1.0f - 2.0f * q.x * q.x - 2.0f * q.z * q.z;
+        m._23 = 2.0f * q.y * q.z + 2.0f * q.w * q.x;
+        
+        m._31 = 2.0f * q.x * q.z + 2.0f * q.w * q.y;
+        m._32 = 2.0f * q.y * q.z - 2.0f * q.w * q.x;
+        m._33 = 1.0f - 2.0f * q.x * q.x - 2.0f * q.y * q.y;
+        m._44 = 1.0f;
+    }
 
+    //--------------------------------------------------------------
+    //  回転行列からクォータニオンに変換
+    //--------------------------------------------------------------
+   //
+   //  引数：変換後のクォータニオン、変換元の回転行列
+   //
+   //--------------------------------------------------------------
+    inline bool transform_rotatemat_to_quaternion(DirectX::XMFLOAT4& q,
+        DirectX::XMFLOAT4X4 m)
+    {
+        // 最大成分を検索
+        float elem[4]; // 0:x, 1:y, 2:z, 3:w
+        elem[0] = m._11 - m._22 - m._33 + 1.0f;
+        elem[1] = -m._11 + m._22 - m._33 + 1.0f;
+        elem[2] = -m._11 - m._22 + m._33 + 1.0f;
+        elem[3] = m._11 + m._22 + m._33 + 1.0f;
+
+        unsigned biggestIndex = 0;
+        for (int i = 1; i < 4; i++) {
+            if (elem[i] > elem[biggestIndex])
+                biggestIndex = i;
+        }
+
+        if (elem[biggestIndex] < 0.0f)
+            return false; // 引数の行列に間違いあり！
+
+        // 最大要素の値を算出
+        float* Q[4] = { &q.x, &q.y, &q.z, &q.w };
+        float v = sqrtf(elem[biggestIndex]) * 0.5f;
+        *Q[biggestIndex] = v;
+        float mult = 0.25f / v;
+
+        switch (biggestIndex) {
+        case 0: // x
+            *Q[1] = (m._12 + m._21) * mult;
+            *Q[2] = (m._31 + m._13) * mult;
+            *Q[3] = (m._23 - m._32) * mult;
+            break;
+        case 1: // y
+            *Q[0] = (m._12 + m._21) * mult;
+            *Q[2] = (m._23 + m._32) * mult;
+            *Q[3] = (m._31 - m._13) * mult;
+            break;
+        case 2: // z
+            *Q[0] = (m._31 + m._13) * mult;
+            *Q[1] = (m._23 + m._32) * mult;
+            *Q[3] = (m._12 - m._21) * mult;
+            break;
+        case 3: // w
+            *Q[0] = (m._23 - m._32) * mult;
+            *Q[1] = (m._31 - m._13) * mult;
+            *Q[2] = (m._12 - m._21) * mult;
+            break;
+        }
+
+        return true;
+    }
     //--------------------------------------------------------------
     //  ベクトル取得
     //--------------------------------------------------------------

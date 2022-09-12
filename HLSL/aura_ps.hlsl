@@ -10,7 +10,9 @@ float4 main(VS_OUT pin) : SV_TARGET
     float alpha = texture_maps[1].Sample(sampler_border_black, pin.texcoord.yx).r;
     float4 tex = texture_maps[1].Sample(sampler_border_black, pin.texcoord.yx);
     alpha = step(threshold, alpha);
+    
+    
     float4 color = float4(particle_color.rgb * tex.rgb, alpha * particle_color.a);
-    clip(tex.rgba - 0.01);
+   // clip(tex.rgba - 0.01);
     return color;
 }
