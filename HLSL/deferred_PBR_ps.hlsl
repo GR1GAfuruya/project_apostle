@@ -76,10 +76,10 @@ PS_OUT main(VS_OUT pin) : SV_TARGET
     float3 specColor = albedo_color.rgb;
 
     // 金属度
-    float metallic = metallic_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).a;
+    float metallic = metallic_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
    
-    // 滑らかさ
-    float smooth =  smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
+    // 滑らかさ //計算時にラフネスにするので、ここの値が小さいほど粗くなる
+    float smooth =  smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).g;
 
     float4 ao_map = ambient_oclusion_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
 
@@ -99,9 +99,8 @@ PS_OUT main(VS_OUT pin) : SV_TARGET
     output.depth = float4(dist, 0, 0, 1);
     output.normal = float4(normal, 1);
     output.position = float4(pin.world_position.xyz, 1);
-    output.metallic_smooth = float4(0,0,0,1);
-    output.metallic_smooth.r = metallic;
-    output.metallic_smooth.g = smooth;
+    output.metallic_smooth = float4(metallic, smooth, 0, 1);
+
     output.emissive = emissive_map;
     return output;
 }

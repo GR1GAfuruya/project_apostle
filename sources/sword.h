@@ -19,7 +19,7 @@ public:
 	//位置設定
 	void set_position(const DirectX::XMFLOAT3& position) { this->position = position; }
 	//剣の向きをボーンのクォータニオンに合わせる
-	void set_orientation(const DirectX::XMFLOAT4& orientation) { this->orientation = orientation; }
+	void set_parent_transform(const DirectX::XMFLOAT4X4& parent_transform) { this->parent_transform = parent_transform; }
 	void set_sword_dir(const DirectX::XMFLOAT3 dir);
 private:
 
@@ -27,6 +27,13 @@ private:
 	DirectX::XMFLOAT3	scale = { 1, 1, 1 };
 	DirectX::XMFLOAT4 orientation{ 0,0,0,1 };
 	DirectX::XMFLOAT4X4	transform = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+	};
+
+	DirectX::XMFLOAT4X4	parent_transform = {
 	1, 0, 0, 0,
 	0, 1, 0, 0,
 	0, 0, 1, 0,

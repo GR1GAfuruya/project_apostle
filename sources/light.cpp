@@ -56,7 +56,7 @@ void PointLight::debug_gui(int unique_id)
 	{
 		ImGui::DragFloat3(string("position " + id).c_str(), &light_constants->data.dir_light_dir.x, 0.5f);
 		ImGui::DragFloat3(string("color " + id).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0, 255);
-		ImGui::DragFloat(string("dir " + id).c_str(), &light_constants->data.dir_light_dir.w,0.1f,0,30);
+		ImGui::DragFloat(string("distance " + id).c_str(), &light_constants->data.dir_light_dir.w,0.1f,1,500);
 	}
 	ImGui::End();
 #endif // 0
