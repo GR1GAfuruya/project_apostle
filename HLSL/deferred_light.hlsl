@@ -21,7 +21,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 	//0624 点光源
     float3 PLightPos = defferd_light_dir.xyz;
     float4 P = position_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
-    float3 PLightDir = P - PLightPos;
+    float3 PLightDir = P.xyz - PLightPos;
 	// ライトタイプ判定(0:平行光 1:点光源)
     float lighttype = step(0.01, defferd_light_dir.w);
 	// 方向決定(平行光:w=0.0 点光源:w>0)
@@ -44,6 +44,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float i = -dot(N, L);
     i = saturate(i); // 0.0～1.0
     tex.rgb = C * i; // ライトカラー決定
+  //  tex.rgb += emissive_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);; // ライトカラー決定
    /// return float4(0, 0, 0, 1.0);
     return tex;
 }

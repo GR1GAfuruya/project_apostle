@@ -79,17 +79,14 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	model->update_animation(elapsed_time);
 	DirectX::XMFLOAT3 sword_pos;
 	//DirectX::XMFLOAT4 sword_hand_ori = { 0,0,0,1 };
-	DirectX::XMFLOAT4X4 sword_hand_ori = {};
-	model->fech_by_bone(transform, sword_bone, sword_pos, &sword_hand_ori);
+	DirectX::XMFLOAT4X4 sword_hand_mat = {};
+	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
 
-	sword->set_position(sword_pos);
-	//sword->set_orientation(sword_hand_ori);
+	sword->set_parent_transform(sword_hand_mat);
 	
-	DirectX::XMFLOAT3 up = { sword_hand_ori._11, sword_hand_ori._12, sword_hand_ori._13 };
-	sword->set_sword_dir(up);
-	attack_sword_param.collision.start = sword_pos;
-	attack_sword_param.collision.end = sword_pos + Math::vector_scale(up, 4.5f);
-	attack_sword_param.collision.radius =0.5f;
+	//attack_sword_param.collision.start = sword_pos;
+	//attack_sword_param.collision.end = sword_pos + Math::vector_scale(up, 4.5f);
+	//attack_sword_param.collision.radius =0.5f;
 	
 }
 
@@ -127,8 +124,8 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 	//コントローラーのスティック入力値が一定以下なら入力をはじく
 	//if (fabs(ax) > 0.0f && fabs(ax) < 0.5f)  ax += -1.4f * (ax * ax) + 0.5f;
 	//if (fabs(ay) > 0.0f && fabs(ay) < 0.5f)  ay += -1.4f * (ay * ay) + 0.5f;
-	if (fabs(ax) < 0.5f)  ax = 0.0f;
-	if (fabs(ay) < 0.5f)  ay = 0.0f;
+	if (fabs(ax) < 0.3f)  ax = 0.0f;
+	if (fabs(ay) < 0.3f)  ay = 0.0f;
 	//カメラ右方向ベクトルをXZ単位ベクトルに変換
 	float camera_forward_x = camera->get_forward().x;
 	float camera_forward_z = camera->get_forward().z;

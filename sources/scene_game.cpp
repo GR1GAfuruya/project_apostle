@@ -30,7 +30,7 @@ void SceneGame::initialize(Graphics& graphics)
 	skybox = std::make_unique<SkyBox>(graphics);
 	std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(1, -30, 1), 30.0f, 0.0f, 1.0f,1.0f);
 	light_manager->register_light(p);
-	std::shared_ptr<DirectionalLight> d = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(1, -1, 1), 0.4f, 0.0f, 0.0f);
+	std::shared_ptr<DirectionalLight> d = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(1, -1, 1), 0.7f, 0.3f, 0.2f);
 	light_manager->register_light(d);
 }
 
@@ -84,7 +84,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//ここで各種ライティング（環境光、平行光、点光源）
 	deferred->deactive(graphics,*light_manager);
 	//レンダーターゲットを戻す
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
 	post_effect->begin(graphics.get_dc().Get());
 	deferred->render(graphics);
 
@@ -100,10 +100,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,	deferred->get_dsv());
 	//スカイボックス
 	skybox->render(graphics);
-	//プレイヤー（フォワード）
-	player->render_f(graphics, elapsed_time, camera.get());
 	//ボス（フォワード）
 	boss->render_f(graphics, elapsed_time);
+	//プレイヤー（フォワード）
+	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
 	field_spark_particle->render(graphics.get_dc().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);

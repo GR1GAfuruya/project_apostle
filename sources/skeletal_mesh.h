@@ -50,6 +50,8 @@ public:
 	//void fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4* ori = nullptr);
 	void fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4X4* mat = nullptr);
 
+	void fech_bone_world_matrix(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT4X4* mat);
+
 	const skeleton::bone& get_bone_by_name(std::string name);
 
 };

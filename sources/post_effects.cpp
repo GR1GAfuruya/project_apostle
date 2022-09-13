@@ -73,6 +73,8 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 			ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
 			ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
 			ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 0.0f, 10.0f);
+			ImGui::DragFloat("meta", &cb_post_effect->data.ray_power, 1, 1.0f, 20.0f);
+			ImGui::DragFloat("smo", &cb_post_effect->data.origin.x, 0.1f, 0.0f, 10.0f);
 
 		}
 	}

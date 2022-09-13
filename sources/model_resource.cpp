@@ -227,9 +227,18 @@ void ModelResource::create_com_objects(ID3D11Device* device, const char* fbx_fil
 			}
 			else
 			{
-				make_dummy_texture(device,
-					iterator->second.shader_resource_views[texture_index].GetAddressOf(),
-					texture_index == 1 ? 0xFFFF7F7F : 0xFFFFFFFF, 16);
+				if (texture_index == 0 || texture_index == 1)
+				{
+					make_dummy_texture(device,
+						iterator->second.shader_resource_views[texture_index].GetAddressOf(),
+						texture_index == 1 ? 0xFFFF7F7F : 0xFFFFFFFF, 16);
+				}
+				else
+				{
+					make_dummy_texture(device,
+						iterator->second.shader_resource_views[texture_index].GetAddressOf(),
+						0x0000007F, 16);
+				}
 			}
 		}
 	}

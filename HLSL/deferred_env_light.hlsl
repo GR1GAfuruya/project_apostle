@@ -49,18 +49,18 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
 	
 	//Roughness表現
-    float roughness = metal_smooth_map.Sample(sampler_states[LINEAR], pin.texcoord).g;
+    float Roughness = 1 - metal_smooth_map.Sample(sampler_states[LINEAR], pin.texcoord).g;
   
 	//R		0	0.1	   0.25     0.4	  1.0
 	//N		0   0.45   0.72     0.81  1.0      //正規化状態
 	//Lv	0	5	   8	    9 	  11
 	//1-R	1	0.9	   0.75		0.6   0.0
 	//1-	1   0.55   0.28     0.19  0.0
-    float level = pow(roughness, 4.0);
+    float level = pow(Roughness, 1.0);
     level =  level;
     level *= 11;
 	//ミップマップを利用してぼかし
-    float4 light = env_map.SampleLevel(sampler_states[LINEAR], uv, level);
+    float3 light = env_map.SampleLevel(sampler_states[LINEAR], uv, level);
 	
     return float4(light.rgb, 1.0);
 }

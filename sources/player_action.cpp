@@ -145,9 +145,9 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 	if (model->anime_param.frame_index == 55 / 2)
 		slash_efect->play(sword_pos, slash_dir_vec, -25, false);
 
-	if (model->anime_param.frame_index > 113 / 2)
+	if (model->anime_param.frame_index > 75 / 2)
 	{
-		if (model->is_end_animation())
+		if (model->anime_param.frame_index > 95 / 2 || model->is_end_animation())
 		{
 			transition_idle_state();
 		}

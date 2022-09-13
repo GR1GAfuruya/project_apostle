@@ -17,20 +17,17 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 tex = albedo_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
     float4 color = tex;
     float4 light = emissive_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
+#if 0
     //バグってるので1次的に
     return tex * light;
-    #if 0
+#else  
   //  light = 0;
     //メタリック
     float metallic = metal_smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
  
-    metallic = 1 - metallic;
     float3 m1 = color.rgb * light.rgb;
     float3 m0 = color.rgb * 0.4;
-    m0 += light.rgb * 0.25;
-    //m0 = 0;
-    //m1 = 0;
-    //color.rgb = lerp(m0, m1, 0);
+    m0 += light.rgb * 0.05;
     color.rgb = lerp(m0, m1, metallic);
 
     //フレネル反射
@@ -42,7 +39,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 N = normal_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
     float NoLight = 1.0 - length(N);
     NoLight = step(0.9, NoLight);
-    N = N * 2.0 - 1.0;//0<-->1 -1<-->+1
+    N = N * 2.0 - 1.0; //0<-->1 -1<-->+1
     N = normalize(N);
 	// 内積で視線と法線の向き合い具合
     float d = dot(-E, N);
