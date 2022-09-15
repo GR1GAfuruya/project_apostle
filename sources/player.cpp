@@ -295,6 +295,7 @@ void Player::calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFL
 {
 	if (Collision::capsule_vs_capsule(capsule_start, capsule_end, colider_radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
 	{
+		//攻撃対象に与えるダメージ量と無敵時間
 		damaged_func(10, 0.1);
 	}
 }

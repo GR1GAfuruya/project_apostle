@@ -29,11 +29,17 @@ public:
 	//プレイヤーの腰当たりの位置
 	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + height, position.z); }
 
-	//当たり判定
+	//プレイヤーのコリジョンと敵の当たり判定
 	void calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position,float colider_radius, float colider_height);
 
+	//プレイヤーの攻撃と敵の当たり判定
 	void calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
-	/////////////アニメーション////////////////
+
+	//==============================================================
+	// 
+	// 構造体、列挙型
+	// 
+	//==============================================================
 	//アニメーション
 	enum  PlayerAnimation
 	{
@@ -73,8 +79,10 @@ public:
 		float power;//攻撃力
 		float invinsible_time;//攻撃対象に課す無敵時間
 	};
-
-	//--------定数--------//
+	//--------------------------------------------------------------
+	//  定数
+	//--------------------------------------------------------------
+	
 	 //攻撃1撃目の猶予時間
 	static constexpr float ATTACK_TYPE1_MAX_TIME = 0.3f;
 	//攻撃2撃目の猶予時間
@@ -85,8 +93,13 @@ public:
 
 
 private:
-	//--------プライベート関数--------//
-	//////遷移
+	//==============================================================
+	// 
+	// プライベート関数
+	// 
+	//==============================================================
+
+	//遷移
 	void transition_idle_state();
 	void transition_attack_combo1_state();
 	void transition_attack_combo2_state();
@@ -111,7 +124,6 @@ private:
 	//void update_landing_state(float elapsed_time, Camera* camera);
 
 	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	ActUpdate p_update = &Player::update_idle_state;
 	//
 	void Attack(Graphics& graphics, float elapsed_time);
 
@@ -127,6 +139,12 @@ private:
 
 	void on_damaged(int damage, float InvincibleTime);
 
+	//==============================================================
+	// 
+	// 変数
+	// 
+	//==============================================================
+	ActUpdate p_update = &Player::update_idle_state;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 
@@ -134,7 +152,6 @@ private:
 
 	GamePad* game_pad;
 	Mouse* mouse;
-
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
@@ -148,8 +165,12 @@ private:
 	//ジャンプ可能回数
 	int jump_limit = 1;
 	float avoidance_speed = 50;
+	bool display_player_imgui = false;
+	/*-------攻撃関連--------------------------*/
 	//攻撃時間
 	float attack_time;
+	//攻撃力
+	int add_damage;
 
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr<Slash> slash_efect;
@@ -157,11 +178,10 @@ private:
 	skeleton::bone sword_hand;
 	skeleton::bone sword_bone;
 
-	bool display_player_imgui = false;
 	//当たり判定用変数
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };
 	AttackParam attack_sword_param;
-	public:
+public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
 	AddDamageFunc damaged_function;
 

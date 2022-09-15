@@ -42,11 +42,25 @@ void SceneGame::finalize()
 void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
 	StageManager& stageManager = StageManager::Instance();
+	//カメラの更新
 	camera->update(elapsed_time, stage.get());
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_waist_position());
+
+	//プレイヤーの更新
 	player->update(graphics, elapsed_time, camera.get(), stage.get());
+
+	player->calc_collision_vs_enemy(boss->boss_collision.position, boss->boss_collision.radius, boss->boss_collision.height);
+	
+	player->calc_attack_vs_enemy(boss->boss_collision.position, boss->boss_collision.position, boss->boss_collision.height / 2, boss->damaged_function);
+
+
+	//ボスの更新
 	boss->update(graphics, elapsed_time, stage.get());
+	
+	//ボスの攻撃対象を設定
+	boss->set_location_of_attack_target(player->get_position());
+
 	stageManager.update(elapsed_time);
 
 	//particles->update(graphics,elapsed_time);
@@ -54,9 +68,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
 
-	player->calc_collision_vs_enemy(boss->boss_collision.position, boss->boss_collision.radius, boss->boss_collision.height);
-
-	player->calc_attack_vs_enemy(boss->boss_collision.position, boss->boss_collision.position, boss->boss_collision.height/2, boss->damaged_function);
 	/*boss->calc_attack_vs_player(player->get_position(), { player->get_position().x,player->get_position().y + 5.0f,player->get_position().z }
 	, player->get_radius(), player->damaged_function);*/
 
