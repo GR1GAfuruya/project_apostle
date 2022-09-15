@@ -892,6 +892,15 @@ namespace Math
         DirectX::XMVECTOR Rev = { -1,-1,-1 };
         return     DirectX::XMVectorMultiply(vec, Rev);
     }
+
+    inline float random_range(float min, float max)
+    {
+        // 0.0～1.0の間までのランダム値
+        float value = static_cast<float>(rand()) / RAND_MAX;
+       
+        // min～maxまでのランダム値に変換
+        return min + (max - min) * value;
+    }
 }
 //--------------------------------------------------------------
 //  strBit16    整数を2進数（16bit）のstringに変換する

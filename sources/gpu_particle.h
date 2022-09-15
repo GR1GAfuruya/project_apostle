@@ -38,12 +38,12 @@ public:
 	struct PARTICLE_CONSTANTS 
 	{
 		Emitter emitter{};
-		DirectX::XMFLOAT2 particle_size = {0.1,0.1};
+		DirectX::XMFLOAT2 particle_size = {0.1f,0.1f};
 		int particle_count;
 		float particle_life_time = 1;
 		DirectX::XMFLOAT3 angle{};
 		float pad3;
-		DirectX::XMFLOAT4 particle_color = { 0,0,0,1.0 };
+		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
 	};
 	std::unique_ptr<Constants<PARTICLE_CONSTANTS>> particle_constants{};
 
