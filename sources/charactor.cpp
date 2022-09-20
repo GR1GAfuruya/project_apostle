@@ -32,11 +32,11 @@ bool Charactor::apply_damage(int damage, float invinsibleTime)
 	//死亡通知
 	if (health <= 0)
 	{
-		//OnDead();
+		on_dead();
 	}
 	else//ダメージ通知
 	{
-		//on_damaged();
+		on_damaged();
 	}
 
 	//健康状態が変更した場合はtrueを返す
@@ -133,7 +133,7 @@ void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed
 		float cross{ forw.x * m_vec.z - forw.z * m_vec.x };
 
 		//クオータニオンは回転の仕方(どの向きに)
-		const float rate = 10.0f;
+		const float rate = speed;
 		if (cross < 0.0f)
 		{
 			//回転軸と回転角から回転クオータニオンを求める

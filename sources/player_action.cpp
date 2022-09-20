@@ -8,29 +8,38 @@ void Player::transition_idle_state()
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 }
 
-void Player::transition_attack_combo4_state()
-{
-	p_update = &Player::update_attack_combo4_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
-
-}
-
 void Player::transition_attack_combo1_state()
 {
 	p_update = &Player::update_attack_combo1_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1);
+	//UŒ‚ƒpƒ‰ƒ[ƒ^[İ’è
+	attack_sword_param.power = 10;
+	attack_sword_param.invinsible_time = 0.5f;
 }
 
 void Player::transition_attack_combo2_state()
 {
 	p_update = &Player::update_attack_combo2_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1);
+	//UŒ‚ƒpƒ‰ƒ[ƒ^[İ’è
+	attack_sword_param.power = 13;
+	attack_sword_param.invinsible_time = 0.5f;
 }
 
 void Player::transition_attack_combo3_state()
 {
 	p_update = &Player::update_attack_combo3_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1);
+	//UŒ‚ƒpƒ‰ƒ[ƒ^[İ’è
+	attack_sword_param.power = 15;
+	attack_sword_param.invinsible_time = 0.2f;
+}
+
+void Player::transition_attack_combo4_state()
+{
+	p_update = &Player::update_attack_combo4_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
+
 }
 
 void Player::transition_move_state()
@@ -82,6 +91,8 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 	if (model->anime_param.frame_index == 20 / 2)
 	{
 		slash_efect->play(sword_pos + (up * 3.2f), slash_dir, 45, false);
+		//UŒ‚”»’èON
+		attack_sword_param.is_attack = true;
 	}
 	if (model->anime_param.frame_index > 40 / 2)
 	{
@@ -94,6 +105,8 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 		{
 			transition_attack_combo2_state();
 		}
+		//UŒ‚”»’èOFF
+		attack_sword_param.is_attack = false;
 	}
 
 	//‘¬—Íˆ—XV
@@ -110,6 +123,9 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 	if (model->anime_param.frame_index == 17 / 2)
 	{
 		slash_efect->play(sword_pos + (up * 1.2f), slash_dir,10, true);
+		//UŒ‚”»’èON
+		attack_sword_param.is_attack = true;
+
 	}
 
 	if (model->anime_param.frame_index > 45 / 2)
@@ -124,6 +140,9 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 		{
 			transition_attack_combo3_state();
 		}
+		//UŒ‚”»’èOFF
+		attack_sword_param.is_attack = false;
+
 
 	}
 	//‘¬—Íˆ—XV
@@ -137,13 +156,22 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 	DirectX::XMFLOAT3 slash_dir_vec = Math::get_posture_forward(orientation);
 	//ˆêU‚è–Ú‚ÌaŒ‚
 	if (model->anime_param.frame_index == 20 / 2)
+	{
 		slash_efect->play(sword_pos, slash_dir_vec, 25, false);
+		//UŒ‚”»’èON
+		attack_sword_param.is_attack = true;
+
+	}
 	//“ñU‚è–Ú‚ÌaŒ‚
 	if (model->anime_param.frame_index == 30 / 2)
+	{
 		slash_efect->play(sword_pos, slash_dir_vec, 0, true);
+	}
 	//OU‚è–Ú‚ÌaŒ‚
 	if (model->anime_param.frame_index == 55 / 2)
+	{
 		slash_efect->play(sword_pos, slash_dir_vec, -25, false);
+	}
 
 	if (model->anime_param.frame_index > 75 / 2)
 	{
@@ -156,6 +184,9 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 		{
 			transition_attack_combo4_state();
 		}
+		//UŒ‚”»’èOFF
+		attack_sword_param.is_attack = false;
+
 
 	}
 	//‘¬—Íˆ—XV

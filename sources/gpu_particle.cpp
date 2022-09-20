@@ -147,6 +147,7 @@ void GPU_Particles::particle_emit(ID3D11DeviceContext* dc)
 	dc->CSSetUnorderedAccessViews(1, 1, &null_unordered_access_view, nullptr);
 }
 
+//エミッターの起動
 void GPU_Particles::launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader>  replace_emit_cs)
 {
 	if (replace_emit_cs)  emit_cs = replace_emit_cs;
@@ -171,35 +172,12 @@ void GPU_Particles::emitter_update(ID3D11DeviceContext* dc, float elapsed_time)
 			particle_emit(dc);
 		};
 	}
+	//寿命が尽きたエミッターを削除
 	emitters.erase(std::remove_if(std::begin(emitters), std::end(emitters),
 		[](std::unique_ptr<Emitter> const& e) { return e->emit_life_time <= 0; }), std::end(emitters));
 }
-void GPU_Particles::debug_gui(const char* str_id)
-{
-	static DirectX::XMFLOAT3 ang = {};
-#ifdef USE_IMGUI
-	imgui_menu_bar("Effects", "gpu_particles", display_imgui);
-	if (display_imgui)
-	{
-		ImGui::Begin(str_id);
-		ImGui::PushID(str_id);
-		ImGui::DragFloat3("angle", &ang.x);
-		ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
-		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1);
-		ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
-		ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
-		int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
-		ImGui::DragInt("active_count", &active_particle);
-		ImGui::DragInt("count", &particle_constants->data.particle_count);
 
-		particle_constants->data.angle.x = DirectX::XMConvertToRadians(ang.x);
-		particle_constants->data.angle.y = DirectX::XMConvertToRadians(ang.y);
-		particle_constants->data.angle.z = DirectX::XMConvertToRadians(ang.z);
-		ImGui::PopID();
-		ImGui::End();
-	}
-#endif
-}
+
 void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs)
 {
 	//エミッターの更新
@@ -268,6 +246,34 @@ UINT GPU_Particles::get_particle_pool_count(ID3D11DeviceContext* dc) const
 	
 	particle_constants->data.particle_count = count;
 	return count;
+}
+
+//デバッグGUI
+void GPU_Particles::debug_gui(const char* str_id)
+{
+	static DirectX::XMFLOAT3 ang = {};
+#ifdef USE_IMGUI
+	imgui_menu_bar("Effects", "gpu_particles", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin(str_id);
+		ImGui::PushID(str_id);
+		ImGui::DragFloat3("angle", &ang.x);
+		ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
+		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1);
+		ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
+		ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
+		int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
+		ImGui::DragInt("active_count", &active_particle);
+		ImGui::DragInt("count", &particle_constants->data.particle_count);
+
+		particle_constants->data.angle.x = DirectX::XMConvertToRadians(ang.x);
+		particle_constants->data.angle.y = DirectX::XMConvertToRadians(ang.y);
+		particle_constants->data.angle.z = DirectX::XMConvertToRadians(ang.z);
+		ImGui::PopID();
+		ImGui::End();
+	}
+#endif
 }
 
 void GPU_Particles::set_emitter_life_time(float life_time)

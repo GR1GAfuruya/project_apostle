@@ -99,7 +99,7 @@ private:
 
 	//==============================================================
 	// 
-	// プライベート関数
+	// private関数
 	// 
 	//==============================================================
 
@@ -222,6 +222,10 @@ private:
 	//立ったままスタン状態更新
 	void update_stun_state(Graphics& graphics, float elapsed_time, Stage* stage);
 
+	//ー－－－
+	void on_dead() override;
+	void on_damaged() override;
+
 	//==============================================================
 	// 
 	// 変数
@@ -235,7 +239,7 @@ private:
 	DirectX::XMFLOAT4X4 world;
 	float action_time = 0;
 	float move_speed = 30.0f;
-	float turn_speed = DirectX::XMConvertToRadians(720);
+	float turn_speed = 5.0f;
 	bool display_imgui = true;
 
 	//ステートのタイマー
@@ -253,7 +257,7 @@ private:
 	// 定数
 	// 
 	//==============================================================
-
+	float WALK_SPEED = 15;
 public:
 	BodyCollision boss_collision;
 

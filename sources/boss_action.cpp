@@ -87,7 +87,7 @@ void Boss::transition_air_bone_state()
 void Boss::transition_damage_state()
 {
 	act_update = &Boss::update_damage_state;
-	model->play_animation(BossAnimation::DAMAGE, false);
+	model->play_animation(BossAnimation::DAMAGE, false,0.1f);
 	state = State::DAMAGE;
 }
 
@@ -168,18 +168,30 @@ void Boss::transition_stun_state()
 //
 ///////////////////////////////////////////////////////
 
+//---------------------------//
+//			ˆÚ“®Œn			 //
+//---------------------------//
 void Boss::update_idle_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	state_timer += elapsed_time;
-	if (state_timer > 3.0)
+	if (state_timer > 1.0f)
 	{
-		
+		transition_walk_state();
+		state_timer = 0;
 	}
 }
 
 void Boss::update_walk_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	DirectX::XMFLOAT3 dir_target_vec = Math::calc_vector_AtoB_normalize(position, target_pos);
+	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
+	Move(dir_target_vec.x, dir_target_vec.z, WALK_SPEED);
+	Turn(elapsed_time, dir_target_vec, turn_speed, orientation);
 
+	if (length_to_target < 15)
+	{
+		transition_attack_state();
+	}
 }
 
 void Boss::update_run_state(Graphics& graphics, float elapsed_time, Stage* stage)
@@ -187,8 +199,15 @@ void Boss::update_run_state(Graphics& graphics, float elapsed_time, Stage* stage
 
 }
 
+//---------------------------//
+//			UŒ‚Œn			 //
+//---------------------------//
 void Boss::update_attack_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
 }
 
 void Boss::update_skill_1_state(Graphics& graphics, float elapsed_time, Stage* stage)
@@ -206,7 +225,7 @@ void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, St
 void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	action_time += elapsed_time;
-	if (action_time > 10)
+	if (action_time > 3)
 	{
 		action_time = 0;
 		transition_skill_2_end_state();
@@ -226,12 +245,24 @@ void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time, Stage* s
 
 }
 
+
+//---------------------------//
+//			ƒ_ƒEƒ“Œn		//
+//---------------------------//
 void Boss::update_air_bone_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_down_state();
+	}
 }
 
 void Boss::update_damage_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
 }
 
 void Boss::update_dead_state(Graphics& graphics, float elapsed_time, Stage* stage)

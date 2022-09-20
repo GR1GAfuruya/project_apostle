@@ -69,7 +69,8 @@ protected:
 	void update_velocity(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage);
 	virtual void on_landing() {}
 	//Ž€–S‚µ‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚é
-	virtual void OnDead() {}
+	virtual void on_dead() {}
+	virtual void on_damaged() {}
 	void update_invicible_timer(float elapsed_time);
 
 

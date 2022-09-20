@@ -21,14 +21,14 @@ void Player::initialize()
 	jump_speed = 27.0f;
 	scale.x = scale.y = scale.z = 0.05f;
 	radius = 1.0f;
-	height = 5.5f;
+	height = 7.0f;
 	friction = 2.0f;
 	acceleration = 3.5f;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
 	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
-
+	sword->initialize();
 
 }
 
@@ -81,12 +81,12 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	//DirectX::XMFLOAT4 sword_hand_ori = { 0,0,0,1 };
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
-
 	sword->set_parent_transform(sword_hand_mat);
+	sword->update(graphics, elapsed_time);
 	
-	//attack_sword_param.collision.start = sword_pos;
-	//attack_sword_param.collision.end = sword_pos + Math::vector_scale(up, 4.5f);
-	//attack_sword_param.collision.radius =0.5f;
+	attack_sword_param.collision.start = sword->get_collision().start;
+	attack_sword_param.collision.end = sword->get_collision().end;
+	attack_sword_param.collision.radius = sword->get_collision().radius;
 	
 }
 
@@ -293,10 +293,15 @@ void Player::calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position, float c
 
 void Player::calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func)
 {
-	if (Collision::capsule_vs_capsule(capsule_start, capsule_end, colider_radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+	//剣の攻撃中のみ当たり判定
+	if (attack_sword_param.is_attack)
 	{
-		//攻撃対象に与えるダメージ量と無敵時間
-		damaged_func(10, 0.1);
+		if (Collision::capsule_vs_capsule(capsule_start, capsule_end, colider_radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+		{
+			//攻撃対象に与えるダメージ量と無敵時間
+			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
+		}
 	}
+	
 }
 

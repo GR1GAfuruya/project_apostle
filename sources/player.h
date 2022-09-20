@@ -7,7 +7,6 @@
 #include "slash.h"
 #include "tornado.h"
 #include "sword.h"
-//#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -27,7 +26,9 @@ public:
 	//デバッグ用GUI描画
 	void debug_gui();
 	//プレイヤーの腰当たりの位置
-	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + height, position.z); }
+	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + height / 2, position.z); }
+	//カメラがプレイヤーを見るときに注視するポイント
+	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (height + 3), position.z); }
 
 	//プレイヤーのコリジョンと敵の当たり判定
 	void calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position,float colider_radius, float colider_height);
@@ -76,6 +77,7 @@ public:
 	struct AttackParam
 	{
 		Capsule collision;
+		bool is_attack;//攻撃中かどうか
 		float power;//攻撃力
 		float invinsible_time;//攻撃対象に課す無敵時間
 	};
@@ -95,7 +97,7 @@ public:
 private:
 	//==============================================================
 	// 
-	// プライベート関数
+	// private関数
 	// 
 	//==============================================================
 
