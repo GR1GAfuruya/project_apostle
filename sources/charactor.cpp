@@ -32,11 +32,11 @@ bool Charactor::apply_damage(int damage, float invinsibleTime)
 	//死亡通知
 	if (health <= 0)
 	{
-		//OnDead();
+		on_dead();
 	}
 	else//ダメージ通知
 	{
-		//on_damaged();
+		on_damaged();
 	}
 
 	//健康状態が変更した場合はtrueを返す

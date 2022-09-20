@@ -99,7 +99,7 @@ private:
 
 	//==============================================================
 	// 
-	// プライベート関数
+	// private関数
 	// 
 	//==============================================================
 
@@ -221,6 +221,10 @@ private:
 	void update_stdand_state(Graphics& graphics, float elapsed_time, Stage* stage);
 	//立ったままスタン状態更新
 	void update_stun_state(Graphics& graphics, float elapsed_time, Stage* stage);
+
+	//ー－－－
+	void on_dead() override;
+	void on_damaged() override;
 
 	//==============================================================
 	// 

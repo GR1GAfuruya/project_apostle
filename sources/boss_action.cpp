@@ -87,7 +87,7 @@ void Boss::transition_air_bone_state()
 void Boss::transition_damage_state()
 {
 	act_update = &Boss::update_damage_state;
-	model->play_animation(BossAnimation::DAMAGE, false);
+	model->play_animation(BossAnimation::DAMAGE, false,0.1f);
 	state = State::DAMAGE;
 }
 
@@ -251,10 +251,18 @@ void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time, Stage* s
 //---------------------------//
 void Boss::update_air_bone_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_down_state();
+	}
 }
 
 void Boss::update_damage_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
 }
 
 void Boss::update_dead_state(Graphics& graphics, float elapsed_time, Stage* stage)

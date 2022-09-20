@@ -4,7 +4,7 @@
 Sword::Sword(Graphics& graphics)
 {
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/dark_sword.fbx");
-	
+	collision = {};
 }
 
 void Sword::initialize()

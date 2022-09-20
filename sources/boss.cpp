@@ -33,6 +33,8 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 	boss_collision.position_end = boss_collision.position;
 	boss_collision.position_end.y = boss_collision.position.y + boss_collision.height;
 
+	
+
 	update_invicible_timer(elapsed_time);
 	debug_gui();
 }
@@ -78,4 +80,14 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 	{
 		damaged_func(attack_power, attack_add_invisible_time);
 	}
+}
+
+void Boss::on_dead()
+{
+	transition_air_bone_state();
+}
+
+void Boss::on_damaged()
+{
+	transition_damage_state();
 }

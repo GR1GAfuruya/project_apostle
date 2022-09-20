@@ -7,7 +7,6 @@
 #include "slash.h"
 #include "tornado.h"
 #include "sword.h"
-//#include	"Effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -98,7 +97,7 @@ public:
 private:
 	//==============================================================
 	// 
-	// プライベート関数
+	// private関数
 	// 
 	//==============================================================
 
