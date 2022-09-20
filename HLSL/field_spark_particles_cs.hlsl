@@ -31,7 +31,7 @@ void main(uint3 dtid : SV_DISPATCHTHREADID)
     float alpha;
     alpha = smoothstep(0.0, 1.0, sin(dtid.x % 16 * time / 10));
     alpha = min(alpha, 0.7);
-    p.color = float4(8.0, 1.0, 0.0, 1);
+    p.color = float4(5.0, 0.6, 0.0, 1);
     p.streak_factor = 0.07;
     p.time += delta_time;
 

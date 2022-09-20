@@ -235,7 +235,7 @@ private:
 	DirectX::XMFLOAT4X4 world;
 	float action_time = 0;
 	float move_speed = 30.0f;
-	float turn_speed = DirectX::XMConvertToRadians(720);
+	float turn_speed = 5.0f;
 	bool display_imgui = true;
 
 	//ステートのタイマー
@@ -253,7 +253,7 @@ private:
 	// 定数
 	// 
 	//==============================================================
-
+	float WALK_SPEED = 15;
 public:
 	BodyCollision boss_collision;
 

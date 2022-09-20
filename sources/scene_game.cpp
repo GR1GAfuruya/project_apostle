@@ -45,14 +45,14 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//カメラの更新
 	camera->update(elapsed_time, stage.get());
 	camera->calc_view_projection(graphics, elapsed_time);
-	camera->set_trakking_target(player.get()->get_waist_position());
+	camera->set_trakking_target(player.get()->get_gazing_point());
 
 	//プレイヤーの更新
 	player->update(graphics, elapsed_time, camera.get(), stage.get());
 
 	player->calc_collision_vs_enemy(boss->boss_collision.position, boss->boss_collision.radius, boss->boss_collision.height);
 	
-	player->calc_attack_vs_enemy(boss->boss_collision.position, boss->boss_collision.position, boss->boss_collision.height / 2, boss->damaged_function);
+	player->calc_attack_vs_enemy(boss->boss_collision.position, boss->boss_collision.position_end, boss->boss_collision.height / 2, boss->damaged_function);
 
 
 	//ボスの更新

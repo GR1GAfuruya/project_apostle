@@ -12,7 +12,7 @@ Boss::Boss(Graphics& graphics)
 void Boss::initialize()
 {
 	transition_idle_state();
-	scale.x = scale.y = scale.z = 0.1f;
+	scale.x = scale.y = scale.z = 0.07f;
 	health = 1000;
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
@@ -61,6 +61,8 @@ void Boss::debug_gui()
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
 			ImGui::DragInt("hp", &health);
 			ImGui::DragFloat("height", &height);
+			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
+			ImGui::DragFloat("turnspeed", &turn_speed,0.1f);
 		}
 		ImGui::End();
 	}
