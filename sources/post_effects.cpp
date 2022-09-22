@@ -44,7 +44,7 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 #if USE_IMGUI
 	ImGui::Begin("PostEffectImage");
 	ImGui::Text("original");
-	ImGui::Image(original_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+	ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
 	ImGui::End();
 #endif
 	
@@ -58,7 +58,7 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 #if USE_IMGUI
 	ImGui::Begin("PostEffectImage");
 	ImGui::Text("lumina");
-	ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+	ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
 	ImGui::End();
 	//ƒpƒ‰ƒ[ƒ^İ’è
 	ImGui::Begin("PostEffect");

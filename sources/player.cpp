@@ -23,7 +23,7 @@ void Player::initialize()
 	radius = 1.0f;
 	height = 7.0f;
 	friction = 2.0f;
-	acceleration = 3.5f;
+	acceleration = 15.0f;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	state = State::IDLE;
@@ -81,12 +81,18 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	//DirectX::XMFLOAT4 sword_hand_ori = { 0,0,0,1 };
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
-	sword->set_parent_transform(sword_hand_mat);
-	sword->update(graphics, elapsed_time);
-	
-	attack_sword_param.collision.start = sword->get_collision().start;
-	attack_sword_param.collision.end = sword->get_collision().end;
-	attack_sword_param.collision.radius = sword->get_collision().radius;
+
+	//ソード更新
+	{
+		sword->set_parent_transform(sword_hand_mat);
+		sword->update(graphics, elapsed_time);
+
+		attack_sword_param.collision.start = sword->get_collision().start;
+		attack_sword_param.collision.end = sword->get_collision().end;
+		attack_sword_param.collision.radius = sword->get_collision().radius;
+	}
+	/*仮置き*/
+	select_support_skill();
 	
 }
 
@@ -116,10 +122,9 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 
 const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 {
-	GamePad& game_pad = Device::instance().get_game_pad();
 	//入力情報を取得
-	float ax = game_pad.get_axis_LX();
-	float ay = game_pad.get_axis_LY();
+	float ax = game_pad->get_axis_LX();
+	float ay = game_pad->get_axis_LY();
 
 	//コントローラーのスティック入力値が一定以下なら入力をはじく
 	//if (fabs(ax) > 0.0f && fabs(ax) < 0.5f)  ax += -1.4f * (ax * ax) + 0.5f;
@@ -167,6 +172,14 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 	attack1.get()->launch_emitter( emit_cs);
 }
 
+void Player::select_support_skill()
+{
+	if (game_pad->get_button_down() & game_pad->BTN_LEFT_TRIGGER) //左トリガーを引いたら支援スキル
+	{
+		transition_support_magic_state();
+	}
+}
+
 bool Player::input_move(float elapsedTime, Camera* camera)
 {
 	//進行ベクトル取得
@@ -197,7 +210,7 @@ void Player::input_jump()
 
 void Player::input_avoidance()
 {
-	if (game_pad->get_button_down() & GamePad::BTN_RIGHT_SHOULDER)
+	if (game_pad->get_button_down() & GamePad::BTN_B)
 	{
 		transition_avoidance_state();
 	}

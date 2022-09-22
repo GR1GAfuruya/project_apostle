@@ -16,6 +16,7 @@ void Boss::initialize()
 	health = 1000;
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
+	acceleration = 10.0f;
 	attack_power = 10;
 	attack_add_invisible_time = 0.5f;
 	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };

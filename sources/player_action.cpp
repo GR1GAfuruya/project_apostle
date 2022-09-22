@@ -1,7 +1,11 @@
 #include "player.h"
 #include "Operators.h"
 
-
+///////////////////////////////////////////////////////
+//
+/*--------------------ó‘Ô‘JˆÚ------------------------*/
+//
+///////////////////////////////////////////////////////
 void Player::transition_idle_state()
 {
 	p_update = &Player::update_idle_state;
@@ -42,6 +46,20 @@ void Player::transition_attack_combo4_state()
 
 }
 
+void Player::transition_attack_pull_state()
+{
+	p_update = &Player::update_attack_pull_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_PULL, false, 0.1f);
+
+}
+
+void Player::transition_attack_bullet_state()
+{
+	p_update = &Player::update_attack_bullet_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_BULLET, false, 0.1f);
+
+}
+
 void Player::transition_move_state()
 {
 	p_update = &Player::update_move_state;
@@ -60,6 +78,25 @@ void Player::transition_avoidance_state()
 	model->play_animation(PlayerAnimation::PLAYER_ROLL, false, 0.1f);
 }
 
+void Player::transition_support_magic_state()
+{
+	p_update = &Player::update_support_magic_state;
+	model->play_animation(PlayerAnimation::PLAYER_SUPPORT_MAGIC, false);
+}
+
+
+void Player::transition_damage_front_state()
+{
+	p_update = &Player::update_damage_front_state;
+	model->play_animation(PlayerAnimation::PLAYER_DAMAGE_FRONT, false);
+
+}
+
+///////////////////////////////////////////////////////
+//
+/*--------------------ó‘ÔXV------------------------*/
+//
+///////////////////////////////////////////////////////
 void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	if (input_move(elapsed_time, camera))
@@ -208,6 +245,10 @@ void Player::update_attack_combo4_state(Graphics& graphics, float elapsed_time, 
 	update_velocity(elapsed_time, position, stage);
 }
 
+void Player::update_attack_pull_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+}
+
 void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	if (!input_move(elapsed_time, camera) && is_ground)
@@ -278,4 +319,20 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 		transition_idle_state();
 	}
 
+}
+
+void Player::update_support_magic_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+}
+
+void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+}
+
+void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
 }

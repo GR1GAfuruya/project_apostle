@@ -4,8 +4,16 @@
 #include <wrl.h>
 #include "mesh_shader.h"
 #include <mutex>
-CONST LONG SCREEN_WIDTH{ 1280 };
-CONST LONG SCREEN_HEIGHT{ 720 };
+#if _DEBUG
+	CONST LONG SCREEN_WIDTH{ 1280 };
+	CONST LONG SCREEN_HEIGHT{ 720 };
+#else
+	CONST LONG SCREEN_WIDTH{ 1980 };
+	CONST LONG SCREEN_HEIGHT{ 1080 };
+#endif
+
+
+
 
 #define ST_SAMPLER Graphics::SAMPLER_STATE
 #define ST_DEPTH Graphics::DEPTH_STENCIL_STATE

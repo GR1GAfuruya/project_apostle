@@ -48,12 +48,15 @@ public:
 		PLAYER_WALK,
 		PLAYER_ROLL,
 		PLAYER_ATK_AIR,
-		PLAYER_ATK_MAGIC,
+		PLAYER_SUPPORT_MAGIC,
 		PLAYER_ATK_LOW,
 		PLAYER_JUMP,
 		PLAYER_ATK_COMBO1,
 		PLAYER_ATK_COMBO2,
 		PLAYER_ATK_COMBO3,
+		PLAYER_ATK_PULL,
+		PLAYER_ATK_BULLET,
+		PLAYER_DAMAGE_FRONT,
 	};
 
 	enum class State
@@ -64,6 +67,8 @@ public:
 		JUMP,
 		FALL,
 		LANDING,
+		FRONT_DAMAGE,
+
 	};
 
 	
@@ -107,10 +112,13 @@ private:
 	void transition_attack_combo2_state();
 	void transition_attack_combo3_state();
 	void transition_attack_combo4_state();
+	void transition_attack_pull_state();
+	void transition_attack_bullet_state();
 	void transition_move_state();
 	void transition_jump_state();
 	void transition_avoidance_state();
-	//void transition_landing_state();
+	void transition_support_magic_state();
+	void transition_damage_front_state();
 
 
 	//////アニメーションアップデート
@@ -119,15 +127,19 @@ private:
 	void update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	void update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	void update_attack_combo4_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_pull_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	//void update_fall_state(float elapsed_time, Camera* camera);
-	//void update_landing_state(float elapsed_time, Camera* camera);
+	void update_support_magic_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 
 	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	//
 	void Attack(Graphics& graphics, float elapsed_time);
+
+	void select_support_skill();
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
