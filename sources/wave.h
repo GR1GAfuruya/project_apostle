@@ -16,9 +16,9 @@ private:
 	struct CONSTANTS
 	{
 		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
-		DirectX::XMFLOAT2 scroll_direction;
-		float scroll_speed;
-		float threshold;
+		DirectX::XMFLOAT2 scroll_direction{};
+		float scroll_speed{};
+		float threshold{};
 	};
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_views[2];
 

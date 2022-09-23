@@ -733,7 +733,7 @@ namespace Math
         return forward;
     }
 
-    //右ベクトル取得
+    //右ベクトル取得(クォータニオン)
     inline DirectX::XMFLOAT3 get_posture_right(DirectX::XMFLOAT4 orientation)
     {
         DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
@@ -747,6 +747,24 @@ namespace Math
         DirectX::XMFLOAT3 v;
         DirectX::XMStoreFloat3(&v, right);
         return v;
+    }
+
+    //右ベクトル取得(回転行列)
+    inline DirectX::XMFLOAT3 get_posture_right(DirectX::XMFLOAT4X4 transform)
+    {
+        DirectX::XMFLOAT4X4 w = transform;
+
+        DirectX::XMFLOAT3 pos = { w._41,w._42,w._43 };
+        DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
+
+        DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
+        DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
+        DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
+
+        DirectX::XMFLOAT4X4 r;
+        DirectX::XMStoreFloat4x4(&r, R);
+
+        return { r._11,r._12, r._13 };
     }
 
     //上ベクトル取得
@@ -765,6 +783,24 @@ namespace Math
         return v;
     }
 
+    //上ベクトル取得(回転行列)
+    inline DirectX::XMFLOAT3 get_posture_up(DirectX::XMFLOAT4X4 transform)
+    {
+        DirectX::XMFLOAT4X4 w = transform;
+
+        DirectX::XMFLOAT3 pos = { w._41,w._42,w._43 };
+        DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
+
+        DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
+        DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
+        DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
+
+        DirectX::XMFLOAT4X4 r;
+        DirectX::XMStoreFloat4x4(&r, R);
+
+        return { r._21,r._22, r._23 };
+    }
+
     //前ベクトル取得
     inline DirectX::XMFLOAT3 get_posture_forward(DirectX::XMFLOAT4 orientation)
     {
@@ -778,6 +814,24 @@ namespace Math
         DirectX::XMFLOAT3 v;
         DirectX::XMStoreFloat3(&v, forward);
         return v;
+    }
+
+    //前ベクトル取得(回転行列)
+    inline DirectX::XMFLOAT3 get_posture_forward(DirectX::XMFLOAT4X4 transform)
+    {
+        DirectX::XMFLOAT4X4 w = transform;
+
+        DirectX::XMFLOAT3 pos = { w._41,w._42,w._43 };
+        DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
+
+        DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
+        DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
+        DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
+
+        DirectX::XMFLOAT4X4 r;
+        DirectX::XMStoreFloat4x4(&r, R);
+
+        return { r._31,r._32, r._33 };
     }
 
     //クォータニオンを世界軸に合わせる

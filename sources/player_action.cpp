@@ -15,7 +15,7 @@ void Player::transition_idle_state()
 void Player::transition_attack_combo1_state()
 {
 	p_update = &Player::update_attack_combo1_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1);
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
 	//攻撃パラメーター設定
 	attack_sword_param.power = 10;
 	attack_sword_param.invinsible_time = 0.5f;
@@ -24,7 +24,7 @@ void Player::transition_attack_combo1_state()
 void Player::transition_attack_combo2_state()
 {
 	p_update = &Player::update_attack_combo2_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1);
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1f);
 	//攻撃パラメーター設定
 	attack_sword_param.power = 13;
 	attack_sword_param.invinsible_time = 0.5f;
@@ -33,7 +33,7 @@ void Player::transition_attack_combo2_state()
 void Player::transition_attack_combo3_state()
 {
 	p_update = &Player::update_attack_combo3_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1);
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
 	//攻撃パラメーター設定
 	attack_sword_param.power = 15;
 	attack_sword_param.invinsible_time = 0.2f;
@@ -69,7 +69,7 @@ void Player::transition_move_state()
 void Player::transition_jump_state()
 {
 	p_update = &Player::update_jump_state;
-	model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 0.1);
+	model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 0.1f);
 }
 
 void Player::transition_avoidance_state()
@@ -331,8 +331,16 @@ void Player::update_support_magic_state(Graphics& graphics, float elapsed_time, 
 
 void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
 }
 
 void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
 }

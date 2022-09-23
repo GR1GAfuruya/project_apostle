@@ -114,6 +114,8 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 		//更新
 		(this->*charge_attack_update)(graphics, elapsed_time);	
 	}
+	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
+
 }
 
 void ChargeAttack::render(Graphics& graphics)
@@ -178,7 +180,6 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 	constants->data.core_gravitation = 0.5f;
 
 	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
-	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
 
 	if (is_charge_max)
 	{
@@ -210,7 +211,6 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	//反転させてパーティクルを飛び散らせる
 	constants->data.core_gravitation = -0.4f;
 	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
-	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
 	DirectX::XMFLOAT3 wave_scale = wave->get_scale();
 	//波動エフェクト
 	wave_scale.x = lerp(wave_scale.x, 100.0f, 5.0f * elapsed_time);

@@ -43,16 +43,11 @@ public:
 	framework& operator=(const framework&) = delete;
 	framework(framework&&) noexcept = delete;
 	framework& operator=(framework&&) noexcept = delete;
-	/*float ang = 0;*/
 		bool initialize();
 		void update(float elapsed_time/*Elapsed seconds from last frame*/);
 
 		BOOL get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir);
 
-		//void move_x();
-		//void move_y();
-		//typedef  void (framework::* P_hoge)();
-		//P_hoge p_hoge = &framework::move_x;
 		void render(float elapsed_time/*Elapsed seconds from last frame*/);
 		bool uninitialize();
 	int run();

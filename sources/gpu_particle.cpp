@@ -260,7 +260,7 @@ void GPU_Particles::debug_gui(const char* str_id)
 		ImGui::PushID(str_id);
 		ImGui::DragFloat3("angle", &ang.x);
 		ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
-		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1);
+		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1f);
 		ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
 		ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
 		int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;

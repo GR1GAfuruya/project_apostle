@@ -26,6 +26,7 @@ void Player::initialize()
 	acceleration = 15.0f;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
+	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
 	state = State::IDLE;
 	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	sword->initialize();
@@ -82,6 +83,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
 
+
 	//ソード更新
 	{
 		sword->set_parent_transform(sword_hand_mat);
@@ -92,6 +94,10 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 		attack_sword_param.collision.radius = sword->get_collision().radius;
 	}
 	/*仮置き*/
+	collider.start = position;
+	collider.end = { position.x,position.y + height, position.z };
+	collider.radius = 1.0f;
+
 	select_support_skill();
 	
 }
@@ -228,9 +234,16 @@ void Player::on_landing()
 
 }
 
-void Player::on_damaged(int damage, float InvincibleTime)
+void Player::on_dead()
 {
+	initialize();
 }
+
+void Player::on_damaged()
+{
+	transition_damage_front_state();	
+}
+
 
 void Player::debug_gui()
 {
@@ -262,6 +275,7 @@ void Player::debug_gui()
 			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::DragFloat("height", &height);
+				ImGui::DragInt("health", &health);
 				ImGui::DragFloat("radius", &radius);
 				ImGui::DragFloat("gravity", &gravity);
 				ImGui::DragFloat("invinsible_timer", &invincible_timer);

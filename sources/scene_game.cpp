@@ -60,6 +60,8 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	
 	//ƒ{ƒX‚ÌUŒ‚‘ÎÛ‚ðÝ’è
 	boss->set_location_of_attack_target(player->get_position());
+	boss->calc_attack_vs_player(player->collider.start, player->collider.end, player->collider.radius, player->damaged_function);
+
 
 	stageManager.update(elapsed_time);
 

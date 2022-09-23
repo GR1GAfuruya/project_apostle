@@ -97,6 +97,20 @@ private:
 		float height;
 	};
 
+	struct Capsule
+	{
+		DirectX::XMFLOAT3 start;
+		DirectX::XMFLOAT3 end;
+		float radius;
+	};
+
+	struct AttackParam
+	{
+		Capsule collision;
+		bool is_attack;//UŒ‚’†‚©‚Ç‚¤‚©
+		float power;//UŒ‚—Í
+		float invinsible_time;//UŒ‚‘ÎÛ‚É‰Û‚·–³“GŠÔ
+	};
 	//==============================================================
 	// 
 	// privateŠÖ”
@@ -236,7 +250,9 @@ private:
 	std::unique_ptr<SkeletalMesh> model;
 	std::unique_ptr<ChargeAttack> efc_charge_attack;
 
-	DirectX::XMFLOAT4X4 world;
+	//Š™˜r‚Ìƒ{[ƒ“
+	skeleton::bone sickle_hand;
+
 	float action_time = 0;
 	float move_speed = 30.0f;
 	float turn_speed = 5.0f;
@@ -249,9 +265,7 @@ private:
 
 	//
 	State state;
-	int attack_power;
-	float attack_add_invisible_time;
-
+	AttackParam sickle_attack_param;
 	//==============================================================
 	// 
 	// ’è”

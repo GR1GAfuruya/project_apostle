@@ -36,6 +36,7 @@ public:
 	//プレイヤーの攻撃と敵の当たり判定
 	void calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
 
+private:
 	//==============================================================
 	// 
 	// 構造体、列挙型
@@ -151,7 +152,8 @@ private:
 	//着地したか
 	void on_landing()override;
 
-	void on_damaged(int damage, float InvincibleTime);
+	void on_dead() override;
+	void on_damaged() override;
 
 	//==============================================================
 	// 
@@ -198,5 +200,5 @@ private:
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
 	AddDamageFunc damaged_function;
-
+	Capsule collider;
 };

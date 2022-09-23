@@ -19,8 +19,8 @@ public:
 		DirectX::XMFLOAT4 lumina = { 0.299f, 0.587f, 0.114f, 0.0f };
 		//BLUR
 		DirectX::XMFLOAT2 c_sigma = { 1.0f, 0.0f };
-		float bloom_extraction_threshold = 1.0;
-		float blur_convolution_intensity = 1.2;
+		float bloom_extraction_threshold = 1.0f;
+		float blur_convolution_intensity = 1.2f;
 		//RADIAL_BLUR
 		DirectX::XMFLOAT2 origin; //中心点
 		float ray_power; //ブラーをかけるパワー :方向ベクトルにかけて光線の長さを決める

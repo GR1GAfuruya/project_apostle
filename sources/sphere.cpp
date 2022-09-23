@@ -60,11 +60,11 @@ void Sphere::debug_gui(const char* str_id)
 		ImGui::PushID(str_id);
 		/*これより下にパラメーター記述*/
 		
-		ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1);
-		ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1);
-		ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1);
-		ImGui::DragFloat3("position", &position.x, 0.1);
-		ImGui::DragFloat("scale", &scale.x, 0.1);
+		ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1f);
+		ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1f);
+		ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1f);
+		ImGui::DragFloat3("position", &position.x, 0.1f);
+		ImGui::DragFloat("scale", &scale.x, 0.1f);
 		ImGui::Checkbox("play", &active);
 
 		set_scale(scale.x);

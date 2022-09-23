@@ -19,7 +19,7 @@ Slash::Slash(ID3D11Device* device)
 	//load_texture_from_file(device, L"./resources/Effects/Slash/slash.png", shader_resource_views[0].ReleaseAndGetAddressOf(), &texture_desc);
 	load_texture_from_file(device, L"./resources/Effects/Textures/Traill3_output.png", shader_resource_views[1].ReleaseAndGetAddressOf(), &texture_desc);
 	scale = { 0.1f, 0.1f, 0.1f };
-	life_span = 0.14;
+	life_span = 0.14f;
 }
 
 
@@ -81,12 +81,12 @@ void Slash::debug_gui(const char* str_id)
 	ImGui::Begin("slash");
 	ImGui::PushID(str_id);
 	/*これより下にパラメーター記述*/
-	ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1);
-	ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1);
-	ImGui::DragFloat4("ori", &orientation.x, 0.1);
-	ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1);
-	ImGui::DragFloat3("position", &position.x, 0.1);
-	ImGui::DragFloat3("scale", &scale.x, 0.1);
+	ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1f);
+	ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1f);
+	ImGui::DragFloat4("ori", &orientation.x, 0.1f);
+	ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1f);
+	ImGui::DragFloat3("position", &position.x, 0.1f);
+	ImGui::DragFloat3("scale", &scale.x, 0.1f);
 	/*これより上にパラメーター記述*/
 	ImGui::PopID();
 	ImGui::End();

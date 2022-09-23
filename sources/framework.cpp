@@ -43,6 +43,8 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	debug_flags->update();
 	//シーンアップデート
 	SceneManager::instance().update(elapsed_time,*graphics);
+
+	graphics->debug_gui();
 }
 
 BOOL framework::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)

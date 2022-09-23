@@ -1,5 +1,6 @@
 #include "boss.h"
 #include "user.h"
+#include "Operators.h"
 Boss::Boss(Graphics& graphics)
 {
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
@@ -12,14 +13,14 @@ Boss::Boss(Graphics& graphics)
 void Boss::initialize()
 {
 	transition_idle_state();
-	scale.x = scale.y = scale.z = 0.07f;
+	scale.x = scale.y = scale.z = 0.08f;
 	health = 1000;
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
 	acceleration = 10.0f;
-	attack_power = 10;
-	attack_add_invisible_time = 0.5f;
 	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
+	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
+	sickle_attack_param.collision.radius = 8.0f;
 }
 
 void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
@@ -34,16 +35,17 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 	boss_collision.position_end = boss_collision.position;
 	boss_collision.position_end.y = boss_collision.position.y + boss_collision.height;
 
-	
-
+	DirectX::XMFLOAT4X4 sickle_bone_mat;
+	model->fech_by_bone(transform, sickle_hand, sickle_attack_param.collision.start, &sickle_bone_mat);
+	sickle_attack_param.collision.end = sickle_attack_param.collision.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
 	update_invicible_timer(elapsed_time);
 	debug_gui();
 }
 
 void Boss::render_d(Graphics& graphics, float elapsed_time)
 {
-	world = Math::calc_world_matrix(scale, orientation, position);
-	graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
+	transform = Math::calc_world_matrix(scale, orientation, position);
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 }
 
 void Boss::render_f(Graphics& graphics, float elapsed_time)
@@ -66,6 +68,7 @@ void Boss::debug_gui()
 			ImGui::DragFloat("height", &height);
 			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
 			ImGui::DragFloat("turnspeed", &turn_speed,0.1f);
+			ImGui::DragFloat("sickle_.radius", &sickle_attack_param.collision.radius,1);
 		}
 		ImGui::End();
 	}
@@ -75,11 +78,12 @@ void Boss::debug_gui()
 
 void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XMFLOAT3 player_cap_end, float colider_radius, AddDamageFunc damaged_func)
 {
-	DirectX::XMFLOAT3 boss_collider_end = position;
-	boss_collider_end.y = position.y + height;
-	if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius, position, boss_collider_end, 10.0f))
+	if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius,
+		sickle_attack_param.collision.start, sickle_attack_param.collision.end, sickle_attack_param.collision.radius))
 	{
-		damaged_func(attack_power, attack_add_invisible_time);
+		sickle_attack_param.power = 5;
+		sickle_attack_param.invinsible_time = 0.55f;
+		damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time);
 	}
 }
 
@@ -90,5 +94,8 @@ void Boss::on_dead()
 
 void Boss::on_damaged()
 {
-	transition_damage_state();
+	if (state != State::DAMAGE)
+	{
+		transition_damage_state();
+	}
 }

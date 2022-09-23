@@ -76,6 +76,7 @@ public:
 	//------------<関数>-----------//
 public:
 	void initialize(HWND hwnd);
+	void debug_gui();
 	//------------<変数>-----------//
 private:
 	//COMオブジェクト
@@ -86,7 +87,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;			//レンダーターゲットビューを出力結合ステージにバインドできる
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;		//深度ステンシルビューインターフェイスは、深度ステンシルテスト中にテクスチャーリソースにアクセスする。
 
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_states[5];
+
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_states[6];
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::DEPTH_STENCIL_COUNT)];
 

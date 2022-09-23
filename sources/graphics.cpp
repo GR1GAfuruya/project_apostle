@@ -275,6 +275,11 @@ void Graphics::initialize(HWND hwnd)
 	}
 }
 
+void Graphics::debug_gui()
+{
+	
+}
+
 Graphics::~Graphics()
 {
 	
