@@ -78,8 +78,6 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
 
 	model->update_animation(elapsed_time);
-	DirectX::XMFLOAT3 sword_pos;
-	//DirectX::XMFLOAT4 sword_hand_ori = { 0,0,0,1 };
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
 
@@ -329,6 +327,5 @@ void Player::calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFL
 			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
 		}
 	}
-	
 }
 

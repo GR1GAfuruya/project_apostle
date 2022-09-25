@@ -79,7 +79,7 @@ public:
 
     //--ƒŒƒC‚Æƒ‚ƒfƒ‹‚ÌŒğ·”»’è--//
     static bool ray_vs_model(
-        const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const SkeletalMesh* model,const SkeletalMesh::AnimeParam anime_para,
+        const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const SkeletalMesh* model,
         const DirectX::XMFLOAT4X4 model_world_mat,
         HitResult& result);
 };
