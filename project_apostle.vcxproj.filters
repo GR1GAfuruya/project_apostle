@@ -163,6 +163,9 @@
     <Filter Include="sources\Wepon">
       <UniqueIdentifier>{dab4fd8d-dbcd-406b-9d17-ee0a49b16d2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Skill">
+      <UniqueIdentifier>{ad9505eb-d564-4263-9b06-9c97f7056134}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -371,6 +374,15 @@
     </ClCompile>
     <ClCompile Include="sources\sword.cpp">
       <Filter>sources\Wepon</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_manager.cpp">
+      <Filter>sources\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_slot.cpp">
+      <Filter>sources\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill.cpp">
+      <Filter>sources\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -595,6 +607,15 @@
     </ClInclude>
     <ClInclude Include="sources\sword.h">
       <Filter>sources\Wepon</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_manager.h">
+      <Filter>sources\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_slot.h">
+      <Filter>sources\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill.h">
+      <Filter>sources\Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

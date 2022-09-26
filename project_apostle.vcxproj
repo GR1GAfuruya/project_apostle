@@ -248,6 +248,9 @@
     <ClCompile Include="sources\scene_title.cpp" />
     <ClCompile Include="sources\shader.cpp" />
     <ClCompile Include="sources\skeletal_mesh.cpp" />
+    <ClCompile Include="sources\skill.cpp" />
+    <ClCompile Include="sources\skill_manager.cpp" />
+    <ClCompile Include="sources\skill_slot.cpp" />
     <ClCompile Include="sources\skin_particles.cpp" />
     <ClCompile Include="sources\sky_box.cpp" />
     <ClCompile Include="sources\slash.cpp" />
@@ -274,6 +277,8 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\skill.h" />
+    <ClInclude Include="sources\skill_slot.h" />
     <ClInclude Include="sources\aura.h" />
     <ClInclude Include="sources\bloom.h" />
     <ClInclude Include="sources\boss.h" />
@@ -321,6 +326,7 @@
     <ClInclude Include="sources\scene_title.h" />
     <ClInclude Include="sources\shader.h" />
     <ClInclude Include="sources\skeletal_mesh.h" />
+    <ClInclude Include="sources\skill_manager.h" />
     <ClInclude Include="sources\skin_particles.h" />
     <ClInclude Include="sources\sky_box.h" />
     <ClInclude Include="sources\slash.h" />
