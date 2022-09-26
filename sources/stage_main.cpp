@@ -46,5 +46,5 @@ void StageMain::render(float elapsed_time, Graphics& graphics)
 bool StageMain::ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)
 {
 	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, angle, position);
-	return Collision::ray_vs_model(start, end, model.get(),model->anime_param, world,hit);
+	return Collision::ray_vs_model(start, end, model.get(), world,hit);
 }

@@ -639,7 +639,7 @@ bool Collision::capsule_vs_capsule(const DirectX::XMFLOAT3& start_a, const Direc
     return false;
 }
 
-bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const SkeletalMesh* model, const SkeletalMesh::AnimeParam anime_para,
+bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const SkeletalMesh* model,
     const DirectX::XMFLOAT4X4 model_world_mat, HitResult& result)
 {
     using namespace DirectX;
@@ -649,16 +649,43 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
     XMVECTOR world_ray_length_vec = XMVector3Length(world_ray_vec);
     // ワールド空間のレイの長さ(当たらなかった場合の長さ)
     XMStoreFloat(&result.distance, world_ray_length_vec);
-
+    //XMVECTORの宣言をfor分の外に
+    XMVECTOR start_vec;
+    XMVECTOR end_vec;
+    XMVECTOR vec;
+    XMVECTOR dir_vec;
+    XMVECTOR length_vec;
+    XMVECTOR hit_position;
+    XMVECTOR hit_normal;
+    XMVECTOR a_vec;
+    XMVECTOR b_vec;
+    XMVECTOR c_vec;
+    XMVECTOR ab_vec;
+    XMVECTOR bc_vec;
+    XMVECTOR ca_vec;
+    XMVECTOR normal_vec;
+    XMVECTOR dot_vec;
+    XMVECTOR v_vec;
+    XMVECTOR t_vec;
+    XMVECTOR position_vec;
+    XMVECTOR v1_vec;
+    XMVECTOR cross1_vec;
+    XMVECTOR dot1_vec;
+    XMVECTOR v2_vec;
+    XMVECTOR cross2_vec;
+    XMVECTOR dot2_vec;
+    XMVECTOR v3_vec;
+    XMVECTOR cross3_vec;
+    XMVECTOR dot3_vec;
     bool hit = false;
     for (const ModelResource::mesh& mesh : model->model_resource->get_meshes())
     {
         // メッシュノード取得
         // レイをワールド空間からローカル空間へ変換
         XMMATRIX world_trans_mat;
-        if (&anime_para.animation_keyframe && (&anime_para.animation_keyframe)->nodes.size() > 0) // アニメーションあり
+        if (&model->anime_param.animation_keyframe && (&model->anime_param.animation_keyframe)->nodes.size() > 0) // アニメーションあり
         {
-            const animation::keyframe::node& mesh_node{ (&anime_para.animation_keyframe)->nodes.at(mesh.node_index) };
+            const animation::keyframe::node& mesh_node{ (&model->anime_param.animation_keyframe)->nodes.at(mesh.node_index) };
             world_trans_mat = XMLoadFloat4x4(&mesh_node.global_transform) * XMLoadFloat4x4(&model_world_mat);
         }
         else // アニメーションなし
@@ -668,11 +695,11 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
         // ワールド行列の逆行列
         XMMATRIX inverse_world_trans_mat = XMMatrixInverse(nullptr, world_trans_mat);
 
-        XMVECTOR start_vec = XMVector3TransformCoord(world_start_vec, inverse_world_trans_mat);
-        XMVECTOR end_vec = XMVector3TransformCoord(world_end_vec, inverse_world_trans_mat);
-        XMVECTOR vec = XMVectorSubtract(end_vec, start_vec);
-        XMVECTOR dir_vec = XMVector3Normalize(vec);
-        XMVECTOR length_vec = XMVector3Length(vec);
+        start_vec = XMVector3TransformCoord(world_start_vec, inverse_world_trans_mat);
+        end_vec = XMVector3TransformCoord(world_end_vec, inverse_world_trans_mat);
+        vec = XMVectorSubtract(end_vec, start_vec);
+        dir_vec = XMVector3Normalize(vec);
+        length_vec = XMVector3Length(vec);
         // レイの長さ
         float near_t;
         XMStoreFloat(&near_t, length_vec);
@@ -681,8 +708,8 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
         const std::vector<UINT> indices = mesh.indices;
 
         int material_index = -1;
-        XMVECTOR hit_position;
-        XMVECTOR hit_normal;
+        hit_position;
+         hit_normal;
         //subset: 同じマテリアルが集まったポリゴンの集合
         for (const ModelResource::mesh::subset& subset : mesh.subsets)
         {
@@ -695,52 +722,52 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
                 const ModelResource::vertex& b = vertices.at(indices.at(index + 1));
                 const ModelResource::vertex& c = vertices.at(indices.at(index + 2));
                 // convert to XMVECTOR
-                XMVECTOR a_vec = XMLoadFloat3(&a.position);
-                XMVECTOR b_vec = XMLoadFloat3(&b.position);
-                XMVECTOR c_vec = XMLoadFloat3(&c.position);
+                 a_vec = XMLoadFloat3(&a.position);
+                 b_vec = XMLoadFloat3(&b.position);
+                 c_vec = XMLoadFloat3(&c.position);
                 // 三角形の三辺ベクトルを算出
-                XMVECTOR ab_vec = XMVectorSubtract(b_vec, a_vec);
-                XMVECTOR bc_vec = XMVectorSubtract(c_vec, b_vec);
-                XMVECTOR ca_vec = XMVectorSubtract(a_vec, c_vec);
+                 ab_vec = XMVectorSubtract(b_vec, a_vec);
+                 bc_vec = XMVectorSubtract(c_vec, b_vec);
+                 ca_vec = XMVectorSubtract(a_vec, c_vec);
                 // 三角形の法線ベクトルを算出
-                XMVECTOR normal_vec = XMVector3Cross(ab_vec, bc_vec);
+                 normal_vec = XMVector3Cross(ab_vec, bc_vec);
                 // 内積の結果が負でなければ裏向き(レイキャストしない)
-                XMVECTOR dot_vec = XMVector3Dot(dir_vec, normal_vec);
+                 dot_vec = XMVector3Dot(dir_vec, normal_vec);
                 float dot;
                 XMStoreFloat(&dot, dot_vec);
                 if (dot >= 0) continue;
                 // レイと平面の交点を算出
-                XMVECTOR v_vec = XMVectorSubtract(a_vec, start_vec);
-                XMVECTOR t_vec = XMVectorDivide(XMVector3Dot(v_vec, normal_vec), dot_vec);
+                v_vec = XMVectorSubtract(a_vec, start_vec);
+                t_vec = XMVectorDivide(XMVector3Dot(v_vec, normal_vec), dot_vec);
                 float t;
                 XMStoreFloat(&t, t_vec);
                 if (t < 0.0f || t > near_t) continue;  // 交点までの距離が今までに計算した
                                                        // 最近距離より大きい場合はスキップ
-                XMVECTOR position_vec = XMVectorAdd(start_vec, XMVectorMultiply(dir_vec, t_vec));
+                position_vec = XMVectorAdd(start_vec, XMVectorMultiply(dir_vec, t_vec));
                 // 交点が三角形の内側にあるか判定
                 // 1つめ
                 {
-                    XMVECTOR v1_vec = a_vec - position_vec;
-                    XMVECTOR cross1_vec = XMVector3Cross(v1_vec, ab_vec);
-                    XMVECTOR dot1_vec = XMVector3Dot(cross1_vec, normal_vec);
+                    v1_vec = a_vec - position_vec;
+                    cross1_vec = XMVector3Cross(v1_vec, ab_vec);
+                    dot1_vec = XMVector3Dot(cross1_vec, normal_vec);
                     float dot1;
                     XMStoreFloat(&dot1, dot1_vec);
                     if (dot1 < 0.0f) continue;
                 }
                 // 2つめ
                 {
-                    XMVECTOR v2_vec = b_vec - position_vec;
-                    XMVECTOR cross2_vec = XMVector3Cross(v2_vec, bc_vec);
-                    XMVECTOR dot2_vec = XMVector3Dot(cross2_vec, normal_vec);
+                    v2_vec = b_vec - position_vec;
+                    cross2_vec = XMVector3Cross(v2_vec, bc_vec);
+                    dot2_vec = XMVector3Dot(cross2_vec, normal_vec);
                     float dot2;
                     XMStoreFloat(&dot2, dot2_vec);
                     if (dot2 < 0.0f) continue;
                 }
                 // 3つめ
                 {
-                    XMVECTOR v3_vec = c_vec - position_vec;
-                    XMVECTOR cross3_vec = XMVector3Cross(v3_vec, ca_vec);
-                    XMVECTOR dot3_vec = XMVector3Dot(cross3_vec, normal_vec);
+                    v3_vec = c_vec - position_vec;
+                    cross3_vec = XMVector3Cross(v3_vec, ca_vec);
+                    dot3_vec = XMVector3Dot(cross3_vec, normal_vec);
                     float dot3;
                     XMStoreFloat(&dot3, dot3_vec);
                     if (dot3 < 0.0f) continue;
