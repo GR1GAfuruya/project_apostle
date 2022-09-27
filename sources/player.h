@@ -7,6 +7,7 @@
 #include "slash.h"
 #include "tornado.h"
 #include "sword.h"
+#include "skill_manager.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -24,7 +25,7 @@ public:
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
 	//デバッグ用GUI描画
-	void debug_gui();
+	void debug_gui(Graphics& graphics);
 	//プレイヤーの腰当たりの位置
 	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + height / 2, position.z); }
 	//カメラがプレイヤーを見るときに注視するポイント
@@ -171,6 +172,7 @@ private:
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
+	std::unique_ptr <SkillManager> skill_manager;
 	float move_speed = 30.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 

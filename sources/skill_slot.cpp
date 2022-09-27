@@ -1,5 +1,6 @@
 #include "skill_slot.h"
 
+//èâä˙âª
 void SkillSlot::initialize(Graphics& graphics)
 {
 	 cool_time = 0;
@@ -11,8 +12,10 @@ void SkillSlot::initialize(Graphics& graphics)
 	 skill.clear();
 }
 
+//çXêV
 void SkillSlot::update(Graphics& graphics, float elapsed_time)
 {
+
 	for (auto& s : skill)
 	{
 		s->update(graphics, elapsed_time);
@@ -34,8 +37,10 @@ void SkillSlot::update(Graphics& graphics, float elapsed_time)
 	}
 }
 
+//ï`âÊ
 void SkillSlot::render(Graphics& graphics)
 {
+
 	for (auto& s : skill)
 	{
 		s->render(graphics);
@@ -44,6 +49,7 @@ void SkillSlot::render(Graphics& graphics)
 
 void SkillSlot::debug_gui()
 {
+
 	int count = 0;
 	for (auto& s : skill)
 	{
@@ -52,6 +58,8 @@ void SkillSlot::debug_gui()
 	}
 }
 
+
+//ârè•
 void SkillSlot::chant(Graphics& graphics)
 {
 	std::unique_ptr<Skill>skill1 = std::make_unique<Skill>(graphics);

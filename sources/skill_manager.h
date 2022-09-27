@@ -8,11 +8,14 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	SkillManager();
-	~SkillManager();
+	SkillManager(Graphics& graphics);
+	~SkillManager() {};
 
+	//初期化
 	void initialize(Graphics& graphics);
+	//更新
 	void update(Graphics& graphics, float elapsed_time);
+	//描画
 	void render(Graphics& graphics);
 
 	//サポートスキル詠唱
@@ -44,6 +47,7 @@ public:
 	//プレイヤーが実際に実行するスキルの箱
 	SkillSlot* support_skill;
 	SkillSlot* attack_skill;
+	bool display_imgui;
 	//==============================================================
 	// 
 	// 定数

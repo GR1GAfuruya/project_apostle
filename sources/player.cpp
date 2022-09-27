@@ -37,6 +37,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 {
 	//キャラクターモデル
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
+	skill_manager = std::make_unique<SkillManager>(graphics);
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
 	//攻撃時エフェクト
@@ -76,7 +77,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	update_invicible_timer(elapsed_time);
 	slash_efect->update(graphics,elapsed_time);
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
-
+	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
@@ -115,10 +116,10 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
 	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
-
+	skill_manager.get()->render(graphics);
 	attack1->debug_gui("player_attack1");
 	//デバッグGUI描画
-	debug_gui();
+	debug_gui(graphics);
 
 }
 
@@ -243,7 +244,7 @@ void Player::on_damaged()
 }
 
 
-void Player::debug_gui()
+void Player::debug_gui(Graphics& graphics)
 {
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
@@ -305,10 +306,19 @@ void Player::debug_gui()
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 
 			}
+			if (ImGui::CollapsingHeader("SKill", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				if (ImGui::Button("support_skill_chant"))
+				{
+					skill_manager->chant_support_skill(graphics);
+				}
+			}
 		}
 		ImGui::End();
 	}
 #endif // USE_IMGUI
+
+	skill_manager.get()->debug_gui();
 }
 
 void Player::calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position, float colider_radius,float colider_height)

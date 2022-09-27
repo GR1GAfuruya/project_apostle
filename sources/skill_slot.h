@@ -10,13 +10,16 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	SkillSlot() {};
 	SkillSlot(Graphics& graphics) {};
 	~SkillSlot() {}
 
+	//‰Šú‰»
 	void initialize(Graphics& graphics);
+	//XV
 	void update(Graphics& graphics, float elapsed_time);
+	//•`‰æ
 	void render(Graphics& graphics);
+	//DebugGUI•\¦
 	void debug_gui();
 
 	//‰r¥‚·‚é
