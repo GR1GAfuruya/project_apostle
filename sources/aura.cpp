@@ -76,7 +76,7 @@ void Aura::render(Graphics& graphics)
 void Aura::debug_gui(const char* str_id)
 {
 #if USE_IMGUI
-		string name = "auras:" + to_string(*str_id);
+	string name = "auras:" + to_string(*str_id);
 	imgui_menu_bar("Effects", name, display_imgui);
 	if (display_imgui)
 	{
