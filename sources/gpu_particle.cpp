@@ -278,30 +278,30 @@ void GPU_Particles::debug_gui(const char* str_id)
 
 void GPU_Particles::set_emitter_life_time(float life_time)
 {
-	_ASSERT_EXPR(life_time >= 0, u8"GPUParticleのlife_timeに不正な値が入力されました");
+	_ASSERT_EXPR(life_time >= 0, L"GPUParticleのlife_timeに不正な値が入力されました");
 	substitution_emitter.emit_life_time = life_time;
 }
 
 void GPU_Particles::set_emitter_count(float count)
 {
-	_ASSERT_EXPR(count >= 0, "GPUParticleのcountに不正な値が入力されました");
+	_ASSERT_EXPR(count >= 0, L"GPUParticleのcountに不正な値が入力されました");
 	substitution_emitter.emit_count = count;
 }
 
 void GPU_Particles::set_emitter_rate(float rate)
 {
-	_ASSERT_EXPR(rate >= 0, "GPUParticleのrateに不正な値が入力されました");
+	_ASSERT_EXPR(rate >= 0, L"GPUParticleのrateに不正な値が入力されました");
 	substitution_emitter.emit_rate = rate;
 }
 
 void GPU_Particles::set_particle_life_time(float life_time)
 {
-	_ASSERT_EXPR(life_time >= 0, "GPUParticleのlife_timeに不正な値が入力されました");
+	_ASSERT_EXPR(life_time >= 0, L"GPUParticleのlife_timeに不正な値が入力されました");
 	particle_constants->data.particle_life_time = life_time;
 }
 
 void GPU_Particles::set_particle_size(DirectX::XMFLOAT2 size )
 {
-	_ASSERT_EXPR(size.x > 0 || size.y > 0, "GPUParticleのsizeに不正な値が入力されました");
+	_ASSERT_EXPR(size.x > 0 || size.y > 0, L"GPUParticleのsizeに不正な値が入力されました");
 	particle_constants->data.particle_size = size;
 }

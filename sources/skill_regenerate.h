@@ -1,8 +1,6 @@
 #pragma once
-#include "graphics.h"
-#include "imgui_include.h"
-#include "user.h"
-class Skill
+#include "skill.h"
+class Regenerate : public Skill
 {
 public:
 	//==============================================================
@@ -10,20 +8,17 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	
-	Skill() {};
-	virtual ~Skill() {};
+	Regenerate(){}
+	~Regenerate() {}
 
-	virtual void initialize(Graphics& graphics) = 0;
-	virtual void update(Graphics& graphics,float elapsed_time) = 0;
-	virtual void render(Graphics& graphics) = 0;
+	void initialize(Graphics& graphics) override;
+	void update(Graphics& graphics, float elapsed_time)override;
+	void render(Graphics& graphics)override;
 
 	bool is_skill_end() { return skill_end_flag; };
 
-	virtual void debug_gui(string str_id) = 0;
-
-	float get_cool_time() { return cool_time; }
- protected:
+	void debug_gui(string str_id );
+protected:
 	//==============================================================
 	// 
 	// \‘¢‘ÌA—ñ‹“Œ^
@@ -36,13 +31,13 @@ public:
 	// •Ï”
 	// 
 	//==============================================================
-	float life_time = 0;
-	bool skill_end_flag = false;
-	float cool_time = 3.0f;
+
+
 	//==============================================================
 	// 
 	// ’è”
 	// 
 	//==============================================================
 public:
+
 };

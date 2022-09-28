@@ -1,5 +1,6 @@
 #pragma once
 #include "skill_slot.h"
+#include <array>
 class SkillManager
 {
 public:
@@ -42,8 +43,14 @@ public:
 	// 
 	//==============================================================
 	//各種スキル
+	std::shared_ptr<SkillSlot> physical_up_skill;
 	std::shared_ptr<SkillSlot> regeneration_skill;
-
+	std::shared_ptr<SkillSlot> restraint_skill;
+	std::shared_ptr<SkillSlot> magic_bullet_skill;
+	std::shared_ptr<SkillSlot> spears_sea_skill;
+	//std::shared_ptr<SkillSlot> regeneration_skill;
+	std::array<std::shared_ptr<SkillSlot>, 3> support_skill_slots;
+	std::array<std::shared_ptr<SkillSlot>, 2> attack_skill_slots;
 	//プレイヤーが実際に実行するスキルの箱
 	SkillSlot* support_skill;
 	SkillSlot* attack_skill;

@@ -2,15 +2,32 @@
 #include <vector>
 #include "sprite.h"
 #include "skill.h"
+#define SKILLTYPE SkillSlot::SkillType
+
 class SkillSlot
 {
+public:
+	//==============================================================
+	// 
+	// ç\ë¢ëÃÅAóÒãìå^
+	// 
+	//==============================================================
+	enum class SkillType
+	{
+		REGENERATE,
+		PHYCICAL_UP,
+		RESTRAINNT,
+		MAGICBULLET,
+		SPEARS_SEA
+	};
+
 public:
 	//==============================================================
 	// 
 	// publicä÷êî
 	// 
 	//==============================================================
-	SkillSlot(Graphics& graphics) {};
+	SkillSlot(Graphics& graphics, SkillType type);
 	~SkillSlot() {}
 
 	//èâä˙âª
@@ -20,18 +37,13 @@ public:
 	//ï`âÊ
 	void render(Graphics& graphics);
 	//DebugGUIï\é¶
-	void debug_gui();
+	void debug_gui(string str_id);
 
 	//ârè•Ç∑ÇÈ
 	void chant(Graphics& graphics);
-	//==============================================================
-	// 
-	// ç\ë¢ëÃÅAóÒãìå^
-	// 
-	//==============================================================
+	
 
-
-
+	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin ,SkillType type);
 	//==============================================================
 	// 
 	// ïœêî
@@ -42,9 +54,9 @@ public:
 	bool chantable;
 
 	float cool_time_attenuation_speed;
-	std::unique_ptr<Sprite> icon;
-	std::vector<std::unique_ptr<Skill>> skill;
+	std::vector<std::unique_ptr<Skill>> skills;
 
+	SkillType skill_type;
 	//==============================================================
 	// 
 	// íËêî

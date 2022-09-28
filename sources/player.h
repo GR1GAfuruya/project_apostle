@@ -150,6 +150,10 @@ private:
 	void input_jump();
 	//回避入力
 	void input_avoidance();
+	//サポートスキル詠唱入力
+	void input_chant_support_skill(Graphics& graphics);
+	//攻撃スキル詠唱入力
+	void input_chant_attack_skill(Graphics& graphics);
 	//着地したか
 	void on_landing()override;
 
