@@ -166,6 +166,21 @@
     <Filter Include="sources\Skill">
       <UniqueIdentifier>{ad9505eb-d564-4263-9b06-9c97f7056134}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Skill\PhycicalUp">
+      <UniqueIdentifier>{29d789b2-5289-49f7-b253-6ac6b71a2197}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\Regenerate">
+      <UniqueIdentifier>{c59b8865-e456-4563-9966-83f8ce59e8c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\Restraint">
+      <UniqueIdentifier>{d52cf4a6-4c2e-46a4-8afe-79805ad9b850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\MagicBullet">
+      <UniqueIdentifier>{43cd0d33-9de5-43a8-b0cf-0a9a6a68c1a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\SpearsSea">
+      <UniqueIdentifier>{2fc47372-1a3e-4fee-990a-89ef9e30ad1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -381,8 +396,20 @@
     <ClCompile Include="sources\skill_slot.cpp">
       <Filter>sources\Skill</Filter>
     </ClCompile>
-    <ClCompile Include="sources\skill.cpp">
-      <Filter>sources\Skill</Filter>
+    <ClCompile Include="sources\skill_physical_up.cpp">
+      <Filter>sources\Skill\PhycicalUp</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_regenerate.cpp">
+      <Filter>sources\Skill\Regenerate</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_restraint.cpp">
+      <Filter>sources\Skill\Restraint</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_magic_bullet.cpp">
+      <Filter>sources\Skill\MagicBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_spears_sea.cpp">
+      <Filter>sources\Skill\SpearsSea</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -616,6 +643,21 @@
     </ClInclude>
     <ClInclude Include="sources\skill.h">
       <Filter>sources\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_physical_up.h">
+      <Filter>sources\Skill\PhycicalUp</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_regenerate.h">
+      <Filter>sources\Skill\Regenerate</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_restraint.h">
+      <Filter>sources\Skill\Restraint</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_magic_bullet.h">
+      <Filter>sources\Skill\MagicBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_spears_sea.h">
+      <Filter>sources\Skill\SpearsSea</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

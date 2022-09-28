@@ -37,6 +37,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 {
 	//キャラクターモデル
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
+	skill_manager = std::make_unique<SkillManager>(graphics);
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
 	//攻撃時エフェクト
@@ -76,7 +77,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	update_invicible_timer(elapsed_time);
 	slash_efect->update(graphics,elapsed_time);
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
-
+	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
@@ -97,7 +98,8 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	collider.radius = 1.0f;
 
 	select_support_skill();
-	
+	input_chant_support_skill(graphics);
+	input_chant_attack_skill(graphics);
 }
 
 //描画処理
@@ -115,10 +117,10 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
 	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
-
+	skill_manager.get()->render(graphics);
 	attack1->debug_gui("player_attack1");
 	//デバッグGUI描画
-	debug_gui();
+	debug_gui(graphics);
 
 }
 
@@ -178,7 +180,7 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 
 void Player::select_support_skill()
 {
-	if (game_pad->get_button_down() & game_pad->BTN_LEFT_TRIGGER) //左トリガーを引いたら支援スキル
+	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER) //左トリガーを引いたら支援スキル
 	{
 		transition_support_magic_state();
 	}
@@ -199,7 +201,7 @@ bool Player::input_move(float elapsedTime, Camera* camera)
 
 void Player::input_jump()
 {
-	if (game_pad->get_button_down() & game_pad->BTN_A) //スペースを押したらジャンプ
+	if (game_pad->get_button_down() & GamePad::BTN_A) //スペースを押したらジャンプ
 	{
 		if (jump_count < jump_limit)
 		{
@@ -217,6 +219,26 @@ void Player::input_avoidance()
 	if (game_pad->get_button_down() & GamePad::BTN_B)
 	{
 		transition_avoidance_state();
+	}
+}
+
+//サポートスキル発動
+void Player::input_chant_support_skill(Graphics& graphics)
+{
+	if (game_pad->get_button_down() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
+	{
+		skill_manager->chant_support_skill(graphics);
+		transition_support_magic_state();//状態遷移
+	}
+}
+
+//攻撃スキル発動
+void Player::input_chant_attack_skill(Graphics& graphics)
+{
+	if (game_pad->get_button_down() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
+	{
+		skill_manager->chant_attack_skill(graphics);
+		transition_support_magic_state();//状態遷移
 	}
 }
 
@@ -243,7 +265,7 @@ void Player::on_damaged()
 }
 
 
-void Player::debug_gui()
+void Player::debug_gui(Graphics& graphics)
 {
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
@@ -305,10 +327,28 @@ void Player::debug_gui()
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 
 			}
+			
 		}
 		ImGui::End();
+
+		ImGui::Begin("Skill");
+		{
+			ImGui::Text("player_skill_system");
+			if (ImGui::Button("support_skill_chant"))
+			{
+				skill_manager->chant_support_skill(graphics);
+			}
+			if (ImGui::Button("attack_skill_chant"))
+			{
+				skill_manager->chant_attack_skill(graphics);
+			}
+		}
+		ImGui::End();
+		skill_manager.get()->debug_gui();
+
 	}
 #endif // USE_IMGUI
+
 }
 
 void Player::calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position, float colider_radius,float colider_height)
