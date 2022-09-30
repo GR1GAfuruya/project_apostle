@@ -255,6 +255,7 @@
     <ClCompile Include="sources\skill_restraint.cpp" />
     <ClCompile Include="sources\skill_slot.cpp" />
     <ClCompile Include="sources\skill_spears_sea.cpp" />
+    <ClCompile Include="sources\skill_ui.cpp" />
     <ClCompile Include="sources\skin_particles.cpp" />
     <ClCompile Include="sources\sky_box.cpp" />
     <ClCompile Include="sources\slash.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="sources\shader.h" />
     <ClInclude Include="sources\skeletal_mesh.h" />
     <ClInclude Include="sources\skill_manager.h" />
+    <ClInclude Include="sources\skill_ui.h" />
     <ClInclude Include="sources\skin_particles.h" />
     <ClInclude Include="sources\sky_box.h" />
     <ClInclude Include="sources\slash.h" />

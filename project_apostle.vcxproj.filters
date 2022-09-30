@@ -181,6 +181,9 @@
     <Filter Include="sources\Skill\SpearsSea">
       <UniqueIdentifier>{2fc47372-1a3e-4fee-990a-89ef9e30ad1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Skill\SkillUI">
+      <UniqueIdentifier>{212b46ba-16d3-436c-93b6-ddfe01a0164e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -410,6 +413,9 @@
     </ClCompile>
     <ClCompile Include="sources\skill_spears_sea.cpp">
       <Filter>sources\Skill\SpearsSea</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_ui.cpp">
+      <Filter>sources\Skill\SkillUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -658,6 +664,9 @@
     </ClInclude>
     <ClInclude Include="sources\skill_spears_sea.h">
       <Filter>sources\Skill\SpearsSea</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_ui.h">
+      <Filter>sources\Skill\SkillUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

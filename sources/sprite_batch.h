@@ -36,6 +36,8 @@ public:
 	DirectX::XMFLOAT2 scroll_direction;
 
 	D3D11_TEXTURE2D_DESC get_texture2d_desc()const { return texture2d_desc; }
+	float get_tex_width()const { return static_cast<float>(texture2d_desc.Width); }
+	float get_tex_height()const { return static_cast<float>(texture2d_desc.Height); }
 	//ÉÅÉìÉoä÷êî
 	void render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
 	            DirectX::XMFLOAT4 color,

@@ -124,6 +124,11 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 
 }
 
+void Player::render_ui(Graphics& graphics, float elapsed_time)
+{
+	skill_manager.get()->ui_render(graphics, elapsed_time);
+}
+
 
 
 const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
@@ -334,17 +339,11 @@ void Player::debug_gui(Graphics& graphics)
 		ImGui::Begin("Skill");
 		{
 			ImGui::Text("player_skill_system");
-			if (ImGui::Button("support_skill_chant"))
-			{
-				skill_manager->chant_support_skill(graphics);
-			}
-			if (ImGui::Button("attack_skill_chant"))
-			{
-				skill_manager->chant_attack_skill(graphics);
-			}
+			
+			
 		}
 		ImGui::End();
-		skill_manager.get()->debug_gui();
+		skill_manager.get()->debug_gui(graphics);
 
 	}
 #endif // USE_IMGUI

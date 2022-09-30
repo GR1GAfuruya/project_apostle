@@ -1,6 +1,7 @@
 #pragma once
 #include "skill_slot.h"
 #include <array>
+#include "sprite_batch.h"
 class SkillManager
 {
 public:
@@ -19,6 +20,9 @@ public:
 	//描画
 	void render(Graphics& graphics);
 
+
+	void ui_render(Graphics& graphics, float elapsed_time);
+
 	//サポートスキル詠唱
 	void chant_support_skill(Graphics& graphics);
 	//攻撃スキル詠唱
@@ -29,7 +33,7 @@ public:
 	void set_attack_skill();
 
 	//デバッグGUI
-	void debug_gui();
+	void debug_gui(Graphics& graphics);
 	//==============================================================
 	// 
 	// 構造体、列挙型
@@ -54,6 +58,8 @@ public:
 	//プレイヤーが実際に実行するスキルの箱
 	SkillSlot* support_skill;
 	SkillSlot* attack_skill;
+
+	std::unique_ptr<SpriteBatch> skill_slot_icon;
 	bool display_imgui;
 	//==============================================================
 	// 
