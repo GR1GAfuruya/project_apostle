@@ -1,15 +1,15 @@
 #include "skill_ui.h"
 #include "user.h"
-SkillUI::SkillUI(Graphics& graphics)
+SkillUI::SkillUI(Graphics& graphics, const wchar_t* filename)
 {
-	skill_slot_icon = make_unique<SpriteBatch>(graphics.get_device().Get(), L"./resources/Sprite/skill_icon.png", 10);
+	skill_slot_icon = make_unique<SpriteBatch>(graphics.get_device().Get(), filename, 10);
 
 }
 
-void SkillUI::initialize(SlotsUi init_param)
+void SkillUI::initialize(SlotsUi init_param,int slots_num)
 {
 	slots_ui = init_param;
-	slots_num = 4;
+	this->slots_num = slots_num;
 }
 
 void SkillUI::update(Graphics& graphics, float elapsed_time)
@@ -39,7 +39,7 @@ void SkillUI::icon_render(Graphics& graphics)
 			{ slots_ui.size,slots_ui.size },//アイコンの大きさ
 			slots_ui.color,//アイコンの色
 			0,//アイコンの角度
-			{ i * tex_size.x,0 },//画像の中のアイコンの位置
+			{ (i % TILE_NUM_X) * tex_size.x,(i / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置
 			tex_size);//画像の切り取りサイズ
 	}
 	skill_slot_icon->end(graphics.get_dc().Get());

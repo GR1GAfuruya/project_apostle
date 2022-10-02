@@ -18,9 +18,9 @@ public:
 
 	};
 
-	SkillUI(Graphics& graphics);
+	SkillUI(Graphics& graphics, const wchar_t* filename);
 	~SkillUI(){}
-	void initialize(SlotsUi init_param);
+	void initialize(SlotsUi init_param, int slots_num);
 	void update(Graphics& graphics,float elapsed_time);
 	void icon_render(Graphics& graphics);
 	void set_skill_select(bool s) { skill_select = s; };

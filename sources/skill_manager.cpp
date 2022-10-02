@@ -6,8 +6,8 @@
 //コンストラクタ
 SkillManager::SkillManager(Graphics& graphics)
 {
-	sup_slots_ui = make_unique<SkillUI>(graphics);
-	atk_slots_ui = make_unique<SkillUI>(graphics);
+	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/skill_icon.png");
+	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/skill_icon.png");
 
 	//身体能力アップスキル
 	physical_up_skill = make_shared<SupportSkillSlot>(graphics, SP_SKILLTYPE::PHYCICAL_UP);
@@ -52,7 +52,7 @@ void SkillManager::initialize(Graphics& graphics)
 	support_ui_init.add_ang = -90.0f;
 	support_ui_init.expansion_speed = 10.0f;
 	support_ui_init.color = { 1,1,1,0 };
-	sup_slots_ui->initialize(support_ui_init);
+	sup_slots_ui->initialize(support_ui_init, support_skill_slots.size() );
 
 	SkillUI::SlotsUi attack_ui_init;
 	attack_ui_init.center_pos = { 800 ,450 };
@@ -62,7 +62,7 @@ void SkillManager::initialize(Graphics& graphics)
 	attack_ui_init.add_ang = -90.0f;
 	attack_ui_init.expansion_speed = 10.0f;
 	attack_ui_init.color = { 1,0,0,0 };
-	atk_slots_ui->initialize(attack_ui_init);
+	atk_slots_ui->initialize(attack_ui_init, attack_skill_slots.size() );
 }
 
 
