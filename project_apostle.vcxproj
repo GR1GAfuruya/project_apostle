@@ -203,6 +203,7 @@
     <ClCompile Include="external\imgui\imgui_ja_gryph_ranges.cpp" />
     <ClCompile Include="external\imgui\imgui_tables.cpp" />
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="sources\attack_skill_slot.cpp" />
     <ClCompile Include="sources\aura.cpp" />
     <ClCompile Include="sources\bloom.cpp" />
     <ClCompile Include="sources\boss.cpp" />
@@ -266,6 +267,7 @@
     <ClCompile Include="sources\stage_main.cpp" />
     <ClCompile Include="sources\stage_manager.cpp" />
     <ClCompile Include="sources\static_mesh.cpp" />
+    <ClCompile Include="sources\support_skill_slot.cpp" />
     <ClCompile Include="sources\sword.cpp" />
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\thunder.cpp" />
@@ -282,6 +284,7 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\attack_skill_slot.h" />
     <ClInclude Include="sources\skill.h" />
     <ClInclude Include="sources\skill_magic_bullet.h" />
     <ClInclude Include="sources\skill_physical_up.h" />
@@ -349,6 +352,7 @@
     <ClInclude Include="sources\stage_main.h" />
     <ClInclude Include="sources\stage_manager.h" />
     <ClInclude Include="sources\static_mesh.h" />
+    <ClInclude Include="sources\support_skill_slot.h" />
     <ClInclude Include="sources\sword.h" />
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />

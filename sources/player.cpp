@@ -332,7 +332,10 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 
 			}
-			
+			float control_x = game_pad->get_axis_LX();
+			float control_y = game_pad->get_axis_LY();
+			ImGui::DragFloat("control_x", &control_x);
+			ImGui::DragFloat("control_y", &control_y);
 		}
 		ImGui::End();
 
