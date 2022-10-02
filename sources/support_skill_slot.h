@@ -1,10 +1,8 @@
 #pragma once
-#include <vector>
-#include "sprite.h"
-#include "skill.h"
+#include "skill_slot.h"
+#define SP_SKILLTYPE SupportSkillSlot::SupportSkillType
 
-
-class SkillSlot
+class SupportSkillSlot : public SkillSlot
 {
 public:
 	//==============================================================
@@ -12,41 +10,35 @@ public:
 	// ç\ë¢ëÃÅAóÒãìå^
 	// 
 	//==============================================================
-	
-public:
+	enum class SupportSkillType
+	{
+		REGENERATE,
+		PHYCICAL_UP,
+		RESTRAINNT,
+	};
+
+
 	//==============================================================
 	// 
 	// publicä÷êî
 	// 
 	//==============================================================
-	SkillSlot(){};
-	virtual ~SkillSlot() {}
-
-	//èâä˙âª
-	void initialize(Graphics& graphics);
-	//çXêV
-	void update(Graphics& graphics, float elapsed_time);
-	//ï`âÊ
-	void render(Graphics& graphics);
-	//DebugGUIï\é¶
-	virtual void debug_gui(string str_id);
-
-	//ârè•Ç∑ÇÈ
-	virtual void chant(Graphics& graphics) {};
-	
-protected:
+	SupportSkillSlot(Graphics& graphics, SupportSkillType type);
+	~SupportSkillSlot() {}
+	void chant(Graphics& graphics);
+	//==============================================================
+	// 
+	// privateä÷êî
+	// 
+	//==============================================================
+	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, SupportSkillType type) ;
 	//==============================================================
 	// 
 	// ïœêî
 	// 
 	//==============================================================
-	float cool_time;
-	//ârè•â¬î\Ç©
-	bool chantable;
 
-	float cool_time_attenuation_speed;
-	std::vector<std::unique_ptr<Skill>> skills;
-
+	SupportSkillType skill_type;
 	//==============================================================
 	// 
 	// íËêî

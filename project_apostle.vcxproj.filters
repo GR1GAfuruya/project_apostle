@@ -181,6 +181,12 @@
     <Filter Include="sources\Skill\SpearsSea">
       <UniqueIdentifier>{2fc47372-1a3e-4fee-990a-89ef9e30ad1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Skill\SkillUI">
+      <UniqueIdentifier>{212b46ba-16d3-436c-93b6-ddfe01a0164e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\Slots">
+      <UniqueIdentifier>{804c20bb-0249-49ba-9704-8e74c60ccde4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\texture.cpp">
@@ -393,9 +399,6 @@
     <ClCompile Include="sources\skill_manager.cpp">
       <Filter>sources\Skill</Filter>
     </ClCompile>
-    <ClCompile Include="sources\skill_slot.cpp">
-      <Filter>sources\Skill</Filter>
-    </ClCompile>
     <ClCompile Include="sources\skill_physical_up.cpp">
       <Filter>sources\Skill\PhycicalUp</Filter>
     </ClCompile>
@@ -410,6 +413,18 @@
     </ClCompile>
     <ClCompile Include="sources\skill_spears_sea.cpp">
       <Filter>sources\Skill\SpearsSea</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_ui.cpp">
+      <Filter>sources\Skill\SkillUI</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_slot.cpp">
+      <Filter>sources\Skill\Slots</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\attack_skill_slot.cpp">
+      <Filter>sources\Skill\Slots</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\support_skill_slot.cpp">
+      <Filter>sources\Skill\Slots</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -638,9 +653,6 @@
     <ClInclude Include="sources\skill_manager.h">
       <Filter>sources\Skill</Filter>
     </ClInclude>
-    <ClInclude Include="sources\skill_slot.h">
-      <Filter>sources\Skill</Filter>
-    </ClInclude>
     <ClInclude Include="sources\skill.h">
       <Filter>sources\Skill</Filter>
     </ClInclude>
@@ -658,6 +670,18 @@
     </ClInclude>
     <ClInclude Include="sources\skill_spears_sea.h">
       <Filter>sources\Skill\SpearsSea</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_ui.h">
+      <Filter>sources\Skill\SkillUI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_slot.h">
+      <Filter>sources\Skill\Slots</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\attack_skill_slot.h">
+      <Filter>sources\Skill\Slots</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\support_skill_slot.h">
+      <Filter>sources\Skill\Slots</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

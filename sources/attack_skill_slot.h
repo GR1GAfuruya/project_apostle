@@ -1,40 +1,42 @@
 #pragma once
-#include "skill.h"
-class SpearsSea : public Skill
+#include "skill_slot.h"
+#define AT_SKILLTYPE AttackSkillSlot::AttackSkillType
+
+class AttackSkillSlot : public SkillSlot
 {
 public:
-	//==============================================================
-	// 
-	// publicä÷êî
-	// 
-	//==============================================================
-	SpearsSea(){}
-	~SpearsSea() {}
-
-	void initialize(Graphics& graphics) override;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics)override;
-
-	void debug_gui(string str_id);
-protected:
 	//==============================================================
 	// 
 	// ç\ë¢ëÃÅAóÒãìå^
 	// 
 	//==============================================================
 
+	enum class AttackSkillType
+	{
+		MAGICBULLET,
+		SPEARS_SEA
+	};
+public:
+	//==============================================================
+	// 
+	// publicä÷êî
+	// 
+	//==============================================================
+	AttackSkillSlot(Graphics& graphics, AttackSkillType type);
+	~AttackSkillSlot() {}
 
+	void chant(Graphics& graphics);
+	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, AttackSkillType type);
 	//==============================================================
 	// 
 	// ïœêî
 	// 
 	//==============================================================
 
+	AttackSkillType skill_type;
 	//==============================================================
 	// 
 	// íËêî
 	// 
 	//==============================================================
-public:
-
 };

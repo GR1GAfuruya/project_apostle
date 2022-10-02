@@ -225,7 +225,7 @@ void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, St
 void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	action_time += elapsed_time;
-	if (action_time > 3)
+	if (action_time > 5)
 	{
 		action_time = 0;
 		transition_skill_2_end_state();

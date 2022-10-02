@@ -130,6 +130,9 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
 	operation_ui->end(graphics.get_dc().Get());	debug_gui();
 
+	player->render_ui(graphics,elapsed_time);
+	debug_gui();
+
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());

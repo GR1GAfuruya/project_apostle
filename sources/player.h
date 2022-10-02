@@ -24,6 +24,8 @@ public:
 	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
+
+	void render_ui(Graphics& graphics, float elapsed_time);
 	//デバッグ用GUI描画
 	void debug_gui(Graphics& graphics);
 	//プレイヤーの腰当たりの位置

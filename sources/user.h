@@ -435,7 +435,14 @@ namespace Math
         DirectX::XMStoreFloat3(&ret, V);
         return ret;
     }
-
+    inline DirectX::XMFLOAT2 Normalize(DirectX::XMFLOAT2 V_)
+    {
+        auto V = DirectX::XMLoadFloat2(&V_);
+        V = DirectX::XMVector2Normalize(V);
+        DirectX::XMFLOAT2 ret{};
+        DirectX::XMStoreFloat2(&ret, V);
+        return ret;
+    }
     //--------------------------------------------------------------
     //  外積
     //--------------------------------------------------------------
@@ -477,6 +484,16 @@ namespace Math
         DirectX::XMStoreFloat(&ans, Ans);
         return ans;
     }
+    
+    inline float Dot(const DirectX::XMFLOAT2 A, const DirectX::XMFLOAT2 B)
+    {
+        const DirectX::XMVECTOR V0 = DirectX::XMLoadFloat2(&A);
+        const DirectX::XMVECTOR V1 = DirectX::XMLoadFloat2(&B);
+        const DirectX::XMVECTOR Ans = DirectX::XMVector2Dot(V0, V1);
+        float ans{};
+        DirectX::XMStoreFloat(&ans, Ans);
+        return ans;
+    }
     //--------------------------------------------------------------
     //  `ベクトルの長さを計算する
     //--------------------------------------------------------------
@@ -490,6 +507,14 @@ namespace Math
     {
         auto VL = DirectX::XMLoadFloat3(&V_);
         VL = DirectX::XMVector3Length(VL);
+        float ret;
+        DirectX::XMStoreFloat(&ret, VL);
+        return ret;
+    }
+    inline float Length(DirectX::XMFLOAT2 V_)
+    {
+        auto VL = DirectX::XMLoadFloat2(&V_);
+        VL = DirectX::XMVector2Length(VL);
         float ret;
         DirectX::XMStoreFloat(&ret, VL);
         return ret;
@@ -955,6 +980,20 @@ namespace Math
         // min～maxまでのランダム値に変換
         return min + (max - min) * value;
     }
+
+    //--------------------------------------------------------------
+    //  オブジェクトを円状に配置
+    //--------------------------------------------------------------
+    //  戻り値：長さが１のベクトル
+    //--------------------------------------------------------------
+    inline DirectX::XMFLOAT2 circumferential_placement(DirectX::XMFLOAT2 center, float radius, int index, int divisions, bool clockwise = true, float add_angle = 0)
+    {
+        DirectX::XMFLOAT2 pos;
+        int clockwise_rot = clockwise ? 1 : -1;
+        pos.x = center.x + radius * clockwise_rot * cosf(DirectX::XMConvertToRadians(add_angle + index * (360 / divisions)));
+        pos.y = center.y + radius * clockwise_rot * sinf(DirectX::XMConvertToRadians(add_angle + index * (360 / divisions)));
+        return pos;
+    }
 }
 //--------------------------------------------------------------
 //  strBit16    整数を2進数（16bit）のstringに変換する
@@ -968,6 +1007,7 @@ inline std::string strBit16(const int n)
     ss << static_cast<std::bitset<16>>(n);
     return ss.str();
 }
+
 
 // imgui Menu
 inline void imgui_menu_bar(std::string menu_label, std::string menu_item_label, bool& selected)
