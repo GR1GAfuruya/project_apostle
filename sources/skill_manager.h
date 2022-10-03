@@ -34,7 +34,7 @@ public:
 	//攻撃スキルセット
 	void set_attack_skill(int skill_index);
 
-	int select_skill_slot(DirectX::XMFLOAT2 stick_vec);
+	int select_skill_slot(DirectX::XMFLOAT2 stick_vec,int slot_num);
 	//デバッグGUI
 	void debug_gui(Graphics& graphics);
 	//==============================================================

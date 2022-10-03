@@ -23,6 +23,7 @@ public:
 	void initialize(SlotsUi init_param, int slots_num);
 	void update(Graphics& graphics,float elapsed_time);
 	void icon_render(Graphics& graphics);
+	void debug_gui();
 	void set_skill_select(bool s) { skill_select = s; };
 private:
 	std::unique_ptr<SpriteBatch> skill_slot_icon;

@@ -230,7 +230,7 @@ void Player::input_avoidance()
 //サポートスキル発動
 void Player::input_chant_support_skill(Graphics& graphics)
 {
-	if (game_pad->get_button_down() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
+	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
 		skill_manager->chant_support_skill(graphics);
 		transition_support_magic_state();//状態遷移
@@ -240,10 +240,10 @@ void Player::input_chant_support_skill(Graphics& graphics)
 //攻撃スキル発動
 void Player::input_chant_attack_skill(Graphics& graphics)
 {
-	if (game_pad->get_button_down() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
+	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
 		skill_manager->chant_attack_skill(graphics);
-		transition_support_magic_state();//状態遷移
+		transition_attack_bullet_state();//状態遷移
 	}
 }
 

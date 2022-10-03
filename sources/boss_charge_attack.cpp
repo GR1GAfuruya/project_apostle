@@ -8,7 +8,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 		aura[i] = make_unique<Aura>(graphics.get_device().Get());
 	}
 
-	core = make_unique<Sphere>(graphics.get_device().Get());
+	core = make_unique<SphereEffect>(graphics.get_device().Get());
 	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),150000);
 	wave = std::make_unique<Wave>(graphics.get_device().Get());
 	tornado = std::make_unique<Tornado>(graphics.get_device().Get());

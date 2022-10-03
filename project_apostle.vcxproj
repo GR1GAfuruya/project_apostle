@@ -285,6 +285,7 @@
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="sources\attack_skill_slot.h" />
+    <ClInclude Include="sources\damage_func.h" />
     <ClInclude Include="sources\skill.h" />
     <ClInclude Include="sources\skill_magic_bullet.h" />
     <ClInclude Include="sources\skill_physical_up.h" />
@@ -361,6 +362,7 @@
     <ClInclude Include="sources\user.h" />
     <ClInclude Include="sources\collision.h" />
     <ClInclude Include="sources\wave.h" />
+    <ClInclude Include="sources\primitive.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\aura_ps.hlsl">

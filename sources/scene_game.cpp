@@ -23,7 +23,7 @@ void SceneGame::initialize(Graphics& graphics)
 	boss = std::make_unique<Boss>(graphics);
 	post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
 	field_spark_particle = std::make_unique<field_spark_particles>(graphics.get_device().Get(), player->get_position());
-	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\operations.png", 1);
+	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\UI\\operations.png", 1);
 
 	deferred = std::make_unique<DeferredRenderer>(graphics);
 	light_manager = std::make_unique<LightManager>(graphics);

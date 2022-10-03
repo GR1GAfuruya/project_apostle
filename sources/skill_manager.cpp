@@ -6,8 +6,8 @@
 //コンストラクタ
 SkillManager::SkillManager(Graphics& graphics)
 {
-	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/skill_icon.png");
-	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/skill_icon.png");
+	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/support_skill_icon.png");
+	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/attack_skill_icon.png");
 
 	//身体能力アップスキル
 	physical_up_skill = make_shared<SupportSkillSlot>(graphics, SP_SKILLTYPE::PHYCICAL_UP);
@@ -61,7 +61,7 @@ void SkillManager::initialize(Graphics& graphics)
 	attack_ui_init.size = 0.1f;
 	attack_ui_init.add_ang = -90.0f;
 	attack_ui_init.expansion_speed = 10.0f;
-	attack_ui_init.color = { 1,0,0,0 };
+	attack_ui_init.color = { 1,1,1,0 };
 	atk_slots_ui->initialize(attack_ui_init, attack_skill_slots.size() );
 }
 
@@ -88,40 +88,28 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 	//スキル選択更新
 	GamePad* game_pad = &Device::instance().get_game_pad();
 	//サポートスキル選択状態
-	if (game_pad->get_button_down() & GamePad::BTN_RIGHT_SHOULDER)
+	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER)
 	{
 		sup_slots_ui->set_skill_select(true);
 		atk_slots_ui->set_skill_select(false);
 	}
 	//ボタンを放したら解除
-	else if(game_pad->get_button_up() & GamePad::BTN_RIGHT_SHOULDER)
+	else if(game_pad->get_button_up() & GamePad::BTN_LEFT_SHOULDER)
 	{
 		sup_slots_ui->set_skill_select(false);
 	}
 	//攻撃スキル選択状態
-	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER)
+	if (game_pad->get_button_down() & GamePad::BTN_RIGHT_SHOULDER)
 	{
 		atk_slots_ui->set_skill_select(true);
 		sup_slots_ui->set_skill_select(false);
 
 	}
 	//ボタンを放したら解除
-	else if(game_pad->get_button_up() & GamePad::BTN_LEFT_SHOULDER)
+	else if(game_pad->get_button_up() & GamePad::BTN_RIGHT_SHOULDER)
 	{
 		atk_slots_ui->set_skill_select(false);
 	}
-	if (game_pad->get_button() & GamePad::BTN_RIGHT_SHOULDER)
-	{
-		//入力情報を取得
-		float ax = game_pad->get_axis_RX();
-		float ay = game_pad->get_axis_RY();
-		DirectX::XMFLOAT2 vec = { ax,ay };
-		//入力されていない場合は抜ける
-		if (Math::Length(vec) == 0) return;
-
-		set_support_skill(select_skill_slot(vec));
-	}
-
 	if (game_pad->get_button() & GamePad::BTN_LEFT_SHOULDER)
 	{
 		//入力情報を取得
@@ -131,7 +119,19 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 		//入力されていない場合は抜ける
 		if (Math::Length(vec) == 0) return;
 
-		set_attack_skill(select_skill_slot(vec));
+		set_support_skill(select_skill_slot(vec,support_skill_slots.size()));
+	}
+
+	if (game_pad->get_button() & GamePad::BTN_RIGHT_SHOULDER)
+	{
+		//入力情報を取得
+		float ax = game_pad->get_axis_RX();
+		float ay = game_pad->get_axis_RY();
+		DirectX::XMFLOAT2 vec = { ax,ay };
+		//入力されていない場合は抜ける
+		if (Math::Length(vec) == 0) return;
+
+		set_attack_skill(select_skill_slot(vec,attack_skill_slots.size()));
 	}
 	
 
@@ -190,7 +190,7 @@ void SkillManager::set_attack_skill(int skill_index)
 	attack_skill = attack_skill_slots.at(skill_index).get();
 }
 
-int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec)
+int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 {
 	//基準軸
 	DirectX::XMFLOAT2 up = { 0.00001f,1.0f };
@@ -205,12 +205,13 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec)
 	float ang = deglee_dot;
 	if (stick_vec.x < 0) ang = 180 + add_angle;
 	//スロット一つ分の枠の大きさを決定
-	float slots_ang_size = 360.0f / ((support_skill_slots.size() + 1) * 2);
+	float slots_ang_size = 360.0f / slot_num;
 	int selected_index;
 	//スロット番号を決定
 	selected_index = ang / slots_ang_size;
-	//不正な値が入らないようクランプ
-	
+	ImGui::Begin("Skill");
+	ImGui::Text(to_string(selected_index).c_str());
+	ImGui::End();
 	return selected_index;
 }
 
@@ -223,21 +224,34 @@ void SkillManager::debug_gui(Graphics& graphics)
 		ImGui::Begin("Skill");
 
 		{
+			//現在のスキル表示
+			{
+				std::string type_name;
+				type_name = magic_enum::enum_name<SupportSkillSlot::SupportSkillType>(support_skill->skill_type);
+				ImGui::Text(type_name.c_str());
+			}
 			//スキル選択
 			const char* support_slot_item[] = { "physical_up_skill","regeneration_skill","restraint_skill" };
 			static int item_current = 0;
 			ImGui::Combo("support_slots", &item_current, support_slot_item, IM_ARRAYSIZE(support_slot_item));
-			//セット
-
-			set_support_skill(item_current);
+			
 
 			
 			//発動
 			if (ImGui::Button("support_skill_chant"))
 			{
+				//セット
+				set_support_skill(item_current);
 				chant_support_skill(graphics);
 			}
 		}
+		//現在のスキル表示
+		{
+			std::string type_name;
+			type_name = magic_enum::enum_name<AttackSkillSlot::AttackSkillType>(attack_skill->skill_type);
+			ImGui::Text(type_name.c_str());
+		}
+
 
 		{
 			//スキル選択
@@ -245,11 +259,12 @@ void SkillManager::debug_gui(Graphics& graphics)
 			static int item_current2 = 0;
 			ImGui::Combo("attack_slots", &item_current2, attack_slot_item, IM_ARRAYSIZE(attack_slot_item));
 
-			set_attack_skill(item_current2);
+			
 			
 			//発動
 			if (ImGui::Button("attack_skill_chant"))
 			{
+				set_attack_skill(item_current2);
 				chant_attack_skill(graphics);
 			}
 		}
@@ -269,6 +284,10 @@ void SkillManager::debug_gui(Graphics& graphics)
 		type_name = magic_enum::enum_name<AttackSkillSlot::AttackSkillType>(s->skill_type);
 		s->debug_gui(type_name);
 	}
+
+	//UIdebugGUI
+	atk_slots_ui->debug_gui();
+	sup_slots_ui->debug_gui();
 #endif
 
 }

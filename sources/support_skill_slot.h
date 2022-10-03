@@ -12,8 +12,8 @@ public:
 	//==============================================================
 	enum class SupportSkillType
 	{
-		REGENERATE,
 		PHYCICAL_UP,
+		REGENERATE,
 		RESTRAINNT,
 	};
 
@@ -31,7 +31,8 @@ public:
 	// privateä÷êî
 	// 
 	//==============================================================
-	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, SupportSkillType type) ;
+	//ÉXÉLÉãÇÃé¿ëÃê∂ê¨
+	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin) ;
 	//==============================================================
 	// 
 	// ïœêî
