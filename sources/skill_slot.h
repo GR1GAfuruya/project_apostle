@@ -19,7 +19,10 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	SkillSlot(){};
+	SkillSlot() :
+		cool_time(0.0f),
+		chantable(false),
+		cool_time_attenuation_speed(1.0f) {};
 	virtual ~SkillSlot() {}
 
 	//‰Šú‰»
@@ -29,7 +32,8 @@ public:
 	//•`‰æ
 	void render(Graphics& graphics);
 
-	void skilland_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
+	//ƒXƒLƒ‹‚Ì“–‚½‚è”»’è
+	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
 	//DebugGUI•\¦
 	virtual void debug_gui(string str_id);
 

@@ -14,18 +14,25 @@ void SkillUI::initialize(SlotsUi init_param,int slots_num)
 
 void SkillUI::update(Graphics& graphics, float elapsed_time)
 {
-	const float expansion_start = 0;
+	const float expansion_start = 30;
 	const float expansion_end = 150;
 	slots_ui.expansion = skill_select ? expansion_end : expansion_start;
-	float alpha = skill_select ? 1.0f : 0.0f;
 	slots_ui.radius = lerp(slots_ui.radius, slots_ui.expansion, slots_ui.expansion_speed * elapsed_time);
+
+	float alpha = skill_select ? 1.0f : 0.0f;
 	slots_ui.color.w = lerp(slots_ui.color.w, alpha, 6.0f * elapsed_time);
+	
+	
+	const float add_ang_start = -120;
+	const float add_ang_end = -90;
+	float tar_add_ang = skill_select ? add_ang_end : add_ang_start;
+	slots_ui.add_ang = lerp(slots_ui.add_ang, tar_add_ang, 6.0f * elapsed_time);
 }
 
 void SkillUI::icon_render(Graphics& graphics)
 {
 	const int TILE_NUM_X = 4;
-	const int TILE_NUM_Y = 2;
+	const int TILE_NUM_Y = 4;
 	DirectX::XMFLOAT2 tex_size = { skill_slot_icon->get_tex_width() / TILE_NUM_X,
 		skill_slot_icon->get_tex_height() / TILE_NUM_Y };
 
@@ -33,17 +40,39 @@ void SkillUI::icon_render(Graphics& graphics)
 
 	for (int i = 0; i < slots_num; i++)
 	{
+		//仮で選ばれているスキルを赤っぽく
+		slots_ui.color.x = (i == selected_skill_index) ? 5.0f : 1.0f;
 		//円周上にアイコンを並べる
 		slots_ui.icon_pos =
 			Math::circumferential_placement(slots_ui.center_pos, slots_ui.radius, i, slots_num, true, slots_ui.add_ang);
 		skill_slot_icon->render(graphics.get_dc().Get(),
 			{ slots_ui.icon_pos },//各アイコンの位置
-			{ slots_ui.size,slots_ui.size*2 },//アイコンの大きさ
+			{ slots_ui.size,slots_ui.size },//アイコンの大きさ
 			slots_ui.color,//アイコンの色
 			0,//アイコンの角度
 			{ (i % TILE_NUM_X) * tex_size.x,(i / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置
 			tex_size);//画像の切り取りサイズ
 	}
+
+	skill_slot_icon->end(graphics.get_dc().Get());
+}
+void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 pos)
+{
+	const int TILE_NUM_X = 4;
+	const int TILE_NUM_Y = 4;
+	DirectX::XMFLOAT2 tex_size = { skill_slot_icon->get_tex_width() / TILE_NUM_X,
+		skill_slot_icon->get_tex_height() / TILE_NUM_Y };
+
+	skill_slot_icon->begin(graphics.get_dc().Get());
+	//円周上にアイコンを並べる
+	skill_slot_icon->render(graphics.get_dc().Get(),
+		{ pos },//各アイコンの位置
+		{ slots_ui.size,slots_ui.size  },//アイコンの大きさ
+		{1,1,1,1},//アイコンの色
+		0,//アイコンの角度
+		{ (selected_skill_index % TILE_NUM_X) * tex_size.x,(selected_skill_index / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置
+		tex_size);//画像の切り取りサイズ
+
 	skill_slot_icon->end(graphics.get_dc().Get());
 }
 void SkillUI::debug_gui()

@@ -10,7 +10,7 @@ SupportSkillSlot::SupportSkillSlot(Graphics& graphics, SupportSkillType type)
 }
 
 
-void SupportSkillSlot::chant(Graphics& graphics)
+void SupportSkillSlot::chant(Graphics& graphics/*,DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* target_pos, int change_state*/)
 {
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)
@@ -42,8 +42,6 @@ void SupportSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique
 		break;
 	case SupportSkillType::RESTRAINNT:
 		coffin = std::make_unique<Restrain>();
-		break;
-	
 		break;
 	default:
 		break;

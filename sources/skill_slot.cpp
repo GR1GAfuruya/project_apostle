@@ -47,7 +47,7 @@ void SkillSlot::render(Graphics& graphics)
 	}
 }
 
-void SkillSlot::skilland_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
+void SkillSlot::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	for (auto& s : skills)
 	{

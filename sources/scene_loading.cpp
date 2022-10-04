@@ -8,7 +8,7 @@
 void SceneLoading::initialize(Graphics& graphics)
 {
 	//スプライト初期化
-	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\kouboutest.png",1);
+	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\fire_mask.png",1);
 
 	//スレッド開始
 	std::thread thread(LoadingThread, this, &graphics);

@@ -44,7 +44,7 @@ void SkillManager::initialize(Graphics& graphics)
 	support_skill = regeneration_skill.get();
 	attack_skill = magic_bullet_skill.get();
 
-	SkillUI::SlotsUi support_ui_init;
+	SkillUI::SlotsUi support_ui_init{};
 	support_ui_init.center_pos = { 800 ,450 };
 	support_ui_init.radius = 0;
 	support_ui_init.icon_pos = { 0 ,0 };
@@ -54,7 +54,7 @@ void SkillManager::initialize(Graphics& graphics)
 	support_ui_init.color = { 1,1,1,0 };
 	sup_slots_ui->initialize(support_ui_init, support_skill_slots.size() );
 
-	SkillUI::SlotsUi attack_ui_init;
+	SkillUI::SlotsUi attack_ui_init{};
 	attack_ui_init.center_pos = { 800 ,450 };
 	attack_ui_init.radius = 0;
 	attack_ui_init.icon_pos = { 0 ,0 };
@@ -83,7 +83,9 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 
 	//UIアップデート
 	sup_slots_ui->update(graphics, elapsed_time);
+	sup_slots_ui->set_selected_skill_index(static_cast<int>(support_skill->skill_type));
 	atk_slots_ui->update(graphics, elapsed_time);
+	atk_slots_ui->set_selected_skill_index(static_cast<int>(attack_skill->skill_type));
 
 	//スキル選択更新
 	GamePad* game_pad = &Device::instance().get_game_pad();
@@ -155,9 +157,10 @@ void SkillManager::render(Graphics& graphics)
 
 void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 {
-
 	sup_slots_ui->icon_render(graphics);
+	sup_slots_ui->selected_skill_icon_render(graphics, {1000.0f,600.0f});
 	atk_slots_ui->icon_render(graphics);
+	atk_slots_ui->selected_skill_icon_render(graphics, { 1120.0f,600.0f });
 }
 
 //サポートスキル発動
@@ -209,9 +212,11 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 	int selected_index;
 	//スロット番号を決定
 	selected_index = ang / slots_ang_size;
+#if USE_IMGUI
 	ImGui::Begin("Skill");
 	ImGui::Text(to_string(selected_index).c_str());
 	ImGui::End();
+#endif
 	return selected_index;
 }
 
