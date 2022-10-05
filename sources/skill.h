@@ -31,8 +31,6 @@ public:
 	virtual ~Skill() {};
 
 	virtual void initialize(Graphics& graphics) {};
-	virtual void initialize(Graphics& graphics, DirectX::XMFLOAT3 init_pos) {};
-	virtual void initialize(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 target_pos) {};
 	virtual void update(Graphics& graphics, float elapsed_time) = 0;
 	virtual void render(Graphics& graphics) = 0;
 
@@ -60,9 +58,9 @@ protected:
 	// 
 	//==============================================================
 	//当たり判定のタイプ
-	CollisionType collision_type;
+	CollisionType collision_type{};
 	//当たり判定（カプセル）
-	Capsule attack_colider;
+	Capsule attack_colider{};
 	//スキルの寿命
 	float life_time = 0;
 	//スキルが終了したか
@@ -72,9 +70,9 @@ protected:
 	//クールタイム
 	float cool_time = 3.0f;
 	//攻撃力
-	float power;
+	float power = 0.0f;
 	//対象に与える無敵時間
-	float invinsible_time;
+	float invinsible_time = 0.0f;
 	//==============================================================
 	// 
 	// 定数

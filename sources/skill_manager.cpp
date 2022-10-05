@@ -9,40 +9,29 @@ SkillManager::SkillManager(Graphics& graphics)
 	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/support_skill_icon.png");
 	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/attack_skill_icon.png");
 
+	support_skills = make_unique<SkillSlot>();
+	attack_skills = make_unique<SkillSlot>();
 	//身体能力アップスキル
-	physical_up_skill = make_shared<SupportSkillSlot>(graphics, SP_SKILLTYPE::PHYCICAL_UP);
+	
 	//リジェネスキル
-	regeneration_skill = make_shared<SupportSkillSlot>(graphics, SP_SKILLTYPE::REGENERATE);
+	 
 	//拘束スキル
-	restraint_skill = make_shared<SupportSkillSlot>(graphics, SP_SKILLTYPE::RESTRAINNT);
+	
 	//魔法弾スキル
-	magic_bullet_skill = make_shared<AttackSkillSlot>(graphics, AT_SKILLTYPE::MAGICBULLET);
+	
 	//槍スキル
-	spears_sea_skill = make_shared<AttackSkillSlot>(graphics, AT_SKILLTYPE::SPEARS_SEA);
+
 	initialize(graphics);
 }
 
 //初期化
 void SkillManager::initialize(Graphics& graphics)
 {
-	//サポートスキルの枠
-	support_skill_slots = { physical_up_skill,regeneration_skill,restraint_skill};
-	//攻撃スキルの枠
-	attack_skill_slots = { magic_bullet_skill,spears_sea_skill };
-
 	//サポートスキル枠の初期化
-	for (auto& s : support_skill_slots)
-	{
-		s->initialize(graphics);
-	}
+	support_skills->initialize(graphics);
 
 	//攻撃スキル枠の初期化
-	for (auto& s : attack_skill_slots)
-	{
-		s->initialize(graphics);
-	}
-	support_skill = regeneration_skill.get();
-	attack_skill = magic_bullet_skill.get();
+	attack_skills->initialize(graphics);
 
 	//UI初期設定
 	{
@@ -54,7 +43,7 @@ void SkillManager::initialize(Graphics& graphics)
 		support_ui_init.add_ang = -90.0f;
 		support_ui_init.expansion_speed = 10.0f;
 		support_ui_init.color = { 1,1,1,0 };
-		sup_slots_ui->initialize(support_ui_init, support_skill_slots.size());
+		sup_slots_ui->initialize(support_ui_init, static_cast<int>(SupportSkillType::SUP_SKILL_MAX));
 
 		SkillUI::SlotsUi attack_ui_init{};
 		attack_ui_init.center_pos = { 800 ,450 };
@@ -64,7 +53,7 @@ void SkillManager::initialize(Graphics& graphics)
 		attack_ui_init.add_ang = -90.0f;
 		attack_ui_init.expansion_speed = 10.0f;
 		attack_ui_init.color = { 1,1,1,0 };
-		atk_slots_ui->initialize(attack_ui_init, attack_skill_slots.size());
+		atk_slots_ui->initialize(attack_ui_init, static_cast<int>(AttackSkillType::ATK_SKILL_MAX));
 	}
 }
 
@@ -73,22 +62,16 @@ void SkillManager::initialize(Graphics& graphics)
 void SkillManager::update(Graphics& graphics, float elapsed_time)
 {
 	//サポートスキル枠,スキルの更新
-	for (auto& s : support_skill_slots)
-	{
-		s->update(graphics, elapsed_time);
-	}
+	support_skills->update(graphics, elapsed_time);
 
 	//攻撃スキル枠,スキルの更新
-	for (auto& s : attack_skill_slots)
-	{
-		s->update(graphics, elapsed_time);
-	}
+	attack_skills->update(graphics, elapsed_time);
 
 	//UIアップデート
 	sup_slots_ui->update(graphics, elapsed_time);
-	sup_slots_ui->set_selected_skill_index(static_cast<int>(support_skill->skill_type));
+	sup_slots_ui->set_selected_skill_index(static_cast<int>(selected_sup_skill_type));
 	atk_slots_ui->update(graphics, elapsed_time);
-	atk_slots_ui->set_selected_skill_index(static_cast<int>(attack_skill->skill_type));
+	atk_slots_ui->set_selected_skill_index(static_cast<int>(selected_atk_skill_type));
 
 	//スキル選択更新
 	GamePad* game_pad = &Device::instance().get_game_pad();
@@ -138,7 +121,7 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 			//入力されていない場合は抜ける
 			if (Math::Length(vec) == 0) return;
 
-			set_support_skill(select_skill_slot(vec, support_skill_slots.size()));
+			set_support_skill(select_skill_slot(vec, static_cast<int>(SupportSkillType::SUP_SKILL_MAX)));
 		}
 
 		//攻撃スキルスキル
@@ -151,7 +134,7 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 			//入力されていない場合は抜ける
 			if (Math::Length(vec) == 0) return;
 
-			set_attack_skill(select_skill_slot(vec, attack_skill_slots.size()));
+			set_attack_skill(select_skill_slot(vec, static_cast<int>(AttackSkillType::ATK_SKILL_MAX)));
 		}
 	}
 
@@ -161,16 +144,11 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 //描画
 void SkillManager::render(Graphics& graphics)
 {
-	//サポートスキル枠の描画
-	for (auto& s : support_skill_slots)
-	{
-		s->render(graphics);
-	}
-	//攻撃スキル枠の描画
-	for (auto& s : attack_skill_slots)
-	{
-		s->render(graphics);
-	}
+	//サポートスキルスキルの描画
+	support_skills->render(graphics);
+
+	//攻撃スキル枠,スキルの描画
+	attack_skills->render(graphics);
 }
 
 void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
@@ -193,33 +171,30 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 }
 
 //サポートスキル発動
-void SkillManager::chant_support_skill(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
-{
-	_ASSERT_EXPR(support_skill != nullptr, L"support_skill is null");
-
-	support_skill->chant(graphics, launch_pos, target_pos);
-}
 
 //攻撃スキル発動
-void SkillManager::chant_attack_skill(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
+void SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir)
 {
-	_ASSERT_EXPR(attack_skill != nullptr, L"attack_skill is null");
-
-	attack_skill->chant(graphics, launch_pos, target_pos);
+	std::unique_ptr<Skill>skill;
+	skill = std::make_unique<MagicBullet>(graphics, launch_pos, launch_pos);
+	attack_skills->chant(skill);
 }
 
+void SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
+{
+	std::unique_ptr<Skill>skill;
+	skill = std::make_unique<SpearsSea>(graphics, launch_pos);
+	attack_skills->chant(skill);
+}
 //サポートスキルを使用枠にセット
 void SkillManager::set_support_skill(int skill_index)
 {
-	skill_index = Math::clamp(skill_index, 0, 2);
-	support_skill = support_skill_slots.at(skill_index).get();
+	selected_sup_skill_type = static_cast<SupportSkillType>(skill_index);
 }
-
 //攻撃スキルを使用枠にセット
 void SkillManager::set_attack_skill(int skill_index)
 {
-	skill_index = Math::clamp(skill_index, 0, 1);
-	attack_skill = attack_skill_slots.at(skill_index).get();
+	selected_atk_skill_type = static_cast<AttackSkillType>(skill_index);
 }
 
 
@@ -263,7 +238,7 @@ void SkillManager::debug_gui(Graphics& graphics)
 			//現在のスキル表示
 			{
 				std::string type_name;
-				type_name = magic_enum::enum_name<SupportSkillSlot::SupportSkillType>(support_skill->skill_type);
+				type_name = magic_enum::enum_name<SupportSkillType>(selected_sup_skill_type);
 				ImGui::Text(type_name.c_str());
 			}
 			//スキル選択
@@ -284,7 +259,7 @@ void SkillManager::debug_gui(Graphics& graphics)
 		//現在のスキル表示
 		{
 			std::string type_name;
-			type_name = magic_enum::enum_name<AttackSkillSlot::AttackSkillType>(attack_skill->skill_type);
+			type_name = magic_enum::enum_name<AttackSkillType>(selected_atk_skill_type);
 			ImGui::Text(type_name.c_str());
 		}
 
@@ -307,19 +282,16 @@ void SkillManager::debug_gui(Graphics& graphics)
 		ImGui::End();
 	}
 
-	for (auto& s : support_skill_slots)
-	{
+	
 		std::string type_name;
-		type_name = magic_enum::enum_name<SupportSkillSlot::SupportSkillType>(s->skill_type);
-		s->debug_gui(type_name);
-	}
+		type_name = magic_enum::enum_name<SupportSkillType>(selected_sup_skill_type);
+		support_skills->debug_gui(type_name);
+	
 
-	for (auto& s : attack_skill_slots)
-	{
-		std::string type_name;
-		type_name = magic_enum::enum_name<AttackSkillSlot::AttackSkillType>(s->skill_type);
-		s->debug_gui(type_name);
-	}
+	
+		type_name = magic_enum::enum_name<AttackSkillType>(selected_atk_skill_type);
+		attack_skills->debug_gui(type_name);
+	
 
 	//UIdebugGUI
 	atk_slots_ui->debug_gui("atk_slots_ui");

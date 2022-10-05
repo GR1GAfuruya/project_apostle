@@ -46,6 +46,18 @@ void SkillSlot::render(Graphics& graphics)
 		s->render(graphics);
 	}
 }
+void SkillSlot::chant(std::unique_ptr<Skill>& coffin)
+{
+	//詠唱可能な状態なら
+	if (chantable)
+	{	
+		//クールタイム設定
+		cool_time = coffin->get_cool_time();
+		//リストに追加
+		skills.push_back(std::move(coffin));
+		chantable = false;
+	}
+}
 
 void SkillSlot::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
 {

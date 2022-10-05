@@ -1,22 +1,23 @@
 #include "skill_magic_bullet.h"
 #include "Operators.h"
 
-void MagicBullet::initialize(Graphics& graphics)
+ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 target_pos)
 {
-	
+	 initialize(graphics);
+	 position = init_pos;
+	 velocity = Math::calc_vector_AtoB_normalize(target_pos, position);
 }
 
-void MagicBullet::initialize(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 target_pos)
+void MagicBullet::initialize(Graphics& graphics)
 {
 	life_time = 5;
-	cool_time = 0;
+	cool_time = 0.2f;
 	collision_type = CollisionType::SPHERE;
 	power = 3.0f;
 	invinsible_time = 0.1f;
 	attack_colider.radius = 2;
 	
-	position = init_pos;
-	velocity = Math::calc_vector_AtoB_normalize(target_pos, position);
+	
 }
 
 void MagicBullet::update(Graphics& graphics, float elapsed_time)

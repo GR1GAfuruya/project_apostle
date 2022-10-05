@@ -988,10 +988,10 @@ namespace Math
     //--------------------------------------------------------------
     inline DirectX::XMFLOAT2 circumferential_placement(DirectX::XMFLOAT2 center, float radius, int index, int divisions, bool clockwise = true, float add_angle = 0)
     {
-        DirectX::XMFLOAT2 pos;
+        DirectX::XMFLOAT2 pos{};
         int clockwise_rot = clockwise ? 1 : -1;
-        pos.x = center.x + radius * clockwise_rot * cosf(DirectX::XMConvertToRadians(add_angle + index * (360 / divisions)));
-        pos.y = center.y + radius * clockwise_rot * sinf(DirectX::XMConvertToRadians(add_angle + index * (360 / divisions)));
+        pos.x = center.x + radius * clockwise_rot * cosf(DirectX::XMConvertToRadians(add_angle + index * (360.0f / divisions)));
+        pos.y = center.y + radius * clockwise_rot * sinf(DirectX::XMConvertToRadians(add_angle + index * (360.0f / divisions)));
         return pos;
     }
 }

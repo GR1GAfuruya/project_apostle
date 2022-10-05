@@ -1,6 +1,6 @@
 #pragma once
 #include "skill_slot.h"
-#define SP_SKILLTYPE SupportSkillSlot::SupportSkillType
+//#define SP_SKILLTYPE SupportSkillSlot::SupportSkillType
 
 class SupportSkillSlot : public SkillSlot
 {

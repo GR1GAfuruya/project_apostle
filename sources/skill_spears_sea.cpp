@@ -1,6 +1,9 @@
 #include "skill_spears_sea.h"
 
-
+SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
+{
+	pos = launch_pos;
+}
 
 void SpearsSea::initialize(Graphics& graphics)
 {
