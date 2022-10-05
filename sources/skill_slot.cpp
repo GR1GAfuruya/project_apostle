@@ -12,11 +12,9 @@ void SkillSlot::initialize(Graphics& graphics)
 	 cool_time_attenuation_speed = 1.0f;
 	// skill.clear();
 }
-
 //XV
 void SkillSlot::update(Graphics& graphics, float elapsed_time)
 {
-
 	for (auto& s : skills)
 	{
 		s->update(graphics, elapsed_time);
@@ -37,6 +35,8 @@ void SkillSlot::update(Graphics& graphics, float elapsed_time)
 		chantable = true;
 	}
 }
+
+
 
 //•`‰æ
 void SkillSlot::render(Graphics& graphics)

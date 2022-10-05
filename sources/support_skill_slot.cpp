@@ -10,14 +10,14 @@ SupportSkillSlot::SupportSkillSlot(Graphics& graphics, SupportSkillType type)
 }
 
 
-void SupportSkillSlot::chant(Graphics& graphics/*,DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* target_pos, int change_state*/)
+void SupportSkillSlot::chant(Graphics& graphics,DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
 		std::unique_ptr<Skill>skill;
 		//実態生成
-		entity_generation_by_type(graphics, skill);
+		entity_generation_by_type(graphics, skill, launch_pos, target_pos);
 		//クールタイム設定
 		cool_time = skill->get_cool_time();
 		//リストに追加
@@ -26,7 +26,7 @@ void SupportSkillSlot::chant(Graphics& graphics/*,DirectX::XMFLOAT3* init_pos, D
 	}
 }
 
-void SupportSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin)
+void SupportSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
 {
 	switch (skill_type)
 	{

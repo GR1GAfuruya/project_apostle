@@ -25,14 +25,14 @@ public:
 	//==============================================================
 	SupportSkillSlot(Graphics& graphics, SupportSkillType type);
 	~SupportSkillSlot() {}
-	void chant(Graphics& graphics);
+	void chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos);
 	//==============================================================
 	// 
 	// privateä÷êî
 	// 
 	//==============================================================
 	//ÉXÉLÉãÇÃé¿ëÃê∂ê¨
-	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin) ;
+	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos) ;
 	//==============================================================
 	// 
 	// ïœêî

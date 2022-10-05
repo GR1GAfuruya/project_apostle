@@ -52,7 +52,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	game_pad = &Device::instance().get_game_pad();
 
 	sword_hand = model->get_bone_by_name("pelvis");
-	sword_bone = model->get_bone_by_name("hand_r");
+	right_hand = model->get_bone_by_name("hand_r");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 	initialize();
@@ -80,7 +80,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
-	model->fech_bone_world_matrix(transform, sword_bone, &sword_hand_mat);
+	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
 
 
 	//ソード更新
@@ -96,10 +96,16 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	collider.start = position;
 	collider.end = { position.x,position.y + height, position.z };
 	collider.radius = 1.0f;
-
+	//skill系仮置き
 	select_support_skill();
 	input_chant_support_skill(graphics);
 	input_chant_attack_skill(graphics);
+	//スキル選択中カメラ操作ストップ
+	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
+	if (skill_manager.get()->is_selecting_skill())
+	{
+		int a = 1;
+	}
 }
 
 //描画処理
@@ -187,7 +193,7 @@ void Player::select_support_skill()
 {
 	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER) //左トリガーを引いたら支援スキル
 	{
-		transition_support_magic_state();
+		//transition_support_magic_state();
 	}
 }
 
@@ -232,7 +238,7 @@ void Player::input_chant_support_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
-		skill_manager->chant_support_skill(graphics);
+		skill_manager->chant_support_skill(graphics,position,&position);
 		transition_support_magic_state();//状態遷移
 	}
 }
@@ -242,7 +248,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
-		skill_manager->chant_attack_skill(graphics);
+		skill_manager->chant_attack_skill(graphics, position, &position);
 		transition_attack_bullet_state();//状態遷移
 	}
 }

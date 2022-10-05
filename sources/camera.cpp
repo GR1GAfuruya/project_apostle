@@ -89,24 +89,27 @@ void Camera::update(float elapsed_time, Stage* stage)
 		float height = static_cast<float>(SCREEN_HEIGHT);
 		float aspect_ratio{ width / height };
 		static DirectX::XMFLOAT2 near_far = { 0.1f, 5000.0f };
-		Mouse& mouse = Device::instance().get_mouse();
-		if (mouse.get_button() & mouse.BTN_I) angle.x -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_K) angle.x += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_L) angle.y += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
-		if (mouse.get_button() & mouse.BTN_J) angle.y -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+		if (!camera_operate_stop)
+		{
+			Mouse& mouse = Device::instance().get_mouse();
+			if (mouse.get_button() & mouse.BTN_I) angle.x -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			if (mouse.get_button() & mouse.BTN_K) angle.x += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			if (mouse.get_button() & mouse.BTN_L) angle.y += DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			if (mouse.get_button() & mouse.BTN_J) angle.y -= DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 
-		GamePad& game_pad = Device::instance().get_game_pad();
-		float ax = game_pad.get_axis_RX();
-		float ay = game_pad.get_axis_RY();
-		//カメラ縦操作
-		if (ay > 0.1f || ay < 0.1f)
-		{
-			angle.x -= ay * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
-		}
-		//カメラ横操作
-		if (ax > 0.1f || ax < 0.1f)
-		{
-			angle.y += ax * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			GamePad& game_pad = Device::instance().get_game_pad();
+			float ax = game_pad.get_axis_RX();
+			float ay = game_pad.get_axis_RY();
+			//カメラ縦操作
+			if (ay > 0.1f || ay < 0.1f)
+			{
+				angle.x -= ay * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			}
+			//カメラ横操作
+			if (ax > 0.1f || ax < 0.1f)
+			{
+				angle.y += ax * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
+			}
 		}
 #ifdef USE_IMGUI
 		if (display_camera_imgui)

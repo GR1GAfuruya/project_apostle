@@ -14,19 +14,17 @@ void SkillUI::initialize(SlotsUi init_param,int slots_num)
 
 void SkillUI::update(Graphics& graphics, float elapsed_time)
 {
-	const float expansion_start = 30;
-	const float expansion_end = 150;
+	
 	slots_ui.expansion = skill_select ? expansion_end : expansion_start;
 	slots_ui.radius = lerp(slots_ui.radius, slots_ui.expansion, slots_ui.expansion_speed * elapsed_time);
 
 	float alpha = skill_select ? 1.0f : 0.0f;
-	slots_ui.color.w = lerp(slots_ui.color.w, alpha, 6.0f * elapsed_time);
+	slots_ui.color.w = lerp(slots_ui.color.w, alpha, add_alpha_speed * elapsed_time);
 	
 	
-	const float add_ang_start = -120;
-	const float add_ang_end = -90;
+	
 	float tar_add_ang = skill_select ? add_ang_end : add_ang_start;
-	slots_ui.add_ang = lerp(slots_ui.add_ang, tar_add_ang, 6.0f * elapsed_time);
+	slots_ui.add_ang = lerp(slots_ui.add_ang, tar_add_ang, add_ang_lerp_speed * elapsed_time);
 }
 
 void SkillUI::icon_render(Graphics& graphics)
@@ -75,18 +73,29 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 
 	skill_slot_icon->end(graphics.get_dc().Get());
 }
-void SkillUI::debug_gui()
+void SkillUI::debug_gui(string str_id)
 {
 #if USE_IMGUI
 
 	{
+		string name = str_id;
 		ImGui::Begin("Skill");
+		ImGui::PushID(str_id.c_str());
+		ImGui::Text(str_id.c_str());
 		ImGui::DragFloat2("center_pos", &slots_ui.center_pos.x);
 		ImGui::DragFloat2("icon_pos", &slots_ui.icon_pos.x);
 		ImGui::DragFloat("add_ang", &slots_ui.add_ang);
 		ImGui::DragFloat("size", &slots_ui.size,0.1f);
 		ImGui::DragFloat4("color", &slots_ui.color.x);
-		
+		ImGui::Separator();
+		ImGui::DragFloat("expansion_start", &expansion_start);
+		ImGui::DragFloat("expansion_end", &expansion_end);
+		ImGui::DragFloat("add_alpha_speed", &add_alpha_speed);
+		ImGui::DragFloat("add_ang_start", &add_ang_start);
+		ImGui::DragFloat("add_ang_end", &add_ang_end);
+		ImGui::DragFloat("add_ang_lerp_speed", &add_ang_lerp_speed,0.1f);
+		ImGui::Separator();
+		ImGui::PopID();
 		ImGui::End();
 	}
 

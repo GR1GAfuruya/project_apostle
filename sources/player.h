@@ -195,7 +195,7 @@ private:
 	std::unique_ptr<Slash> slash_efect;
 	std::unique_ptr<Sword> sword;
 	skeleton::bone sword_hand;
-	skeleton::bone sword_bone;
+	skeleton::bone right_hand;
 
 	//“–‚½‚è”»’è—p•Ï”
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };

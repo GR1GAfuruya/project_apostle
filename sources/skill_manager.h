@@ -26,13 +26,19 @@ public:
 	void ui_render(Graphics& graphics, float elapsed_time);
 
 	//サポートスキル詠唱
-	void chant_support_skill(Graphics& graphics);
+	void chant_support_skill(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos);
 	//攻撃スキル詠唱
-	void chant_attack_skill(Graphics& graphics);
+	void chant_attack_skill(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos);
 	//サポートスキルセット
 	void set_support_skill(int skill_index);
 	//攻撃スキルセット
 	void set_attack_skill(int skill_index);
+	//スキルセレクト中かどうか
+	bool is_selecting_skill() {
+		if (is_selecting_support_skill) return true;
+		if (is_selecting_attack_skill) return true;
+		return false;
+	}
 
 	int select_skill_slot(DirectX::XMFLOAT2 stick_vec,int slot_num);
 	//デバッグGUI

@@ -33,6 +33,7 @@ public:
     const DirectX::XMFLOAT3& get_trakking_target() const { return trakking_target; }
     // 角度
     void set_angle(const DirectX::XMFLOAT3& a) { angle = a; }
+    void set_camera_operate_stop(bool s) { camera_operate_stop = s; }
     //視野角設定
     void set_cape_vision(const float& cape) { this->cape_vision = cape; }
     //遅延時間
@@ -111,5 +112,5 @@ private:
     DirectX::XMFLOAT4X4 projection;
     DirectX::XMFLOAT4X4 view_projection;
     bool display_camera_imgui = true;
-
+    bool camera_operate_stop;
 };

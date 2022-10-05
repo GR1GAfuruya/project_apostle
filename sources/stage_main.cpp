@@ -41,6 +41,13 @@ void StageMain::render(float elapsed_time, Graphics& graphics)
 	//ステージ
 	//model->render(graphics.get_dc().Get(), world);
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
+#if USE_IMGUI
+	
+	ImGui::Begin("stage");
+	ImGui::DragFloat3("scale", &scale.x,0.1f);
+	ImGui::End();
+	
+#endif
 }
 
 bool StageMain::ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)

@@ -45,6 +45,8 @@ void MagicBullet::debug_gui(string str_id)
 	ImGui::BulletText(name.c_str());
 	ImGui::DragFloat("life_time", &life_time);
 	ImGui::DragFloat("acceleration", &acceleration);
+	ImGui::DragFloat("power", &power);
+	ImGui::DragFloat("invinsible_time", &invinsible_time);
 	
 
 	/*これより上にパラメーター記述*/

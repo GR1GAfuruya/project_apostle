@@ -38,7 +38,7 @@ public:
 	virtual void debug_gui(string str_id);
 
 	//ârè•Ç∑ÇÈ
-	virtual void chant(Graphics& graphics) {};
+	virtual void chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos) {};
 	
 protected:
 	//==============================================================
