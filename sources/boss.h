@@ -6,6 +6,7 @@
 #include "aura.h"
 #include "boss_charge_attack.h"
 #include "light.h"
+#include "primitive.h"
 class Boss :public Charactor
 {
 public:
@@ -103,12 +104,6 @@ private:
 		float height;
 	};
 
-	struct Capsule
-	{
-		DirectX::XMFLOAT3 start;
-		DirectX::XMFLOAT3 end;
-		float radius;
-	};
 
 	struct AttackParam
 	{

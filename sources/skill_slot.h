@@ -2,7 +2,7 @@
 #include <vector>
 #include "sprite.h"
 #include "skill.h"
-
+#include "damage_func.h"
 
 class SkillSlot
 {
@@ -19,7 +19,10 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	SkillSlot(){};
+	SkillSlot() :
+		cool_time(0.0f),
+		chantable(false),
+		cool_time_attenuation_speed(1.0f) {};
 	virtual ~SkillSlot() {}
 
 	//èâä˙âª
@@ -28,11 +31,14 @@ public:
 	void update(Graphics& graphics, float elapsed_time);
 	//ï`âÊ
 	void render(Graphics& graphics);
+
+	//ÉXÉLÉãÇÃìñÇΩÇËîªíË
+	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
 	//DebugGUIï\é¶
 	virtual void debug_gui(string str_id);
 
 	//ârè•Ç∑ÇÈ
-	virtual void chant(Graphics& graphics) {};
+	virtual void chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos) {};
 	
 protected:
 	//==============================================================

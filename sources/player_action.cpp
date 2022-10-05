@@ -188,7 +188,7 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 
 void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
-	DirectX::XMFLOAT3 sword_pos, up;
+	DirectX::XMFLOAT3 sword_pos{}, up{};
 	model->fech_by_bone(transform, sword_hand, sword_pos);
 	DirectX::XMFLOAT3 slash_dir_vec = Math::get_posture_forward(orientation);
 	//ˆêU‚è–Ú‚ÌaŒ‚

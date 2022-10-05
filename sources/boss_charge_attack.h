@@ -35,7 +35,7 @@ private:
 	//地面からコアに伸びる支柱
 	std::unique_ptr<Aura> aura[2];
 	//コア
-	std::unique_ptr<Sphere> core;
+	std::unique_ptr<SphereEffect> core;
 
 	std::unique_ptr<Wave> wave;
 

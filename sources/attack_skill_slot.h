@@ -24,9 +24,10 @@ public:
 	//==============================================================
 	AttackSkillSlot(Graphics& graphics, AttackSkillType type);
 	~AttackSkillSlot() {}
-
-	void chant(Graphics& graphics);
-	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, AttackSkillType type);
+	//スキルの発動
+	void chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos);
+	//スキルの実体生成
+	void entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos);
 	//==============================================================
 	// 
 	// 変数

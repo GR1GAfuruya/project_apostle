@@ -1,7 +1,7 @@
 #include "skill_slot.h"
 #include "user.h"
 #include "imgui_include.h"
-
+#include "collision.h"
 //‰Šú‰»
 void SkillSlot::initialize(Graphics& graphics)
 {
@@ -12,11 +12,9 @@ void SkillSlot::initialize(Graphics& graphics)
 	 cool_time_attenuation_speed = 1.0f;
 	// skill.clear();
 }
-
 //XV
 void SkillSlot::update(Graphics& graphics, float elapsed_time)
 {
-
 	for (auto& s : skills)
 	{
 		s->update(graphics, elapsed_time);
@@ -38,12 +36,50 @@ void SkillSlot::update(Graphics& graphics, float elapsed_time)
 	}
 }
 
+
+
 //•`‰æ
 void SkillSlot::render(Graphics& graphics)
 {
 	for (auto& s : skills)
 	{
 		s->render(graphics);
+	}
+}
+
+void SkillSlot::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
+{
+	for (auto& s : skills)
+	{
+		switch (s->get_collision_type())
+		{
+		case Skill::CollisionType::SPHERE:
+			if (Collision::sphere_vs_capsule(s->get_colider().start, s->get_colider().radius,
+				object_colider.start, object_colider.end, object_colider.radius))
+			{
+				s->skill_hit();
+				damaged_func(s->get_power(), s->get_invinsible_time());
+			}
+			break;
+		case Skill::CollisionType::CYLINDER:
+
+			break;
+		case Skill::CollisionType::CUBE:
+
+			break;
+		case Skill::CollisionType::CAPSULE:
+			if (Collision::capsule_vs_capsule(s->get_colider().start, s->get_colider().end, s->get_colider().radius,
+				object_colider.start, object_colider.end, object_colider.radius))
+			{
+				s->skill_hit();
+				damaged_func(s->get_power(), s->get_invinsible_time());
+			}
+			break;
+		default:
+			break;
+		}
+		
+
 	}
 }
 

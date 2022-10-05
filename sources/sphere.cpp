@@ -1,7 +1,7 @@
 #include "sphere.h"
 #include "texture.h"
 
-Sphere::Sphere(ID3D11Device* device)
+SphereEffect::SphereEffect(ID3D11Device* device)
 {
 	model = make_unique<SkeletalMesh>(device, "./resources/Effects/Meshes/eff_sphere.fbx");
 	shader = make_unique<MeshShader>(device);
@@ -15,23 +15,23 @@ Sphere::Sphere(ID3D11Device* device)
 	load_texture_from_file(device, L"./resources/TexMaps/Mask/dissolve_animation.png", textures[1].ReleaseAndGetAddressOf(), &texture2d_desc);
 }
 
-void Sphere::play(DirectX::XMFLOAT3 pos)
+void SphereEffect::play(DirectX::XMFLOAT3 pos)
 {
 	active = true;
 	position = pos;
 }
 
-void Sphere::stop()
+void SphereEffect::stop()
 {
 	EffecttBase::stop();
 	constants->data.scroll_speed = 0;
 }
 
-void Sphere::update(Graphics& graphics, float elapsed_time)
+void SphereEffect::update(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Sphere::render(Graphics& graphics)
+void SphereEffect::render(Graphics& graphics)
 {
 
 	//エフェクトがアクティブ状態になっていたら描画
@@ -49,7 +49,7 @@ void Sphere::render(Graphics& graphics)
 	}
 }
 
-void Sphere::debug_gui(const char* str_id)
+void SphereEffect::debug_gui(const char* str_id)
 {
 #if USE_IMGUI
 	imgui_menu_bar("Effects", "sphere", display_imgui);

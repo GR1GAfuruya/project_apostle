@@ -683,6 +683,12 @@
     <ClInclude Include="sources\support_skill_slot.h">
       <Filter>sources\Skill\Slots</Filter>
     </ClInclude>
+    <ClInclude Include="sources\primitive.h">
+      <Filter>sources\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\damage_func.h">
+      <Filter>sources\Charactor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\effect_ps.hlsl">

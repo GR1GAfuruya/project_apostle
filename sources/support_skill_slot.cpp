@@ -10,16 +10,15 @@ SupportSkillSlot::SupportSkillSlot(Graphics& graphics, SupportSkillType type)
 }
 
 
-void SupportSkillSlot::chant(Graphics& graphics)
+void SupportSkillSlot::chant(Graphics& graphics,DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
 		std::unique_ptr<Skill>skill;
 		//実態生成
-		entity_generation_by_type(graphics, skill, skill_type);
+		entity_generation_by_type(graphics, skill, launch_pos, target_pos);
 		//クールタイム設定
-		skill->initialize(graphics);
 		cool_time = skill->get_cool_time();
 		//リストに追加
 		skills.push_back(std::move(skill));
@@ -27,20 +26,22 @@ void SupportSkillSlot::chant(Graphics& graphics)
 	}
 }
 
-void SupportSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, SupportSkillType type)
+void SupportSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
 {
-	switch (type)
+	switch (skill_type)
 	{
 	case SupportSkillType::REGENERATE:
 		coffin = std::make_unique<Regenerate>();
+		coffin->initialize(graphics);
+
 		break;
 	case SupportSkillType::PHYCICAL_UP:
 		coffin = std::make_unique<PhysucalUp>();
+		coffin->initialize(graphics);
+
 		break;
 	case SupportSkillType::RESTRAINNT:
 		coffin = std::make_unique<Restrain>();
-		break;
-	
 		break;
 	default:
 		break;

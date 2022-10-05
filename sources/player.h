@@ -8,6 +8,7 @@
 #include "tornado.h"
 #include "sword.h"
 #include "skill_manager.h"
+#include "primitive.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -75,13 +76,7 @@ private:
 
 	};
 
-	
-	struct Capsule
-	{
-		DirectX::XMFLOAT3 start;
-		DirectX::XMFLOAT3 end;
-		float radius;
-	};
+
 
 	struct AttackParam
 	{
@@ -189,7 +184,7 @@ private:
 	//ジャンプ可能回数
 	int jump_limit = 1;
 	float avoidance_speed = 50;
-	bool display_player_imgui = false;
+	bool display_player_imgui = true;
 	/*-------攻撃関連--------------------------*/
 	//攻撃時間
 	float attack_time;
@@ -200,7 +195,7 @@ private:
 	std::unique_ptr<Slash> slash_efect;
 	std::unique_ptr<Sword> sword;
 	skeleton::bone sword_hand;
-	skeleton::bone sword_bone;
+	skeleton::bone right_hand;
 
 	//当たり判定用変数
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };

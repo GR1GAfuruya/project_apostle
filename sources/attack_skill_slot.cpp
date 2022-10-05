@@ -8,14 +8,14 @@ AttackSkillSlot::AttackSkillSlot(Graphics& graphics, AttackSkillType type)
 	skill_type = type;
 }
 
-void AttackSkillSlot::chant(Graphics& graphics)
+void AttackSkillSlot::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
 		std::unique_ptr<Skill>skill;
 		//実態生成
-		entity_generation_by_type(graphics, skill, skill_type);
+		entity_generation_by_type(graphics, skill,launch_pos,target_pos);
 		//クールタイム設定
 		skill->initialize(graphics);
 		cool_time = skill->get_cool_time();
@@ -25,15 +25,17 @@ void AttackSkillSlot::chant(Graphics& graphics)
 	}
 }
 
-void AttackSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, AttackSkillType type)
+void AttackSkillSlot::entity_generation_by_type(Graphics& graphics, std::unique_ptr<Skill>& coffin, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos)
 {
-	switch (type)
+	switch (skill_type)
 	{
 	case AttackSkillType::MAGICBULLET:
 		coffin = std::make_unique<MagicBullet>();
+		//coffin->initialize(graphics,);
 		break;
 	case AttackSkillType::SPEARS_SEA:
 		coffin = std::make_unique<SpearsSea>();
+		coffin->initialize(graphics);
 		break;
 	
 	default:

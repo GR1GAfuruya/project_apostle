@@ -2,11 +2,11 @@
 #include "effect_base.h"
 #include "skeletal_mesh.h"
 #include "constant.h"
-class Sphere : public EffecttBase
+class SphereEffect : public EffecttBase
 {
 public:
-	Sphere(ID3D11Device* device);
-	~Sphere() {}
+	SphereEffect(ID3D11Device* device);
+	~SphereEffect() {}
 	void play(DirectX::XMFLOAT3 pos)override;
 	void stop()override;
 	void update(Graphics& graphics, float elapsed_time)override;
