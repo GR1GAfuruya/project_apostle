@@ -8,7 +8,8 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	SpearsSea(){}
+	SpearsSea() {}
+	SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
 	~SpearsSea() {}
 
 	void initialize(Graphics& graphics) override;
@@ -29,7 +30,7 @@ protected:
 	// •Ï”
 	// 
 	//==============================================================
-
+	DirectX::XMFLOAT3 pos;
 	//==============================================================
 	// 
 	// ’è”

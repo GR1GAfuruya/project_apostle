@@ -238,7 +238,20 @@ void Player::input_chant_support_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
-		skill_manager->chant_support_skill(graphics,position,&position);
+		switch (skill_manager->get_selected_sup_skill_type())
+		{
+		case SP_SKILLTYPE::PHYCICAL_UP:
+		//	skill_manager->chant_phycical_up(graphics, position, position);
+			break;
+			case SP_SKILLTYPE::REGENERATE:
+
+			break;
+			case SP_SKILLTYPE::RESTRAINNT:
+
+			break;
+		default:
+			break;
+		}
 		transition_support_magic_state();//状態遷移
 	}
 }
@@ -248,7 +261,18 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
-		skill_manager->chant_attack_skill(graphics, position, &position);
+		switch (skill_manager->get_selected_atk_skill_type())
+		{
+		case ATK_SKILLTYPE::MAGICBULLET :
+			skill_manager->chant_magic_bullet(graphics, position, position);
+			break;
+		case ATK_SKILLTYPE::SPEARS_SEA:
+
+			break;
+		default:
+			break;
+		}
+		
 		transition_attack_bullet_state();//状態遷移
 	}
 }
