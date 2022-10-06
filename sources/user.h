@@ -668,7 +668,7 @@ namespace Math
         DirectX::XMFLOAT4X4 m)
     {
         // ç≈ëÂê¨ï™Çåüçı
-        float elem[4]; // 0:x, 1:y, 2:z, 3:w
+        float elem[4]{}; // 0:x, 1:y, 2:z, 3:w
         elem[0] = m._11 - m._22 - m._33 + 1.0f;
         elem[1] = -m._11 + m._22 - m._33 + 1.0f;
         elem[2] = -m._11 - m._22 + m._33 + 1.0f;
@@ -927,15 +927,15 @@ namespace Math
         controllPoints.emplace_back(dummy);
 
         sectionNum++;
-        float sectionRatio = (ratio - (r - sections.at(sectionNum - 1))) / sections.at(sectionNum - 1);
+        float sectionRatio = (ratio - (r - sections.at(sectionNum - 1.0f))) / sections.at(sectionNum - 1.0f);
 
         XMVECTOR Out;
 
         const float power = 1.0f; // Usually power is 0.5f
-        XMVECTOR P0 = XMLoadFloat3(&controllPoints.at(sectionNum - 1));
-        XMVECTOR P1 = XMLoadFloat3(&controllPoints.at(sectionNum + 0));
-        XMVECTOR P2 = XMLoadFloat3(&controllPoints.at(sectionNum + 1));
-        XMVECTOR P3 = XMLoadFloat3(&controllPoints.at(sectionNum + 2));
+        XMVECTOR P0 = XMLoadFloat3(&controllPoints.at(sectionNum - 1.0f));
+        XMVECTOR P1 = XMLoadFloat3(&controllPoints.at(sectionNum + 0.0f));
+        XMVECTOR P2 = XMLoadFloat3(&controllPoints.at(sectionNum + 1.0f));
+        XMVECTOR P3 = XMLoadFloat3(&controllPoints.at(sectionNum + 2.0f));
         XMVECTOR V0 = XMVectorScale(XMVectorSubtract(P2, P0), power);
         XMVECTOR V1 = XMVectorScale(XMVectorSubtract(P3, P1), power);
 

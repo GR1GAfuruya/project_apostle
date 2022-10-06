@@ -73,6 +73,10 @@ protected:
 	float power = 0.0f;
 	//‘ÎÛ‚É—^‚¦‚é–³“GŠÔ
 	float invinsible_time = 0.0f;
+	//ˆÊ’u
+	DirectX::XMFLOAT3 position{};
+	//‘¬—Í
+	DirectX::XMFLOAT3 velocity{};
 	//==============================================================
 	// 
 	// ’è”

@@ -200,29 +200,24 @@ void SkillManager::set_attack_skill(int skill_index)
 
 int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 {
-	//基準軸
-	DirectX::XMFLOAT2 up = { 0.00001f,1.0f };
+	//スロット一つ分の枠の大きさを決定
+	float slots_ang_size = 360.0f / slot_num;
+	//基準軸 操作しやすいようにスロット一つ分の枠の大きさ÷2分左に傾ける
+	float correction_standard_ang = -DirectX::XMConvertToRadians(slots_ang_size / 2);
+	DirectX::XMFLOAT2 standard_axis = { sinf(correction_standard_ang), cosf(correction_standard_ang)};
 	//正規化
 	stick_vec = Math::Normalize(stick_vec);
 	//スティックのさす方向と基準軸間の角度を求める
-	float dot = Math::Dot(up, stick_vec);
+	float dot = Math::Dot(standard_axis, stick_vec);
 	dot = acosf(dot);
 	float deglee_dot = DirectX::XMConvertToDegrees(dot);
-	//x値がマイナスの場合補正
-	float add_angle = 180 - deglee_dot;
+	//Dotが180度を上回ったときに補正をかけて360度に対応できるようにする
 	float ang = deglee_dot;
-	
-	if (stick_vec.x < 0) ang = 180 + add_angle;
-	//スロット一つ分の枠の大きさを決定
-	float slots_ang_size = 360.0f / slot_num;
-	int selected_index;
+	float cross{ stick_vec.x * standard_axis.y - stick_vec.y * standard_axis.x };
+	if (cross < 0) ang = 360.0f - ang;
 	//スロット番号を決定
+	int selected_index;
 	selected_index = ang / slots_ang_size;
-#if USE_IMGUI
-	ImGui::Begin("Skill");
-	ImGui::Text(to_string(selected_index).c_str());
-	ImGui::End();
-#endif
 	return selected_index;
 }
 

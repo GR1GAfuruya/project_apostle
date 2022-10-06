@@ -264,7 +264,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
-			skill_manager->chant_magic_bullet(graphics, position, position);
+			skill_manager->chant_magic_bullet(graphics, position, Math::get_posture_forward(orientation));
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
 
