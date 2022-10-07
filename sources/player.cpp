@@ -264,10 +264,10 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
-			skill_manager->chant_magic_bullet(graphics, position, position);
+			skill_manager->chant_magic_bullet(graphics, position, Math::get_posture_forward(orientation));
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-
+			skill_manager->chant_spear_sea(graphics, position);
 			break;
 		default:
 			break;
@@ -275,6 +275,11 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		
 		transition_attack_bullet_state();//状態遷移
 	}
+}
+
+void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func)
+{
+	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
 }
 
 void Player::on_landing()
@@ -383,17 +388,17 @@ void Player::debug_gui(Graphics& graphics)
 
 }
 
-void Player::calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position, float colider_radius,float colider_height)
+void Player::calc_collision_vs_enemy(Capsule collider,float collider_height)
 {
-	Collision::cylinder_vs_cylinder(colider_position, colider_radius, colider_height, position, radius, height, &position);
+	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, radius, height, &position);
 }
 
-void Player::calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func)
+void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
 {
 	//剣の攻撃中のみ当たり判定
 	if (attack_sword_param.is_attack)
 	{
-		if (Collision::capsule_vs_capsule(capsule_start, capsule_end, colider_radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
 			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);

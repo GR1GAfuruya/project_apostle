@@ -45,6 +45,7 @@ public:
 	virtual void skill_hit() {};
 	//デバッグGUI
 	virtual void debug_gui(string str_id) = 0;
+	void set_is_skill_hit(bool h) { is_hit = h; }
 	//クールタイムの取得
 	float get_cool_time() { return cool_time; }
 	float get_power() { return power; }
@@ -73,6 +74,10 @@ protected:
 	float power = 0.0f;
 	//対象に与える無敵時間
 	float invinsible_time = 0.0f;
+	//位置
+	DirectX::XMFLOAT3 position{};
+	//速力
+	DirectX::XMFLOAT3 velocity{};
 	//==============================================================
 	// 
 	// 定数

@@ -3,7 +3,8 @@
 #include "framework.h"
 #include "lambert_shader.h"
 #include "PBR_shader.h"
-
+#include <d3dcompiler.h>
+#include <d3dcommon.h>
 void Graphics::initialize(HWND hwnd)
 {
 	HRESULT hr{ S_OK };	//HRESULT型はlong型の数値。BOOL型より値が多いため数値を見るだけで失敗の原因までわかる。
@@ -322,6 +323,75 @@ void Graphics::shader_activate(SHADER_TYPES sh,RENDER_TYPE rt)
 	//shader->active(immediate_context.Get());
 	if(shaders.at(sh))
 	shaders.at(sh)->active(immediate_context.Get(), rt);
+}
+
+BOOL Graphics::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)
+{
+	OPENFILENAMEW o;
+	fname[0] = _T('\0');
+	ZeroMemory(&o, sizeof(o));
+	o.lStructSize = sizeof(o);          // 構造体サイズ
+	o.hwndOwner = hWnd;               // 親ウィンドウのハンドル
+	o.lpstrInitialDir = initDir;            // 初期フォルダー
+	o.lpstrFile = fname;              // 取得したファイル名を保存するバッファ
+	o.nMaxFile = sz;                 // 取得したファイル名を保存するバッファサイズ
+	o.lpstrFilter = _TEXT("hlslファイル(*.hlsl)\0*.hlsl\0") _TEXT("全てのファイル(*.*)\0*.*\0");
+	o.lpstrDefExt = _TEXT("hlsl");
+	o.lpstrTitle = _TEXT("hlslファイルを指定");
+	o.nFilterIndex = 1;
+	return GetOpenFileNameW(&o);
+}
+
+void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader)
+{
+	//////シェーダーのコンパイル
+#ifdef USE_IMGUI
+	ImGui::Begin("compile_shader");
+
+	if (ImGui::Button("compile"))
+	{
+		TCHAR init {};
+		TCHAR name[MAX_PATH];
+		if (get_file_name(hwnd, name, sizeof(name) / sizeof(TCHAR), &init))
+		{
+			std::wstring s;
+			s = name;
+
+			D3D_SHADER_MACRO macros[] =
+			{
+				
+					{"DEFINE_MACRO", "float4(0, 1, 1, 1)"},
+					{nullptr, nullptr},
+				
+			};
+
+			UINT compileFlag = 0;
+			//    compileFlag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+			compileFlag |= D3DCOMPILE_DEBUG | D3DCOMPILE_ENABLE_STRICTNESS;
+			const char* entryPoint = "main";
+			const char* shaderTarget = "ps_5_0";
+			Microsoft::WRL::ComPtr<ID3DBlob> pShaderBlob, pErrorMsg = nullptr;
+			//シェーダのコンパイル
+			D3DCompileFromFile(
+				s.c_str(),
+				macros,
+				nullptr,
+				entryPoint,
+				shaderTarget,
+				compileFlag,
+				0,
+				pShaderBlob.GetAddressOf(),
+				pErrorMsg.GetAddressOf());
+			//ID3D11ComputeShaderの作成
+			device->CreatePixelShader(
+				pShaderBlob->GetBufferPointer(),
+				pShaderBlob->GetBufferSize(),
+				nullptr,
+				pixel_shader);
+		}
+	}
+	ImGui::End();
+#endif
 }
 
 

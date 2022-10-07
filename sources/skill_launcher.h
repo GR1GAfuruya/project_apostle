@@ -4,7 +4,7 @@
 #include "skill.h"
 #include "damage_func.h"
 
-class SkillSlot
+class SkillLauncher
 {
 public:
 	//==============================================================
@@ -19,11 +19,11 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	SkillSlot() :
+	SkillLauncher() :
 		cool_time(0.0f),
 		chantable(false),
 		cool_time_attenuation_speed(1.0f) {};
-	virtual ~SkillSlot() {}
+	virtual ~SkillLauncher() {}
 
 	//‰Šú‰»
 	void initialize(Graphics& graphics);
@@ -32,13 +32,15 @@ public:
 	//•`‰æ
 	void render(Graphics& graphics);
 
-	//ƒXƒLƒ‹‚Ì“–‚½‚è”»’è
-	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
 	//DebugGUI•\¦
-	virtual void debug_gui(string str_id);
+	virtual void debug_gui()= 0;
 
-	//‰r¥‚·‚é
-	void chant(std::unique_ptr<Skill>& coffin);
+	//¦ˆø”‚ª‚»‚ê‚¼‚êˆÙ‚È‚é‚Ì‚ÅŒp³æ‚ÅÀ‘•
+	////ƒXƒLƒ‹‚Ì“–‚½‚è”»’è
+	//void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
+	////‰r¥‚·‚é
+	//void launch();
+	
 	
 protected:
 	//==============================================================

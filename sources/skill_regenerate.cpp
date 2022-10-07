@@ -3,7 +3,6 @@
 void Regenerate::initialize(Graphics& graphics)
 {
 	life_time = 5.0f;
-	cool_time = 2.0f;
 }
 
 void Regenerate::update(Graphics& graphics, float elapsed_time)

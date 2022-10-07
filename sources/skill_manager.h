@@ -1,11 +1,13 @@
 #pragma once
-#include "support_skill_slot.h"
-#include "attack_skill_slot.h"
 #include <array>
 #include "sprite_batch.h"
 #include "skill_ui.h"
-#include "skill_magic_bullet.h"
+#include "physical_up_launcher.h"
+#include "regenerate_launcher.h"
+#include "restraint_launcher.h"
 #include "skill_spears_sea.h"
+#include "magic_bullet_launcher.h"
+#include "spears_sea_launcher.h"
 #define SP_SKILLTYPE SkillManager::SupportSkillType
 #define ATK_SKILLTYPE SkillManager::AttackSkillType
 class SkillManager
@@ -52,17 +54,20 @@ public:
 
 	AttackSkillType get_selected_atk_skill_type() { return selected_atk_skill_type; }
 
-	//サポートスキル詠唱
+	//スキル詠唱
 	void chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed);
 
 	void chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health);
 
-	void chant_restraint(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* target_pos);
+	void chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed);
 
-	void chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir);
 	//攻撃スキル詠唱
-	void chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
+	void chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir);
 	
+	void chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
+
+	//スキル当たり判定
+	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);
 	//スキルセレクト中かどうか
 	bool is_selecting_skill() {
 		if (is_selecting_support_skill) return true;
@@ -86,8 +91,13 @@ private:
 	// 
 	//==============================================================
 	//プレイヤーが実際に実行するスキルの箱
-	std::unique_ptr<SkillSlot> support_skills;
-	std::unique_ptr<SkillSlot> attack_skills;
+	std::unique_ptr<PhycicalUpLauncher> physical_up;
+	std::unique_ptr<RegenerateLauncher> regenerate;
+	std::unique_ptr<RestraintLauncher> restraint;
+
+	std::unique_ptr<MagicBulletLauncher> magick_bullet;
+	std::unique_ptr<SpearSeaLauncher> spear_sea;
+	
 
 	SupportSkillType selected_sup_skill_type;
 	AttackSkillType selected_atk_skill_type;

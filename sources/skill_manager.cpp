@@ -9,17 +9,20 @@ SkillManager::SkillManager(Graphics& graphics)
 	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/support_skill_icon.png");
 	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/attack_skill_icon.png");
 
-	support_skills = make_unique<SkillSlot>();
-	attack_skills = make_unique<SkillSlot>();
 	//身体能力アップスキル
+	physical_up = make_unique<PhycicalUpLauncher>(graphics);
 	
 	//リジェネスキル
+	regenerate = make_unique<RegenerateLauncher>(graphics);
 	 
 	//拘束スキル
+	restraint = make_unique<RestraintLauncher>(graphics);
 	
 	//魔法弾スキル
+	magick_bullet = make_unique<MagicBulletLauncher>(graphics);
 	
 	//槍スキル
+	spear_sea = make_unique<SpearSeaLauncher>(graphics);
 
 	initialize(graphics);
 }
@@ -27,12 +30,19 @@ SkillManager::SkillManager(Graphics& graphics)
 //初期化
 void SkillManager::initialize(Graphics& graphics)
 {
-	//サポートスキル枠の初期化
-	support_skills->initialize(graphics);
-
-	//攻撃スキル枠の初期化
-	attack_skills->initialize(graphics);
-
+	//スキルの初期化
+	{
+		//身体能力アップスキル
+		physical_up->initialize(graphics);
+		//リジェネスキル
+		regenerate->initialize(graphics);
+		//拘束スキル
+		restraint->initialize(graphics);
+		//魔法弾スキル
+		magick_bullet->initialize(graphics);
+		//槍スキル
+		spear_sea->initialize(graphics);
+	}
 	//UI初期設定
 	{
 		SkillUI::SlotsUi support_ui_init{};
@@ -61,11 +71,19 @@ void SkillManager::initialize(Graphics& graphics)
 //更新
 void SkillManager::update(Graphics& graphics, float elapsed_time)
 {
-	//サポートスキル枠,スキルの更新
-	support_skills->update(graphics, elapsed_time);
-
-	//攻撃スキル枠,スキルの更新
-	attack_skills->update(graphics, elapsed_time);
+	//スキルの初期化
+	{
+		//身体能力アップスキル
+		physical_up->update(graphics, elapsed_time);
+		//リジェネスキル
+		regenerate->update(graphics, elapsed_time);
+		//拘束スキル
+		restraint->update(graphics, elapsed_time);
+		//魔法弾スキル
+		magick_bullet->update(graphics, elapsed_time);
+		//槍スキル
+		spear_sea->update(graphics, elapsed_time);
+	}
 
 	//UIアップデート
 	sup_slots_ui->update(graphics, elapsed_time);
@@ -144,11 +162,19 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 //描画
 void SkillManager::render(Graphics& graphics)
 {
-	//サポートスキルスキルの描画
-	support_skills->render(graphics);
-
-	//攻撃スキル枠,スキルの描画
-	attack_skills->render(graphics);
+	//スキルの描画
+	{
+		//身体能力アップスキル
+		physical_up->render(graphics);
+		//リジェネスキル
+		regenerate->render(graphics);
+		//拘束スキル
+		restraint->render(graphics);
+		//魔法弾スキル
+		magick_bullet->render(graphics);
+		//槍スキル
+		spear_sea->render(graphics);
+	}
 }
 
 void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
@@ -170,22 +196,40 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 	atk_slots_ui->selected_skill_icon_render(graphics, pos2);
 }
 
-//サポートスキル発動
 
-//攻撃スキル発動
+//PhycicalUp発動
+void SkillManager::chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+{
+}
+
+void SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health)
+{
+}
+
+//Restraint
+void SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed)
+{
+	restraint->chant(graphics, target_pos, target_pos);
+}
+
+//MagickBullet発動
 void SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir)
 {
-	std::unique_ptr<Skill>skill;
-	skill = std::make_unique<MagicBullet>(graphics, launch_pos, launch_pos);
-	attack_skills->chant(skill);
+	magick_bullet->chant(graphics, launch_pos, dir);
 }
 
+//SpearSea発動
 void SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 {
-	std::unique_ptr<Skill>skill;
-	skill = std::make_unique<SpearsSea>(graphics, launch_pos);
-	attack_skills->chant(skill);
+	spear_sea->chant(graphics, launch_pos);
 }
+
+void SkillManager::judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func)
+{
+	magick_bullet->skill_object_hit_judgment(object_colider, damaged_func);
+}
+
+
 //サポートスキルを使用枠にセット
 void SkillManager::set_support_skill(int skill_index)
 {
@@ -200,29 +244,24 @@ void SkillManager::set_attack_skill(int skill_index)
 
 int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 {
-	//基準軸
-	DirectX::XMFLOAT2 up = { 0.00001f,1.0f };
+	//スロット一つ分の枠の大きさを決定
+	float slots_ang_size = 360.0f / slot_num;
+	//基準軸 操作しやすいようにスロット一つ分の枠の大きさ÷2分左に傾ける
+	float correction_standard_ang = -DirectX::XMConvertToRadians(slots_ang_size / 2);
+	DirectX::XMFLOAT2 standard_axis = { sinf(correction_standard_ang), cosf(correction_standard_ang)};
 	//正規化
 	stick_vec = Math::Normalize(stick_vec);
 	//スティックのさす方向と基準軸間の角度を求める
-	float dot = Math::Dot(up, stick_vec);
+	float dot = Math::Dot(standard_axis, stick_vec);
 	dot = acosf(dot);
 	float deglee_dot = DirectX::XMConvertToDegrees(dot);
-	//x値がマイナスの場合補正
-	float add_angle = 180 - deglee_dot;
+	//Dotが180度を上回ったときに補正をかけて360度に対応できるようにする
 	float ang = deglee_dot;
-	
-	if (stick_vec.x < 0) ang = 180 + add_angle;
-	//スロット一つ分の枠の大きさを決定
-	float slots_ang_size = 360.0f / slot_num;
-	int selected_index;
+	float cross{ stick_vec.x * standard_axis.y - stick_vec.y * standard_axis.x };
+	if (cross < 0) ang = 360.0f - ang;
 	//スロット番号を決定
+	int selected_index;
 	selected_index = ang / slots_ang_size;
-#if USE_IMGUI
-	ImGui::Begin("Skill");
-	ImGui::Text(to_string(selected_index).c_str());
-	ImGui::End();
-#endif
 	return selected_index;
 }
 
@@ -283,14 +322,16 @@ void SkillManager::debug_gui(Graphics& graphics)
 	}
 
 	
-		std::string type_name;
-		type_name = magic_enum::enum_name<SupportSkillType>(selected_sup_skill_type);
-		support_skills->debug_gui(type_name);
-	
-
-	
-		type_name = magic_enum::enum_name<AttackSkillType>(selected_atk_skill_type);
-		attack_skills->debug_gui(type_name);
+	//身体能力アップスキル
+	physical_up->debug_gui();
+	//リジェネスキル
+	regenerate->debug_gui();
+	//拘束スキル
+	restraint->debug_gui();
+	//魔法弾スキル
+	magick_bullet->debug_gui();
+	//槍スキル
+	spear_sea->debug_gui();
 	
 
 	//UIdebugGUI

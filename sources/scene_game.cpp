@@ -50,10 +50,11 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//プレイヤーの更新
 	player->update(graphics, elapsed_time, camera.get(), stage.get());
 
-	player->calc_collision_vs_enemy(boss->boss_collision.position, boss->boss_collision.radius, boss->boss_collision.height);
+	player->calc_collision_vs_enemy(boss->get_body_collision().capsule, boss->get_body_collision().height);
 	
-	player->calc_attack_vs_enemy(boss->boss_collision.position, boss->boss_collision.position_end, boss->boss_collision.height / 2, boss->damaged_function);
+	player->calc_attack_vs_enemy(boss->get_body_collision().capsule, boss->damaged_function);
 
+	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function);
 
 	//ボスの更新
 	boss->update(graphics, elapsed_time, stage.get());

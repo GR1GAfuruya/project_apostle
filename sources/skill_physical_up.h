@@ -1,6 +1,6 @@
 #pragma once
 #include "skill.h"
-class PhysucalUp : public Skill
+class PhysicalUp : public Skill
 {
 public:
 	//==============================================================
@@ -8,8 +8,8 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	PhysucalUp() {}
-	~PhysucalUp() {}
+	PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed) {}
+	~PhysicalUp() {}
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;

@@ -9,36 +9,6 @@
 #include "primitive.h"
 class Boss :public Charactor
 {
-public:
-	//==============================================================
-	// 
-	// public関数
-	// 
-	//==============================================================
-
-	Boss(Graphics& graphics);
-	~Boss() {};
-	
-	//初期化
-	void initialize();
-
-	//更新
-	void update(Graphics& graphics, float elapsed_time, Stage* stage);
-
-	//描画処理
-	//ディファードでレンダリングするオブジェクト
-	void render_d(Graphics& graphics, float elapsed_time);
-	//フォワードレンダリングするオブジェクト
-	void render_f(Graphics& graphics, float elapsed_time);
-
-	//デバッグ用GUI描画
-	void debug_gui();
-
-	//プレイヤーの攻撃との当たり判定
-	void calc_attack_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
-
-	//攻撃対象の位置を取得
-	void set_location_of_attack_target(DirectX::XMFLOAT3 target) { target_pos = target; }
 private:
 	//==============================================================
 	// 
@@ -98,9 +68,7 @@ private:
 	};
 	struct BodyCollision
 	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 position_end;
-		float radius;
+		Capsule capsule;
 		float height;
 	};
 
@@ -112,6 +80,38 @@ private:
 		float power;//攻撃力
 		float invinsible_time;//攻撃対象に課す無敵時間
 	};
+public:
+	//==============================================================
+	// 
+	// public関数
+	// 
+	//==============================================================
+
+	Boss(Graphics& graphics);
+	~Boss() {};
+	
+	//初期化
+	void initialize();
+
+	//更新
+	void update(Graphics& graphics, float elapsed_time, Stage* stage);
+
+	//描画処理
+	//ディファードでレンダリングするオブジェクト
+	void render_d(Graphics& graphics, float elapsed_time);
+	//フォワードレンダリングするオブジェクト
+	void render_f(Graphics& graphics, float elapsed_time);
+
+	//デバッグ用GUI描画
+	void debug_gui();
+
+	//プレイヤーの攻撃との当たり判定
+	void calc_attack_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
+
+	//攻撃対象の位置を取得
+	void set_location_of_attack_target(DirectX::XMFLOAT3 target) { target_pos = target; }
+
+	BodyCollision get_body_collision() { return boss_body_collision; }
 	//==============================================================
 	// 
 	// private関数
@@ -267,6 +267,7 @@ private:
 	//
 	State state;
 	AttackParam sickle_attack_param;
+	BodyCollision boss_body_collision;
 	//==============================================================
 	// 
 	// 定数
@@ -274,7 +275,6 @@ private:
 	//==============================================================
 	float WALK_SPEED = 15;
 public:
-	BodyCollision boss_collision;
 
 	AddDamageFunc damaged_function;
 };
