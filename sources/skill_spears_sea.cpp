@@ -8,7 +8,6 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 void SpearsSea::initialize(Graphics& graphics)
 {
 	life_time = 5.0f;
-	cool_time = 10.0f;
 }
 
 void SpearsSea::update(Graphics& graphics, float elapsed_time)

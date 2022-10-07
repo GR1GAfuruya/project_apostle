@@ -45,6 +45,7 @@ public:
 	virtual void skill_hit() {};
 	//デバッグGUI
 	virtual void debug_gui(string str_id) = 0;
+	void set_is_skill_hit(bool h) { is_hit = h; }
 	//クールタイムの取得
 	float get_cool_time() { return cool_time; }
 	float get_power() { return power; }

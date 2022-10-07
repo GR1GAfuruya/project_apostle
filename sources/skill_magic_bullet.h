@@ -5,26 +5,34 @@ class MagicBullet : public Skill
 public:
 	//==============================================================
 	// 
+	// 構造体、列挙型
+	// 
+	//==============================================================
+	struct InitializeParam
+	{
+		float power;
+		float invisible_time;
+		float cool_time;
+		float acceleration;
+		float collider_radius;
+	};
+	//==============================================================
+	// 
 	// public関数
 	// 
 	//==============================================================
 	MagicBullet(){}
-	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir);
+	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir, InitializeParam initparam);
 	~MagicBullet() {}
 
-	void initialize(Graphics& graphics) override;
+	void initialize(Graphics& graphics) ;
 	void update(Graphics& graphics, float elapsed_time)override;
 	void render(Graphics& graphics)override;
 
 
 	void debug_gui(string str_id);
 protected:
-	//==============================================================
-	// 
-	// 構造体、列挙型
-	// 
-	//==============================================================
-
+	
 
 	//==============================================================
 	// 

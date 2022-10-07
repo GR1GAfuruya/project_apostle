@@ -42,8 +42,8 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 	debug_flags->update();
 	//シーンアップデート
+	graphics->set_hwnd(hwnd);
 	SceneManager::instance().update(elapsed_time,*graphics);
-
 	graphics->debug_gui();
 }
 

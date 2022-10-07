@@ -1,24 +1,24 @@
 #include "skill_physical_up.h"
 
-void PhysucalUp::initialize(Graphics& graphics)
+void PhysicalUp::initialize(Graphics& graphics)
 {
 	life_time = 5.0f;
 }
 
-void PhysucalUp::update(Graphics& graphics, float elapsed_time)
+void PhysicalUp::update(Graphics& graphics, float elapsed_time)
 {
 	life_time -= elapsed_time;
 	if (life_time < 0) skill_end_flag = true;
 }
 
-void PhysucalUp::render(Graphics& graphics)
+void PhysicalUp::render(Graphics& graphics)
 {
 }
 
-void PhysucalUp::debug_gui(string str_id)
+void PhysicalUp::debug_gui(string str_id)
 {
 #if USE_IMGUI
-	string name = "PhysucalUp:" + str_id + "Param";
+	string name = "PhysicalUp:" + str_id + "Param";
 	ImGui::Begin("Skill");
 	ImGui::PushID(str_id.c_str());
 	/*これより下にパラメーター記述*/

@@ -21,6 +21,12 @@ void Boss::initialize()
 	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_attack_param.collision.radius = 8.0f;
+
+	boss_body_collision.capsule.start = position;
+	boss_body_collision.capsule.radius = 10;
+	boss_body_collision.height = 25;
+	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
+	boss_body_collision.capsule.end.y = boss_body_collision.capsule.start.y + boss_body_collision.height;
 }
 
 void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
@@ -29,11 +35,10 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 	model->update_animation(elapsed_time);
 	update_velocity(elapsed_time, position, stage);
 	efc_charge_attack->update(graphics, elapsed_time);
-	boss_collision.position = position;
-	boss_collision.radius = 10;
-	boss_collision.height = 25;
-	boss_collision.position_end = boss_collision.position;
-	boss_collision.position_end.y = boss_collision.position.y + boss_collision.height;
+	//body‚ÌUŒ‚—p“–‚½‚è”»’è
+	boss_body_collision.capsule.start = position;
+	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
+	boss_body_collision.capsule.end.y = boss_body_collision.capsule.start.y + boss_body_collision.height;
 
 	DirectX::XMFLOAT4X4 sickle_bone_mat;
 	model->fech_by_bone(transform, sickle_hand, sickle_attack_param.collision.start, &sickle_bone_mat);
@@ -68,6 +73,8 @@ void Boss::debug_gui()
 			ImGui::DragFloat("height", &height);
 			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
 			ImGui::DragFloat("turnspeed", &turn_speed,0.1f);
+			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius,0.1f);
+			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height,0.1f);
 			ImGui::DragFloat("sickle_.radius", &sickle_attack_param.collision.radius,1);
 		}
 		ImGui::End();

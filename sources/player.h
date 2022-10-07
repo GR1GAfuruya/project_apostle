@@ -35,11 +35,13 @@ public:
 	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (height + 3), position.z); }
 
 	//プレイヤーのコリジョンと敵の当たり判定
-	void calc_collision_vs_enemy(DirectX::XMFLOAT3 colider_position,float colider_radius, float colider_height);
+	void calc_collision_vs_enemy(Capsule capsule_collider, float colider_height);
 
 	//プレイヤーの攻撃と敵の当たり判定
-	void calc_attack_vs_enemy(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
+	void calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func);
 
+	//スキルとと当たり判定
+	void judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func);
 private:
 	//==============================================================
 	// 
@@ -151,10 +153,12 @@ private:
 	void input_chant_support_skill(Graphics& graphics);
 	//攻撃スキル詠唱入力
 	void input_chant_attack_skill(Graphics& graphics);
+	
 	//着地したか
 	void on_landing()override;
 
 	void on_dead() override;
+
 	void on_damaged() override;
 
 	//==============================================================
@@ -173,7 +177,6 @@ private:
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
-	std::unique_ptr <SkillManager> skill_manager;
 	float move_speed = 30.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 
@@ -192,6 +195,7 @@ private:
 	int add_damage;
 
 	std::unique_ptr<GPU_Particles> attack1;
+	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<Slash> slash_efect;
 	std::unique_ptr<Sword> sword;
 	skeleton::bone sword_hand;

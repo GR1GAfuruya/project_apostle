@@ -107,11 +107,15 @@ public:
 	void set_graphic_state_priset( DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer);
 	void shader_activate(SHADER_TYPES sh, RENDER_TYPE rt);
 
+	inline void set_hwnd(HWND hwnd) { this->hwnd = hwnd; }
 	//ミューテックス取得
-	std::mutex& get_mutex() { return mutex; }
-
-
+	std::mutex& get_mutex() { return mutex_; }
+	//シェーダーのリコンパイル
+	BOOL get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir);
+	void recompile_pixel_shader(ID3D11PixelShader** pixel_shader);
 private:
-	std::mutex mutex;
+	std::mutex mutex_;
+	
+	HWND hwnd;
 };
 

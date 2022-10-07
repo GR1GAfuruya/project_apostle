@@ -184,8 +184,11 @@
     <Filter Include="sources\Skill\SkillUI">
       <UniqueIdentifier>{212b46ba-16d3-436c-93b6-ddfe01a0164e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Skill\Slots">
+    <Filter Include="sources\Skill\BaseClass">
       <UniqueIdentifier>{804c20bb-0249-49ba-9704-8e74c60ccde4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\Manager">
+      <UniqueIdentifier>{b428af18-5099-4539-950e-6ebce91a8070}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -396,9 +399,6 @@
     <ClCompile Include="sources\sword.cpp">
       <Filter>sources\Wepon</Filter>
     </ClCompile>
-    <ClCompile Include="sources\skill_manager.cpp">
-      <Filter>sources\Skill</Filter>
-    </ClCompile>
     <ClCompile Include="sources\skill_physical_up.cpp">
       <Filter>sources\Skill\PhycicalUp</Filter>
     </ClCompile>
@@ -417,14 +417,26 @@
     <ClCompile Include="sources\skill_ui.cpp">
       <Filter>sources\Skill\SkillUI</Filter>
     </ClCompile>
-    <ClCompile Include="sources\skill_slot.cpp">
-      <Filter>sources\Skill\Slots</Filter>
+    <ClCompile Include="sources\skill_launcher.cpp">
+      <Filter>sources\Skill\BaseClass</Filter>
     </ClCompile>
-    <ClCompile Include="sources\attack_skill_slot.cpp">
-      <Filter>sources\Skill\Slots</Filter>
+    <ClCompile Include="sources\magic_bullet_launcher.cpp">
+      <Filter>sources\Skill\MagicBullet</Filter>
     </ClCompile>
-    <ClCompile Include="sources\support_skill_slot.cpp">
-      <Filter>sources\Skill\Slots</Filter>
+    <ClCompile Include="sources\physical_up_launcher.cpp">
+      <Filter>sources\Skill\PhycicalUp</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\regenerate_launcher.cpp">
+      <Filter>sources\Skill\Regenerate</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\restraint_launcher.cpp">
+      <Filter>sources\Skill\Restraint</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\spears_sea_launcher.cpp">
+      <Filter>sources\Skill\SpearsSea</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_manager.cpp">
+      <Filter>sources\Skill\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -650,12 +662,6 @@
     <ClInclude Include="sources\sword.h">
       <Filter>sources\Wepon</Filter>
     </ClInclude>
-    <ClInclude Include="sources\skill_manager.h">
-      <Filter>sources\Skill</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\skill.h">
-      <Filter>sources\Skill</Filter>
-    </ClInclude>
     <ClInclude Include="sources\skill_physical_up.h">
       <Filter>sources\Skill\PhycicalUp</Filter>
     </ClInclude>
@@ -674,20 +680,35 @@
     <ClInclude Include="sources\skill_ui.h">
       <Filter>sources\Skill\SkillUI</Filter>
     </ClInclude>
-    <ClInclude Include="sources\skill_slot.h">
-      <Filter>sources\Skill\Slots</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\attack_skill_slot.h">
-      <Filter>sources\Skill\Slots</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\support_skill_slot.h">
-      <Filter>sources\Skill\Slots</Filter>
+    <ClInclude Include="sources\skill_launcher.h">
+      <Filter>sources\Skill\BaseClass</Filter>
     </ClInclude>
     <ClInclude Include="sources\primitive.h">
       <Filter>sources\Collision</Filter>
     </ClInclude>
     <ClInclude Include="sources\damage_func.h">
       <Filter>sources\Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\magic_bullet_launcher.h">
+      <Filter>sources\Skill\MagicBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\physical_up_launcher.h">
+      <Filter>sources\Skill\PhycicalUp</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\regenerate_launcher.h">
+      <Filter>sources\Skill\Regenerate</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\restraint_launcher.h">
+      <Filter>sources\Skill\Restraint</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\spears_sea_launcher.h">
+      <Filter>sources\Skill\SpearsSea</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill.h">
+      <Filter>sources\Skill\BaseClass</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_manager.h">
+      <Filter>sources\Skill\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
