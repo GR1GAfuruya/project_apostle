@@ -1,11 +1,7 @@
 #pragma once
-#include "aura.h"
-#include "sphere.h"
-#include "slash.h"
-#include "wave.h"
-#include "tornado.h"
+#include "mesh_effect.h"
 #include "gpu_particle.h"
-class ChargeAttack : public EffecttBase
+class ChargeAttack
 {
 public:
 	ChargeAttack(Graphics& grapghics);
@@ -33,13 +29,13 @@ private:
 		DirectX::XMFLOAT3 pad{};
 	};
 	//地面からコアに伸びる支柱
-	std::unique_ptr<Aura> aura[2];
+	std::unique_ptr<MeshEffect> aura[2];
 	//コア
-	std::unique_ptr<SphereEffect> core;
+	std::unique_ptr<MeshEffect> core;
 
-	std::unique_ptr<Wave> wave;
+	std::unique_ptr<MeshEffect> wave;
 
-	std::unique_ptr<Tornado> tornado;
+	std::unique_ptr<MeshEffect> tornado;
 
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
@@ -50,6 +46,18 @@ private:
 	const float ATTACK_TIME = 2.0f;
 	bool is_charge_max = false;
 	float attack_time = 0.0f;
+	//位置
+	DirectX::XMFLOAT3 position = { 0,0,0 };
+	//回転軸
+	DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
+	//スケール
+	DirectX::XMFLOAT3 scale = { 1,1,1 };
 	static constexpr DirectX::XMFLOAT4 FIRE_COLOR = { 3.0f, 0.6f, 0.0f, 0.8f };
+	//デバッグGUIフラグ
+	bool display_imgui = true;
 
+	//生存時間
+	float life_time = 0;
+	//アクティブ状態か
+	bool active = false;
 };

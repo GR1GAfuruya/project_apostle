@@ -127,7 +127,9 @@ void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, 
 	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
 	if (model->anime_param.frame_index == 20 / 2)
 	{
-		slash_efect->play(sword_pos + (up * 3.2f), slash_dir, 45, false);
+		slash_efect->play(sword_pos + (up * 3.2f));
+		slash_efect->set_life_span(0.2f);
+		slash_efect->rot_speed.y = -360.0f * 3;
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
 	}
@@ -159,7 +161,7 @@ void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, 
 	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
 	if (model->anime_param.frame_index == 17 / 2)
 	{
-		slash_efect->play(sword_pos + (up * 1.2f), slash_dir,10, true);
+		slash_efect->play(sword_pos + (up * 1.2f));
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
 
@@ -194,7 +196,8 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 	//ˆêU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 20 / 2)
 	{
-		slash_efect->play(sword_pos, slash_dir_vec, 25, false);
+		slash_efect->play(sword_pos);
+		slash_efect->rot_speed.y = -90;
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
 
@@ -202,12 +205,14 @@ void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, 
 	//“ñU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 30 / 2)
 	{
-		slash_efect->play(sword_pos, slash_dir_vec, 0, true);
+		slash_efect->play(sword_pos);
+		slash_efect->rot_speed.y = 90;
 	}
 	//ŽOU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 55 / 2)
 	{
-		slash_efect->play(sword_pos, slash_dir_vec, -25, false);
+		slash_efect->play(sword_pos);
+		slash_efect->rot_speed.y = -90;
 	}
 
 	if (model->anime_param.frame_index > 75 / 2)

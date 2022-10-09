@@ -100,9 +100,6 @@
     <Filter Include="sources\Effects\Effekseer">
       <UniqueIdentifier>{3632d23b-1fce-43e1-88a8-b724665f2f6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\Slash">
-      <UniqueIdentifier>{ca17d845-d09c-4338-a485-e2ff4b4aa987}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Effects\Light">
       <UniqueIdentifier>{cf080af7-6f4f-4e28-b163-2c0a7a2adec9}</UniqueIdentifier>
     </Filter>
@@ -133,9 +130,6 @@
     <Filter Include="sources\Effects\BossEffects\ChargeAttack">
       <UniqueIdentifier>{ccafdc37-edf3-4a9e-8b6c-067edae44093}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\Aura">
-      <UniqueIdentifier>{6970ad62-40fa-45e5-b9a9-21cf2915752f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Effect\BossEffect\ChargeAttack">
       <UniqueIdentifier>{6b63490c-b332-4eee-93b1-6ef957c513a9}</UniqueIdentifier>
     </Filter>
@@ -144,12 +138,6 @@
     </Filter>
     <Filter Include="Shaders\Effect\PostEffect\Gauss">
       <UniqueIdentifier>{6caf5430-5e90-4c6c-a043-06df7e96fd24}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="sources\Effects\Tornad">
-      <UniqueIdentifier>{80e974a4-46cb-4581-890d-f9aaa8123ac9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="sources\Effects\wave">
-      <UniqueIdentifier>{caefddcc-b5a2-4d9a-80bb-45735e3cc244}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders\Effect\PlayerEffect">
       <UniqueIdentifier>{86571ec1-0504-499f-81ad-6d32f8abd92f}</UniqueIdentifier>
@@ -333,9 +321,6 @@
     <ClCompile Include="sources\camera.cpp">
       <Filter>sources\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="sources\slash.cpp">
-      <Filter>sources\Effects\Slash</Filter>
-    </ClCompile>
     <ClCompile Include="sources\mesh_shader.cpp">
       <Filter>sources\Shader</Filter>
     </ClCompile>
@@ -363,14 +348,8 @@
     <ClCompile Include="sources\light_manager.cpp">
       <Filter>sources\Effects\Light</Filter>
     </ClCompile>
-    <ClCompile Include="sources\sphere.cpp">
+    <ClCompile Include="sources\mesh_effect.cpp">
       <Filter>sources\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\effect_base.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\aura.cpp">
-      <Filter>sources\Effects\Aura</Filter>
     </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
@@ -380,12 +359,6 @@
     </ClCompile>
     <ClCompile Include="sources\gpu_particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\tornado.cpp">
-      <Filter>sources\Effects\Tornad</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\wave.cpp">
-      <Filter>sources\Effects\wave</Filter>
     </ClCompile>
     <ClCompile Include="sources\debug_figures.cpp">
       <Filter>sources\Debug</Filter>
@@ -605,9 +578,6 @@
     <ClInclude Include="sources\camera.h">
       <Filter>sources\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="sources\slash.h">
-      <Filter>sources\Effects\Slash</Filter>
-    </ClInclude>
     <ClInclude Include="sources\mesh_shader.h">
       <Filter>sources\Shader</Filter>
     </ClInclude>
@@ -632,23 +602,11 @@
     <ClInclude Include="sources\boss_charge_attack.h">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
     </ClInclude>
-    <ClInclude Include="sources\sphere.h">
+    <ClInclude Include="sources\mesh_effect.h">
       <Filter>sources\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\effect_base.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\aura.h">
-      <Filter>sources\Effects\Aura</Filter>
     </ClInclude>
     <ClInclude Include="sources\skin_particles.h">
       <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\tornado.h">
-      <Filter>sources\Effects\Tornad</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\wave.h">
-      <Filter>sources\Effects\wave</Filter>
     </ClInclude>
     <ClInclude Include="sources\debug_figures.h">
       <Filter>sources\Debug</Filter>
@@ -805,7 +763,7 @@
     <FxCompile Include="HLSL\aura_ps.hlsl">
       <Filter>Shaders\Effect\Aura</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\aura_vs.hlsl">
+    <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
       <Filter>Shaders\Effect\Aura</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gpu_particles_cs.hlsl">

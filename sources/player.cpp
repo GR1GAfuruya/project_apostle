@@ -41,7 +41,9 @@ Player::Player(Graphics& graphics, Camera* camera)
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
 	//攻撃時エフェクト
-	slash_efect = std::make_unique<Slash>(graphics.get_device().Get());
+	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Model/SlashMesh.fbx");
+	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
+	slash_efect->create_pixel_shader(graphics.get_device().Get(), "shaders/slash_ps.cso");
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 
@@ -371,6 +373,8 @@ void Player::debug_gui(Graphics& graphics)
 			float control_y = game_pad->get_axis_LY();
 			ImGui::DragFloat("control_x", &control_x);
 			ImGui::DragFloat("control_y", &control_y);
+
+			
 		}
 		ImGui::End();
 
@@ -384,6 +388,7 @@ void Player::debug_gui(Graphics& graphics)
 		skill_manager.get()->debug_gui(graphics);
 
 	}
+	slash_efect->debug_gui("slash_efect");
 #endif // USE_IMGUI
 
 }
