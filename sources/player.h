@@ -4,8 +4,7 @@
 #include "charactor.h"
 #include "skeletal_mesh.h"
 #include "gpu_particle.h"
-#include "slash.h"
-#include "tornado.h"
+#include "mesh_effect.h"
 #include "sword.h"
 #include "skill_manager.h"
 #include "primitive.h"
@@ -196,7 +195,7 @@ private:
 
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
-	std::unique_ptr<Slash> slash_efect;
+	std::unique_ptr<MeshEffect> slash_efect;
 	std::unique_ptr<Sword> sword;
 	skeleton::bone sword_hand;
 	skeleton::bone right_hand;

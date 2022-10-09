@@ -3,17 +3,34 @@
 #include <algorithm>
 ChargeAttack::ChargeAttack(Graphics& graphics)
 {
+	//auraの初期設定
 	for (int i = 0; i < 2; i++)
 	{
-		aura[i] = make_unique<Aura>(graphics.get_device().Get());
+		aura[i] = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spiral.fbx");
+		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Slash/slash.png");
+		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
+
 	}
+	//coreの初期設定
+	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+	core->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
+	core->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
 
-	core = make_unique<SphereEffect>(graphics.get_device().Get());
-	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),150000);
-	wave = std::make_unique<Wave>(graphics.get_device().Get());
-	tornado = std::make_unique<Tornado>(graphics.get_device().Get());
+	
+	//waveの初期設定
+	wave = std::make_unique<MeshEffect>(graphics,"./resources/Effects/Meshes/eff_aura.fbx");
+	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
+	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
+
+	//tornadoの初期設定
+	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado3.fbx");
+	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
+	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
+
+	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
-
+	//particleの初期設定
+	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 150000);
 	particle.get()->initialize(graphics.get_dc().Get());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
@@ -45,11 +62,11 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	DirectX::XMFLOAT4 wave_ori = wave->get_orientation();
 	//下を向かせる
 	//wave->set_orientation(Math::rot_quaternion_dir(wave_ori, Math::get_posture_forward(wave_ori), { 0,-1,0 }));
-	wave->set_rotate_quaternion(AXIS::RIGHT, 90);
+	wave->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, 90);
 
 	//トルネード初期化
 	tornado->play(pos);
-	tornado->set_rotate_quaternion(AXIS::RIGHT, -90);
+	tornado->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
 	tornado->set_scale(0);
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
@@ -63,16 +80,16 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 
 		DirectX::XMFLOAT4 aura_q = aura[i]->get_orientation();
 		DirectX::XMFLOAT3 aura_forward = Math::get_posture_forward(aura_q);
-		aura[i]->set_rotate_quaternion(AXIS::RIGHT, -90);
+		aura[i]->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
 		//2本のうちの1つの角度をずらして螺旋っぽく
 
 		aura[i]->constants->data.particle_color = FIRE_COLOR;
 		aura[i]->constants->data.scroll_direction.y = 1.5f;
 		aura[i]->constants->data.threshold = 0.0f;
-		aura[i]->rot_speed = 520;
+		aura[i]->rot_speed.z = 520;
 		aura[i]->set_scale({ 2.0f, 2.0f, 1.5f });
 	}
-	aura[1]->set_rotate_quaternion(AXIS::FORWARD, 180);
+	aura[1]->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 180);
 
 	
 	DirectX::XMFLOAT3 emit_pos{};
@@ -143,8 +160,8 @@ void ChargeAttack::debug_gui(const char* str_id)
 	if (display_imgui)
 	{
 		ImGui::Begin("boss_charge");
-		ImGui::DragFloat3("position", &position.x, 0.1);
-		ImGui::DragFloat("core_gravitation", &constants->data.core_gravitation, 0.1, 0);
+		ImGui::DragFloat3("position", &position.x, 0.1f);
+		ImGui::DragFloat("core_gravitation", &constants->data.core_gravitation, 0.1f, 0);
 		ImGui::DragFloat("core_radius", &constants->data.core_radius, 1, 0);
 		ImGui::End();
 	}
@@ -217,13 +234,13 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	wave_scale.y = lerp(wave_scale.y, 100.0f, 5.0f * elapsed_time);
 	wave->set_scale(wave_scale);
 	wave->constants->data.scroll_speed += elapsed_time;
-	wave->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
+	wave->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 520 * elapsed_time);
 
 	//竜巻エフェクト
 	float scale_z = lerp(tornado->get_scale().z, 45.0f, 5.0f * elapsed_time);
 	tornado->set_scale({ tornado->get_scale().x, tornado->get_scale().y, scale_z });
 	tornado->constants->data.scroll_speed += elapsed_time;
-	tornado->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
+	tornado->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 520 * elapsed_time);
 
 	if (attack_time >= ATTACK_TIME) charge_attack_update = &ChargeAttack::vanishing_update;
 }
@@ -237,13 +254,13 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 	wave->constants->data.particle_color.w = fade_out(wave->constants->data.particle_color.w);
 	wave->constants->data.scroll_speed += elapsed_time;
 	wave->constants->data.threshold = (std::min)(wave->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
-	wave->set_rotate_quaternion(AXIS::FORWARD, 520 * elapsed_time);
+	wave->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 520 * elapsed_time);
 
 
 	float expand = 30 * elapsed_time;
 	tornado->set_scale({ tornado->get_scale().x + expand,tornado->get_scale().y + expand,tornado->get_scale().z + expand });
 
-	tornado->set_rotate_quaternion(AXIS::FORWARD, 360 * elapsed_time);
+	tornado->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 360 * elapsed_time);
 	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
 	
 	if (tornado->constants->data.threshold > 0.9f) stop();

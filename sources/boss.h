@@ -2,8 +2,7 @@
 #include "charactor.h"
 #include "skeletal_mesh.h"
 #include "gpu_particle.h"
-#include "slash.h"
-#include "aura.h"
+
 #include "boss_charge_attack.h"
 #include "light.h"
 #include "primitive.h"
