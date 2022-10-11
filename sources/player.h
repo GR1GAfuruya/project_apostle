@@ -96,7 +96,9 @@ private:
 	static constexpr float ATTACK_TYPE2_MAX_TIME = 0.2f;
 	//UŒ‚3Œ‚–Ú‚Ì—P—\ŠÔ
 	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
-
+	//Œ•U‚èƒXƒs[ƒh
+	//static constexpr float SWORD_SWING_SPEED = 0.2f;
+	
 
 
 private:
@@ -193,6 +195,7 @@ private:
 	//UŒ‚—Í
 	int add_damage;
 
+	float sword_swing_speed = 1500.0f;
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;

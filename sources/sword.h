@@ -1,6 +1,7 @@
 #pragma once
 #include "graphics.h"
 #include "skeletal_mesh.h"
+#include "user.h"
 class Sword
 {
 public:
@@ -26,6 +27,8 @@ public:
 
 	//装備時の位置取得
 	const DirectX::XMFLOAT3& get_equipped_position() const { return DirectX::XMFLOAT3(transform._41, transform._42, transform._43); }
+	//剣先へのベクトル取得
+	const DirectX::XMFLOAT3& get_dir_sword_top() const { return Math::get_posture_forward(transform); }
 	const Capsule& get_collision() const { return collision; };
 	//位置設定
 	void set_position(const DirectX::XMFLOAT3& position) { this->position = position; }

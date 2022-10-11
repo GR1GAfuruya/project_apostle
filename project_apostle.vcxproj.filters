@@ -67,9 +67,6 @@
     <Filter Include="Shaders\Effect">
       <UniqueIdentifier>{5e996cb6-1d57-48e7-92c5-2ac0cf7a86ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Effect\Aura">
-      <UniqueIdentifier>{8201bb88-2414-4092-ac07-56ede52a3eff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Effect\Particle">
       <UniqueIdentifier>{8473f755-15ee-46f5-8020-e1504d9a8d94}</UniqueIdentifier>
     </Filter>
@@ -177,6 +174,9 @@
     </Filter>
     <Filter Include="sources\Skill\Manager">
       <UniqueIdentifier>{b428af18-5099-4539-950e-6ebce91a8070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\MeshEffect">
+      <UniqueIdentifier>{8201bb88-2414-4092-ac07-56ede52a3eff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -761,10 +761,10 @@
       <Filter>Shaders\Grass</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\aura_ps.hlsl">
-      <Filter>Shaders\Effect\Aura</Filter>
+      <Filter>Shaders\Effect\MeshEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
-      <Filter>Shaders\Effect\Aura</Filter>
+      <Filter>Shaders\Effect\MeshEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\gpu_particles_cs.hlsl">
       <Filter>Shaders\Effect\Particle</Filter>
@@ -862,7 +862,7 @@
     <FxCompile Include="HLSL\boss_attack1_update_cs.hlsl">
       <Filter>Shaders\Effect\BossEffect\Attack1</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\core_ps.hlsl">
+    <FxCompile Include="HLSL\cell_fire_ps.hlsl">
       <Filter>Shaders\Effect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\boss_charge_attack_emit.hlsl">
@@ -925,7 +925,7 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="HLSL\mesh_effect.hlsli">
-      <Filter>Shaders\Effect\Aura</Filter>
+      <Filter>Shaders\Effect\MeshEffect</Filter>
     </None>
     <None Include="HLSL\gpu_particles.hlsli">
       <Filter>Shaders\Effect\Particle</Filter>

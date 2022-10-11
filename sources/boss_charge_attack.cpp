@@ -9,13 +9,16 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 		aura[i] = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spiral.fbx");
 		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Slash/slash.png");
 		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
+		aura[i]->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
+		aura[i]->constants->data.particle_color = FIRE_COLOR;
 
 	}
 	//coreの初期設定
 	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
 	core->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	core->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-
+	core->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
+	core->constants->data.particle_color = FIRE_COLOR;
 	
 	//waveの初期設定
 	wave = std::make_unique<MeshEffect>(graphics,"./resources/Effects/Meshes/eff_aura.fbx");
@@ -23,10 +26,11 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
 
 	//tornadoの初期設定
-	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado3.fbx");
+	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-
+	tornado->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
+	tornado->constants->data.particle_color = FIRE_COLOR;
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particleの初期設定
@@ -52,7 +56,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	core->set_scale( 0);
 	core->set_is_loop(true);
 	core->constants->data.particle_color = FIRE_COLOR;
-	core->constants->data.scroll_direction = { 1.0f,-1.0f };
+	//core->constants->data.scroll_direction = { 1.0f,-1.0f };
 	//wave初期設定
 	wave->play(core_pos);
 	wave->set_scale(0.0f);
@@ -84,7 +88,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		//2本のうちの1つの角度をずらして螺旋っぽく
 
 		aura[i]->constants->data.particle_color = FIRE_COLOR;
-		aura[i]->constants->data.scroll_direction.y = 1.5f;
+		//aura[i]->constants->data.scroll_direction.y = 1.5f;
 		aura[i]->constants->data.threshold = 0.0f;
 		aura[i]->rot_speed.z = 520;
 		aura[i]->set_scale({ 2.0f, 2.0f, 1.5f });
@@ -132,7 +136,6 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 		(this->*charge_attack_update)(graphics, elapsed_time);	
 	}
 	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
-
 }
 
 void ChargeAttack::render(Graphics& graphics)
@@ -197,7 +200,6 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 	constants->data.core_gravitation = 0.5f;
 
 	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
-
 	if (is_charge_max)
 	{
 		core->set_scale(0.7f);
@@ -239,7 +241,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	//竜巻エフェクト
 	float scale_z = lerp(tornado->get_scale().z, 45.0f, 5.0f * elapsed_time);
 	tornado->set_scale({ tornado->get_scale().x, tornado->get_scale().y, scale_z });
-	tornado->constants->data.scroll_speed += elapsed_time;
+	//tornado->constants->data.scroll_speed += elapsed_time;
 	tornado->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 520 * elapsed_time);
 
 	if (attack_time >= ATTACK_TIME) charge_attack_update = &ChargeAttack::vanishing_update;

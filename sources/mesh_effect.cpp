@@ -52,6 +52,7 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
+	graphics.recompile_pixel_shader(pixel_shader.GetAddressOf());
 }
 
 void MeshEffect::render(Graphics& graphics)
@@ -70,9 +71,12 @@ void MeshEffect::render(Graphics& graphics)
 		graphics.get_dc().Get()->PSSetShaderResources(MATERIAL_START_SLOT + resource_num, send_texture_num, s.GetAddressOf());
 		resource_num++;
 	}
-	//if(slash)
+	//トランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
+	//レンダー
 	shader->render(graphics.get_dc().Get(), model.get(), transform);
+
+	
 }
 
 void MeshEffect::set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang)
@@ -81,6 +85,27 @@ void MeshEffect::set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang)
 	orientation = Math::rot_quaternion(orientation, axis, angle);
 }
 
+void MeshEffect::rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec)
+{
+	DirectX::XMFLOAT3 Axis;
+	switch (axis)
+	{
+	case AXIS::RIGHT:
+		Axis = Math::get_posture_right(orientation);
+		orientation = Math::rot_quaternion_dir(orientation, Axis, dir_vec);
+		break;
+	case AXIS::UP:
+		Axis = Math::get_posture_up(orientation);
+		orientation = Math::rot_quaternion_dir(orientation, Axis, dir_vec);
+		break;
+	case AXIS::FORWARD:
+		Axis = Math::get_posture_forward(orientation);
+		orientation = Math::rot_quaternion_dir(orientation, Axis, dir_vec);
+		break;
+	default:
+		break;
+	}
+}
 void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 {
 	float angle = DirectX::XMConvertToRadians(ang);
