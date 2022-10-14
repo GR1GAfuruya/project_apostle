@@ -15,7 +15,7 @@ void MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, 
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
 	{
-		std:unique_ptr<Skill> skill = make_unique<MagicBullet>(graphics, init_pos, dir, skill_init_param);
+		unique_ptr<Skill> skill = make_unique<MagicBullet>(graphics, init_pos, dir, skill_init_param);
 		//ƒŠƒXƒg‚É’Ç‰Á
 		cool_time = skill_init_param.cool_time;
 		skills.push_back(std::move(skill));

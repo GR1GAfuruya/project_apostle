@@ -56,7 +56,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_gazing_point());
 
-	//プレイヤーの更新
+	//**********プレイヤーの更新**********//
 	player->update(graphics, elapsed_time, camera.get(), stage.get());
 
 	player->calc_collision_vs_enemy(boss->get_body_collision().capsule, boss->get_body_collision().height);
@@ -65,14 +65,14 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 
 	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function);
 
-	//ボスの更新
+	//**********ボスの更新**********//
 	boss->update(graphics, elapsed_time, stage.get());
 	
 	//ボスの攻撃対象を設定
 	boss->set_location_of_attack_target(player->get_position());
 	boss->calc_attack_vs_player(player->collider.start, player->collider.end, player->collider.radius, player->damaged_function);
-
-	//ステージの更新
+	
+	//**********ステージの更新**********//
 	stageManager.update(elapsed_time);
 
 	//particles->update(graphics,elapsed_time);
@@ -102,6 +102,9 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	// 描画ステート設定
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
+	
+	//ステージ描画
+	stageManager.render(elapsed_time, graphics);
 
 	//プレイヤー描画
 	player->render_d(graphics,elapsed_time,camera.get());
@@ -109,8 +112,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//ボス描画
 	boss->render_d(graphics,elapsed_time);
 
-	//ステージ描画
-	stageManager.render(elapsed_time, graphics);
 
 	//ここで各種ライティング（環境光、平行光、点光源）
 	deferred->deactive(graphics,*light_manager);

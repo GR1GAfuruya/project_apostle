@@ -68,7 +68,7 @@ public:
 	void set_emitter_pos(DirectX::XMFLOAT3 pos) { substitution_emitter.pos = pos; }
 	void set_emitter_velocity(DirectX::XMFLOAT3 velocity) { substitution_emitter.velocity = velocity; }
 	void set_emitter_life_time(float life_time);
-	void set_emitter_count(float count);
+	void set_emitter_count(int count);
 	void set_emitter_rate(float rate);
 	void set_particle_life_time(float life_time);
 	void set_particle_size(DirectX::XMFLOAT2 size);

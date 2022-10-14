@@ -76,7 +76,7 @@ private:
 	{
 		Capsule collision;
 		bool is_attack;//UŒ‚’†‚©‚Ç‚¤‚©
-		float power;//UŒ‚—Í
+		int power;//UŒ‚—Í
 		float invinsible_time;//UŒ‚‘ÎÛ‚É‰Û‚·–³“GŠÔ
 	};
 public:

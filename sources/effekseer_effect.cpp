@@ -68,7 +68,7 @@ void EffekseerEffect::rotate_to_target(DirectX::XMFLOAT3 target, float turn_spee
 	using namespace DirectX;
 	auto effekseer_manager = EffekseerEffectManager::Instance().get_effekseer_manager();
 	XMFLOAT3 pos = get_position();
-	XMVECTOR to_vec = Math::calc_vector_AtoB(pos, target);
+	XMVECTOR to_vec = Math::calc_vector_AtoB_vec(pos, target);
 	to_vec = XMVector3Normalize(to_vec);
 	//effekseer_manager->(effekseer_handle, angle, angle, angle);
 

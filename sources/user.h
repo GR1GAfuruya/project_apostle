@@ -286,12 +286,22 @@ namespace Math
     //-------------------------------------------------------
     //  戻り値：aからbに向かうベクトル
     //-------------------------------------------------------
-    inline const DirectX::XMVECTOR& calc_vector_AtoB(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+    inline const DirectX::XMVECTOR& calc_vector_AtoB_vec(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
     {
         using namespace DirectX;
         XMVECTOR a_vec = DirectX::XMLoadFloat3(&a);
         XMVECTOR b_vec = DirectX::XMLoadFloat3(&b);
         XMVECTOR vec = b_vec - a_vec;
+        return vec;
+    }
+    inline const DirectX::XMFLOAT3& calc_vector_AtoB(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+    {
+        using namespace DirectX;
+        XMVECTOR a_vec = DirectX::XMLoadFloat3(&a);
+        XMVECTOR b_vec = DirectX::XMLoadFloat3(&b);
+        XMVECTOR Vec = b_vec - a_vec;
+        XMFLOAT3 vec;
+        XMStoreFloat3(&vec, Vec);
         return vec;
     }
     //-------------------------------------------------------
@@ -314,13 +324,13 @@ namespace Math
     //--------------------------------------------------------------
     inline const DirectX::XMVECTOR& calc_vector_AtoB_normalize_vec(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
     {
-        return DirectX::XMVector3Normalize(calc_vector_AtoB(a, b));
+        return DirectX::XMVector3Normalize(calc_vector_AtoB_vec(a, b));
     }
 
     inline const DirectX::XMFLOAT3& calc_vector_AtoB_normalize(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
     {
         DirectX::XMFLOAT3 v;
-        DirectX::XMStoreFloat3(&v, DirectX::XMVector3Normalize(calc_vector_AtoB(a, b)));
+        DirectX::XMStoreFloat3(&v, DirectX::XMVector3Normalize(calc_vector_AtoB_vec(a, b)));
         return v;
     }
     //--------------------------------------------------------------
@@ -340,7 +350,7 @@ namespace Math
     inline float calc_vector_AtoB_length_sq(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
     {
         using namespace DirectX;
-        XMVECTOR length_sq_vec = XMVector3LengthSq(calc_vector_AtoB(a, b));
+        XMVECTOR length_sq_vec = XMVector3LengthSq(calc_vector_AtoB_vec(a, b));
         float length_sq;
         XMStoreFloat(&length_sq, length_sq_vec);
         return length_sq;
@@ -366,7 +376,7 @@ namespace Math
     inline float calc_vector_AtoB_length(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
     {
         using namespace DirectX;
-        XMVECTOR length_vec = XMVector3Length(calc_vector_AtoB(a, b));
+        XMVECTOR length_vec = XMVector3Length(calc_vector_AtoB_vec(a, b));
         float length;
         XMStoreFloat(&length, length_vec);
         return length;
@@ -927,15 +937,15 @@ namespace Math
         controllPoints.emplace_back(dummy);
 
         sectionNum++;
-        float sectionRatio = (ratio - (r - sections.at(sectionNum - 1.0f))) / sections.at(sectionNum - 1.0f);
+        float sectionRatio = (ratio - (r - sections.at(sectionNum - 1))) / sections.at(sectionNum - 1);
 
         XMVECTOR Out;
 
         const float power = 1.0f; // Usually power is 0.5f
-        XMVECTOR P0 = XMLoadFloat3(&controllPoints.at(sectionNum - 1.0f));
-        XMVECTOR P1 = XMLoadFloat3(&controllPoints.at(sectionNum + 0.0f));
-        XMVECTOR P2 = XMLoadFloat3(&controllPoints.at(sectionNum + 1.0f));
-        XMVECTOR P3 = XMLoadFloat3(&controllPoints.at(sectionNum + 2.0f));
+        XMVECTOR P0 = XMLoadFloat3(&controllPoints.at(sectionNum - 1));
+        XMVECTOR P1 = XMLoadFloat3(&controllPoints.at(sectionNum ));
+        XMVECTOR P2 = XMLoadFloat3(&controllPoints.at(sectionNum + 1));
+        XMVECTOR P3 = XMLoadFloat3(&controllPoints.at(sectionNum + 2));
         XMVECTOR V0 = XMVectorScale(XMVectorSubtract(P2, P0), power);
         XMVECTOR V1 = XMVectorScale(XMVectorSubtract(P3, P1), power);
 

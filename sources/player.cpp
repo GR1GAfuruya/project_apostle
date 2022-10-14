@@ -36,7 +36,7 @@ void Player::initialize()
 Player::Player(Graphics& graphics, Camera* camera)
 {
 	//キャラクターモデル
-	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
+	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadinInplace.fbx", 30.0f);
 	skill_manager = std::make_unique<SkillManager>(graphics);
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
@@ -55,6 +55,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 
 	sword_hand = model->get_bone_by_name("pelvis");
 	right_hand = model->get_bone_by_name("hand_r");
+	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 	initialize();
@@ -81,13 +82,10 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
-	DirectX::XMFLOAT4X4 sword_hand_mat = {};
-	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
-
-
+	
+	;
 	//ソード更新
 	{
-		sword->set_parent_transform(sword_hand_mat);
 		sword->update(graphics, elapsed_time);
 
 		attack_sword_param.collision.start = sword->get_collision().start;
@@ -104,10 +102,8 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	input_chant_attack_skill(graphics);
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
-	if (skill_manager.get()->is_selecting_skill())
-	{
-		int a = 1;
-	}
+	DirectX::XMFLOAT3 rootpos = model->root_defference_pos_next_frame(transform, root);
+	ImGui::DragFloat3("root_pos", &rootpos.x);
 }
 
 //描画処理
@@ -115,6 +111,13 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	// 拡大縮小（S）・回転（R）・平行移動（T）行列を計算する
 	// スタティックメッシュ
+	//ルートモーションをしている最中は
+	DirectX::XMFLOAT4X4 sword_hand_mat = {};
+	//剣のトランスフォーム更新
+	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
+	sword->set_parent_transform(sword_hand_mat);
+
+	//自機モデルのトランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 	//剣描画
@@ -221,7 +224,7 @@ void Player::input_jump()
 			transition_jump_state();
 			Jump(jump_speed);
 			is_ground = false;//ジャンプしても地面についているというありえない状況を回避するため
-		
+			
 			++jump_count;
 		}
 	}
@@ -246,15 +249,15 @@ void Player::input_chant_support_skill(Graphics& graphics)
 		//	skill_manager->chant_phycical_up(graphics, position, position);
 			break;
 			case SP_SKILLTYPE::REGENERATE:
+			transition_magic_buff_state();//状態遷移
 
 			break;
 			case SP_SKILLTYPE::RESTRAINNT:
-
+				transition_attack_pull_slash_state();
 			break;
 		default:
 			break;
 		}
-		transition_support_magic_state();//状態遷移
 	}
 }
 
@@ -267,15 +270,17 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
 			skill_manager->chant_magic_bullet(graphics, position, Math::get_posture_forward(orientation));
+			transition_attack_bullet_state();//状態遷移
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
 			skill_manager->chant_spear_sea(graphics, position);
+			transition_attack_ground_state();
 			break;
 		default:
 			break;
 		}
 		
-		transition_attack_bullet_state();//状態遷移
+		
 	}
 }
 
@@ -306,7 +311,18 @@ void Player::on_damaged()
 	transition_damage_front_state();	
 }
 
+void Player::root_motion(DirectX::XMFLOAT3 dir, float speed)
+{
+	float root_defference_length = model->root_defference_length_next_frame(root);
+	velocity.x = dir.x * (root_defference_length * speed);
+	velocity.z = dir.z * (root_defference_length * speed);
 
+}
+void Player::root_motion_manual(DirectX::XMFLOAT3 dir, float speed)
+{
+	velocity.x = dir.x * speed;
+	velocity.z = dir.z * speed;
+}
 void Player::debug_gui(Graphics& graphics)
 {
 #ifdef USE_IMGUI
@@ -317,7 +333,7 @@ void Player::debug_gui(Graphics& graphics)
 	{
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
-			
+			ImGui::DragFloat("add_root_speed", &add_root_speed);
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
