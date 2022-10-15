@@ -35,11 +35,13 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/Shape_Sphere.fbx");
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
-	 test_mesh_effect->constants->data.particle_color = { 6.3f,1.4f,0.4f,1.0f };
+	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	 test_mesh_effect->set_scale(0.1f);
+	 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 #endif
 }
 
@@ -152,8 +154,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 		test_mesh_effect->play(test_effect_pos);
 	}
 	ImGui::DragFloat3("pos", &test_effect_pos.x);
+	ImGui::DragFloat3("color", &test_effect_color.x,0.1f);
 	ImGui::End();
 	#endif
+	test_mesh_effect->constants->data.particle_color = test_effect_color;
 #endif
 
 

@@ -45,5 +45,6 @@ private:
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect;
 	DirectX::XMFLOAT3 test_effect_pos;
+	DirectX::XMFLOAT4 test_effect_color;
 #endif
 };

@@ -886,6 +886,9 @@
     <FxCompile Include="HLSL\wave_ps.hlsl">
       <Filter>Shaders\Effect</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\fire_distortion.hlsl">
+      <Filter>Shaders\Effect</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\constants.hlsli">
@@ -941,6 +944,9 @@
     </None>
     <None Include="HLSL\debug_figure.hlsli">
       <Filter>Shaders\debug</Filter>
+    </None>
+    <None Include="HLSL\math.hlsli">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

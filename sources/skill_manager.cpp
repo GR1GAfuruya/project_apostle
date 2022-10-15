@@ -3,7 +3,11 @@
 #include "user.h"
 #include "imgui_include.h"
 #include "../external/magic_enum/include/magic_enum.hpp"
-//コンストラクタ
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 SkillManager::SkillManager(Graphics& graphics)
 {
 	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/support_skill_icon.png");
@@ -27,7 +31,11 @@ SkillManager::SkillManager(Graphics& graphics)
 	initialize(graphics);
 }
 
-//初期化
+//==============================================================
+// 
+// 初期化
+// 
+//==============================================================
 void SkillManager::initialize(Graphics& graphics)
 {
 	//スキルの初期化
@@ -68,7 +76,11 @@ void SkillManager::initialize(Graphics& graphics)
 }
 
 
-//更新
+//==============================================================
+// 
+//更新処理
+// 
+//==============================================================
 void SkillManager::update(Graphics& graphics, float elapsed_time)
 {
 	//スキルの初期化
@@ -159,7 +171,11 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 	
 }
 
-//描画
+//==============================================================
+// 
+//描画処理
+// 
+//==============================================================
 void SkillManager::render(Graphics& graphics)
 {
 	//スキルの描画
@@ -176,7 +192,11 @@ void SkillManager::render(Graphics& graphics)
 		spear_sea->render(graphics);
 	}
 }
-
+//==============================================================
+// 
+//描画処理（UI）
+// 
+//==============================================================
 void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 {
 #if USE_IMGUI
@@ -196,52 +216,83 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 	atk_slots_ui->selected_skill_icon_render(graphics, pos2);
 }
 
-
+//==============================================================
+// 
 //PhycicalUp発動
+// 
+//==============================================================
 void SkillManager::chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 }
-
+//==============================================================
+// 
+//Regenerate発動
+// 
+//==============================================================
 void SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health)
 {
 }
-
-//Restraint
+//==============================================================
+// 
+//Restraint発動
+// 
+//==============================================================
 void SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed)
 {
 	restraint->chant(graphics, target_pos, target_pos);
 }
-
+//==============================================================
+// 
 //MagickBullet発動
+// 
+//==============================================================
 void SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir)
 {
 	magick_bullet->chant(graphics, launch_pos, dir);
 }
-
+//==============================================================
+// 
 //SpearSea発動
+// 
+//==============================================================
 void SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 {
 	spear_sea->chant(graphics, launch_pos);
 }
-
+//==============================================================
+// 
+//魔法弾と敵の当たり判定
+// 
+//==============================================================
 void SkillManager::judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	magick_bullet->skill_object_hit_judgment(object_colider, damaged_func);
 }
 
-
+//==============================================================
+// 
 //サポートスキルを使用枠にセット
+// 
+//==============================================================
 void SkillManager::set_support_skill(int skill_index)
 {
 	selected_sup_skill_type = static_cast<SupportSkillType>(skill_index);
 }
+//==============================================================
+// 
 //攻撃スキルを使用枠にセット
+// 
+//==============================================================
 void SkillManager::set_attack_skill(int skill_index)
 {
 	selected_atk_skill_type = static_cast<AttackSkillType>(skill_index);
 }
 
-
+//==============================================================
+// 
+//コントローラーの右スティックでスキルを選択
+// 
+//==============================================================
 int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 {
 	//スロット一つ分の枠の大きさを決定
@@ -265,7 +316,11 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 	return selected_index;
 }
 
-//DebugGui描画
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void SkillManager::debug_gui(Graphics& graphics)
 {
 #if USE_IMGUI

@@ -156,8 +156,6 @@ private:
 	//
 	void Attack(Graphics& graphics, float elapsed_time);
 
-	void select_support_skill();
-
 	//ƒvƒŒƒCƒ„[‚ÌˆÚ“®“ü—Íˆ—
 	bool input_move(float elapsedTime, Camera* camera);
 	const DirectX::XMFLOAT3 get_move_vec(Camera* camera) const;

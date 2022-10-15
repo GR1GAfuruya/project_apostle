@@ -1,6 +1,11 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
 #include "texture.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 DeferredRenderer::DeferredRenderer(Graphics& graphics)
 {
 	//G-Buffer
@@ -36,7 +41,11 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 }
 
 
-
+//==============================================================
+// 
+// ディファードレンダー書き込み開始
+// 
+//==============================================================
 void DeferredRenderer::active(Graphics& graphics)
 {
 	//RTVを変更する前に使用中のRTVを保存
@@ -81,7 +90,11 @@ void DeferredRenderer::active(Graphics& graphics)
 	graphics.get_dc()->RSSetViewports(1, &vp);
 }
 
-
+//==============================================================
+// 
+// ディファードレンダー書き込み終了
+// 
+//==============================================================
 void DeferredRenderer::deactive(Graphics& graphics, LightManager& light_manager)
 {
 	//ライティング実行
@@ -91,7 +104,11 @@ void DeferredRenderer::deactive(Graphics& graphics, LightManager& light_manager)
 		cached_depth_stencil_view.Get());
 	
 }
-
+//==============================================================
+// 
+// ライティング
+// 
+//==============================================================
 void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager) const
 {
 	ID3D11RenderTargetView* rtv = l_light->get_rtv();
@@ -133,7 +150,11 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 	light_manager.debug_gui();
 }
 
-
+//==============================================================
+// 
+// 描画
+// 
+//==============================================================
 void DeferredRenderer::render(Graphics& graphics)
 {
 	ID3D11ShaderResourceView* g_buffers[]
@@ -166,7 +187,11 @@ void DeferredRenderer::render(Graphics& graphics)
 #endif // USE_IMGUI
 }
 
-
+//==============================================================
+// 
+// 深度バッファ生成
+// 
+//==============================================================
 void DeferredRenderer::depth_stencil_create(ID3D11Device* device, DXGI_FORMAT format)
 {
 	HRESULT hr;

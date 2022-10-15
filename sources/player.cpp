@@ -7,6 +7,12 @@
 #include "Operators.h"
 #include "../external/magic_enum/include/magic_enum.hpp"
 #include "collision.h"
+
+//==============================================================
+// 
+// 初期化
+// 
+//==============================================================
 void Player::initialize()
 {
 	//パラメーター初期化
@@ -33,6 +39,11 @@ void Player::initialize()
 
 }
 
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 Player::Player(Graphics& graphics, Camera* camera)
 {
 	//キャラクターモデル
@@ -61,15 +72,21 @@ Player::Player(Graphics& graphics, Camera* camera)
 	initialize();
 }
 
-
+//==============================================================
+// 
 //デストラクタ
+// 
+//==============================================================
 Player::~Player()
 {
 }
 
 
-
+//==============================================================
+// 
 //更新処理
+// 
+//==============================================================
 void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage)
 {
 	//更新処理
@@ -97,7 +114,6 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	collider.end = { position.x,position.y + height, position.z };
 	collider.radius = 1.0f;
 	//skill系仮置き
-	select_support_skill();
 	input_chant_support_skill(graphics);
 	input_chant_attack_skill(graphics);
 	//スキル選択中カメラ操作ストップ
@@ -105,8 +121,11 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	DirectX::XMFLOAT3 rootpos = model->root_defference_pos_next_frame(transform, root);
 	ImGui::DragFloat3("root_pos", &rootpos.x);
 }
-
-//描画処理
+//==============================================================
+// 
+//描画処理（ディファード）
+// 
+//==============================================================
 void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	// 拡大縮小（S）・回転（R）・平行移動（T）行列を計算する
@@ -123,7 +142,11 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 	//剣描画
 	sword->render(graphics);
 }
-
+//==============================================================
+// 
+//描画処理（フォワード）
+// 
+//==============================================================
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
@@ -135,13 +158,22 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 
 }
 
+//==============================================================
+// 
+//描画処理（UI）
+// 
+//==============================================================
 void Player::render_ui(Graphics& graphics, float elapsed_time)
 {
 	skill_manager.get()->ui_render(graphics, elapsed_time);
 }
 
 
-
+//==============================================================
+// 
+//移動ベクトル処理（コントローラー）
+// 
+//==============================================================
 const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 {
 	//入力情報を取得
@@ -180,13 +212,15 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 	return vec;
 }
 
-
+//==============================================================
+// 
+//魔法
+// 
+//==============================================================
 void Player::Attack(Graphics& graphics, float elapsed_time)
 {
 	DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
 	emit_pos.y = position.y + 3.0f;
-	//attack1.get()->particle_constants.get()->data.particle_size = { 0.1,0.6 };
-	//attack1.get()->particle_constants.get()->data.emitter.emit_rate = 1200.0f;
 	attack1.get()->set_emitter_pos(emit_pos);
 	attack1.get()->set_emitter_rate(150);
 	attack1.get()->set_particle_size({0.1f,0.1f});
@@ -194,14 +228,11 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 	attack1.get()->launch_emitter( emit_cs);
 }
 
-void Player::select_support_skill()
-{
-	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER) //左トリガーを引いたら支援スキル
-	{
-		//transition_support_magic_state();
-	}
-}
-
+//==============================================================
+// 
+//移動入力処理
+// 
+//==============================================================
 bool Player::input_move(float elapsedTime, Camera* camera)
 {
 	//進行ベクトル取得
@@ -214,7 +245,11 @@ bool Player::input_move(float elapsedTime, Camera* camera)
 	return move_vec.x != 0.0f || move_vec.y != 0.0f || move_vec.z != 0.0f;
 }
 
-
+//==============================================================
+// 
+//ジャンプ入力処理
+// 
+//==============================================================
 void Player::input_jump()
 {
 	if (game_pad->get_button_down() & GamePad::BTN_A) //スペースを押したらジャンプ
@@ -229,7 +264,11 @@ void Player::input_jump()
 		}
 	}
 }
-
+//==============================================================
+// 
+//回避入力処理
+// 
+//==============================================================
 void Player::input_avoidance()
 {
 	if (game_pad->get_button_down() & GamePad::BTN_B)
@@ -238,7 +277,11 @@ void Player::input_avoidance()
 	}
 }
 
-//サポートスキル発動
+//==============================================================
+// 
+//サポートスキル発動処理
+// 
+//==============================================================
 void Player::input_chant_support_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
@@ -261,7 +304,11 @@ void Player::input_chant_support_skill(Graphics& graphics)
 	}
 }
 
-//攻撃スキル発動
+//==============================================================
+// 
+//攻撃スキル発動処理
+// 
+//==============================================================
 void Player::input_chant_attack_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
@@ -283,12 +330,46 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		
 	}
 }
-
+//==============================================================
+// 
+//スキルの当たり判定処理
+// 
+//==============================================================
 void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
 }
-
+//==============================================================
+// 
+//自分と敵の体の当たり判定処理
+// 
+//==============================================================
+void Player::calc_collision_vs_enemy(Capsule collider, float collider_height)
+{
+	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, radius, height, &position);
+}
+//==============================================================
+// 
+//自分の攻撃と敵の当たり判定処理
+// 
+//==============================================================
+void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
+{
+	//剣の攻撃中のみ当たり判定
+	if (attack_sword_param.is_attack)
+	{
+		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+		{
+			//攻撃対象に与えるダメージ量と無敵時間
+			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
+		}
+	}
+}
+//==============================================================
+// 
+//着地処理
+// 
+//==============================================================
 void Player::on_landing()
 {
 	jump_count = 0;
@@ -301,16 +382,31 @@ void Player::on_landing()
 
 }
 
+//==============================================================
+// 
+//死亡処理
+// 
+//==============================================================
 void Player::on_dead()
 {
 	initialize();
 }
-
+//==============================================================
+// 
+//ダメージを受けた際の処理
+// 
+//==============================================================
 void Player::on_damaged()
 {
 	transition_damage_front_state();	
 }
 
+//==============================================================
+// 
+//ルートモーション
+// 
+//==============================================================
+//アニメーションのボーンの位置差分から計算
 void Player::root_motion(DirectX::XMFLOAT3 dir, float speed)
 {
 	float root_defference_length = model->root_defference_length_next_frame(root);
@@ -318,11 +414,18 @@ void Player::root_motion(DirectX::XMFLOAT3 dir, float speed)
 	velocity.z = dir.z * (root_defference_length * speed);
 
 }
+//手動（ボーンの処理がうまくいかなかったため）
 void Player::root_motion_manual(DirectX::XMFLOAT3 dir, float speed)
 {
 	velocity.x = dir.x * speed;
 	velocity.z = dir.z * speed;
 }
+
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void Player::debug_gui(Graphics& graphics)
 {
 #ifdef USE_IMGUI
@@ -407,23 +510,5 @@ void Player::debug_gui(Graphics& graphics)
 	slash_efect->debug_gui("slash_efect");
 #endif // USE_IMGUI
 
-}
-
-void Player::calc_collision_vs_enemy(Capsule collider,float collider_height)
-{
-	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, radius, height, &position);
-}
-
-void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
-{
-	//剣の攻撃中のみ当たり判定
-	if (attack_sword_param.is_attack)
-	{
-		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
-		{
-			//攻撃対象に与えるダメージ量と無敵時間
-			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
-		}
-	}
 }
 
