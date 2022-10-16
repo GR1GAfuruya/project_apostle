@@ -56,6 +56,7 @@ public:
 	void set_is_loop(bool loop) { is_loop = loop; }
 	void set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang);
 	void set_rotate_quaternion(AXIS axis, float ang);
+	void rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec);
 	void register_shader_resource(ID3D11Device* device, const wchar_t* filename);
 	void register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv);
 	void create_pixel_shader(ID3D11Device* device, const char* cso_name);

@@ -1,5 +1,5 @@
 #include "sword.h"
-#include "user.h"
+
 #include "Operators.h"
 Sword::Sword(Graphics& graphics)
 {
@@ -22,7 +22,7 @@ void Sword::update(Graphics& graphics, float elapsed_time)
 	//ワールド行列更新
 	transform = Math::calc_world_matrix(parent_transform, scale, orientation, position);
 	//当たり判定情報更新
-	DirectX::XMFLOAT3 forward = Math::get_posture_forward(transform);
+	DirectX::XMFLOAT3 forward = get_dir_sword_top();
 	//位置は装備したときの剣の位置
 	collision.start = get_equipped_position();
 	collision.end = get_equipped_position() + Math::vector_scale(forward, length);

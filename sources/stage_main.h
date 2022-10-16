@@ -22,6 +22,7 @@ public:
 
 private:
 	std::unique_ptr<SkeletalMesh>  model = nullptr;
+	std::unique_ptr<SkeletalMesh>  model_collision = nullptr;
 	DirectX::XMFLOAT3 scale;
 	DirectX::XMFLOAT3 angle{};
 	DirectX::XMFLOAT3 position{};

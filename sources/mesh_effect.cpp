@@ -1,7 +1,11 @@
 #include "mesh_effect.h"
 #include "user.h"
 #include "texture.h"
-
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 MeshEffect::MeshEffect(Graphics& graphics, const char* fbx_filename)
 {
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), fbx_filename);
@@ -11,19 +15,32 @@ MeshEffect::MeshEffect(Graphics& graphics, const char* fbx_filename)
 	create_ps_from_cso(graphics.get_device().Get(), "shaders/aura_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
 	shader = make_unique<MeshShader>(graphics.get_device().Get());
 }
-
+//==============================================================
+// 
+// 再生
+// 
+//==============================================================
 void MeshEffect::play(DirectX::XMFLOAT3 pos)
 {
 	position = pos;
 	active = true;
 	orientation = Math::orientation_reset();
 }
-
+//==============================================================
+// 
+// 停止
+// 
+//==============================================================
 void MeshEffect::stop()
 {
 	active = false;
 	life_time = 0;
 }
+//==============================================================
+// 
+// 更新
+// 
+//==============================================================
 void MeshEffect::update(Graphics& graphics, float elapsed_time)
 {
 	//アクティブ状態なら
@@ -52,8 +69,13 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
+	graphics.recompile_pixel_shader(pixel_shader.GetAddressOf());
 }
-
+//==============================================================
+// 
+// 描画
+// 
+//==============================================================
 void MeshEffect::render(Graphics& graphics)
 {
 	//エフェクトがアクティブ状態の場合のみ描画
@@ -70,17 +92,54 @@ void MeshEffect::render(Graphics& graphics)
 		graphics.get_dc().Get()->PSSetShaderResources(MATERIAL_START_SLOT + resource_num, send_texture_num, s.GetAddressOf());
 		resource_num++;
 	}
-	//if(slash)
+	//トランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
+	//レンダー
 	shader->render(graphics.get_dc().Get(), model.get(), transform);
-}
 
+	
+}
+//==============================================================
+// 
+// 姿勢を回転させる
+// 
+//==============================================================
 void MeshEffect::set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang)
 {
 	float angle = DirectX::XMConvertToRadians(ang);
 	orientation = Math::rot_quaternion(orientation, axis, angle);
 }
-
+//==============================================================
+// 
+// 軸を指定の向きに合わせる
+// 
+//==============================================================
+void MeshEffect::rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec)
+{
+	DirectX::XMFLOAT3 Axis;
+	switch (axis)
+	{
+	case AXIS::RIGHT:
+		Axis = Math::get_posture_right(orientation);
+		orientation = Math::rot_quaternion_dir(orientation, Axis, dir_vec);
+		break;
+	case AXIS::UP:
+		Axis = Math::get_posture_up(orientation);
+		orientation = Math::rot_quaternion_dir(orientation, Axis, dir_vec);
+		break;
+	case AXIS::FORWARD:
+		Axis = Math::get_posture_forward(orientation);
+		orientation = Math::rot_quaternion_dir(orientation, Axis, dir_vec);
+		break;
+	default:
+		break;
+	}
+}
+//==============================================================
+// 
+// 軸を任意の値で回転させる
+// 
+//==============================================================
 void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 {
 	float angle = DirectX::XMConvertToRadians(ang);
@@ -104,14 +163,20 @@ void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 	}
 
 }
-
+//==============================================================
+// 
 //リソースに登録（シェーダーリソースビューを受け取る）
+// 
+//==============================================================
 void MeshEffect::register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv)
 {
 	shader_resources.push_back(srv);
 }
-
+//==============================================================
+// 
 //リソースに登録（テクスチャのファイル名を受け取る）
+// 
+//==============================================================
 void MeshEffect::register_shader_resource(ID3D11Device* device, const wchar_t* filename)
 {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
@@ -120,16 +185,29 @@ void MeshEffect::register_shader_resource(ID3D11Device* device, const wchar_t* f
 
 	shader_resources.push_back(shader_resource_view);
 }
-
+//==============================================================
+// 
+//ピクセルシェーダー生成
+// 
+//==============================================================
 void MeshEffect::create_pixel_shader(ID3D11Device* device, const char* cso_name)
 {
 	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
 }
-
+//==============================================================
+// 
+//姿勢リセット
+// 
+//==============================================================
 void MeshEffect::reset_orientation()
 {
 	orientation = Math::orientation_reset();
 }
+//==============================================================
+// 
+//デバッグGUI
+// 
+//==============================================================
 void MeshEffect::debug_gui(string str_id)
 {
 #if USE_IMGUI

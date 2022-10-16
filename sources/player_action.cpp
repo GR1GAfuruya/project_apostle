@@ -10,87 +10,158 @@ void Player::transition_idle_state()
 {
 	p_update = &Player::update_idle_state;
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-}
-
-void Player::transition_attack_combo1_state()
-{
-	p_update = &Player::update_attack_combo1_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
-	//攻撃パラメーター設定
-	attack_sword_param.power = 10;
-	attack_sword_param.invinsible_time = 0.5f;
-}
-
-void Player::transition_attack_combo2_state()
-{
-	p_update = &Player::update_attack_combo2_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1f);
-	//攻撃パラメーター設定
-	attack_sword_param.power = 13;
-	attack_sword_param.invinsible_time = 0.5f;
-}
-
-void Player::transition_attack_combo3_state()
-{
-	p_update = &Player::update_attack_combo3_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
-	//攻撃パラメーター設定
-	attack_sword_param.power = 15;
-	attack_sword_param.invinsible_time = 0.2f;
-}
-
-void Player::transition_attack_combo4_state()
-{
-	p_update = &Player::update_attack_combo4_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
-
-}
-
-void Player::transition_attack_pull_state()
-{
-	p_update = &Player::update_attack_pull_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_PULL, false, 0.1f);
-
-}
-
-void Player::transition_attack_bullet_state()
-{
-	p_update = &Player::update_attack_bullet_state;
-	model->play_animation(PlayerAnimation::PLAYER_ATK_BULLET, false, 0.1f);
-
+	//ルートモーションを使用するか
+	is_root_motion = false;
 }
 
 void Player::transition_move_state()
 {
 	p_update = &Player::update_move_state;
-	model->play_animation(PlayerAnimation::PLAYER_WALK, true);
-}
-
-void Player::transition_jump_state()
-{
-	p_update = &Player::update_jump_state;
-	model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 0.1f);
+	model->play_animation(PlayerAnimation::PLAYER_RUN, true);
+	//ルートモーションを使用するか
+	is_root_motion = false;
 }
 
 void Player::transition_avoidance_state()
 {
 	p_update = &Player::update_avoidance_state;
 	model->play_animation(PlayerAnimation::PLAYER_ROLL, false, 0.1f);
+	//ルートモーションを使用するか
+	is_root_motion = false;
 }
 
-void Player::transition_support_magic_state()
+void Player::transition_jump_state()
 {
-	p_update = &Player::update_support_magic_state;
-	model->play_animation(PlayerAnimation::PLAYER_SUPPORT_MAGIC, false);
+	p_update = &Player::update_jump_state;
+	model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 0.1f);
+	//ルートモーションを使用するか
+	is_root_motion = false;
 }
-
 
 void Player::transition_damage_front_state()
 {
 	p_update = &Player::update_damage_front_state;
 	model->play_animation(PlayerAnimation::PLAYER_DAMAGE_FRONT, false);
+	//ルートモーションを使用するか
+	is_root_motion = false;
+}
+
+void Player::transition_r_attack_spring_slash_state()
+{
+	p_update = &Player::update_r_attack_spring_slash_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_SPRING_SLASH, false);
+	//ルートモーション
+	add_impulse(Math::get_posture_forward(orientation) * 50.0f);
+}
+
+void Player::transition_attack_pull_slash_state()
+{
+	p_update = &Player::update_attack_pull_slash_state;
+	model->play_animation(PlayerAnimation::PLAYER_PULL_SLASH, false);
+	//ルートモーションを使用するか
+	is_root_motion = false;
 
 }
+
+void Player::transition_attack_ground_state()
+{
+	p_update = &Player::update_attack_ground_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_GROUND, false);
+	//ルートモーションを使用するか
+	is_root_motion = false;
+
+}
+
+void Player::transition_magic_buff_state()
+{
+	p_update = &Player::update_magic_buff_state;
+	model->play_animation(PlayerAnimation::PLAYER_MAGIC_BUFF, false);
+	//ルートモーションを使用するか
+	is_root_motion = false;
+
+}
+
+void Player::transition_attack_bullet_state()
+{
+	p_update = &Player::update_attack_bullet_state;
+	model->play_animation(PlayerAnimation::PLAYER_MAGIC_BULLET, false, 0.1f);
+	//ルートモーションを使用するか
+	is_root_motion = false;
+
+}
+
+void Player::transition_attack_slash_up_state()
+{
+	p_update = &Player::update_attack_slash_up_state;
+	model->play_animation(PlayerAnimation::PLAYER_MAGIC_SLASH_UP, false);
+	//ルートモーションを使用するか
+	is_root_motion = true;
+	//ルートモーション用ダミーポジション
+	root_motion_pos = position;
+}
+
+void Player::transition_r_attack_forward_state()
+{
+	p_update = &Player::update_r_attack_forward_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_FORWARD_SLASH, false);
+	//前進
+	add_impulse(Math::get_posture_forward(orientation) * 50.0f);
+}
+
+void Player::transition_attack_air_state()
+{
+	p_update = &Player::update_attack_air_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
+}
+
+void Player::transition_r_attack_combo1_state()
+{
+	p_update = &Player::update_r_attack_combo1_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
+	//攻撃パラメーター設定
+	attack_sword_param.power = 10;
+	attack_sword_param.invinsible_time = 0.5f;
+	//ルートモーションを使用するか
+	is_root_motion = true;
+	root_motion_pos = position;
+}
+
+void Player::transition_r_attack_combo2_state()
+{
+	p_update = &Player::update_r_attack_combo2_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1f);
+	//攻撃パラメーター設定
+	attack_sword_param.power = 13;
+	attack_sword_param.invinsible_time = 0.5f;
+	//ルートモーションを使用するか
+	is_root_motion = true;
+	//ルートモーション用ダミーポジション
+	root_motion_pos = position;
+}
+
+void Player::transition_r_attack_combo3_state()
+{
+	p_update = &Player::update_r_attack_combo3_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
+	//攻撃パラメーター設定
+	attack_sword_param.power = 15;
+	attack_sword_param.invinsible_time = 0.2f;
+
+}
+
+void Player::transition_r_attack_dodge_back_state()
+{
+	p_update = &Player::update_r_attack_dodge_back_state;
+	model->play_animation(PlayerAnimation::PLAYER_ATK_DODGE_BACK, false, 0.1f);
+	//後ろに交代
+	add_impulse(Math::get_posture_forward(orientation) * -50.0f);
+}
+
+
+
+
+
+
 
 ///////////////////////////////////////////////////////
 //
@@ -111,149 +182,12 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 	//攻撃入力
 	if (game_pad->get_button_down() & game_pad->BTN_X)
 	{
-		transition_attack_combo1_state();
+		transition_r_attack_combo1_state();
 	}
 
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 }
-
-void Player::update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-	DirectX::XMFLOAT3 sword_pos;
-	DirectX::XMFLOAT4X4 bone_ori = {};
-	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
-	DirectX::XMFLOAT3 slash_dir = Math::get_posture_forward(orientation);
-	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
-	if (model->anime_param.frame_index == 20 / 2)
-	{
-		slash_efect->play(sword_pos + (up * 3.2f));
-		slash_efect->set_life_span(0.2f);
-		slash_efect->rot_speed.y = -360.0f * 3;
-		//攻撃判定ON
-		attack_sword_param.is_attack = true;
-	}
-	if (model->anime_param.frame_index > 40 / 2)
-	{
-		if (model->is_end_animation())
-		{
-			transition_idle_state();
-		}
-
-		if (game_pad->get_button() & game_pad->BTN_X)
-		{
-			transition_attack_combo2_state();
-		}
-		//攻撃判定OFF
-		attack_sword_param.is_attack = false;
-	}
-
-	//速力処理更新
-	update_velocity(elapsed_time, position, stage);
-}
-
-void Player::update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-	DirectX::XMFLOAT3 sword_pos;
-	DirectX::XMFLOAT4X4 bone_ori = {};
-	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
-	DirectX::XMFLOAT3 slash_dir = Math::get_posture_forward(orientation);
-	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
-	if (model->anime_param.frame_index == 17 / 2)
-	{
-		slash_efect->play(sword_pos + (up * 1.2f));
-		//攻撃判定ON
-		attack_sword_param.is_attack = true;
-
-	}
-
-	if (model->anime_param.frame_index > 45 / 2)
-	{
-		if (model->is_end_animation())
-		{
-			transition_idle_state();
-
-		}
-
-		if (game_pad->get_button() & game_pad->BTN_X)
-		{
-			transition_attack_combo3_state();
-		}
-		//攻撃判定OFF
-		attack_sword_param.is_attack = false;
-
-
-	}
-	//速力処理更新
-	update_velocity(elapsed_time, position, stage);
-}
-
-void Player::update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-	DirectX::XMFLOAT3 sword_pos{}, up{};
-	model->fech_by_bone(transform, sword_hand, sword_pos);
-	DirectX::XMFLOAT3 slash_dir_vec = Math::get_posture_forward(orientation);
-	//一振り目の斬撃
-	if (model->anime_param.frame_index == 20 / 2)
-	{
-		slash_efect->play(sword_pos);
-		slash_efect->rot_speed.y = -90;
-		//攻撃判定ON
-		attack_sword_param.is_attack = true;
-
-	}
-	//二振り目の斬撃
-	if (model->anime_param.frame_index == 30 / 2)
-	{
-		slash_efect->play(sword_pos);
-		slash_efect->rot_speed.y = 90;
-	}
-	//三振り目の斬撃
-	if (model->anime_param.frame_index == 55 / 2)
-	{
-		slash_efect->play(sword_pos);
-		slash_efect->rot_speed.y = -90;
-	}
-
-	if (model->anime_param.frame_index > 75 / 2)
-	{
-		if (model->anime_param.frame_index > 95 / 2 || model->is_end_animation())
-		{
-			transition_idle_state();
-		}
-
-		if (game_pad->get_button() & game_pad->BTN_X)
-		{
-			transition_attack_combo4_state();
-		}
-		//攻撃判定OFF
-		attack_sword_param.is_attack = false;
-
-
-	}
-	//速力処理更新
-	update_velocity(elapsed_time, position, stage);
-}
-
-void Player::update_attack_combo4_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-	if (model->anime_param.frame_index > 43 / 2)
-	{
-		Attack(graphics, elapsed_time);
-	}
-	if (model->is_end_animation())
-	{
-		transition_idle_state();
-	}
-
-	//速力処理更新
-	update_velocity(elapsed_time, position, stage);
-}
-
-void Player::update_attack_pull_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-}
-
 void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	if (!input_move(elapsed_time, camera) && is_ground)
@@ -267,32 +201,20 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 	//攻撃入力
 	if (game_pad->get_button() & game_pad->BTN_X)
 	{
-		transition_attack_combo1_state();
+		transition_r_attack_combo1_state();
 	}
 
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 }
 
-void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
-{
-	input_move(elapsed_time, camera);
-
-	if (is_ground)
-	{
-		transition_idle_state();
-	}
-
-	//速力処理更新
-	update_velocity(elapsed_time, position, stage);
-}
 
 //回避
 void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	//徐々に速度を落としていく
-	velocity.x /= 2 ;
-	velocity.z /= 2 ;
+	velocity.x /= 2;
+	velocity.z /= 2;
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 	if (model->anime_param.frame_index > 33 / 2)
@@ -304,8 +226,8 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 	else
 	{
 		//向いている方向に速度を足す
-		velocity.x += (Math::get_posture_forward(orientation) * (avoidance_speed)).x ;
-		velocity.z += (Math::get_posture_forward(orientation) * (avoidance_speed)).z ;
+		velocity.x += (Math::get_posture_forward(orientation) * (avoidance_speed)).x;
+		velocity.z += (Math::get_posture_forward(orientation) * (avoidance_speed)).z;
 
 	}
 
@@ -326,7 +248,55 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 
 }
 
-void Player::update_support_magic_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	input_move(elapsed_time, camera);
+
+	if (is_ground)
+	{
+		transition_idle_state();
+	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+
+void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+}
+
+void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+
+}
+
+void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+
+}
+
+void Player::update_attack_ground_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+
+}
+
+void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	if (model->is_end_animation())
 	{
@@ -342,10 +312,213 @@ void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, 
 	}
 }
 
-void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+void Player::update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	if (model->is_end_animation())
 	{
 		transition_idle_state();
 	}
 }
+
+void Player::update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	//*************************************//
+	//	ルートモーションに関する更新	   //
+	//*************************************//
+	root_motion_manual(Math::get_posture_forward(orientation), 1.5f);
+}
+
+
+
+
+void Player::update_attack_air_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	if (model->anime_param.frame_index > 43 / 2)
+	{
+		Attack(graphics, elapsed_time);
+	}
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+	}
+
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	//*************************************//
+	//			攻撃判定に関する更新	   //
+	//*************************************//
+	DirectX::XMFLOAT3 sword_pos;
+	DirectX::XMFLOAT4X4 bone_ori = {};
+	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
+	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
+	if (model->anime_param.frame_index == 20 / 2)
+	{
+		slash_efect->play(sword->get_equipped_position());
+		slash_efect->set_life_span(0.2f);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efect->rot_speed.y = -sword_swing_speed;
+		//攻撃判定ON
+		attack_sword_param.is_attack = true;
+	}
+	//*************************************//
+	//			遷移に関する更新	   //
+	//*************************************//
+
+	if (model->anime_param.frame_index > 40 / 2)
+	{
+		if (model->is_end_animation())
+		{
+			transition_idle_state();
+			//velocity = { 0,0,0 };
+		}
+
+		if (game_pad->get_button() & game_pad->BTN_X)
+		{
+			transition_r_attack_combo2_state();
+			//velocity = { 0,0,0 };
+			
+		}
+		//攻撃判定OFF
+		attack_sword_param.is_attack = false;
+	}
+	//*************************************//
+	//	ルートモーションに関する更新	   //
+	//*************************************//
+	root_motion_manual(Math::get_posture_forward(orientation), 8.0f);
+	//回避入力
+	input_avoidance();
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	DirectX::XMFLOAT3 sword_pos;
+	DirectX::XMFLOAT4X4 bone_ori = {};
+	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
+	if (model->anime_param.frame_index == 12 / 2)
+	{
+		slash_efect->play(sword->get_equipped_position());
+		slash_efect->set_life_span(0.15f);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efect->rot_speed.y = sword_swing_speed;
+
+		//攻撃判定ON
+		attack_sword_param.is_attack = true;
+
+	}
+
+	if (model->anime_param.frame_index > 45 / 2)
+	{
+		if (model->is_end_animation())
+		{
+			transition_idle_state();
+
+		}
+
+		if (game_pad->get_button() & game_pad->BTN_X)
+		{
+			transition_r_attack_combo3_state();
+		}
+		//攻撃判定OFF
+		attack_sword_param.is_attack = false;
+
+
+	}
+	//*************************************//
+	//	ルートモーションに関する更新	   //
+	//*************************************//
+	root_motion_manual(Math::get_posture_forward(orientation), -1.0f);
+	//回避入力
+	input_avoidance();
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+	DirectX::XMFLOAT3 sword_pos;
+	DirectX::XMFLOAT4X4 bone_ori = {};
+	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
+	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
+	//一振り目の斬撃
+	if (model->anime_param.frame_index == 4 / 2)
+	{
+		slash_efect->play(sword->get_equipped_position());
+		slash_efect->set_life_span(0.1f);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efect->rot_speed.y = -sword_swing_speed;
+		//攻撃判定ON
+		attack_sword_param.is_attack = true;
+		add_impulse(Math::get_posture_forward(orientation) * 3.0f);
+	}
+	//二振り目の斬撃
+	if (model->anime_param.frame_index == 30 / 2)
+	{
+		slash_efect->play(sword->get_equipped_position());
+		slash_efect->set_life_span(0.2f);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efect->rot_speed.y = sword_swing_speed;
+		add_impulse(Math::get_posture_forward(orientation) * 7.0f);
+	}
+	//三振り目の斬撃
+	if (model->anime_param.frame_index == 50 / 2)
+	{
+		slash_efect->play(sword->get_equipped_position());
+		slash_efect->set_life_span(0.2f);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efect->rot_speed.y = -sword_swing_speed;
+		velocity.x /= 5.0f;
+		velocity.z /= 5.0f;
+	}
+
+	if (model->anime_param.frame_index > 66 / 2)
+	{
+		if (model->anime_param.frame_index > 95 / 2 || model->is_end_animation())
+		{
+			transition_idle_state();
+		}
+
+		if (game_pad->get_button() & game_pad->BTN_X)
+		{
+			transition_attack_air_state();
+		}
+		//攻撃判定OFF
+		attack_sword_param.is_attack = false;
+
+
+	}
+	//*************************************//
+	//	ルートモーションに関する更新	   //
+	//*************************************//
+	//root_motion_manual(Math::get_posture_forward(orientation), 15.0f);
+	
+	//回避入力
+	input_avoidance();
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
+}
+
+void Player::update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
+{
+
+
+	//*************************************//
+	//	ルートモーションに関する更新	   //
+	//*************************************//
+	float speed = model->root_defference_length_next_frame(root);
+	velocity = Math::get_posture_forward(orientation) * (speed * add_root_speed);
+}
+
+
+

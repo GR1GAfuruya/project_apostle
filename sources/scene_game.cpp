@@ -32,6 +32,17 @@ void SceneGame::initialize(Graphics& graphics)
 	light_manager->register_light(p);
 	std::shared_ptr<DirectionalLight> d = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(1, -1, 1), 0.7f, 0.3f, 0.2f);
 	light_manager->register_light(d);
+
+	//テスト用
+#if _DEBUG
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/Shape_Sphere.fbx");
+	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
+	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	 test_mesh_effect->set_scale(0.1f);
+	 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
+#endif
 }
 
 void SceneGame::finalize()
@@ -47,7 +58,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_gazing_point());
 
-	//プレイヤーの更新
+	//**********プレイヤーの更新**********//
 	player->update(graphics, elapsed_time, camera.get(), stage.get());
 
 	player->calc_collision_vs_enemy(boss->get_body_collision().capsule, boss->get_body_collision().height);
@@ -56,24 +67,26 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 
 	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function);
 
-	//ボスの更新
+	//**********ボスの更新**********//
 	boss->update(graphics, elapsed_time, stage.get());
 	
 	//ボスの攻撃対象を設定
 	boss->set_location_of_attack_target(player->get_position());
 	boss->calc_attack_vs_player(player->collider.start, player->collider.end, player->collider.radius, player->damaged_function);
-
-
+	
+	//**********ステージの更新**********//
 	stageManager.update(elapsed_time);
 
 	//particles->update(graphics,elapsed_time);
 	Mouse& mouse = Device::instance().get_mouse();
 
+
+#if _DEBUG
+	test_mesh_effect->set_life_span(5);
+	test_mesh_effect->update(graphics,elapsed_time);
+	test_mesh_effect->set_is_loop(true);
+#endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
-
-	/*boss->calc_attack_vs_player(player->get_position(), { player->get_position().x,player->get_position().y + 5.0f,player->get_position().z }
-	, player->get_radius(), player->damaged_function);*/
-
 	//シーンリセット（仮置き）
 	if (mouse.get_button() & Mouse::BTN_ENTER)
 	{
@@ -83,28 +96,36 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 
 void SceneGame::render(float elapsed_time, Graphics& graphics)
 {
-	///////////////////////////////////////////////////////////////////
+	//***************************************************************//
 	///						ディファ―ドレンダリング				///
-	//////////////////////////////////////////////////////////////////
+	//***************************************************************//
 	StageManager& stageManager = StageManager::Instance();
 	deferred->active(graphics);
 	// 描画ステート設定
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
-	player->render_d(graphics,elapsed_time,camera.get());
-	boss->render_d(graphics,elapsed_time);
 	
+	//ステージ描画
 	stageManager.render(elapsed_time, graphics);
+
+	//プレイヤー描画
+	player->render_d(graphics,elapsed_time,camera.get());
+
+	//ボス描画
+	boss->render_d(graphics,elapsed_time);
+
+
 	//ここで各種ライティング（環境光、平行光、点光源）
 	deferred->deactive(graphics,*light_manager);
+
 	//レンダーターゲットを戻す
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
 	post_effect->begin(graphics.get_dc().Get());
 	deferred->render(graphics);
 
-	///////////////////////////////////////////////////////////////////
+	//***************************************************************//
 	///						フォワードレンダリング					///
-	//////////////////////////////////////////////////////////////////
+	//***************************************************************//
 	graphics.shader_activate(Graphics::SHADER_TYPES::LAMBERT, RENDER_TYPE::Forward);
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	//前後処理を正しく行うためディファ―ドの深度ステンシルビューを使用する
@@ -120,13 +141,38 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
 	field_spark_particle->render(graphics.get_dc().Get());
+
+	//テスト用
+#if _DEBUG
+	test_mesh_effect->render(graphics);
+	test_mesh_effect->debug_gui("test_effect");
+	test_mesh_effect->set_position(test_effect_pos);
+	#if USE_IMGUI
+	ImGui::Begin("test_effect");
+	if (ImGui::Button("test_effect_play"))
+	{
+		test_mesh_effect->play(test_effect_pos);
+	}
+	ImGui::DragFloat3("pos", &test_effect_pos.x);
+	ImGui::DragFloat3("color", &test_effect_color.x,0.1f);
+	ImGui::End();
+	#endif
+	test_mesh_effect->constants->data.particle_color = test_effect_color;
+#endif
+
+
+	//***************************************************************//
+	///						ポストエフェクト  				        ///
+	//***************************************************************//
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
-	//ポストエフェクト用のレンダーここまで
 	post_effect->end(graphics.get_dc().Get());
 
 	post_effect->blit(graphics);
 
-	//UI
+	//***************************************************************//
+	///						        UI  				            ///
+	//***************************************************************//
+	//仮置きの操作説明
 	operation_ui->begin(graphics.get_dc().Get());
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
 	operation_ui->end(graphics.get_dc().Get());	debug_gui();

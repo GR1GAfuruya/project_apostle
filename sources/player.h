@@ -50,19 +50,23 @@ private:
 	//アニメーション
 	enum  PlayerAnimation
 	{
-		PLAYER_IDLE,
-		PLAYER_WALK,
-		PLAYER_ROLL,
-		PLAYER_ATK_AIR,
-		PLAYER_SUPPORT_MAGIC,
-		PLAYER_ATK_LOW,
-		PLAYER_JUMP,
-		PLAYER_ATK_COMBO1,
-		PLAYER_ATK_COMBO2,
-		PLAYER_ATK_COMBO3,
-		PLAYER_ATK_PULL,
-		PLAYER_ATK_BULLET,
-		PLAYER_DAMAGE_FRONT,
+		PLAYER_IDLE,//待機
+		PLAYER_RUN,//走り
+		PLAYER_ROLL,//回避
+		PLAYER_JUMP,//ジャンプ
+		PLAYER_DAMAGE_FRONT,//前から被ダメ
+		PLAYER_ATK_SPRING_SLASH,//前回転切り
+		PLAYER_PULL_SLASH,//敵を引き付けて斬る
+		PLAYER_ATK_GROUND,//地面に手を付けて口寄せみたいな
+		PLAYER_MAGIC_BUFF,//バフ
+		PLAYER_MAGIC_SLASH_UP,//空中に巻き上げ斬る
+		PLAYER_MAGIC_BULLET,//小さい魔法弾打つような
+		PLAYER_ATK_FORWARD_SLASH,//前進斬り
+		PLAYER_ATK_AIR,//ジャンプして地面に魔法うつ
+		PLAYER_ATK_COMBO1,//コンボ2-1
+		PLAYER_ATK_COMBO2,//コンボ2-2
+		PLAYER_ATK_COMBO3,//コンボ2-3
+		PLAYER_ATK_DODGE_BACK,//後方に回避しながら魔法
 	};
 
 	enum class State
@@ -83,7 +87,7 @@ private:
 	{
 		Capsule collision;
 		bool is_attack;//攻撃中かどうか
-		float power;//攻撃力
+		int power;//攻撃力
 		float invinsible_time;//攻撃対象に課す無敵時間
 	};
 	//--------------------------------------------------------------
@@ -96,7 +100,9 @@ private:
 	static constexpr float ATTACK_TYPE2_MAX_TIME = 0.2f;
 	//攻撃3撃目の猶予時間
 	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
-
+	//剣振りスピード
+	//static constexpr float SWORD_SWING_SPEED = 0.2f;
+	
 
 
 private:
@@ -106,40 +112,49 @@ private:
 	// 
 	//==============================================================
 
-	//遷移
-	void transition_idle_state();
-	void transition_attack_combo1_state();
-	void transition_attack_combo2_state();
-	void transition_attack_combo3_state();
-	void transition_attack_combo4_state();
-	void transition_attack_pull_state();
-	void transition_attack_bullet_state();
-	void transition_move_state();
-	void transition_jump_state();
-	void transition_avoidance_state();
-	void transition_support_magic_state();
-	void transition_damage_front_state();
+	//**********遷移*************//
+	
+	void transition_idle_state();//待機
+	void transition_move_state();//走り
+	void transition_avoidance_state();//回避
+	void transition_jump_state();//ジャンプ
+	void transition_damage_front_state();//前から被ダメ
+	void transition_r_attack_spring_slash_state();//前回転切り
+	void transition_attack_pull_slash_state();//敵を引き付けて斬る
+	void transition_attack_ground_state();//地面に手を付けて口寄せみたいな
+	void transition_magic_buff_state();//バフ
+	void transition_attack_bullet_state();//空中に巻き上げ斬る
+	void transition_attack_slash_up_state();//小さい魔法弾打つような
+	void transition_r_attack_forward_state();//前進斬り
+	void transition_attack_air_state();//ジャンプして地面に魔法うつ
+	void transition_r_attack_combo1_state();//コンボ2-1
+	void transition_r_attack_combo2_state();//コンボ2-2
+	void transition_r_attack_combo3_state();//コンボ2-3
+	void transition_r_attack_dodge_back_state();//後方に回避しながら魔法
 
 
-	//////アニメーションアップデート
+	//********各ステートのアップデート**********//r_はルートモーション付き
 	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_combo4_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_pull_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_support_magic_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//走り
+	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//回避
+	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//ジャンプ
+	void update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//前から被ダメ
+	void update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//前回転切り
+	void update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//敵を引き付けて斬る
+	void update_attack_ground_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//地面に手を付けて口寄せみたいな
+	void update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//バフ
+	void update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//空中に巻き上げ斬る
+	void update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//小さい魔法弾打つような
+	void update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//前進斬り
+	void update_attack_air_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//ジャンプして地面に魔法うつ
+	void update_r_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//コンボ2-1
+	void update_r_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//コンボ2-2
+	void update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//コンボ2-3
+	void update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//後方に回避しながら魔法
 
 	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
 	//
 	void Attack(Graphics& graphics, float elapsed_time);
-
-	void select_support_skill();
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
@@ -155,10 +170,13 @@ private:
 	
 	//着地したか
 	void on_landing()override;
-
+	//死亡したときの処理
 	void on_dead() override;
-
+	//ダメージを受けた時の処理
 	void on_damaged() override;
+	//ルートモーション
+	void root_motion(DirectX::XMFLOAT3 dir, float speed);
+	void root_motion_manual(DirectX::XMFLOAT3 dir, float speed);
 
 	//==============================================================
 	// 
@@ -193,16 +211,22 @@ private:
 	//攻撃力
 	int add_damage;
 
+	float sword_swing_speed = 1500.0f;
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;
 	std::unique_ptr<Sword> sword;
 	skeleton::bone sword_hand;
 	skeleton::bone right_hand;
-
+	DirectX::XMFLOAT3 root_defference_velosity;
 	//当たり判定用変数
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };
 	AttackParam attack_sword_param;
+	//ルートモーション
+	skeleton::bone root;
+	DirectX::XMFLOAT3 root_motion_pos = {0,0,0};
+	float add_root_speed = 1.1f;
+	bool is_root_motion = false;
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
 	AddDamageFunc damaged_function;

@@ -282,7 +282,7 @@ void GPU_Particles::set_emitter_life_time(float life_time)
 	substitution_emitter.emit_life_time = life_time;
 }
 
-void GPU_Particles::set_emitter_count(float count)
+void GPU_Particles::set_emitter_count(int count)
 {
 	_ASSERT_EXPR(count >= 0, L"GPUParticle‚Ìcount‚É•s³‚È’l‚ª“ü—Í‚³‚ê‚Ü‚µ‚½");
 	substitution_emitter.emit_count = count;

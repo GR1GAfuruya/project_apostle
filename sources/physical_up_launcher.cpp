@@ -9,7 +9,7 @@ void PhycicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<PhysicalUp>(graphics, launch_pos, add_run_speed, add_jump_speed);
+		unique_ptr<Skill> skill = make_unique<PhysicalUp>(graphics, launch_pos, add_run_speed, add_jump_speed);
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
 		chantable = false;

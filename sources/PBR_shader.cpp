@@ -61,7 +61,7 @@ void PBRShader::render(ID3D11DeviceContext* immediate_context, SkeletalMesh* mod
 		immediate_context->IASetIndexBuffer(mesh.index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 		immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-
+		//アニメーション
 		if (&model->anime_param.animation_keyframe && (&model->anime_param.animation_keyframe)->nodes.size() > 0)
 		{
 			const animation::keyframe::node& mesh_node{ (&model->anime_param.animation_keyframe)->nodes.at(mesh.node_index) };

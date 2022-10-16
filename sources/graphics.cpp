@@ -5,6 +5,11 @@
 #include "PBR_shader.h"
 #include <d3dcompiler.h>
 #include <d3dcommon.h>
+//==============================================================
+// 
+// 初期化
+// 
+//==============================================================
 void Graphics::initialize(HWND hwnd)
 {
 	HRESULT hr{ S_OK };	//HRESULT型はlong型の数値。BOOL型より値が多いため数値を見るだけで失敗の原因までわかる。
@@ -285,25 +290,41 @@ Graphics::~Graphics()
 {
 	
 }
-
+//==============================================================
+// 
+// 深度ステンシルステート設定
+// 
+//==============================================================
 void Graphics::set_depth_state(DEPTH_STENCIL_STATE z_stencil)
 {
 	// 深度ステンシルステートオブジェクト
 	immediate_context->OMSetDepthStencilState(depth_stencil_states[static_cast<int>(z_stencil)].Get(), 1);
 }
-
+//==============================================================
+// 
+// ブレンドステート設定
+// 
+//==============================================================
 void Graphics::set_blend_state(BLEND_STATE blend)
 {
 	// ブレンディングステートオブジェクト
 	immediate_context->OMSetBlendState(blend_states[static_cast<int>(blend)].Get(), nullptr, 0xFFFFFFFF);
 }
-
+//==============================================================
+// 
+// ラスタライザステート設定
+// 
+//==============================================================
 void Graphics::set_rasterizer_state(RASTERIZER rasterizer)
 {
 	// ラスタライザステート
 	immediate_context->RSSetState(rasterizer_states[static_cast<int>(rasterizer)].Get());
 }
-
+//==============================================================
+// 
+// 深度、ブレンド、ラスタライザ設定
+// 
+//==============================================================
 void Graphics::set_graphic_state_priset(DEPTH_STENCIL_STATE z_stencil, BLEND_STATE blend, RASTERIZER rasterizer)
 {
 	// 深度ステンシルステートオブジェクト
@@ -314,7 +335,11 @@ void Graphics::set_graphic_state_priset(DEPTH_STENCIL_STATE z_stencil, BLEND_STA
 	immediate_context->RSSetState(rasterizer_states[static_cast<int>(rasterizer)].Get());
 
 }
-
+//==============================================================
+// 
+// メッシュシェーダーアクティブ
+// 
+//==============================================================
 void Graphics::shader_activate(SHADER_TYPES sh,RENDER_TYPE rt)
 {
 	//指定したシェーダーに切り替える
@@ -325,6 +350,13 @@ void Graphics::shader_activate(SHADER_TYPES sh,RENDER_TYPE rt)
 	shaders.at(sh)->active(immediate_context.Get(), rt);
 }
 
+
+
+//==============================================================
+// 
+// 実行中にシェーダー変更（未完成）＊pShaderBlobがnullになる
+// 
+//==============================================================
 BOOL Graphics::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)
 {
 	OPENFILENAMEW o;

@@ -52,7 +52,7 @@ private:
 	DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
 	//スケール
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
-	static constexpr DirectX::XMFLOAT4 FIRE_COLOR = { 3.0f, 0.6f, 0.0f, 0.8f };
+	static constexpr DirectX::XMFLOAT4 FIRE_COLOR = { 3.0f, 0.6f, 0.7f, 0.8f };
 	//デバッグGUIフラグ
 	bool display_imgui = true;
 

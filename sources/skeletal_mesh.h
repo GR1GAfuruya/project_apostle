@@ -19,7 +19,7 @@ public:
 		int old_anime_index = 0;//直前に再生していたアニメーション
 		int current_index = 0;//再生するアニメーションの種類
 		int frame_index = 0;
-		float playback_speed = 0.0f;//そのアニメーションの再生速度
+		float playback_speed = 1.0f;//そのアニメーションの再生速度
 		float current_time = 0.0f;//そのアニメーションが何秒であるか
 		bool loop_flag = false;//ループ再生するアニメーションか
 		bool end_flag = false;////アニメーションの終わりか
@@ -54,6 +54,9 @@ public:
 
 	const skeleton::bone& get_bone_by_name(std::string name);
 
+	//ルートモーション用
+	DirectX::XMFLOAT3 root_defference_pos_next_frame(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone);
+	float root_defference_length_next_frame( const skeleton::bone& bone);
 };
 
 

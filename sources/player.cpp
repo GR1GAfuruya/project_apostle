@@ -7,10 +7,16 @@
 #include "Operators.h"
 #include "../external/magic_enum/include/magic_enum.hpp"
 #include "collision.h"
+
+//==============================================================
+// 
+// 初期化
+// 
+//==============================================================
 void Player::initialize()
 {
 	//パラメーター初期化
-	position = { 46.0f, 10.0f,250.0f };
+	position = { 0.0f, 10.0f,0.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	move_speed = 30.0f;
 	turn_speed = DirectX::XMConvertToRadians(720);
@@ -33,10 +39,15 @@ void Player::initialize()
 
 }
 
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 Player::Player(Graphics& graphics, Camera* camera)
 {
 	//キャラクターモデル
-	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadin.fbx", 30.0f);
+	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadinInplace.fbx", 30.0f);
 	skill_manager = std::make_unique<SkillManager>(graphics);
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
@@ -55,20 +66,27 @@ Player::Player(Graphics& graphics, Camera* camera)
 
 	sword_hand = model->get_bone_by_name("pelvis");
 	right_hand = model->get_bone_by_name("hand_r");
+	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 	initialize();
 }
 
-
+//==============================================================
+// 
 //デストラクタ
+// 
+//==============================================================
 Player::~Player()
 {
 }
 
 
-
+//==============================================================
+// 
 //更新処理
+// 
+//==============================================================
 void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage)
 {
 	//更新処理
@@ -81,13 +99,10 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
-	DirectX::XMFLOAT4X4 sword_hand_mat = {};
-	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
-
-
+	
+	;
 	//ソード更新
 	{
-		sword->set_parent_transform(sword_hand_mat);
 		sword->update(graphics, elapsed_time);
 
 		attack_sword_param.collision.start = sword->get_collision().start;
@@ -99,28 +114,38 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	collider.end = { position.x,position.y + height, position.z };
 	collider.radius = 1.0f;
 	//skill系仮置き
-	select_support_skill();
 	input_chant_support_skill(graphics);
 	input_chant_attack_skill(graphics);
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
-	if (skill_manager.get()->is_selecting_skill())
-	{
-		int a = 1;
-	}
+	
 }
-
-//描画処理
+//==============================================================
+// 
+//描画処理（ディファード）
+// 
+//==============================================================
 void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	// 拡大縮小（S）・回転（R）・平行移動（T）行列を計算する
 	// スタティックメッシュ
+	//ルートモーションをしている最中は
+	DirectX::XMFLOAT4X4 sword_hand_mat = {};
+	//剣のトランスフォーム更新
+	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
+	sword->set_parent_transform(sword_hand_mat);
+
+	//自機モデルのトランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 	//剣描画
 	sword->render(graphics);
 }
-
+//==============================================================
+// 
+//描画処理（フォワード）
+// 
+//==============================================================
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
@@ -132,13 +157,22 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 
 }
 
+//==============================================================
+// 
+//描画処理（UI）
+// 
+//==============================================================
 void Player::render_ui(Graphics& graphics, float elapsed_time)
 {
 	skill_manager.get()->ui_render(graphics, elapsed_time);
 }
 
 
-
+//==============================================================
+// 
+//移動ベクトル処理（コントローラー）
+// 
+//==============================================================
 const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 {
 	//入力情報を取得
@@ -177,13 +211,15 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 	return vec;
 }
 
-
+//==============================================================
+// 
+//魔法
+// 
+//==============================================================
 void Player::Attack(Graphics& graphics, float elapsed_time)
 {
 	DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
 	emit_pos.y = position.y + 3.0f;
-	//attack1.get()->particle_constants.get()->data.particle_size = { 0.1,0.6 };
-	//attack1.get()->particle_constants.get()->data.emitter.emit_rate = 1200.0f;
 	attack1.get()->set_emitter_pos(emit_pos);
 	attack1.get()->set_emitter_rate(150);
 	attack1.get()->set_particle_size({0.1f,0.1f});
@@ -191,14 +227,11 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 	attack1.get()->launch_emitter( emit_cs);
 }
 
-void Player::select_support_skill()
-{
-	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER) //左トリガーを引いたら支援スキル
-	{
-		//transition_support_magic_state();
-	}
-}
-
+//==============================================================
+// 
+//移動入力処理
+// 
+//==============================================================
 bool Player::input_move(float elapsedTime, Camera* camera)
 {
 	//進行ベクトル取得
@@ -211,7 +244,11 @@ bool Player::input_move(float elapsedTime, Camera* camera)
 	return move_vec.x != 0.0f || move_vec.y != 0.0f || move_vec.z != 0.0f;
 }
 
-
+//==============================================================
+// 
+//ジャンプ入力処理
+// 
+//==============================================================
 void Player::input_jump()
 {
 	if (game_pad->get_button_down() & GamePad::BTN_A) //スペースを押したらジャンプ
@@ -221,12 +258,16 @@ void Player::input_jump()
 			transition_jump_state();
 			Jump(jump_speed);
 			is_ground = false;//ジャンプしても地面についているというありえない状況を回避するため
-		
+			
 			++jump_count;
 		}
 	}
 }
-
+//==============================================================
+// 
+//回避入力処理
+// 
+//==============================================================
 void Player::input_avoidance()
 {
 	if (game_pad->get_button_down() & GamePad::BTN_B)
@@ -235,7 +276,11 @@ void Player::input_avoidance()
 	}
 }
 
-//サポートスキル発動
+//==============================================================
+// 
+//サポートスキル発動処理
+// 
+//==============================================================
 void Player::input_chant_support_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
@@ -246,19 +291,23 @@ void Player::input_chant_support_skill(Graphics& graphics)
 		//	skill_manager->chant_phycical_up(graphics, position, position);
 			break;
 			case SP_SKILLTYPE::REGENERATE:
+			transition_magic_buff_state();//状態遷移
 
 			break;
 			case SP_SKILLTYPE::RESTRAINNT:
-
+				transition_attack_pull_slash_state();
 			break;
 		default:
 			break;
 		}
-		transition_support_magic_state();//状態遷移
 	}
 }
 
-//攻撃スキル発動
+//==============================================================
+// 
+//攻撃スキル発動処理
+// 
+//==============================================================
 void Player::input_chant_attack_skill(Graphics& graphics)
 {
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
@@ -267,23 +316,59 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
 			skill_manager->chant_magic_bullet(graphics, position, Math::get_posture_forward(orientation));
+			transition_attack_bullet_state();//状態遷移
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
 			skill_manager->chant_spear_sea(graphics, position);
+			transition_attack_ground_state();
 			break;
 		default:
 			break;
 		}
 		
-		transition_attack_bullet_state();//状態遷移
+		
 	}
 }
-
+//==============================================================
+// 
+//スキルの当たり判定処理
+// 
+//==============================================================
 void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
 }
-
+//==============================================================
+// 
+//自分と敵の体の当たり判定処理
+// 
+//==============================================================
+void Player::calc_collision_vs_enemy(Capsule collider, float collider_height)
+{
+	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, radius, height, &position);
+}
+//==============================================================
+// 
+//自分の攻撃と敵の当たり判定処理
+// 
+//==============================================================
+void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
+{
+	//剣の攻撃中のみ当たり判定
+	if (attack_sword_param.is_attack)
+	{
+		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+		{
+			//攻撃対象に与えるダメージ量と無敵時間
+			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
+		}
+	}
+}
+//==============================================================
+// 
+//着地処理
+// 
+//==============================================================
 void Player::on_landing()
 {
 	jump_count = 0;
@@ -296,17 +381,50 @@ void Player::on_landing()
 
 }
 
+//==============================================================
+// 
+//死亡処理
+// 
+//==============================================================
 void Player::on_dead()
 {
 	initialize();
 }
-
+//==============================================================
+// 
+//ダメージを受けた際の処理
+// 
+//==============================================================
 void Player::on_damaged()
 {
 	transition_damage_front_state();	
 }
 
+//==============================================================
+// 
+//ルートモーション
+// 
+//==============================================================
+//アニメーションのボーンの位置差分から計算
+void Player::root_motion(DirectX::XMFLOAT3 dir, float speed)
+{
+	float root_defference_length = model->root_defference_length_next_frame(root);
+	velocity.x = dir.x * (root_defference_length * speed);
+	velocity.z = dir.z * (root_defference_length * speed);
 
+}
+//手動（ボーンの処理がうまくいかなかったため）
+void Player::root_motion_manual(DirectX::XMFLOAT3 dir, float speed)
+{
+	velocity.x = dir.x * speed;
+	velocity.z = dir.z * speed;
+}
+
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void Player::debug_gui(Graphics& graphics)
 {
 #ifdef USE_IMGUI
@@ -317,7 +435,7 @@ void Player::debug_gui(Graphics& graphics)
 	{
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
-			
+			ImGui::DragFloat("add_root_speed", &add_root_speed);
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -391,23 +509,5 @@ void Player::debug_gui(Graphics& graphics)
 	slash_efect->debug_gui("slash_efect");
 #endif // USE_IMGUI
 
-}
-
-void Player::calc_collision_vs_enemy(Capsule collider,float collider_height)
-{
-	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, radius, height, &position);
-}
-
-void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
-{
-	//剣の攻撃中のみ当たり判定
-	if (attack_sword_param.is_attack)
-	{
-		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
-		{
-			//攻撃対象に与えるダメージ量と無敵時間
-			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
-		}
-	}
 }
 

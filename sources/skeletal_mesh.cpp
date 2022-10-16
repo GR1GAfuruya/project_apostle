@@ -166,32 +166,64 @@ const skeleton::bone& SkeletalMesh::get_bone_by_name(std::string name)
 	return dummy;
 }
 
-//void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4* ori)
-//{
-//	if (&anime_param.animation_keyframe && (&anime_param.animation_keyframe)->nodes.size() > 0)
-//	{
-//		const animation::keyframe::node& bone_node{ (&anime_param.animation_keyframe)->nodes.at(bone.node_index) };
-//		DirectX::XMFLOAT4X4 w;
-//		XMStoreFloat4x4(&w, XMLoadFloat4x4(&bone_node.global_transform) * XMLoadFloat4x4(&world));
-//
-//		pos = { w._41,w._42,w._43 };
-//		DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
-//
-//		DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
-//		DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
-//		DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
-//
-//		//引数により姿勢も要求されている場合
-//		if (ori)
-//		{
-//			DirectX::XMFLOAT4X4 r = {};
-//			DirectX::XMStoreFloat4x4(&r, R);
-//			////回転行列からクォータニオンに変換
-//			//Math::transform_rotatemat_to_quaternion(*ori, r);
-//		}
-//		
-//	}
-//}
+DirectX::XMFLOAT3 SkeletalMesh::root_defference_pos_next_frame(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone)
+{
+	//次のフレームのアニメーションとの位置差分
+	DirectX::XMFLOAT3 defference_pos;
+	//アニメーションが1周してないかチェック
+	if (anime_param.frame_index + 1 < static_cast<int>(anime_param.animation.sequence.size() - 1))
+	{
+		//次のフレームのアニメーションのキーフレーム
+		const animation::keyframe next_animation_keyframe = anime_param.animation.sequence.at(anime_param.frame_index + 1);
+
+			const animation::keyframe::node& current_bone_node{ (&anime_param.animation_keyframe)->nodes.at(bone.node_index) };
+			const animation::keyframe::node& next_bone_node{ (&next_animation_keyframe)->nodes.at(bone.node_index) };
+			DirectX::XMFLOAT4X4 current_bone_transform;
+			DirectX::XMFLOAT4X4 next_bone_transform;
+			XMStoreFloat4x4(&current_bone_transform, XMLoadFloat4x4(&current_bone_node.global_transform) );
+			XMStoreFloat4x4(&next_bone_transform, XMLoadFloat4x4(&next_bone_node.global_transform) );
+
+			DirectX::XMFLOAT3 current_bone_pos = { current_bone_transform._41,current_bone_transform._42,current_bone_transform._43 };
+			DirectX::XMFLOAT3 next_bone_pos = { next_bone_transform._41,next_bone_transform._42,next_bone_transform._43 };
+			defference_pos = Math::calc_vector_AtoB(current_bone_pos, next_bone_pos);
+			return defference_pos;
+	}
+	return { 0,0,0 };
+}
+
+float SkeletalMesh::root_defference_length_next_frame(const skeleton::bone& bone)
+{
+	//次のフレームのアニメーションとの位置差分
+	float defference_length;
+	//アニメーションが1周してないかチェック
+	if (anime_param.frame_index > 0)
+	{
+		//次のフレームがアニメーションの最大フレームを上回っていないかチェック
+		if (anime_param.frame_index + 1 < static_cast<int>(anime_param.animation.sequence.size() - 1))
+		{
+			//次のフレームのアニメーションのキーフレーム
+			const animation::keyframe next_animation_keyframe = anime_param.animation.sequence.at(anime_param.frame_index + 1);
+
+			const animation::keyframe::node& current_bone_node{ (&anime_param.animation_keyframe)->nodes.at(bone.node_index) };
+			const animation::keyframe::node& next_bone_node{ (&next_animation_keyframe)->nodes.at(bone.node_index) };
+			DirectX::XMFLOAT4X4 current_bone_transform;
+			DirectX::XMFLOAT4X4 next_bone_transform;
+			XMStoreFloat4x4(&current_bone_transform, XMLoadFloat4x4(&current_bone_node.global_transform));
+			XMStoreFloat4x4(&next_bone_transform, XMLoadFloat4x4(&next_bone_node.global_transform));
+
+			DirectX::XMFLOAT3 current_bone_pos = { current_bone_transform._41,current_bone_transform._42,current_bone_transform._43 };
+			DirectX::XMFLOAT3 next_bone_pos = { next_bone_transform._41,next_bone_transform._42,next_bone_transform._43 };
+			DirectX::XMFLOAT2 current_bone_pos2 = { current_bone_pos.x,current_bone_pos.z };
+			DirectX::XMFLOAT2 next_bone_pos2 = { next_bone_pos.x,next_bone_pos.z };
+			//XZのみ
+			defference_length = Math::calc_vector_AtoB_length(current_bone_pos2, next_bone_pos2);
+
+			return defference_length;
+		}
+	}
+	return 0.0f;
+}
+
 void SkeletalMesh::fech_by_bone(const DirectX::XMFLOAT4X4& world, const skeleton::bone& bone, DirectX::XMFLOAT3& pos, DirectX::XMFLOAT4X4* mat)
 {
 	if (&anime_param.animation_keyframe && (&anime_param.animation_keyframe)->nodes.size() > 0)
@@ -225,10 +257,6 @@ void SkeletalMesh::fech_bone_world_matrix(const DirectX::XMFLOAT4X4& world, cons
 		XMStoreFloat4x4(&w, XMLoadFloat4x4(&bone_node.global_transform) * XMLoadFloat4x4(&world));
 
 		DirectX::XMFLOAT3 scale = { Math::Length({w._11,w._12,w._13}),  Math::Length({w._21,w._22,w._23}),  Math::Length({w._31,w._32,w._33}) };
-
-		//DirectX::XMMATRIX S{ DirectX::XMMatrixScaling(scale.x, scale.y, scale.z) };
-		//DirectX::XMMATRIX T{ DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z) };
-		//DirectX::XMMATRIX R = DirectX::XMLoadFloat4x4(&w) * DirectX::XMMatrixInverse(nullptr, S) * DirectX::XMMatrixInverse(nullptr, T);
 
 		*mat = w;
 
