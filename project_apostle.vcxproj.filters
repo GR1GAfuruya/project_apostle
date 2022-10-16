@@ -178,18 +178,24 @@
     <Filter Include="Shaders\Effect\MeshEffect">
       <UniqueIdentifier>{8201bb88-2414-4092-ac07-56ede52a3eff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\ResourceManager">
+      <UniqueIdentifier>{b0a6bb58-bc19-4ea9-9850-89c90f76ff10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\User">
+      <UniqueIdentifier>{1ed87064-32fe-41ee-bdc9-5b3f8052df80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Constant">
+      <UniqueIdentifier>{a729157c-d24e-4801-b6c4-1e014bedce09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\Fire">
+      <UniqueIdentifier>{e7f35317-9613-4665-850e-afaba283788b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Constant">
+      <UniqueIdentifier>{c8e470e0-5069-4529-bb5a-5c544d331c52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="sources\texture.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\framebuffer.cpp">
-      <Filter>sources\Framework</Filter>
-    </ClCompile>
     <ClCompile Include="sources\framework.cpp">
-      <Filter>sources\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\fullscreen_quad.cpp">
       <Filter>sources\Framework</Filter>
     </ClCompile>
     <ClCompile Include="sources\geometric_primitive.cpp">
@@ -243,9 +249,6 @@
     <ClCompile Include="sources\collision.cpp">
       <Filter>sources\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="sources\move_behavior.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="sources\trail.cpp">
       <Filter>sources\Effects</Filter>
     </ClCompile>
@@ -254,9 +257,6 @@
     </ClCompile>
     <ClCompile Include="sources\lambert_shader.cpp">
       <Filter>sources\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\resource_manager.cpp">
-      <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\model_resource.cpp">
       <Filter>sources\Models</Filter>
@@ -411,17 +411,23 @@
     <ClCompile Include="sources\skill_manager.cpp">
       <Filter>sources\Skill\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="sources\fullscreen_quad.cpp">
+      <Filter>sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\framebuffer.cpp">
+      <Filter>sources\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\texture.cpp">
+      <Filter>sources\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\resource_manager.cpp">
+      <Filter>sources\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\move_behavior.cpp">
+      <Filter>sources\Charactor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sources\constant.h">
-      <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\texture.h">
-      <Filter>sources</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\framebuffer.h">
-      <Filter>sources\Framework</Filter>
-    </ClInclude>
     <ClInclude Include="sources\fullscreen_quad.h">
       <Filter>sources\Framework</Filter>
     </ClInclude>
@@ -476,9 +482,6 @@
     <ClInclude Include="sources\device.h">
       <Filter>sources\Device</Filter>
     </ClInclude>
-    <ClInclude Include="sources\imgui_include.h">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="sources\charactor.h">
       <Filter>sources\Charactor</Filter>
     </ClInclude>
@@ -488,29 +491,17 @@
     <ClInclude Include="sources\graphics.h">
       <Filter>sources\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="sources\user.h">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="sources\collision.h">
       <Filter>sources\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="sources\move_behavior.h">
-      <Filter>sources</Filter>
-    </ClInclude>
     <ClInclude Include="sources\trail.h">
       <Filter>sources\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\Operators.h">
-      <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="sources\shader.h">
       <Filter>sources\Shader</Filter>
     </ClInclude>
     <ClInclude Include="sources\lambert_shader.h">
       <Filter>sources\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\resource_manager.h">
-      <Filter>sources</Filter>
     </ClInclude>
     <ClInclude Include="sources\model_resource.h">
       <Filter>sources\Models</Filter>
@@ -668,11 +659,32 @@
     <ClInclude Include="sources\skill_manager.h">
       <Filter>sources\Skill\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="sources\framebuffer.h">
+      <Filter>sources\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\texture.h">
+      <Filter>sources\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\resource_manager.h">
+      <Filter>sources\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\user.h">
+      <Filter>sources\User</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Operators.h">
+      <Filter>sources\User</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\move_behavior.h">
+      <Filter>sources\Charactor</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\constant.h">
+      <Filter>sources\Constant</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\imgui_include.h">
+      <Filter>sources\User</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="HLSL\effect_ps.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
       <Filter>Shaders\Sprite</Filter>
     </FxCompile>
@@ -778,9 +790,6 @@
     <FxCompile Include="HLSL\gpu_particles_vs.hlsl">
       <Filter>Shaders\Effect\Particle</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\fire_ps.hlsl">
-      <Filter>Shaders\Effect</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\color_filter_ps.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
@@ -862,9 +871,6 @@
     <FxCompile Include="HLSL\boss_attack1_update_cs.hlsl">
       <Filter>Shaders\Effect\BossEffect\Attack1</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\cell_fire_ps.hlsl">
-      <Filter>Shaders\Effect</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\boss_charge_attack_emit.hlsl">
       <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
     </FxCompile>
@@ -886,14 +892,17 @@
     <FxCompile Include="HLSL\wave_ps.hlsl">
       <Filter>Shaders\Effect</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\fire_ps.hlsl">
+      <Filter>Shaders\Effect\Fire</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\cell_fire_ps.hlsl">
+      <Filter>Shaders\Effect\Fire</Filter>
+    </FxCompile>
     <FxCompile Include="HLSL\fire_distortion.hlsl">
-      <Filter>Shaders\Effect</Filter>
+      <Filter>Shaders\Effect\Fire</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HLSL\constants.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="HLSL\sprite.hlsli">
       <Filter>Shaders\Sprite</Filter>
     </None>
@@ -905,9 +914,6 @@
     </None>
     <None Include="HLSL\sprite_dissolve.hlsli">
       <Filter>Shaders\Sprite</Filter>
-    </None>
-    <None Include="HLSL\shading_functions.hlsli">
-      <Filter>Shaders</Filter>
     </None>
     <None Include="HLSL\default_mesh.hlsli">
       <Filter>Shaders\Mesh\default</Filter>
@@ -923,9 +929,6 @@
     </None>
     <None Include="HLSL\grass.hlsli">
       <Filter>Shaders\Grass</Filter>
-    </None>
-    <None Include="HLSL\noise.hlsli">
-      <Filter>Shaders</Filter>
     </None>
     <None Include="HLSL\mesh_effect.hlsli">
       <Filter>Shaders\Effect\MeshEffect</Filter>
@@ -946,12 +949,21 @@
       <Filter>Shaders\debug</Filter>
     </None>
     <None Include="HLSL\math.hlsli">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Effect</Filter>
+    </None>
+    <None Include="HLSL\noise.hlsli">
+      <Filter>Shaders\Effect</Filter>
+    </None>
+    <None Include="HLSL\shading_functions.hlsli">
+      <Filter>Shaders\Mesh</Filter>
+    </None>
+    <None Include="HLSL\constants.hlsli">
+      <Filter>Shaders\Constant</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="memo.txt">
-      <Filter>sources</Filter>
+      <Filter>sources\User</Filter>
     </Text>
   </ItemGroup>
 </Project>

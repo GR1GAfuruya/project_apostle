@@ -16,7 +16,7 @@
 void Player::initialize()
 {
 	//パラメーター初期化
-	position = { 46.0f, 10.0f,250.0f };
+	position = { 0.0f, 10.0f,0.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	move_speed = 30.0f;
 	turn_speed = DirectX::XMConvertToRadians(720);
@@ -118,8 +118,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	input_chant_attack_skill(graphics);
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
-	DirectX::XMFLOAT3 rootpos = model->root_defference_pos_next_frame(transform, root);
-	ImGui::DragFloat3("root_pos", &rootpos.x);
+	
 }
 //==============================================================
 // 
