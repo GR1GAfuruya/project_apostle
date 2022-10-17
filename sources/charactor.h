@@ -113,6 +113,7 @@ protected:
 	float move_vec_x = 0.0f;
 	float move_vec_z = 0.0f;
 
+	float vs_wall_ray_power = 5.0f;
 	//ç‚ÇÃñ@ê¸
 	DirectX::XMFLOAT3 slope_normal = {};
 

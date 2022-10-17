@@ -5,7 +5,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
 }
 
-void SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
+bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 {
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
@@ -14,7 +14,9 @@ void SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
 		chantable = false;
+		return true;
 	}
+	return false;
 }
 
 void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)

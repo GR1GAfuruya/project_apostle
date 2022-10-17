@@ -110,7 +110,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		emit_pos.z = core_pos.z + (radius * cosf(DirectX::XMConvertToRadians(theta)));
 		particle.get()->set_emitter_pos(emit_pos);
 		particle.get()->set_emitter_rate(16);
-		particle.get()->set_emitter_life_time(7);
+		particle.get()->set_emitter_life_time(4);
 		particle.get()->set_particle_life_time(life_time);
 		particle.get()->set_particle_size(DirectX::XMFLOAT2(0.2f,0.2f));
 		particle.get()->particle_constants->data.particle_color = FIRE_COLOR;

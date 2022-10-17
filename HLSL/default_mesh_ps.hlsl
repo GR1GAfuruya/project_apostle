@@ -10,7 +10,7 @@ Texture2D texture_maps[4] : register(t0);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {
-   //UNIT29 ‹¾–Ê”½ŽË
+   // ‹¾–Ê”½ŽË
     float4 color = texture_maps[0].Sample(sampler_states[ANISOTROPIC], pin.texcoord);
 
     float alpha = color.a;

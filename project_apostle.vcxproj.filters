@@ -58,9 +58,6 @@
     <Filter Include="Shaders\Mesh\default">
       <UniqueIdentifier>{b60291f5-8785-40ce-803c-3341c1848861}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Grass">
-      <UniqueIdentifier>{e9256ecf-2b1c-421c-b6b8-443531fd41b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Collision">
       <UniqueIdentifier>{20e10243-8636-40a5-b4c3-0315cefe7ac4}</UniqueIdentifier>
     </Filter>
@@ -757,21 +754,6 @@
     <FxCompile Include="HLSL\default_ps.hlsl">
       <Filter>Shaders\Mesh</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\grass_ds.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_gs.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_hs.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_ps.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_vs.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\aura_ps.hlsl">
       <Filter>Shaders\Effect\MeshEffect</Filter>
     </FxCompile>
@@ -926,9 +908,6 @@
     </None>
     <None Include="HLSL\ramp_shader.hlsli">
       <Filter>Shaders\Mesh\ramp</Filter>
-    </None>
-    <None Include="HLSL\grass.hlsli">
-      <Filter>Shaders\Grass</Filter>
     </None>
     <None Include="HLSL\mesh_effect.hlsli">
       <Filter>Shaders\Effect\MeshEffect</Filter>

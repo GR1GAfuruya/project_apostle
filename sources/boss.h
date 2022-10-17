@@ -72,13 +72,6 @@ private:
 	};
 
 
-	struct AttackParam
-	{
-		Capsule collision;
-		bool is_attack;//UŒ‚’†‚©‚Ç‚¤‚©
-		int power;//UŒ‚—Í
-		float invinsible_time;//UŒ‚‘ÎÛ‚É‰Û‚·–³“GŠÔ
-	};
 public:
 	//==============================================================
 	// 
@@ -273,6 +266,7 @@ public:
 	// 
 	//==============================================================
 	float WALK_SPEED = 15;
+	float NORMAL_ATTACK_LENGTH = 17;
 public:
 
 	AddDamageFunc damaged_function;

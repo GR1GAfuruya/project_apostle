@@ -221,44 +221,48 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 //PhycicalUp発動
 // 
 //==============================================================
-void SkillManager::chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+bool SkillManager::chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
+	return physical_up->chant(graphics, launch_pos, add_run_speed, add_jump_speed);
 }
 //==============================================================
 // 
 //Regenerate発動
 // 
 //==============================================================
-void SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health)
+bool SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health)
 {
+	return regenerate->chant(graphics, launch_pos, health);
 }
 //==============================================================
 // 
 //Restraint発動
 // 
 //==============================================================
-void SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed)
+bool SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed)
 {
-	restraint->chant(graphics, target_pos, target_pos);
+	return restraint->chant(graphics, target_pos, target_pos);
 }
 //==============================================================
 // 
 //MagickBullet発動
 // 
 //==============================================================
-void SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir)
+bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir)
 {
-	magick_bullet->chant(graphics, launch_pos, dir);
+	return magick_bullet->chant(graphics, launch_pos, dir);
 }
 //==============================================================
 // 
 //SpearSea発動
 // 
 //==============================================================
-void SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
+bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 {
-	spear_sea->chant(graphics, launch_pos);
+	return spear_sea->chant(graphics, launch_pos);
 }
+
+
 //==============================================================
 // 
 //魔法弾と敵の当たり判定
@@ -334,27 +338,31 @@ void SkillManager::debug_gui(Graphics& graphics)
 				std::string type_name;
 				type_name = magic_enum::enum_name<SupportSkillType>(selected_sup_skill_type);
 				ImGui::Text(type_name.c_str());
+				ImGui::Separator();
+
 			}
 			//スキル選択
 			const char* support_slot_item[] = { "physical_up_skill","regeneration_skill","restraint_skill" };
 			static int item_current = 0;
+			ImGui::Separator();
 			ImGui::Combo("support_slots", &item_current, support_slot_item, IM_ARRAYSIZE(support_slot_item));
 			
-
 			
 			//発動
-			if (ImGui::Button("support_skill_chant"))
+			if (ImGui::Button("set_support_skill"))
 			{
 				//セット
 				set_support_skill(item_current);
-				//chant_support_skill(graphics);
 			}
+			ImGui::Separator();
 		}
 		//現在のスキル表示
 		{
 			std::string type_name;
 			type_name = magic_enum::enum_name<AttackSkillType>(selected_atk_skill_type);
 			ImGui::Text(type_name.c_str());
+			ImGui::Separator();
+
 		}
 
 
@@ -362,16 +370,17 @@ void SkillManager::debug_gui(Graphics& graphics)
 			//スキル選択
 			const char* attack_slot_item[] = { "magic_bullet_skill","spears_sea_skill" };
 			static int item_current2 = 0;
+			ImGui::Separator();
 			ImGui::Combo("attack_slots", &item_current2, attack_slot_item, IM_ARRAYSIZE(attack_slot_item));
 
 			
 			
 			//発動
-			if (ImGui::Button("attack_skill_chant"))
+			if (ImGui::Button("set_attack_skill"))
 			{
 				set_attack_skill(item_current2);
-				//chant_attack_skill(graphics);
 			}
+				ImGui::Separator();
 		}
 		ImGui::End();
 	}

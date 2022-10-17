@@ -81,15 +81,6 @@ private:
 
 	};
 
-
-
-	struct AttackParam
-	{
-		Capsule collision;
-		bool is_attack;//攻撃中かどうか
-		int power;//攻撃力
-		float invinsible_time;//攻撃対象に課す無敵時間
-	};
 	//--------------------------------------------------------------
 	//  定数
 	//--------------------------------------------------------------
@@ -195,10 +186,12 @@ private:
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
 	float move_speed = 30.0f;
+	float skill_add_move_speed = 0.0f;
 	float turn_speed = DirectX::XMConvertToRadians(720);
 
 	//ジャンプスピード
 	float jump_speed = 35.0f;
+	float skill_add_jump_speed = 0;
 	//現何回ジャンプしてるか
 	int jump_count = 0;
 	//ジャンプ可能回数
@@ -216,7 +209,7 @@ private:
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;
 	std::unique_ptr<Sword> sword;
-	skeleton::bone sword_hand;
+	skeleton::bone left_hand;
 	skeleton::bone right_hand;
 	DirectX::XMFLOAT3 root_defference_velosity;
 	//当たり判定用変数

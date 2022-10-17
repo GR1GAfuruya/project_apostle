@@ -346,7 +346,7 @@ void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& pos
 
 		// レイの開始位置と終点位置
 		DirectX::XMFLOAT3 start = { position.x - mx / 50.0f, position.y + stepOffset * 2, position.z - mz / 50.0f };
-		DirectX::XMFLOAT3 end = { position.x + mx* 5.0f, start.y, position.z + mz * 5.0f};
+		DirectX::XMFLOAT3 end = { position.x + mx* vs_wall_ray_power, start.y, position.z + mz * vs_wall_ray_power };
 		HitResult hit;
 		if (StageManager::Instance().ray_cast(start, end, hit))//何か壁があれば
 		{
@@ -372,9 +372,9 @@ void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& pos
 			if (!StageManager::Instance().ray_cast(start, correct, hit2))//何か壁があれば
 			{
 				position.x = correct.x;
-				//velocity.x = 0;
+				velocity.x = 0;
 				position.z = correct.z;
-				//velocity.z = 0;
+				velocity.z = 0;
 			}
 			else
 			{

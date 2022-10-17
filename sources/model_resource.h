@@ -7,7 +7,7 @@
 #include <fbxsdk.h>
 #include <unordered_map>
 
-//UNIT30 
+
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/vector.hpp>
@@ -17,7 +17,7 @@
 #include "constant.h"
 
 
-//UNIT30 シリアライズ
+//シリアライズ
 namespace DirectX
 {
 	template<class T>
@@ -227,7 +227,7 @@ public:
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT4 tangent;
 		DirectX::XMFLOAT2 texcoord;
-		//UNIT22
+		//ボーンウェイト
 		float bone_weights[MAX_BONE_INFLUENCES]{ 1, 0, 0, 0 };
 		uint32_t bone_indices[MAX_BONE_INFLUENCES]{};
 

@@ -55,16 +55,16 @@ public:
 	AttackSkillType get_selected_atk_skill_type() { return selected_atk_skill_type; }
 
 	//スキル詠唱
-	void chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed);
+	bool chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed);
 
-	void chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health);
+	bool chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health);
 
-	void chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed);
+	bool chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed);
 
 	//攻撃スキル詠唱
-	void chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir);
+	bool chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir);
 	
-	void chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
+	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
 
 	//スキル当たり判定
 	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);

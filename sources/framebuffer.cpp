@@ -38,7 +38,7 @@ FrameBuffer::FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, 
 		shader_resource_view_desc.Format = texture2d_desc.Format;
 		shader_resource_view_desc.ViewDimension =  D3D11_SRV_DIMENSION_TEXTURE2D; 
 		shader_resource_view_desc.Texture2D.MostDetailedMip = 0;
-		shader_resource_view_desc.Texture2D.MipLevels =  1; // UNIT.99
+		shader_resource_view_desc.Texture2D.MipLevels =  1;
 		hr = device->CreateShaderResourceView(texture_2d.Get(), &shader_resource_view_desc, shader_resource_views[0].GetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	}

@@ -134,7 +134,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,	deferred->get_dsv());
 	//スカイボックス
-	skybox->render(graphics);
+	//skybox->render(graphics);
 	//ボス（フォワード）
 	boss->render_f(graphics, elapsed_time);
 	//プレイヤー（フォワード）

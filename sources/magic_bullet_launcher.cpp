@@ -5,22 +5,23 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 {
 	skill_init_param.power = 5;
 	skill_init_param.invisible_time = 0.2f;
-	skill_init_param.acceleration = 2;
+	skill_init_param.acceleration = 50;
 	skill_init_param.collider_radius = 2;
 	cool_time = 0.5f;
 }
 
-void MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir)
+bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir)
 {
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)
 	{
 		unique_ptr<Skill> skill = make_unique<MagicBullet>(graphics, init_pos, dir, skill_init_param);
 		//ÉäÉXÉgÇ…í«â¡
-		cool_time = skill_init_param.cool_time;
 		skills.push_back(std::move(skill));
 		chantable = false;
+		return true;
 	}
+	return false;
 }
 
 void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)

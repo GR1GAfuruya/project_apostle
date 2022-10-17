@@ -54,7 +54,10 @@ Player::Player(Graphics& graphics, Camera* camera)
 	//攻撃時エフェクト
 	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Model/SlashMesh.fbx");
 	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	slash_efect->create_pixel_shader(graphics.get_device().Get(), "shaders/slash_ps.cso");
+	//slash_efect->create_pixel_shader(graphics.get_device().Get(), "shaders/slash_ps.cso");
+	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	slash_efect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 
@@ -64,7 +67,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
-	sword_hand = model->get_bone_by_name("pelvis");
+	left_hand = model->get_bone_by_name("pelvis");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
@@ -100,7 +103,6 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
-	;
 	//ソード更新
 	{
 		sword->update(graphics, elapsed_time);
@@ -114,8 +116,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	collider.end = { position.x,position.y + height, position.z };
 	collider.radius = 1.0f;
 	//skill系仮置き
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
 	
@@ -283,15 +284,22 @@ void Player::input_avoidance()
 //==============================================================
 void Player::input_chant_support_skill(Graphics& graphics)
 {
+	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
 		case SP_SKILLTYPE::PHYCICAL_UP:
-		//	skill_manager->chant_phycical_up(graphics, position, position);
+			if (skill_manager->chant_phycical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed))
+			{
+				transition_magic_buff_state();//状態遷移
+			}
 			break;
 			case SP_SKILLTYPE::REGENERATE:
-			transition_magic_buff_state();//状態遷移
+				//if (skill_manager->chant_regenerate(graphics, launch_pos, ))
+				//{
+				//	transition_magic_buff_state();//状態遷移
+				//};
 
 			break;
 			case SP_SKILLTYPE::RESTRAINNT:
@@ -310,17 +318,24 @@ void Player::input_chant_support_skill(Graphics& graphics)
 //==============================================================
 void Player::input_chant_attack_skill(Graphics& graphics)
 {
+	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
-			skill_manager->chant_magic_bullet(graphics, position, Math::get_posture_forward(orientation));
-			transition_attack_bullet_state();//状態遷移
+			model->fech_by_bone(transform, left_hand, launch_pos);
+			//スキルを発動できた場合遷移
+			if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+			{
+				transition_attack_bullet_state();//状態遷移
+			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-			skill_manager->chant_spear_sea(graphics, position);
+			if (skill_manager->chant_spear_sea(graphics, position))
+			{
 			transition_attack_ground_state();
+			}
 			break;
 		default:
 			break;
@@ -499,7 +514,44 @@ void Player::debug_gui(Graphics& graphics)
 		ImGui::Begin("Skill");
 		{
 			ImGui::Text("player_skill_system");
-			
+			if (ImGui::Button("sup_skill_chant"))
+			{
+				switch (skill_manager->get_selected_sup_skill_type())
+				{
+				case SP_SKILLTYPE::PHYCICAL_UP:
+					skill_manager->chant_phycical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed);
+					break;
+				case SP_SKILLTYPE::REGENERATE:
+					transition_magic_buff_state();//状態遷移
+
+					break;
+				case SP_SKILLTYPE::RESTRAINNT:
+					transition_attack_pull_slash_state();
+					break;
+				default:
+					break;
+				}
+			}
+			ImGui::SameLine();
+			DirectX::XMFLOAT3 launch_pos;
+			if (ImGui::Button("atk_skill_chant"))
+			{
+				switch (skill_manager->get_selected_atk_skill_type())
+				{
+				case ATK_SKILLTYPE::MAGICBULLET:
+					model->fech_by_bone(transform, left_hand, launch_pos);
+
+					skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation));
+					transition_attack_bullet_state();//状態遷移
+					break;
+				case ATK_SKILLTYPE::SPEARS_SEA:
+					skill_manager->chant_spear_sea(graphics, position);
+					transition_attack_ground_state();
+					break;
+				default:
+					break;
+				}
+			}
 			
 		}
 		ImGui::End();

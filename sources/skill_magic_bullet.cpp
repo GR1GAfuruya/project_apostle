@@ -14,6 +14,15 @@
 
 	 position = init_pos;
 	 velocity = acceleration * Math::Normalize(dir);
+	 //エフェクト
+	 main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/Shape_Sphere.fbx");
+	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
+	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	 main_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	 main_effect->set_scale(0.02f);
+	 main_effect->play(position);
+	 main_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 }
 
 void MagicBullet::initialize(Graphics& graphics)
@@ -30,6 +39,10 @@ void MagicBullet::update(Graphics& graphics, float elapsed_time)
 	position += velocity * elapsed_time;
 	attack_colider.start = position;
 
+	//エフェクト更新
+	main_effect->set_position(position);
+	main_effect->update(graphics, elapsed_time);
+	main_effect->set_is_loop(true);
 
 	//消滅処理
 	life_time -= elapsed_time;
@@ -39,7 +52,7 @@ void MagicBullet::update(Graphics& graphics, float elapsed_time)
 
 void MagicBullet::render(Graphics& graphics)
 {
-
+	main_effect->render(graphics);
 }
 
 void MagicBullet::debug_gui(string str_id)

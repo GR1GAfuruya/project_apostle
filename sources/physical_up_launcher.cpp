@@ -4,7 +4,7 @@ PhycicalUpLauncher::PhycicalUpLauncher(Graphics& graphics)
 {
 }
 
-void PhycicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+bool PhycicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)
@@ -13,7 +13,9 @@ void PhycicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 		//ÉäÉXÉgÇ…í«â¡
 		skills.push_back(std::move(skill));
 		chantable = false;
+		return true;
 	}
+	return false;
 }
 
 void PhycicalUpLauncher::debug_gui()

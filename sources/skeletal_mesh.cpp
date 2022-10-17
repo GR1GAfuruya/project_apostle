@@ -26,6 +26,7 @@ void SkeletalMesh::update_animation_transform(animation::keyframe& keyframe)
 		XMMATRIX R{ XMMatrixRotationQuaternion(XMLoadFloat4(&node.rotation)) };
 		XMMATRIX T{ XMMatrixTranslation(node.translation.x, node.translation.y, node.translation.z) };
 
+
 		int64_t parent_index{ model_resource.get()->get_scene_view().nodes.at(node_index).parent_index };
 		XMMATRIX P{ parent_index < 0 ? XMMatrixIdentity() :
 			XMLoadFloat4x4(&keyframe.nodes.at(parent_index).global_transform) };
