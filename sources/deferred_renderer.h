@@ -25,6 +25,7 @@ private:
 	std::unique_ptr<GBuffer> g_normal;
 	std::unique_ptr<GBuffer> g_position;
 	std::unique_ptr<GBuffer> g_metal_smooth;
+	std::unique_ptr<GBuffer> g_emissive;
 	std::unique_ptr<FullscreenQuad> deferred_screen;
 	
 

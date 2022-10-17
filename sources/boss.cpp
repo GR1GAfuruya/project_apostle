@@ -9,7 +9,7 @@
 void Boss::initialize()
 {
 	transition_idle_state();
-	position = { 0.0f, 10.0f,-450 };
+	position = { -24.0f, 0.0f,7.0f };
 	scale.x = scale.y = scale.z = 0.08f;
 	health = 1000;
 	velocity = { 0.0f, 0.0f, 0.0f };

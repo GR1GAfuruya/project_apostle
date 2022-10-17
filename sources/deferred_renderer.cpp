@@ -14,6 +14,7 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	g_normal = std::make_unique<GBuffer>();
 	g_position = std::make_unique<GBuffer>();
 	g_metal_smooth = std::make_unique<GBuffer>();
+	g_emissive = std::make_unique<GBuffer>();
 	l_light = std::make_unique<GBuffer>();
 	l_composite = std::make_unique<GBuffer>();
 
@@ -23,6 +24,7 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	g_normal->create(graphics.get_device().Get(), DXGI_FORMAT_R8G8B8A8_UNORM);
 	g_position->create(graphics.get_device().Get(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 	g_metal_smooth->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
+	g_emissive->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_light->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_composite->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 
@@ -57,7 +59,7 @@ void DeferredRenderer::active(Graphics& graphics)
 		g_normal->get_rtv(),   //Target2
 		g_position->get_rtv(),   //Target3
 		g_metal_smooth->get_rtv(),  //Target4
-		l_light->get_rtv(),   //Target5
+		g_emissive->get_rtv(),  //Target5
 
 	};
 	// レンダーターゲットビュー設定
@@ -73,7 +75,7 @@ void DeferredRenderer::active(Graphics& graphics)
 	float clear_pos_normal_light[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	graphics.get_dc()->ClearRenderTargetView(g_normal->get_rtv(), clear_pos_normal_light);
 	graphics.get_dc()->ClearRenderTargetView(g_position->get_rtv(), clear_pos_normal_light);
-	graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clear_pos_normal_light);
+	graphics.get_dc()->ClearRenderTargetView(g_emissive->get_rtv(), clear_pos_normal_light);
 
 	float cleardepth[4] = { 5000, 1.0f, 1.0f, 1.0f };
 	graphics.get_dc()->ClearRenderTargetView(g_depth->get_rtv(), cleardepth);
@@ -117,15 +119,16 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 		1, &rtv, depth_stencil_view.Get());
 	//レンダーターゲットビューのクリア
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clearColor);
+	graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clearColor);
 
 	//G-Buffer：カラー、ノーマル、ポジション、メタリック・スムース、ライト
-	ID3D11ShaderResourceView* g_buffers[5]
+	ID3D11ShaderResourceView* g_buffers[]
 	{
 		g_color->get_srv(),
 		g_normal->get_srv(),
 		g_position->get_srv(),
 		g_metal_smooth->get_srv(),
+		g_emissive->get_srv(),
 		l_light->get_srv(),
 	};
 	//ブレンドステートを加算に
@@ -160,12 +163,9 @@ void DeferredRenderer::render(Graphics& graphics)
 	ID3D11ShaderResourceView* g_buffers[]
 	{
 		l_composite->get_srv(),
-		g_depth->get_srv(),
-		g_normal->get_srv(),
-		g_position->get_srv(),
-		l_light->get_srv(),
 	};
-	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, 5, final_sprite_ps.Get());
+	UINT G_BUFFERS_NUM = ARRAYSIZE(g_buffers);
+	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, final_sprite_ps.Get());
 
 #if USE_IMGUI
 	if (ImGui::CollapsingHeader("srv", ImGuiTreeNodeFlags_DefaultOpen))

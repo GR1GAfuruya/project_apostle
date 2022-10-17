@@ -6,7 +6,7 @@ Texture2D albedo_map : register(t0);
 Texture2D normal_map : register(t1);
 Texture2D position_map : register(t2);
 Texture2D metal_smooth_map : register(t3);
-Texture2D emissive_map : register(t4);
+Texture2D light_map : register(t5);
 
 #define POINT 0
 #define LINEAR 1
@@ -16,12 +16,8 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
     float4 tex = albedo_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
     float4 color = tex;
-    float4 light = emissive_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
-#if 0
-    //バグってるので1次的に
-    return tex * light;
-#else  
-  //  light = 0;
+    float4 light = light_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
+
     //メタリック
     float metallic = metal_smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
  
@@ -47,9 +43,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     fresnel = pow(fresnel, 6.0);
     color.rgb = lerp(color.rgb,
 				light.rgb, fresnel);
-    //color.rgb = lerp(color.rgb,
-				//tex.rgb, NoLight);
     return color;
-#endif
 
 }

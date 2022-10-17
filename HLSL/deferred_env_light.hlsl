@@ -14,10 +14,10 @@ Texture2D env_map : register(t15);
 SamplerState sampler_states[3] : register(s0);
 float4 main(VS_OUT pin) : SV_TARGET
 {
-    float4 tex = normal_map.Sample(sampler_states[LINEAR], pin.texcoord);
+    float4 normal = normal_map.Sample(sampler_states[LINEAR], pin.texcoord);
     float3 emissive = emissive_map.Sample(sampler_states[LINEAR], pin.texcoord).rgb;
 	//上向き具合＝法線のY
-    float3 N = normalize(tex.xyz * 2.0 - 1.0);
+    float3 N = normalize(normal.xyz * 2.0 - 1.0);
 
 	//視線の反射
     float4 P = position_map.Sample(sampler_states[LINEAR], pin.texcoord);
@@ -61,6 +61,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     level *= 11;
 	//ミップマップを利用してぼかし
     float3 light = env_map.SampleLevel(sampler_states[LINEAR], uv, level);
-	
+    //エミッシブマップ適用
+    light += emissive;
     return float4(light.rgb, 1.0);
 }

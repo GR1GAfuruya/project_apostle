@@ -16,7 +16,7 @@
 void Player::initialize()
 {
 	//パラメーター初期化
-	position = { 0.0f, 10.0f,0.0f };
+	position = { 0.0f, 10.0f,-20.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	move_speed = 30.0f;
 	turn_speed = DirectX::XMConvertToRadians(720);
