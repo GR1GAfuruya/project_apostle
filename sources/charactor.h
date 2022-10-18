@@ -9,8 +9,11 @@
 //キャラクター
 class Charactor :public MoveBehavior, public GenericFrequentEntities
 {
+	
 public:
+	//コンストラクタ
 	Charactor() {}
+	//デストラクタ
 	virtual ~Charactor() {}
 
 	//==============================================================
@@ -50,7 +53,7 @@ public:
 	//衝撃を与える
 	void add_impulse(const DirectX::XMFLOAT3& impulse);
 	//ダメージを与える
-	bool apply_damage(int damage, float invincibleTime);
+	bool apply_damage(int damage, float invincibleTime, WINCE_TYPE type);
 
 protected:
 	//==============================================================
@@ -69,7 +72,7 @@ protected:
 	virtual void on_landing() {}
 	//死亡したときに呼ばれる
 	virtual void on_dead() {}
-	virtual void on_damaged() {}
+	virtual void on_damaged(WINCE_TYPE type) {}
 	void update_invicible_timer(float elapsed_time);
 
 

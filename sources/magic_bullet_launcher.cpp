@@ -5,9 +5,9 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 {
 	skill_init_param.power = 5;
 	skill_init_param.invisible_time = 0.2f;
-	skill_init_param.acceleration = 50;
-	skill_init_param.collider_radius = 2;
-	cool_time = 0.5f;
+	skill_init_param.acceleration = 50.0f;
+	skill_init_param.collider_radius = 2.0f;
+	skill_init_param.cool_time = 0.5f;
 }
 
 bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir)
@@ -33,7 +33,7 @@ void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddD
 		{
 			s->skill_hit();
 			s->set_is_skill_hit(true);
-			damaged_func(s->get_power(), s->get_invinsible_time());
+			damaged_func(s->get_power(), s->get_invinsible_time(),WINCE_TYPE::SMALL);
 		}
 	}
 }
@@ -45,6 +45,7 @@ void MagicBulletLauncher::debug_gui()
 	ImGui::Begin("Skill");
 	if (ImGui::CollapsingHeader("MagicBulletLauncher", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::PushID("MagicBulletLauncher");
 		ImGui::DragFloat("cool_time", &cool_time);
 		ImGui::DragFloat("init_cool_time", &skill_init_param.cool_time);
 		ImGui::DragFloat("power", &skill_init_param.power);
@@ -52,6 +53,7 @@ void MagicBulletLauncher::debug_gui()
 		ImGui::DragFloat("acceleration", &skill_init_param.acceleration);
 		ImGui::DragFloat("collider_radius", &skill_init_param.collider_radius);
 		int count = 0;
+		ImGui::PopID();
 		for (auto& s : skills)
 		{
 			s->debug_gui(to_string(count).c_str());

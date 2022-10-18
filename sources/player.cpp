@@ -32,7 +32,7 @@ void Player::initialize()
 	acceleration = 15.0f;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible, type); };
 	state = State::IDLE;
 	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	sword->initialize();
@@ -375,7 +375,7 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
 		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
-			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
+			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE);
 		}
 	}
 }
@@ -410,9 +410,21 @@ void Player::on_dead()
 //ダメージを受けた際の処理
 // 
 //==============================================================
-void Player::on_damaged()
+void Player::on_damaged(WINCE_TYPE type)
 {
-	transition_damage_front_state();	
+	switch (type)
+	{
+	case WINCE_TYPE::NONE:
+		break;
+	case WINCE_TYPE::SMALL:
+		transition_damage_front_state();
+		break;
+	case WINCE_TYPE::BIG:
+		break;
+	default:
+		break;
+	}
+	
 }
 
 //==============================================================

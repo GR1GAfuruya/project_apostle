@@ -164,7 +164,7 @@ private:
 	//死亡したときの処理
 	void on_dead() override;
 	//ダメージを受けた時の処理
-	void on_damaged() override;
+	void on_damaged(WINCE_TYPE type) override;
 	//ルートモーション
 	void root_motion(DirectX::XMFLOAT3 dir, float speed);
 	void root_motion_manual(DirectX::XMFLOAT3 dir, float speed);

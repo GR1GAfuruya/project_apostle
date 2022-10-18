@@ -24,8 +24,10 @@ void PhycicalUpLauncher::debug_gui()
 	ImGui::Begin("Skill");
 	if (ImGui::CollapsingHeader("PhycicalUpLauncher", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::PushID("PhycicalUpLauncher");
 		ImGui::DragFloat("cool_time", &cool_time);
 		int count = 0;
+		ImGui::PopID();
 		for (auto& s : skills)
 		{
 			s->debug_gui(to_string(count).c_str());

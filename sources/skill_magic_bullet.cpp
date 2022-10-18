@@ -41,6 +41,7 @@ void MagicBullet::update(Graphics& graphics, float elapsed_time)
 
 	//エフェクト更新
 	main_effect->set_position(position);
+	main_effect->set_life_span(1);
 	main_effect->update(graphics, elapsed_time);
 	main_effect->set_is_loop(true);
 

@@ -27,7 +27,7 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 			object_colider.start, object_colider.end, object_colider.radius))
 		{
 			s->skill_hit();
-			damaged_func(s->get_power(), s->get_invinsible_time());
+			damaged_func(s->get_power(), s->get_invinsible_time(),WINCE_TYPE::SMALL);
 		}
 	}
 }

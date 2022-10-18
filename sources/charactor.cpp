@@ -13,7 +13,7 @@ void Charactor::add_impulse(const DirectX::XMFLOAT3& impulse)
 
 }
 
-bool Charactor::apply_damage(int damage, float invinsibleTime)
+bool Charactor::apply_damage(int damage, float invinsibleTime, WINCE_TYPE type)
 {
 	//ダメージが0の場合は健康状態を変更する必要がない
 	if (damage == 0)return false;
@@ -36,7 +36,7 @@ bool Charactor::apply_damage(int damage, float invinsibleTime)
 	}
 	else//ダメージ通知
 	{
-		on_damaged();
+		on_damaged(type);
 	}
 
 	//健康状態が変更した場合はtrueを返す

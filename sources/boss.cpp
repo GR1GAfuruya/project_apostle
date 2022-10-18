@@ -15,7 +15,7 @@ void Boss::initialize()
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
 	acceleration = 10.0f;
-	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible,type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_attack_param.collision.radius = 8.0f;
 	vs_wall_ray_power = 10.0f;
@@ -95,7 +95,7 @@ void Boss::on_dead()
 //É_ÉÅÅ[ÉWÇéÛÇØÇΩç€ÇÃèàóù
 // 
 //==============================================================
-void Boss::on_damaged()
+void Boss::on_damaged(WINCE_TYPE type)
 {
 	if (state != State::DAMAGE)
 	{
@@ -158,7 +158,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 		{
 			sickle_attack_param.power = 5;
 			sickle_attack_param.invinsible_time = 0.55f;
-			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time);
+			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time,WINCE_TYPE::NONE);
 		}
 	}
 }

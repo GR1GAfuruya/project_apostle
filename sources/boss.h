@@ -231,7 +231,7 @@ public:
 
 	//Å[Å|Å|Å|
 	void on_dead() override;
-	void on_damaged() override;
+	void on_damaged(WINCE_TYPE type) override;
 
 	//==============================================================
 	// 
