@@ -101,6 +101,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//***************************************************************//
 	///						シャドウをかけるモデルを描画			///
 	//***************************************************************//
+#if CAST_SHADOW
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
 	graphics.shader_activate(SHADER_TYPE::SHADOW, RENDER_TYPE::Deferred);
 	deferred->shadow_active(graphics, *light_manager);
@@ -114,6 +115,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	boss->render_d(graphics, elapsed_time);
 
 	deferred->shadow_deactive(graphics);
+#endif
 	//***************************************************************//
 	///						ディファ―ドレンダリング				///
 	//***************************************************************//

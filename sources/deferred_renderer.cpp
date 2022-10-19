@@ -27,12 +27,13 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	g_emissive->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_light->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_composite->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
-
+#if CAST_SHADOW
 	//シャドウマップ初期化
 	int ShadowMapSize = 1024;
 	shadow_frame_buffer = std::make_unique<FrameBuffer>(graphics.get_device().Get(), ShadowMapSize, ShadowMapSize,
 		FB_FLAG::COLOR_DEPTH_STENCIL, DXGI_FORMAT_R16G16_FLOAT);
 	shadow_constants = std::make_unique<Constants<SHADOW_CONSTANTS>>(graphics.get_device().Get());
+#endif
 	//深度ステンシル
 	depth_stencil_create(graphics.get_device().Get(), DXGI_FORMAT_D24_UNORM_S8_UINT);
 	HRESULT hr;
@@ -145,7 +146,9 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, deferred_env_light.Get());
 
 	//平行光、点光源ライトを描き込む
+#if CAST_SHADOW
 	graphics.get_dc().Get()->PSSetShaderResources(16, 1, shadow_frame_buffer->get_color_map().GetAddressOf());
+#endif
 	light_manager.draw(graphics, g_buffers, G_BUFFERS_NUM);
 
 	//ライトの合成 ブレンドステートをアルファに
@@ -189,9 +192,10 @@ void DeferredRenderer::render(Graphics& graphics)
 		ImGui::Image(g_metal_smooth->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("light");
 		ImGui::Image(l_light->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+#if CAST_SHADOW
 		ImGui::Text("shadow");
 		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), {1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720)});
-
+#endif
 	}
 #endif // USE_IMGUI
 }
@@ -200,6 +204,7 @@ void DeferredRenderer::render(Graphics& graphics)
 // 影用の描画書き込み開始
 // 
 //==============================================================
+#if CAST_SHADOW
 void DeferredRenderer::shadow_active(Graphics& graphics, LightManager& light_manager)
 {
 	shadow_frame_buffer->clear(graphics.get_dc().Get());
@@ -230,7 +235,7 @@ void DeferredRenderer::shadow_deactive(Graphics& graphics)
 {
 	shadow_frame_buffer->deactivate(graphics.get_dc().Get());
 }
-
+#endif
 //==============================================================
 // 
 // 深度バッファ生成
