@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "lambert_shader.h"
 #include "PBR_shader.h"
+#include "shadow_map_shader.h"
 #include <d3dcompiler.h>
 #include <d3dcommon.h>
 //==============================================================
@@ -149,6 +150,17 @@ void Graphics::initialize(HWND hwnd)
 	sampler_desc.BorderColor[3] = 0;
 	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::CLAMP)].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	//	シャドウマップ用
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler_desc.BorderColor[0] = 1000;
+	sampler_desc.BorderColor[1] = 1000;
+	sampler_desc.BorderColor[2] = 1000;
+	sampler_desc.BorderColor[3] = 1000;
+	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::SHADOW_MAP)].GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	//-----------------------------------------------//
 	//					深度テスト					//
 	//-----------------------------------------------//
@@ -264,18 +276,16 @@ void Graphics::initialize(HWND hwnd)
 	
 		// シェーダーの登録
 		{
-			std::shared_ptr<MeshShader> shader;//シェアードポインタで作成　エラー出る
-			//Shader* shader = nullptr; //生ポインタで作成　メモリリークでる
+			std::shared_ptr<MeshShader> shader;//シェアードポインタで作　エラー出る
 			// LAMBERT
-			
-			//shader = new LambertShader(device.Get());
 			shader = make_shared<LambertShader>(device.Get());
 			shaders.insert(std::make_pair(SHADER_TYPES::LAMBERT, shader));
-			//// PBR
-			//Shader* shader2 = new PBRShader(device.Get());
+			// PBR
 			shader.reset(new PBRShader(device.Get()));
 			shaders.insert(std::make_pair(SHADER_TYPES::PBR, shader));
-			
+			// シャドウマップ用
+			shader.reset(new ShadowMapShader(device.Get()));
+			shaders.insert(std::make_pair(SHADER_TYPES::SHADOW, shader));
 		}
 		
 	}

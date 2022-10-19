@@ -553,12 +553,16 @@ void Player::debug_gui(Graphics& graphics)
 				case ATK_SKILLTYPE::MAGICBULLET:
 					model->fech_by_bone(transform, left_hand, launch_pos);
 
-					skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation));
+					if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+					{
 					transition_attack_bullet_state();//状態遷移
+					}
 					break;
 				case ATK_SKILLTYPE::SPEARS_SEA:
-					skill_manager->chant_spear_sea(graphics, position);
-					transition_attack_ground_state();
+					if (skill_manager->chant_spear_sea(graphics, position))
+					{
+						transition_attack_ground_state();
+					}
 					break;
 				default:
 					break;

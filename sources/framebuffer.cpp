@@ -7,7 +7,7 @@ inline bool operator&(FB_FLAG lhs, FB_FLAG rhs)
 	return static_cast<uint8_t>(lhs) & static_cast<uint8_t>(rhs);
 }
 
-FrameBuffer::FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, FB_FLAG flags)
+FrameBuffer::FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, FB_FLAG flags, DXGI_FORMAT format)
 {
 	HRESULT hr{ S_OK };
 	if (flags & FB_FLAG::COLOR)
@@ -18,7 +18,7 @@ FrameBuffer::FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, 
 		texture2d_desc.Height = height;
 		texture2d_desc.MipLevels =  1;
 		texture2d_desc.ArraySize = 1;
-		texture2d_desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT; // DXGI_FORMAT_R8G8B8A8_UNORM
+		texture2d_desc.Format = format; // DXGI_FORMAT_R8G8B8A8_UNORM
 		texture2d_desc.SampleDesc.Count = 1; 
 		texture2d_desc.SampleDesc.Quality = 0; 
 		texture2d_desc.Usage = D3D11_USAGE_DEFAULT;

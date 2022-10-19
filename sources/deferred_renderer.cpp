@@ -28,6 +28,11 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	l_light->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_composite->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 
+	//シャドウマップ初期化
+	int ShadowMapSize = 1024;
+	shadow_frame_buffer = std::make_unique<FrameBuffer>(graphics.get_device().Get(), ShadowMapSize, ShadowMapSize,
+		FB_FLAG::COLOR_DEPTH_STENCIL, DXGI_FORMAT_R16G16_FLOAT);
+	shadow_constants = std::make_unique<Constants<SHADOW_CONSTANTS>>(graphics.get_device().Get());
 	//深度ステンシル
 	depth_stencil_create(graphics.get_device().Get(), DXGI_FORMAT_D24_UNORM_S8_UINT);
 	HRESULT hr;
@@ -138,7 +143,9 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 	//環境ライト
 	graphics.get_dc().Get()->PSSetShaderResources(15, 1, env_texture.GetAddressOf());
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, deferred_env_light.Get());
+
 	//平行光、点光源ライトを描き込む
+	graphics.get_dc().Get()->PSSetShaderResources(16, 1, shadow_frame_buffer->get_color_map().GetAddressOf());
 	light_manager.draw(graphics, g_buffers, G_BUFFERS_NUM);
 
 	//ライトの合成 ブレンドステートをアルファに
@@ -182,9 +189,46 @@ void DeferredRenderer::render(Graphics& graphics)
 		ImGui::Image(g_metal_smooth->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("light");
 		ImGui::Image(l_light->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+		ImGui::Text("shadow");
+		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), {1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720)});
 
 	}
 #endif // USE_IMGUI
+}
+//==============================================================
+// 
+// 影用の描画書き込み開始
+// 
+//==============================================================
+void DeferredRenderer::shadow_active(Graphics& graphics, LightManager& light_manager)
+{
+	shadow_frame_buffer->clear(graphics.get_dc().Get());
+	shadow_frame_buffer->activate(graphics.get_dc().Get());
+
+	// 平行光源からカメラ位置を作成し、そこから原点の位置を見るように視線行列を生成
+	DirectX::XMVECTOR TargetPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT3 shadow_dir_light_dir = light_manager.get_shadow_dir_light_dir();
+	DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&shadow_dir_light_dir);
+	LightPosition = DirectX::XMVectorScale(LightPosition, -50.0f);
+	LightPosition = DirectX::XMVectorAdd(LightPosition, TargetPosition);
+	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(LightPosition,
+		TargetPosition,
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(30, 30, 10, 100);
+	DirectX::XMMATRIX VP = V * P;
+	DirectX::XMFLOAT4X4	shadowVP;
+	DirectX::XMStoreFloat4x4(&shadow_constants->data.shadowVP, VP);
+	shadow_constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::PS_VS);
+
+}
+//==============================================================
+// 
+// 影用の描画書き込み終了
+// 
+//==============================================================
+void DeferredRenderer::shadow_deactive(Graphics& graphics)
+{
+	shadow_frame_buffer->deactivate(graphics.get_dc().Get());
 }
 
 //==============================================================

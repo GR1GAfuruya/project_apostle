@@ -15,7 +15,7 @@ public:
 	enum class RenderType
 	{
 		Forward,
-		Deferred
+		Deferred,
 	};
 
 	// •`‰æŠJn

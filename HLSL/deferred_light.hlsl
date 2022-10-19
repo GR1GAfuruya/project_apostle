@@ -44,8 +44,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     float i = -dot(N, L);
     i = saturate(i); // 0.0～1.0
     tex.rgb = C * i; // ライトカラー決定
-  //  tex.rgb += emissive_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);; // ライトカラー決定
-   /// return float4(0, 0, 0, 1.0);
     return tex;
 }
 

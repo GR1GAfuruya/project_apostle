@@ -27,7 +27,7 @@ public:
 	//------------<定数>-----------//
 	//
 	//サンプラーステート
-	enum class SAMPLER_STATE { POINT, LINEAR, ANISOTROPIC, LINEAR_BORDER_BLACK, LINEAR_BORDER_WHITE, CLAMP };
+	enum class SAMPLER_STATE { POINT, LINEAR, ANISOTROPIC, LINEAR_BORDER_BLACK, LINEAR_BORDER_WHITE, CLAMP,SHADOW_MAP, SAMPLER_COUNT};
 	//Zステンシルステート
 	enum class DEPTH_STENCIL_STATE { ZT_ON_ZW_ON, ZT_ON_ZW_OFF, ZT_OFF_ZW_ON, ZT_OFF_ZW_OFF , DEPTH_STENCIL_COUNT};
 	//ブレンドステート
@@ -53,7 +53,7 @@ public:
 		RASTERIZER_COUNT,
 	};
 	//シェーダータイプ
-	enum class SHADER_TYPES { LAMBERT, PBR };
+	enum class SHADER_TYPES { LAMBERT, PBR, SHADOW };
 
 	
 	//------------<コンストラクタ/デストラクタ>-----------//
@@ -88,7 +88,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;		//深度ステンシルビューインターフェイスは、深度ステンシルテスト中にテクスチャーリソースにアクセスする。
 
 
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_states[6];
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_states[static_cast<int>(SAMPLER_STATE::SAMPLER_COUNT)];
 
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depth_stencil_states[static_cast<int>(DEPTH_STENCIL_STATE::DEPTH_STENCIL_COUNT)];
 

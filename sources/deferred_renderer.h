@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include "g_buffer.h"
 #include "fullscreen_quad.h"
+#include "framebuffer.h"
 #include "light_manager.h"
 class DeferredRenderer
 {
@@ -13,6 +14,9 @@ public:
 	void active(Graphics& graphics);
 	void deactive(Graphics& graphics, LightManager& light_manager);
 	void render(Graphics& graphics);
+
+	void shadow_active(Graphics& graphics, LightManager& light_manager);
+	void shadow_deactive(Graphics& graphics);
 
 	void lighting(Graphics& graphics,LightManager& light_manager) const;
 
@@ -35,6 +39,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> final_sprite_ps;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> deferred_env_light;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> deferred_composite_light;
+
+	//シャドウマップ
+	struct SHADOW_CONSTANTS
+	{
+		DirectX::XMFLOAT4X4	shadowVP;
+	};
+	std::unique_ptr<Constants<SHADOW_CONSTANTS>> shadow_constants{};
+	std::unique_ptr<FrameBuffer> shadow_frame_buffer;
 	//深度ステンシルビュー
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depth_stencil_view;
 
