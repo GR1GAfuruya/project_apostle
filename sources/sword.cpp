@@ -33,12 +33,16 @@ void Sword::render(Graphics &graphics)
 {
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 #if USE_IMGUI
-	ImGui::Begin("sword");
-	ImGui::DragFloat3("scale", &scale.x, 0.01f);
-	ImGui::DragFloat3("position", &position.x, 0.01f);
-	ImGui::DragFloat4("ori", &orientation.x, 0.01f);
-	ImGui::DragFloat3("length", &length, 0.01f);
-	ImGui::DragFloat3("radius", &radius, 0.01f);
-	ImGui::End();
+	imgui_menu_bar("Charactor", "player", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin("sword");
+		ImGui::DragFloat3("scale", &scale.x, 0.01f);
+		ImGui::DragFloat3("position", &position.x, 0.01f);
+		ImGui::DragFloat4("ori", &orientation.x, 0.01f);
+		ImGui::DragFloat3("length", &length, 0.01f);
+		ImGui::DragFloat3("radius", &radius, 0.01f);
+		ImGui::End();
+	}
 #endif
 }

@@ -14,7 +14,7 @@ SkillManager::SkillManager(Graphics& graphics)
 	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/attack_skill_icon.png");
 
 	//身体能力アップスキル
-	physical_up = make_unique<PhycicalUpLauncher>(graphics);
+	physical_up = make_unique<PhysicalUpLauncher>(graphics);
 	
 	//リジェネスキル
 	regenerate = make_unique<RegenerateLauncher>(graphics);
@@ -202,10 +202,13 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 #if USE_IMGUI
 	static DirectX::XMFLOAT2 pos1 = { 1000.0f,600.0f };
 	static DirectX::XMFLOAT2 pos2 = { 1120.0f,600.0f };
-	ImGui::Begin("Skill");
-	ImGui::DragFloat2("pos1",&pos1.x);
-	ImGui::DragFloat2("pos2",&pos2.x);
-	ImGui::End();
+	if (display_imgui)
+	{
+		ImGui::Begin("Skill");
+		ImGui::DragFloat2("pos1", &pos1.x);
+		ImGui::DragFloat2("pos2", &pos2.x);
+		ImGui::End();
+	}
 #else
 	DirectX::XMFLOAT2 pos1 = { 1000.0f,600.0f };
 	DirectX::XMFLOAT2 pos2 = { 1120.0f,600.0f };
@@ -221,7 +224,7 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 //PhycicalUp発動
 // 
 //==============================================================
-bool SkillManager::chant_phycical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+bool SkillManager::chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	return physical_up->chant(graphics, launch_pos, add_run_speed, add_jump_speed);
 }
@@ -328,8 +331,10 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 void SkillManager::debug_gui(Graphics& graphics)
 {
 #if USE_IMGUI
-
+	imgui_menu_bar("Skill", "SkillManager", display_imgui);
+	if (display_imgui)
 	{
+
 		ImGui::Begin("Skill");
 
 		{

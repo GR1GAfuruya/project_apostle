@@ -197,7 +197,7 @@ private:
 	//ジャンプ可能回数
 	int jump_limit = 1;
 	float avoidance_speed = 50;
-	bool display_player_imgui = true;
+	bool display_player_imgui = false;
 	/*-------攻撃関連--------------------------*/
 	//攻撃時間
 	float attack_time;

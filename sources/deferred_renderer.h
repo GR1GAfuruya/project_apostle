@@ -57,4 +57,6 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> env_texture;
 
+	bool display_imgui = false;
+
 };

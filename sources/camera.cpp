@@ -110,11 +110,16 @@ void Camera::update(float elapsed_time, Stage* stage)
 			{
 				angle.y += ax * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 			}
+			//X軸のカメラ回転を制限
+			const float minAngleX = -70.0f;//下向き最小値
+			const float maxAngleX = 80.0f;//上向き最大値
+
+			angle.x = DirectX::XMConvertToRadians(Math::clamp(DirectX::XMConvertToDegrees(angle.x), minAngleX, maxAngleX));
 		}
 #ifdef USE_IMGUI
 		if (display_camera_imgui)
 		{
-			ImGui::Begin("Camera");
+			ImGui::Begin("main_camera");
 			ImGui::DragFloat2("near_far", &near_far.x, 0.1f, 0.1f, 2000.0f);
 			ImGui::End();
 		}
@@ -128,12 +133,13 @@ void Camera::update(float elapsed_time, Stage* stage)
 
 void Camera::update_with_tracking(float elapsed_time, Stage* stage)
 {
-	//X軸のカメラ回転を制限
-	//clamp(angle.x, minAngleX, maxAngleX);
+	
 
 	//Y軸の回転値を-3.14~3.14に収まるようにする
 	if (angle.y < -DirectX::XM_PI) { angle.y += DirectX::XM_2PI; }
 	if (angle.y > DirectX::XM_PI) { angle.y -= DirectX::XM_2PI; }
+	//９０度を上回らないようクランプ
+	//angle.x = (std::min)(angle.x, 90.0f);
 	//カメラ回転値を回転行列に変換
 	DirectX::XMMATRIX Transform = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
 	//回転行列の前方向ベクトルを取り出す
@@ -147,7 +153,7 @@ void Camera::update_with_tracking(float elapsed_time, Stage* stage)
 	DirectX::XMFLOAT3 end = ray_target - front * DirectX::XMFLOAT3(range, range, range);
 	HitResult hit;
 	StageManager::Instance().ray_cast(start, end, hit);
-
+	
 	hit.distance = (std::max)(hit.distance, 0.5f);
 	hit.distance = (std::min)(hit.distance, range);
 
@@ -165,7 +171,7 @@ void Camera::update_with_euler_angles(float elapsed_time, Stage* stage)
 {
 	using namespace DirectX;
 	// X軸のカメラ回転を制限
-	angle.x = std::clamp(angle.x, min_angle_x, max_angle_x);
+	//angle.x = std::clamp(angle.x, min_angle_x, max_angle_x);
 	// Y軸の回転値を-3.14~3.14に収まるようにする
 	if (angle.y < -DirectX::XM_PI) { angle.y += DirectX::XM_2PI; }
 	if (angle.y > DirectX::XM_PI) { angle.y -= DirectX::XM_2PI; }
@@ -268,9 +274,10 @@ void Camera::debug_gui()
 {
 
 #ifdef USE_IMGUI
+	imgui_menu_bar("Camera", "main_camera", display_camera_imgui);
 	if (display_camera_imgui)
 	{
-		ImGui::Begin("Camera");
+		ImGui::Begin("main_camera");
 		if (ImGui::Button("tracking")) p_update = &Camera::update_with_tracking;
 		if (ImGui::Button("euler_angles")) p_update = &Camera::update_with_euler_angles;
 		if (ImGui::Button("quaternion")) p_update = &Camera::update_with_quaternion;
@@ -286,10 +293,10 @@ void Camera::debug_gui()
 		ImGui::DragFloat4("LightDirection", &light_direction.x, 0.01f, -1, 1);
 		ImGui::DragFloat("time", &scene_constant_buffer->data.time, 0.01f, -1, 1);
 		ImGui::DragFloat("delta_time", &scene_constant_buffer->data.delta_time, 0.01f, -1, 1);
-		if (ImGui::CollapsingHeader("color_picker", ImGuiTreeNodeFlags_DefaultOpen))
+		/*if (ImGui::CollapsingHeader("color_picker", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::ColorPicker3("light_color", &light_color.x);
-		}
+		}*/
 
 		ImGui::End();
 	}
@@ -309,17 +316,6 @@ void Camera::calc_free_target()
 		if (mouse.get_button() & (mouse.BTN_W | mouse.BTN_UP)) { ay = 1; }	 //前移動
 		if (mouse.get_button() & (mouse.BTN_S | mouse.BTN_DOWN)) { ay = -1; }    //後ろ移動
 	}
-
-	//GamePad& game_pad = Device::instance().get_game_pad();
-
-	//float ax{};
-	//float ay{};
-	//{
-	//	if (game_pad.get_button() & (game_pad.BTN_A )) { ax = -1; }    //左移動
-	//	if (game_pad.get_button() & (game_pad.BTN_D)) { ax = 1; }	 //右移動
-	//	if (game_pad.get_button() & (game_pad.BTN_W)) { ay = 1; }	 //前移動
-	//	if (game_pad.get_button() & (game_pad.BTN_S )) { ay = -1; }    //後ろ移動
-	//}
 }
 
 

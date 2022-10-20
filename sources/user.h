@@ -1035,6 +1035,26 @@ inline void imgui_menu_bar(std::string menu_label, std::string menu_item_label, 
 #endif // USE_IMGUI
 }
 
+inline void imgui_menu_and_sub_bar(std::string menu_label, std::string menu_item_label, std::string sub_item_label, bool& selected)
+{
+#ifdef USE_IMGUI
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu(menu_label.c_str()))
+        {
+            if (ImGui::BeginMenu(menu_item_label.c_str()))
+            {
+                ImGui::MenuItem(sub_item_label.c_str(), NULL, &selected);
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+#endif // USE_IMGUI
+}
+
+
 template <typename T>
 inline void safe_delete(T*& p)
 {

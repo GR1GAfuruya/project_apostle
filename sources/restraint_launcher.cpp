@@ -21,4 +21,15 @@ bool RestraintLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos,
 
 void RestraintLauncher::debug_gui()
 {
+#if USE_IMGUI
+	imgui_menu_bar("Skill", "Restraint", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin("Restraint");
+
+		ImGui::End();
+	}
+#endif
+
+
 }

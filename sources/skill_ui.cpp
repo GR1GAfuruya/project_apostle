@@ -76,18 +76,20 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 void SkillUI::debug_gui(string str_id)
 {
 #if USE_IMGUI
-
+	imgui_menu_bar("Skill", "UI", display_imgui);
+	if(display_imgui)
 	{
 		string name = str_id;
 		ImGui::Begin("Skill");
 		ImGui::PushID(str_id.c_str());
+		ImGui::Separator();
 		ImGui::Text(str_id.c_str());
+		ImGui::Separator();
 		ImGui::DragFloat2("center_pos", &slots_ui.center_pos.x);
 		ImGui::DragFloat2("icon_pos", &slots_ui.icon_pos.x);
 		ImGui::DragFloat("add_ang", &slots_ui.add_ang);
 		ImGui::DragFloat("size", &slots_ui.size,0.1f);
 		ImGui::DragFloat4("color", &slots_ui.color.x);
-		ImGui::Separator();
 		ImGui::DragFloat("expansion_start", &expansion_start);
 		ImGui::DragFloat("expansion_end", &expansion_end);
 		ImGui::DragFloat("add_alpha_speed", &add_alpha_speed);

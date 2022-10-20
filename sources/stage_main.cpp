@@ -41,11 +41,14 @@ void StageMain::render(float elapsed_time, Graphics& graphics)
 	//ステージ
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
 #if USE_IMGUI
-	
-	ImGui::Begin("stage");
-	ImGui::DragFloat3("scale", &scale.x,0.1f);
-	ImGui::End();
-	
+	imgui_menu_bar("Stage", "stage_main", display_imgui);
+	if (display_imgui)
+	{
+
+		ImGui::Begin("stage_main");
+		ImGui::DragFloat3("scale", &scale.x, 0.1f);
+		ImGui::End();
+	}
 #endif
 }
 

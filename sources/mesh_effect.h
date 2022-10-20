@@ -110,7 +110,7 @@ protected:
 	//ループ再生するかどうか
 	bool is_loop = false;
 	//デバッグGUIフラグ
-	bool display_imgui = true;
+	bool display_imgui = false;
 
 	
 	//==============================================================

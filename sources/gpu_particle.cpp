@@ -249,15 +249,15 @@ UINT GPU_Particles::get_particle_pool_count(ID3D11DeviceContext* dc) const
 }
 
 //デバッグGUI
-void GPU_Particles::debug_gui(const char* str_id)
+void GPU_Particles::debug_gui(string str_id)
 {
 	static DirectX::XMFLOAT3 ang = {};
 #ifdef USE_IMGUI
-	imgui_menu_bar("Effects", "gpu_particles", display_imgui);
+	imgui_menu_bar("Effects", str_id.c_str(), display_imgui);
 	if (display_imgui)
 	{
-		ImGui::Begin(str_id);
-		ImGui::PushID(str_id);
+		ImGui::Begin(str_id.c_str());
+		ImGui::PushID(str_id.c_str());
 		ImGui::DragFloat3("angle", &ang.x);
 		ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
 		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1f);

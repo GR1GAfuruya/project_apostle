@@ -211,11 +211,11 @@ void MeshEffect::reset_orientation()
 void MeshEffect::debug_gui(string str_id)
 {
 #if USE_IMGUI
-	imgui_menu_bar("Effect", "MeshEffects", display_imgui);
+	imgui_menu_bar("Effects", str_id, display_imgui);
 	if (display_imgui)
 	{
 		string name = "Param:" + str_id;
-		ImGui::Begin("Effect");
+		ImGui::Begin(str_id.c_str());
 		ImGui::PushID(str_id.c_str());
 		/*これより下にパラメーター記述*/
 		if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))

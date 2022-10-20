@@ -34,4 +34,14 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 
 void SpearSeaLauncher::debug_gui()
 {
+#if USE_IMGUI
+	imgui_menu_bar("Skill", "SpearSea", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin("SpearSea");
+
+		ImGui::End();
+	}
+#endif
+
 }

@@ -289,8 +289,8 @@ void Player::input_chant_support_skill(Graphics& graphics)
 	{
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
-		case SP_SKILLTYPE::PHYCICAL_UP:
-			if (skill_manager->chant_phycical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed))
+		case SP_SKILLTYPE::PHYSICAL_UP:
+			if (skill_manager->chant_physical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed))
 			{
 				transition_magic_buff_state();//状態遷移
 			}
@@ -457,7 +457,7 @@ void Player::debug_gui(Graphics& graphics)
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
-	imgui_menu_bar("charactor", "player", display_player_imgui);
+	imgui_menu_bar("Charactor", "player", display_player_imgui);
 	if (display_player_imgui)
 	{
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
@@ -493,6 +493,10 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragFloat("jump_speed", &jump_speed);
 				ImGui::DragFloat("air_control", &air_control);
 				ImGui::Checkbox("is_ground", &is_ground);
+				float control_x = game_pad->get_axis_LX();
+				float control_y = game_pad->get_axis_LY();
+				ImGui::DragFloat("control_x", &control_x);
+				ImGui::DragFloat("control_y", &control_y);
 			}
 			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -514,66 +518,62 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 
 			}
-			float control_x = game_pad->get_axis_LX();
-			float control_y = game_pad->get_axis_LY();
-			ImGui::DragFloat("control_x", &control_x);
-			ImGui::DragFloat("control_y", &control_y);
-
 			
+
+			ImGui::Begin("Skill");
+			
+				//--------スキルのデバッグGUI--------//
+				if (ImGui::Button("sup_skill_chant"))
+				{
+					switch (skill_manager->get_selected_sup_skill_type())
+					{
+					case SP_SKILLTYPE::PHYSICAL_UP:
+						skill_manager->chant_physical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed);
+						break;
+					case SP_SKILLTYPE::REGENERATE:
+						transition_magic_buff_state();//状態遷移
+
+						break;
+					case SP_SKILLTYPE::RESTRAINNT:
+						transition_attack_pull_slash_state();
+						break;
+					default:
+						break;
+					}
+				}
+				ImGui::SameLine();
+				DirectX::XMFLOAT3 launch_pos;
+				if (ImGui::Button("atk_skill_chant"))
+				{
+					switch (skill_manager->get_selected_atk_skill_type())
+					{
+					case ATK_SKILLTYPE::MAGICBULLET:
+						model->fech_by_bone(transform, left_hand, launch_pos);
+
+						if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+						{
+							transition_attack_bullet_state();//状態遷移
+						}
+						break;
+					case ATK_SKILLTYPE::SPEARS_SEA:
+						if (skill_manager->chant_spear_sea(graphics, position))
+						{
+							transition_attack_ground_state();
+						}
+						break;
+					default:
+						break;
+					}
+				}
+				ImGui::End();
 		}
 		ImGui::End();
-
-		ImGui::Begin("Skill");
-		{
-			ImGui::Text("player_skill_system");
-			if (ImGui::Button("sup_skill_chant"))
-			{
-				switch (skill_manager->get_selected_sup_skill_type())
-				{
-				case SP_SKILLTYPE::PHYCICAL_UP:
-					skill_manager->chant_phycical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed);
-					break;
-				case SP_SKILLTYPE::REGENERATE:
-					transition_magic_buff_state();//状態遷移
-
-					break;
-				case SP_SKILLTYPE::RESTRAINNT:
-					transition_attack_pull_slash_state();
-					break;
-				default:
-					break;
-				}
-			}
-			ImGui::SameLine();
-			DirectX::XMFLOAT3 launch_pos;
-			if (ImGui::Button("atk_skill_chant"))
-			{
-				switch (skill_manager->get_selected_atk_skill_type())
-				{
-				case ATK_SKILLTYPE::MAGICBULLET:
-					model->fech_by_bone(transform, left_hand, launch_pos);
-
-					if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
-					{
-					transition_attack_bullet_state();//状態遷移
-					}
-					break;
-				case ATK_SKILLTYPE::SPEARS_SEA:
-					if (skill_manager->chant_spear_sea(graphics, position))
-					{
-						transition_attack_ground_state();
-					}
-					break;
-				default:
-					break;
-				}
-			}
-			
-		}
-		ImGui::End();
-		skill_manager.get()->debug_gui(graphics);
 
 	}
+
+
+
+	skill_manager.get()->debug_gui(graphics);
 	slash_efect->debug_gui("slash_efect");
 #endif // USE_IMGUI
 

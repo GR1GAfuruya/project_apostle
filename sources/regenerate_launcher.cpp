@@ -20,4 +20,14 @@ bool RegenerateLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 
 void RegenerateLauncher::debug_gui()
 {
+#if USE_IMGUI
+	imgui_menu_bar("Skill", "Regenerate", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin("Regenerate");
+
+		ImGui::End();
+	}
+#endif
+
 }

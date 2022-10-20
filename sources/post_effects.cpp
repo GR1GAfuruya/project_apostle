@@ -42,21 +42,11 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 {
 	original_frame_buffer->deactivate(dc);
 #if USE_IMGUI
+	if (display_post_effects_imgui)
+	{
 	ImGui::Begin("PostEffectImage");
 	ImGui::Text("original");
 	ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
-	ImGui::End();
-#endif
-	
-	//‹P“x’Šo
-	/*luminance_frame_buffer->clear(dc, FB_FLAG::COLOR, { 0, 0, 0, 1 });
-	luminance_frame_buffer->activate(dc, FB_FLAG::COLOR);
-	luminance->blit(dc, original_frame_buffer->get_color_map().GetAddressOf(),
-		0, 1, luminance_ps.Get());
-	luminance_frame_buffer->deactivate(dc);*/
-
-#if USE_IMGUI
-	ImGui::Begin("PostEffectImage");
 	ImGui::Text("lumina");
 	ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
 	ImGui::End();
@@ -79,6 +69,7 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 		}
 	}
 	ImGui::End();
+	}
 #endif
 }
 

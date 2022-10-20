@@ -249,7 +249,7 @@ public:
 	float action_time = 0;
 	float move_speed = 30.0f;
 	float turn_speed = 5.0f;
-	bool display_imgui = true;
+	bool display_imgui = false;
 
 	//ステートのタイマー
 	float state_timer;

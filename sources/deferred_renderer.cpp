@@ -1,6 +1,7 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
 #include "texture.h"
+#include "user.h"
 //==============================================================
 // 
 // コンストラクタ
@@ -178,8 +179,10 @@ void DeferredRenderer::render(Graphics& graphics)
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, final_sprite_ps.Get());
 
 #if USE_IMGUI
-	if (ImGui::CollapsingHeader("srv", ImGuiTreeNodeFlags_DefaultOpen))
+	imgui_menu_bar("Window", "G-Buffer", display_imgui);
+	if (display_imgui)
 	{
+		ImGui::Begin("G -Buffer");
 		ImGui::Text("color");
 		ImGui::Image(g_color->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("depth");
@@ -194,8 +197,11 @@ void DeferredRenderer::render(Graphics& graphics)
 		ImGui::Image(l_light->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 #if CAST_SHADOW
 		ImGui::Text("shadow");
-		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), {1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720)});
+		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 #endif
+
+		ImGui::End();
+
 	}
 #endif // USE_IMGUI
 }

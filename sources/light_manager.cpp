@@ -23,6 +23,7 @@ void LightManager::register_light(std::shared_ptr<Light> light)
 void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int rtv_num)
 {
 	//‰e—pƒ‰ƒCƒg•`‰æ
+	
 #if CAST_SHADOW
 	shadow_dir_light->light_constants->bind(graphics.get_dc().Get(), 7);
 	light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, shadow_map_light.Get());
@@ -39,11 +40,14 @@ void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int r
 void LightManager::debug_gui()
 {
 	imgui_menu_bar("Lights", "Light", display_imgui);
-#if CAST_SHADOW
-	shadow_dir_light->debug_gui(-1);
-#endif
-	for (int i = 0; i < lights.size(); i++)
+	if (display_imgui)
 	{
-		lights.at(i)->debug_gui(i);
+#if CAST_SHADOW
+		shadow_dir_light->debug_gui(-1);
+#endif
+		for (int i = 0; i < lights.size(); i++)
+		{
+			lights.at(i)->debug_gui(i);
+		}
 	}
 }

@@ -42,4 +42,6 @@ private:
 	float add_ang_start = -120;
 	float add_ang_end = -90;
 	float add_ang_lerp_speed = 6;
+
+	bool display_imgui = false;
 };

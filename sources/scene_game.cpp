@@ -171,15 +171,20 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->set_position(test_effect_pos);
 	test_mesh_effect->set_scale(test_effect_scale);
 	#if USE_IMGUI
-	ImGui::Begin("test_effect");
-	if (ImGui::Button("test_effect_play"))
+	static bool display_test_effect_imgui = false;
+	imgui_menu_bar("Effects", "test_effect", display_test_effect_imgui);
+	if (display_test_effect_imgui)
 	{
-		test_mesh_effect->play(test_effect_pos);
+		ImGui::Begin("test_effect");
+		if (ImGui::Button("test_effect_play"))
+		{
+			test_mesh_effect->play(test_effect_pos);
+		}
+		ImGui::DragFloat3("pos", &test_effect_pos.x);
+		ImGui::DragFloat3("color", &test_effect_color.x, 0.1f);
+		ImGui::DragFloat3("scale", &test_effect_scale.x, 0.1f);
+		ImGui::End();
 	}
-	ImGui::DragFloat3("pos", &test_effect_pos.x);
-	ImGui::DragFloat3("color", &test_effect_color.x,0.1f);
-	ImGui::DragFloat3("scale", &test_effect_scale.x,0.1f);
-	ImGui::End();
 	#endif
 	test_mesh_effect->constants->data.particle_color = test_effect_color;
 #endif
@@ -199,11 +204,11 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//仮置きの操作説明
 	operation_ui->begin(graphics.get_dc().Get());
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
-	operation_ui->end(graphics.get_dc().Get());	debug_gui();
+	operation_ui->end(graphics.get_dc().Get());	
 
 	player->render_ui(graphics,elapsed_time);
-	debug_gui();
-
+	camera->debug_gui();
+	ImGui::ShowDemoWindow();
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());
@@ -213,7 +218,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 void SceneGame::debug_gui()
 {
-	camera->debug_gui();
+	
 }
 
 void SceneGame::scene_reset()

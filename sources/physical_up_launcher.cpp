@@ -1,10 +1,10 @@
 #include "physical_up_launcher.h"
 #include "skill_physical_up.h"
-PhycicalUpLauncher::PhycicalUpLauncher(Graphics& graphics)
+PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
 {
 }
 
-bool PhycicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
@@ -18,25 +18,29 @@ bool PhycicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 	return false;
 }
 
-void PhycicalUpLauncher::debug_gui()
+void PhysicalUpLauncher::debug_gui()
 {
 #if USE_IMGUI
-	ImGui::Begin("Skill");
-	if (ImGui::CollapsingHeader("PhycicalUpLauncher", ImGuiTreeNodeFlags_DefaultOpen))
+	imgui_menu_bar("Skill", "PhysicalUp", display_imgui);
+	if (display_imgui)
 	{
-		ImGui::PushID("PhycicalUpLauncher");
-		ImGui::DragFloat("cool_time", &cool_time);
-		int count = 0;
-		ImGui::PopID();
-		for (auto& s : skills)
+		ImGui::Begin("PhysicalUp");
+		if (ImGui::CollapsingHeader("PhycicalUpLauncher", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			s->debug_gui(to_string(count).c_str());
-			count++;
-			ImGui::Separator();
+			ImGui::PushID("PhycicalUpLauncher");
+			ImGui::DragFloat("cool_time", &cool_time);
+			int count = 0;
+			ImGui::PopID();
+			for (auto& s : skills)
+			{
+				s->debug_gui(to_string(count).c_str());
+				count++;
+				ImGui::Separator();
+			}
+
+
 		}
-
-
+		ImGui::End();
 	}
-	ImGui::End();
 #endif
 }

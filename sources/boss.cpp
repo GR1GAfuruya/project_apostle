@@ -110,7 +110,7 @@ void Boss::debug_gui()
 {
 
 #if USE_IMGUI
-	imgui_menu_bar("charactor", "boss", display_imgui);
+	imgui_menu_bar("Charactor", "boss", display_imgui);
 	if (display_imgui)
 	{
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))

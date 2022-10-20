@@ -53,5 +53,5 @@ public:
 
 	std::unique_ptr<Constants<CB_PostEffect>> cb_post_effect;
 
-	bool display_post_effects_imgui = true;
+	bool display_post_effects_imgui = false;
 };

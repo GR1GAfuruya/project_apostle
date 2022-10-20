@@ -19,7 +19,7 @@ void Restrain::debug_gui(string str_id)
 {
 #if USE_IMGUI
 	string name = "Restrain:" + str_id + "Param";
-	ImGui::Begin("Skill");
+	ImGui::Begin("Restrain");
 	ImGui::PushID(str_id.c_str());
 	/*これより下にパラメーター記述*/
 	ImGui::BulletText(name.c_str());
