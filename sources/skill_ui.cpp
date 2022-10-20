@@ -31,8 +31,8 @@ void SkillUI::icon_render(Graphics& graphics)
 {
 	const int TILE_NUM_X = 4;
 	const int TILE_NUM_Y = 4;
-	DirectX::XMFLOAT2 tex_size = { skill_slot_icon->get_tex_width() / TILE_NUM_X,
-		skill_slot_icon->get_tex_height() / TILE_NUM_Y };
+	DirectX::XMFLOAT2 tex_size = { (skill_slot_icon->get_tex_width() / TILE_NUM_X) * MAGNI_RESOLUTION_WIDTH,
+		(skill_slot_icon->get_tex_height() / TILE_NUM_Y) * MAGNI_RESOLUTION_HEIGHT };
 
 	skill_slot_icon->begin(graphics.get_dc().Get());
 
@@ -44,8 +44,8 @@ void SkillUI::icon_render(Graphics& graphics)
 		slots_ui.icon_pos =
 			Math::circumferential_placement(slots_ui.center_pos, slots_ui.radius, i, slots_num, true, slots_ui.add_ang);
 		skill_slot_icon->render(graphics.get_dc().Get(),
-			{ slots_ui.icon_pos },//各アイコンの位置
-			{ slots_ui.size,slots_ui.size },//アイコンの大きさ
+			{ slots_ui.icon_pos.x * MAGNI_RESOLUTION_WIDTH, slots_ui.icon_pos.y * MAGNI_RESOLUTION_HEIGHT },//各アイコンの位置
+			{ slots_ui.size * MAGNI_RESOLUTION_WIDTH, slots_ui.size * MAGNI_RESOLUTION_HEIGHT },//アイコンの大きさ
 			slots_ui.color,//アイコンの色
 			0,//アイコンの角度
 			{ (i % TILE_NUM_X) * tex_size.x,(i / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置
@@ -64,8 +64,8 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 	skill_slot_icon->begin(graphics.get_dc().Get());
 	//円周上にアイコンを並べる
 	skill_slot_icon->render(graphics.get_dc().Get(),
-		{ pos },//各アイコンの位置
-		{ slots_ui.size,slots_ui.size  },//アイコンの大きさ
+		{ pos.x * MAGNI_RESOLUTION_WIDTH, pos.y * MAGNI_RESOLUTION_HEIGHT },//各アイコンの位置
+		{  slots_ui.size * MAGNI_RESOLUTION_WIDTH, slots_ui.size * MAGNI_RESOLUTION_HEIGHT  },//アイコンの大きさ
 		{1,1,1,1},//アイコンの色
 		0,//アイコンの角度
 		{ (selected_skill_index % TILE_NUM_X) * tex_size.x,(selected_skill_index / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置

@@ -27,6 +27,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> shadow_map_light;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> deferred_light;
 	
-
+	bool display_imgui = false;
 
 };

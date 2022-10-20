@@ -107,6 +107,7 @@ void PostEffects::blit(Graphics& graphics)
 		ImGui::DragFloat("blur_threshold", &cb_post_effect->data.bloom_extraction_threshold, 0.1f, -1.0f, 10.0f);
 		ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
 		ImGui::End();
+		graphics.recompile_pixel_shader(post_effects.GetAddressOf(),"_post");
 	}
 #endif
 

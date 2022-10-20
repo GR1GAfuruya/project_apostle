@@ -1,5 +1,5 @@
 #include "light_manager.h"
-
+#include "user.h"
 LightManager::LightManager(Graphics& graphics)
 {
 	HRESULT hr;
@@ -38,6 +38,7 @@ void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int r
 
 void LightManager::debug_gui()
 {
+	imgui_menu_bar("Lights", "Light", display_imgui);
 #if CAST_SHADOW
 	shadow_dir_light->debug_gui(-1);
 #endif

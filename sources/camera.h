@@ -113,4 +113,5 @@ private:
     DirectX::XMFLOAT4X4 view_projection;
     bool display_camera_imgui = true;
     bool camera_operate_stop;
+
 };

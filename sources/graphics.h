@@ -8,10 +8,13 @@
 	CONST LONG SCREEN_WIDTH{ 1280 };
 	CONST LONG SCREEN_HEIGHT{ 720 };
 #else
-	CONST LONG SCREEN_WIDTH{ 1980 };
+	CONST LONG SCREEN_WIDTH{ 1920 };
 	CONST LONG SCREEN_HEIGHT{ 1080 };
 #endif
-
+//解像度による差分の倍率
+CONST FLOAT MAGNI_RESOLUTION_WIDTH {SCREEN_WIDTH / 1280.0f};
+//解像度による差分の倍率
+CONST FLOAT MAGNI_RESOLUTION_HEIGHT {SCREEN_HEIGHT / 720.0f };
 
 
 
@@ -112,7 +115,7 @@ public:
 	std::mutex& get_mutex() { return mutex_; }
 	//シェーダーのリコンパイル
 	BOOL get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir);
-	void recompile_pixel_shader(ID3D11PixelShader** pixel_shader);
+	void recompile_pixel_shader(ID3D11PixelShader** pixel_shader, string id);
 private:
 	std::mutex mutex_;
 	

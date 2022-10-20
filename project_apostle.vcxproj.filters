@@ -196,6 +196,9 @@
     <Filter Include="Shaders\Mesh\geometry">
       <UniqueIdentifier>{b76d8788-061e-4644-a5e7-852d6bfda2d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\MeshEffect">
+      <UniqueIdentifier>{d1f132fc-e30a-43e4-bbf8-aba00e109e72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -351,9 +354,6 @@
     <ClCompile Include="sources\light_manager.cpp">
       <Filter>sources\Effects\Light</Filter>
     </ClCompile>
-    <ClCompile Include="sources\mesh_effect.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
     </ClCompile>
@@ -431,6 +431,9 @@
     </ClCompile>
     <ClCompile Include="sources\shadow_map_shader.cpp">
       <Filter>sources\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mesh_effect.cpp">
+      <Filter>sources\Effects\MeshEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -599,9 +602,6 @@
     <ClInclude Include="sources\boss_charge_attack.h">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
     </ClInclude>
-    <ClInclude Include="sources\mesh_effect.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\skin_particles.h">
       <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
@@ -691,6 +691,9 @@
     </ClInclude>
     <ClInclude Include="sources\shadow_map_shader.h">
       <Filter>sources\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mesh_effect.h">
+      <Filter>sources\Effects\MeshEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

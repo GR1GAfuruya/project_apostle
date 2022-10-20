@@ -69,7 +69,7 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
-	graphics.recompile_pixel_shader(pixel_shader.GetAddressOf());
+	graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(),"mesh");
 }
 //==============================================================
 // 
@@ -211,26 +211,29 @@ void MeshEffect::reset_orientation()
 void MeshEffect::debug_gui(string str_id)
 {
 #if USE_IMGUI
-	string name = "Param:" + str_id;
-	ImGui::Begin("Effect");
-	ImGui::PushID(str_id.c_str());
-	/*これより下にパラメーター記述*/
-	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+	imgui_menu_bar("Effect", "MeshEffects", display_imgui);
+	if (display_imgui)
 	{
-		ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1f);
-		ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1f);
-		ImGui::DragFloat3("rot_speed", &rot_speed.x);
-		ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1f);
-		ImGui::DragFloat("threshold", &constants->data.threshold, 0.1f);
-		ImGui::DragFloat("lifetime", &life_time, 0.1f);
-		ImGui::DragFloat3("position", &position.x, 0.1f);
-		ImGui::DragFloat3("scale", &scale.x, 0.1f);
-		ImGui::Checkbox("play", &active);
+		string name = "Param:" + str_id;
+		ImGui::Begin("Effect");
+		ImGui::PushID(str_id.c_str());
+		/*これより下にパラメーター記述*/
+		if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::DragFloat2("dir", &constants->data.scroll_direction.x, 0.1f);
+			ImGui::DragFloat("speed", &constants->data.scroll_speed, 0.1f);
+			ImGui::DragFloat3("rot_speed", &rot_speed.x);
+			ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1f);
+			ImGui::DragFloat("threshold", &constants->data.threshold, 0.1f);
+			ImGui::DragFloat("lifetime", &life_time, 0.1f);
+			ImGui::DragFloat3("position", &position.x, 0.1f);
+			ImGui::DragFloat3("scale", &scale.x, 0.1f);
+			ImGui::Checkbox("play", &active);
 
+		}
+		/*これより上にパラメーター記述*/
+		ImGui::PopID();
+		ImGui::End();
 	}
-	/*これより上にパラメーター記述*/
-	ImGui::PopID();
-	ImGui::End();
-
 #endif
 }

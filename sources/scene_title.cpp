@@ -31,6 +31,6 @@ void SceneTitle::render(float elapsedTime,Graphics& graphics)
 {
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	sprite->begin(graphics.get_dc().Get());
-	sprite->render(graphics.get_dc().Get(), { 0, 0 }, { 1, 1 });
+	sprite->render(graphics.get_dc().Get(), { 0, 0 }, { MAGNI_RESOLUTION_WIDTH, MAGNI_RESOLUTION_HEIGHT });
 	sprite->end(graphics.get_dc().Get());
 }

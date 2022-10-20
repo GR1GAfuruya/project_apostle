@@ -29,8 +29,8 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
 	wave->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	//tornadoの初期設定
-	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
 	//tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
+	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
@@ -75,7 +75,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 
 	//トルネード初期化
 	tornado->play(pos);
-	tornado->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
+	//tornado->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
 	tornado->set_scale(0);
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
@@ -209,7 +209,7 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 	{
 		core->set_scale(0.7f);
 		charge_attack_update = &ChargeAttack::activities_update;
-		tornado->set_scale({ 20.0f,20.0f,0.0f });
+		tornado->set_scale({ 0.0f,15.0f,0.0f });
 	}
 }
 
@@ -244,10 +244,10 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	wave->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 360 * elapsed_time);
 
 	//竜巻エフェクト
-	float scale_z = lerp(tornado->get_scale().z, 5.0f, 5.0f * elapsed_time);
-	tornado->set_scale({ tornado->get_scale().x, tornado->get_scale().y, scale_z });
+	float scale_xy = lerp(tornado->get_scale().y, 15.0f, 5.0f * elapsed_time);
+	tornado->set_scale({ scale_xy, tornado->get_scale().y, scale_xy });
 	//tornado->constants->data.scroll_speed += elapsed_time;
-	tornado->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 260 * elapsed_time);
+	tornado->set_rotate_quaternion(MeshEffect::AXIS::UP, 260 * elapsed_time);
 
 	if (attack_time >= ATTACK_TIME) charge_attack_update = &ChargeAttack::vanishing_update;
 }
@@ -267,7 +267,7 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 	float expand = 15 * elapsed_time;
 	tornado->set_scale({ tornado->get_scale().x + expand,tornado->get_scale().y + expand,tornado->get_scale().z + expand });
 	tornado->constants->data.particle_color.w = fade_out(tornado->constants->data.particle_color.w);
-	tornado->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 360 * elapsed_time);
+	tornado->set_rotate_quaternion(MeshEffect::AXIS::UP, 360 * elapsed_time);
 	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
 	
 	if (tornado->constants->data.threshold > 0.9f) stop();

@@ -174,7 +174,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.\external\FBX SDK\2020.2\include;.\external\DirectXTK-master\Inc;.\external\cereal-master\include;.\external\Effekseer162c\include\Effekseer;.\external\Effekseer162c\include\EffekseerRendererDX11</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
