@@ -1,6 +1,7 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
 #include "texture.h"
+#include "user.h"
 //==============================================================
 // 
 // コンストラクタ
@@ -14,6 +15,7 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	g_normal = std::make_unique<GBuffer>();
 	g_position = std::make_unique<GBuffer>();
 	g_metal_smooth = std::make_unique<GBuffer>();
+	g_emissive = std::make_unique<GBuffer>();
 	l_light = std::make_unique<GBuffer>();
 	l_composite = std::make_unique<GBuffer>();
 
@@ -23,9 +25,16 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 	g_normal->create(graphics.get_device().Get(), DXGI_FORMAT_R8G8B8A8_UNORM);
 	g_position->create(graphics.get_device().Get(), DXGI_FORMAT_R32G32B32A32_FLOAT);
 	g_metal_smooth->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
+	g_emissive->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_light->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
 	l_composite->create(graphics.get_device().Get(), DXGI_FORMAT_R16G16B16A16_FLOAT);
-
+#if CAST_SHADOW
+	//シャドウマップ初期化
+	int ShadowMapSize = 1024;
+	shadow_frame_buffer = std::make_unique<FrameBuffer>(graphics.get_device().Get(), ShadowMapSize, ShadowMapSize,
+		FB_FLAG::COLOR_DEPTH_STENCIL, DXGI_FORMAT_R16G16_FLOAT);
+	shadow_constants = std::make_unique<Constants<SHADOW_CONSTANTS>>(graphics.get_device().Get());
+#endif
 	//深度ステンシル
 	depth_stencil_create(graphics.get_device().Get(), DXGI_FORMAT_D24_UNORM_S8_UINT);
 	HRESULT hr;
@@ -57,7 +66,7 @@ void DeferredRenderer::active(Graphics& graphics)
 		g_normal->get_rtv(),   //Target2
 		g_position->get_rtv(),   //Target3
 		g_metal_smooth->get_rtv(),  //Target4
-		l_light->get_rtv(),   //Target5
+		g_emissive->get_rtv(),  //Target5
 
 	};
 	// レンダーターゲットビュー設定
@@ -73,7 +82,7 @@ void DeferredRenderer::active(Graphics& graphics)
 	float clear_pos_normal_light[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	graphics.get_dc()->ClearRenderTargetView(g_normal->get_rtv(), clear_pos_normal_light);
 	graphics.get_dc()->ClearRenderTargetView(g_position->get_rtv(), clear_pos_normal_light);
-	graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clear_pos_normal_light);
+	graphics.get_dc()->ClearRenderTargetView(g_emissive->get_rtv(), clear_pos_normal_light);
 
 	float cleardepth[4] = { 5000, 1.0f, 1.0f, 1.0f };
 	graphics.get_dc()->ClearRenderTargetView(g_depth->get_rtv(), cleardepth);
@@ -117,15 +126,16 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 		1, &rtv, depth_stencil_view.Get());
 	//レンダーターゲットビューのクリア
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clearColor);
+	graphics.get_dc()->ClearRenderTargetView(l_light->get_rtv(), clearColor);
 
 	//G-Buffer：カラー、ノーマル、ポジション、メタリック・スムース、ライト
-	ID3D11ShaderResourceView* g_buffers[5]
+	ID3D11ShaderResourceView* g_buffers[]
 	{
 		g_color->get_srv(),
 		g_normal->get_srv(),
 		g_position->get_srv(),
 		g_metal_smooth->get_srv(),
+		g_emissive->get_srv(),
 		l_light->get_srv(),
 	};
 	//ブレンドステートを加算に
@@ -135,7 +145,11 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 	//環境ライト
 	graphics.get_dc().Get()->PSSetShaderResources(15, 1, env_texture.GetAddressOf());
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, deferred_env_light.Get());
+
 	//平行光、点光源ライトを描き込む
+#if CAST_SHADOW
+	graphics.get_dc().Get()->PSSetShaderResources(16, 1, shadow_frame_buffer->get_color_map().GetAddressOf());
+#endif
 	light_manager.draw(graphics, g_buffers, G_BUFFERS_NUM);
 
 	//ライトの合成 ブレンドステートをアルファに
@@ -160,16 +174,15 @@ void DeferredRenderer::render(Graphics& graphics)
 	ID3D11ShaderResourceView* g_buffers[]
 	{
 		l_composite->get_srv(),
-		g_depth->get_srv(),
-		g_normal->get_srv(),
-		g_position->get_srv(),
-		l_light->get_srv(),
 	};
-	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, 5, final_sprite_ps.Get());
+	UINT G_BUFFERS_NUM = ARRAYSIZE(g_buffers);
+	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, final_sprite_ps.Get());
 
 #if USE_IMGUI
-	if (ImGui::CollapsingHeader("srv", ImGuiTreeNodeFlags_DefaultOpen))
+	imgui_menu_bar("Window", "G-Buffer", display_imgui);
+	if (display_imgui)
 	{
+		ImGui::Begin("G -Buffer");
 		ImGui::Text("color");
 		ImGui::Image(g_color->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("depth");
@@ -182,11 +195,53 @@ void DeferredRenderer::render(Graphics& graphics)
 		ImGui::Image(g_metal_smooth->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("light");
 		ImGui::Image(l_light->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+#if CAST_SHADOW
+		ImGui::Text("shadow");
+		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+#endif
+
+		ImGui::End();
 
 	}
 #endif // USE_IMGUI
 }
+//==============================================================
+// 
+// 影用の描画書き込み開始
+// 
+//==============================================================
+#if CAST_SHADOW
+void DeferredRenderer::shadow_active(Graphics& graphics, LightManager& light_manager)
+{
+	shadow_frame_buffer->clear(graphics.get_dc().Get());
+	shadow_frame_buffer->activate(graphics.get_dc().Get());
 
+	// 平行光源からカメラ位置を作成し、そこから原点の位置を見るように視線行列を生成
+	DirectX::XMVECTOR TargetPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT3 shadow_dir_light_dir = light_manager.get_shadow_dir_light_dir();
+	DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&shadow_dir_light_dir);
+	LightPosition = DirectX::XMVectorScale(LightPosition, -50.0f);
+	LightPosition = DirectX::XMVectorAdd(LightPosition, TargetPosition);
+	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(LightPosition,
+		TargetPosition,
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(30, 30, 10, 100);
+	DirectX::XMMATRIX VP = V * P;
+	DirectX::XMFLOAT4X4	shadowVP;
+	DirectX::XMStoreFloat4x4(&shadow_constants->data.shadowVP, VP);
+	shadow_constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::PS_VS);
+
+}
+//==============================================================
+// 
+// 影用の描画書き込み終了
+// 
+//==============================================================
+void DeferredRenderer::shadow_deactive(Graphics& graphics)
+{
+	shadow_frame_buffer->deactivate(graphics.get_dc().Get());
+}
+#endif
 //==============================================================
 // 
 // 深度バッファ生成

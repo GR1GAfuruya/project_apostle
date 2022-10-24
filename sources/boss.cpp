@@ -9,15 +9,16 @@
 void Boss::initialize()
 {
 	transition_idle_state();
-	position = { 0.0f, 10.0f,-450 };
+	position = { -24.0f, 0.0f,7.0f };
 	scale.x = scale.y = scale.z = 0.08f;
 	health = 1000;
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
 	acceleration = 10.0f;
-	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible,type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_attack_param.collision.radius = 8.0f;
+	vs_wall_ray_power = 10.0f;
 
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.radius = 10;
@@ -47,7 +48,7 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 {
 	(this->*act_update)(graphics, elapsed_time, stage);
 	model->update_animation(elapsed_time);
-	update_velocity(elapsed_time, position, stage);
+	
 	efc_charge_attack->update(graphics, elapsed_time);
 	//bodyの攻撃用当たり判定
 	boss_body_collision.capsule.start = position;
@@ -94,7 +95,7 @@ void Boss::on_dead()
 //ダメージを受けた際の処理
 // 
 //==============================================================
-void Boss::on_damaged()
+void Boss::on_damaged(WINCE_TYPE type)
 {
 	if (state != State::DAMAGE)
 	{
@@ -109,12 +110,27 @@ void Boss::debug_gui()
 {
 
 #if USE_IMGUI
-	imgui_menu_bar("charactor", "boss", display_imgui);
+	imgui_menu_bar("Charactor", "boss", display_imgui);
 	if (display_imgui)
 	{
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
 		{
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
+			//トランスフォーム
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+
+				//位置
+				ImGui::DragFloat3("Position", &position.x);
+				//回転
+				DirectX::XMFLOAT3 forward;
+				DirectX::XMStoreFloat3(&forward, Math::get_posture_forward_vec(orientation));
+				ImGui::DragFloat3("forward", &forward.x);
+				ImGui::DragFloat4("ori", &orientation.x);
+				
+				ImGui::DragFloat3("scale:", &scale.x);
+				ImGui::DragFloat3("velocity:", &velocity.x);
+			}
 			ImGui::DragInt("hp", &health);
 			ImGui::DragFloat("height", &height);
 			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
@@ -135,12 +151,15 @@ void Boss::debug_gui()
 //==============================================================
 void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XMFLOAT3 player_cap_end, float colider_radius, AddDamageFunc damaged_func)
 {
-	if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius,
-		sickle_attack_param.collision.start, sickle_attack_param.collision.end, sickle_attack_param.collision.radius))
+	if (sickle_attack_param.is_attack)
 	{
-		sickle_attack_param.power = 5;
-		sickle_attack_param.invinsible_time = 0.55f;
-		damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time);
+		if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius,
+			sickle_attack_param.collision.start, sickle_attack_param.collision.end, sickle_attack_param.collision.radius))
+		{
+			sickle_attack_param.power = 5;
+			sickle_attack_param.invinsible_time = 0.55f;
+			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time,WINCE_TYPE::NONE);
+		}
 	}
 }
 

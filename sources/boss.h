@@ -72,13 +72,6 @@ private:
 	};
 
 
-	struct AttackParam
-	{
-		Capsule collision;
-		bool is_attack;//UŒ‚’†‚©‚Ç‚¤‚©
-		int power;//UŒ‚—Í
-		float invinsible_time;//UŒ‚‘ÎÛ‚É‰Û‚·–³“GŠÔ
-	};
 public:
 	//==============================================================
 	// 
@@ -238,7 +231,7 @@ public:
 
 	//[|||
 	void on_dead() override;
-	void on_damaged() override;
+	void on_damaged(WINCE_TYPE type) override;
 
 	//==============================================================
 	// 
@@ -256,7 +249,7 @@ public:
 	float action_time = 0;
 	float move_speed = 30.0f;
 	float turn_speed = 5.0f;
-	bool display_imgui = true;
+	bool display_imgui = false;
 
 	//ƒXƒe[ƒg‚Ìƒ^ƒCƒ}[
 	float state_timer;
@@ -273,6 +266,7 @@ public:
 	// 
 	//==============================================================
 	float WALK_SPEED = 15;
+	float NORMAL_ATTACK_LENGTH = 17;
 public:
 
 	AddDamageFunc damaged_function;

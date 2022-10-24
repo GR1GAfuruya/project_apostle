@@ -1,8 +1,8 @@
 #include "constants.hlsli"
-#include "default_mesh.hlsli"
+#include "shadow_map.hlsli"
 
-VS_OUT main( VS_IN  vin ) 
- {  
+VS_OUT main(VS_IN vin)
+{
     vin.normal.w = 0;
     float sigma = vin.tangent.w;
     vin.tangent.w = 0;
@@ -13,10 +13,10 @@ VS_OUT main( VS_IN  vin )
     for (int bone_index = 0; bone_index < 4; ++bone_index)
     {
         blended_position += vin.bone_weights[bone_index]
-         * mul(vin.position, bone_transforms[vin.bone_indices[bone_index]]);//ウェイトにポジションをかける
+         * mul(vin.position, bone_transforms[vin.bone_indices[bone_index]]); //ウェイトにポジションをかける
         blended_normal += vin.bone_weights[bone_index]
          * mul(vin.normal, bone_transforms[vin.bone_indices[bone_index]]);
-        blended_tangent += vin.bone_weights[bone_index] *  
+        blended_tangent += vin.bone_weights[bone_index] *
     mul(vin.tangent, bone_transforms[vin.bone_indices[bone_index]]);
 
     }
@@ -24,17 +24,12 @@ VS_OUT main( VS_IN  vin )
     vin.normal = float4(blended_normal.xyz, 0.0f);
     vin.tangent = float4(blended_tangent.xyz, 0.0f);
     
-     VS_OUT vout;
-     vout.position = mul(vin.position, mul(world, view_projection));
- 
-     vout.world_position = mul(vin.position, world);
-     vout.world_normal = normalize(mul(vin.normal, world));
-    vout.world_tangent = normalize(mul(vin.tangent, world));
-    vout.world_tangent.w = sigma;
-     vout.texcoord = vin.texcoord;
- 
-     vout.color = material_color;
+    VS_OUT vout;
+	// 光カメラで座標変換
+    vout.position = mul(vin.position, ShadowVP);
+    vout.texcoord = vin.texcoord;
+    vout.ShadowParam = vout.position;
  
  
-     return vout;
- }
+    return vout;
+}

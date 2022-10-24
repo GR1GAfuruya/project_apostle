@@ -19,7 +19,7 @@ void PhysicalUp::debug_gui(string str_id)
 {
 #if USE_IMGUI
 	string name = "PhysicalUp:" + str_id + "Param";
-	ImGui::Begin("Skill");
+	ImGui::Begin("PhysicalUp");
 	ImGui::PushID(str_id.c_str());
 	/*これより下にパラメーター記述*/
 	ImGui::BulletText(name.c_str());

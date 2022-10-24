@@ -22,7 +22,7 @@ void Regenerate::debug_gui(string str_id)
 {
 #if USE_IMGUI
 	string name = "Regenerate:" + str_id + "Param";
-	ImGui::Begin("Skill");
+	ImGui::Begin("Regenerate");
 	ImGui::PushID(str_id.c_str());
 	/*これより下にパラメーター記述*/
 	ImGui::BulletText(name.c_str());

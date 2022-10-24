@@ -58,9 +58,6 @@
     <Filter Include="Shaders\Mesh\default">
       <UniqueIdentifier>{b60291f5-8785-40ce-803c-3341c1848861}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Grass">
-      <UniqueIdentifier>{e9256ecf-2b1c-421c-b6b8-443531fd41b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Collision">
       <UniqueIdentifier>{20e10243-8636-40a5-b4c3-0315cefe7ac4}</UniqueIdentifier>
     </Filter>
@@ -192,6 +189,15 @@
     </Filter>
     <Filter Include="Shaders\Constant">
       <UniqueIdentifier>{c8e470e0-5069-4529-bb5a-5c544d331c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Mesh\shadow">
+      <UniqueIdentifier>{89d9481b-debe-49ba-85fb-a3bf326d817c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Mesh\geometry">
+      <UniqueIdentifier>{b76d8788-061e-4644-a5e7-852d6bfda2d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\MeshEffect">
+      <UniqueIdentifier>{d1f132fc-e30a-43e4-bbf8-aba00e109e72}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -348,9 +354,6 @@
     <ClCompile Include="sources\light_manager.cpp">
       <Filter>sources\Effects\Light</Filter>
     </ClCompile>
-    <ClCompile Include="sources\mesh_effect.cpp">
-      <Filter>sources\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
     </ClCompile>
@@ -425,6 +428,12 @@
     </ClCompile>
     <ClCompile Include="sources\move_behavior.cpp">
       <Filter>sources\Charactor</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\shadow_map_shader.cpp">
+      <Filter>sources\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mesh_effect.cpp">
+      <Filter>sources\Effects\MeshEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -593,9 +602,6 @@
     <ClInclude Include="sources\boss_charge_attack.h">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
     </ClInclude>
-    <ClInclude Include="sources\mesh_effect.h">
-      <Filter>sources\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="sources\skin_particles.h">
       <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
@@ -683,6 +689,12 @@
     <ClInclude Include="sources\imgui_include.h">
       <Filter>sources\User</Filter>
     </ClInclude>
+    <ClInclude Include="sources\shadow_map_shader.h">
+      <Filter>sources\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mesh_effect.h">
+      <Filter>sources\Effects\MeshEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
@@ -702,12 +714,6 @@
     </FxCompile>
     <FxCompile Include="HLSL\blur_ps.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\geometric_primitive_ps.hlsl">
-      <Filter>Shaders\Mesh</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\geometric_primitive_vs.hlsl">
-      <Filter>Shaders\Mesh</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\sprite_dissolve_vs.hlsl">
       <Filter>Shaders\Sprite</Filter>
@@ -753,24 +759,6 @@
     </FxCompile>
     <FxCompile Include="HLSL\lambert_ps.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\default_ps.hlsl">
-      <Filter>Shaders\Mesh</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_ds.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_gs.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_hs.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_ps.hlsl">
-      <Filter>Shaders\Grass</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\grass_vs.hlsl">
-      <Filter>Shaders\Grass</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\aura_ps.hlsl">
       <Filter>Shaders\Effect\MeshEffect</Filter>
@@ -901,6 +889,24 @@
     <FxCompile Include="HLSL\fire_distortion.hlsl">
       <Filter>Shaders\Effect\Fire</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\shadow_map_ps.hlsl">
+      <Filter>Shaders\Mesh\shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\shadow_map_vs.hlsl">
+      <Filter>Shaders\Mesh\shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\deferred_light_shadow.hlsl">
+      <Filter>Shaders\defferd</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\geometric_primitive_ps.hlsl">
+      <Filter>Shaders\Mesh\geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\geometric_primitive_vs.hlsl">
+      <Filter>Shaders\Mesh\geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\default_ps.hlsl">
+      <Filter>Shaders\Mesh\default</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\sprite.hlsli">
@@ -908,9 +914,6 @@
     </None>
     <None Include="HLSL\fullscreen_quad.hlsli">
       <Filter>Shaders\Effect\PostEffect</Filter>
-    </None>
-    <None Include="HLSL\geometric_primitive.hlsli">
-      <Filter>Shaders\Mesh</Filter>
     </None>
     <None Include="HLSL\sprite_dissolve.hlsli">
       <Filter>Shaders\Sprite</Filter>
@@ -926,9 +929,6 @@
     </None>
     <None Include="HLSL\ramp_shader.hlsli">
       <Filter>Shaders\Mesh\ramp</Filter>
-    </None>
-    <None Include="HLSL\grass.hlsli">
-      <Filter>Shaders\Grass</Filter>
     </None>
     <None Include="HLSL\mesh_effect.hlsli">
       <Filter>Shaders\Effect\MeshEffect</Filter>
@@ -959,6 +959,12 @@
     </None>
     <None Include="HLSL\constants.hlsli">
       <Filter>Shaders\Constant</Filter>
+    </None>
+    <None Include="HLSL\shadow_map.hlsli">
+      <Filter>Shaders\Mesh\shadow</Filter>
+    </None>
+    <None Include="HLSL\geometric_primitive.hlsli">
+      <Filter>Shaders\Mesh\geometry</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,7 @@
 void Player::initialize()
 {
 	//パラメーター初期化
-	position = { 0.0f, 10.0f,0.0f };
+	position = { 0.0f, 10.0f,-20.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	move_speed = 30.0f;
 	turn_speed = DirectX::XMConvertToRadians(720);
@@ -32,7 +32,7 @@ void Player::initialize()
 	acceleration = 15.0f;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-	damaged_function = [=](int damage, float invincible)->void {apply_damage(damage, invincible); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible, type); };
 	state = State::IDLE;
 	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	sword->initialize();
@@ -54,17 +54,20 @@ Player::Player(Graphics& graphics, Camera* camera)
 	//攻撃時エフェクト
 	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Model/SlashMesh.fbx");
 	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	slash_efect->create_pixel_shader(graphics.get_device().Get(), "shaders/slash_ps.cso");
+	//slash_efect->create_pixel_shader(graphics.get_device().Get(), "shaders/slash_ps.cso");
+	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	slash_efect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 
 	
 	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
-	attack1.get()->initialize(graphics.get_dc().Get());
+	attack1.get()->initialize(graphics);
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
-	sword_hand = model->get_bone_by_name("pelvis");
+	left_hand = model->get_bone_by_name("pelvis");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
@@ -100,7 +103,6 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
-	;
 	//ソード更新
 	{
 		sword->update(graphics, elapsed_time);
@@ -114,8 +116,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	collider.end = { position.x,position.y + height, position.z };
 	collider.radius = 1.0f;
 	//skill系仮置き
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
 	
@@ -283,15 +284,22 @@ void Player::input_avoidance()
 //==============================================================
 void Player::input_chant_support_skill(Graphics& graphics)
 {
+	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
-		case SP_SKILLTYPE::PHYCICAL_UP:
-		//	skill_manager->chant_phycical_up(graphics, position, position);
+		case SP_SKILLTYPE::PHYSICAL_UP:
+			if (skill_manager->chant_physical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed))
+			{
+				transition_magic_buff_state();//状態遷移
+			}
 			break;
 			case SP_SKILLTYPE::REGENERATE:
-			transition_magic_buff_state();//状態遷移
+				//if (skill_manager->chant_regenerate(graphics, launch_pos, ))
+				//{
+				//	transition_magic_buff_state();//状態遷移
+				//};
 
 			break;
 			case SP_SKILLTYPE::RESTRAINNT:
@@ -310,17 +318,24 @@ void Player::input_chant_support_skill(Graphics& graphics)
 //==============================================================
 void Player::input_chant_attack_skill(Graphics& graphics)
 {
+	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
-			skill_manager->chant_magic_bullet(graphics, position, Math::get_posture_forward(orientation));
-			transition_attack_bullet_state();//状態遷移
+			model->fech_by_bone(transform, left_hand, launch_pos);
+			//スキルを発動できた場合遷移
+			if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+			{
+				transition_attack_bullet_state();//状態遷移
+			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-			skill_manager->chant_spear_sea(graphics, position);
+			if (skill_manager->chant_spear_sea(graphics, position))
+			{
 			transition_attack_ground_state();
+			}
 			break;
 		default:
 			break;
@@ -360,7 +375,7 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
 		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
-			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time);
+			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE);
 		}
 	}
 }
@@ -395,9 +410,21 @@ void Player::on_dead()
 //ダメージを受けた際の処理
 // 
 //==============================================================
-void Player::on_damaged()
+void Player::on_damaged(WINCE_TYPE type)
 {
-	transition_damage_front_state();	
+	switch (type)
+	{
+	case WINCE_TYPE::NONE:
+		break;
+	case WINCE_TYPE::SMALL:
+		transition_damage_front_state();
+		break;
+	case WINCE_TYPE::BIG:
+		break;
+	default:
+		break;
+	}
+	
 }
 
 //==============================================================
@@ -430,7 +457,7 @@ void Player::debug_gui(Graphics& graphics)
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
-	imgui_menu_bar("charactor", "player", display_player_imgui);
+	imgui_menu_bar("Charactor", "player", display_player_imgui);
 	if (display_player_imgui)
 	{
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
@@ -466,6 +493,10 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragFloat("jump_speed", &jump_speed);
 				ImGui::DragFloat("air_control", &air_control);
 				ImGui::Checkbox("is_ground", &is_ground);
+				float control_x = game_pad->get_axis_LX();
+				float control_y = game_pad->get_axis_LY();
+				ImGui::DragFloat("control_x", &control_x);
+				ImGui::DragFloat("control_y", &control_y);
 			}
 			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -487,25 +518,62 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 
 			}
-			float control_x = game_pad->get_axis_LX();
-			float control_y = game_pad->get_axis_LY();
-			ImGui::DragFloat("control_x", &control_x);
-			ImGui::DragFloat("control_y", &control_y);
-
 			
+
+			ImGui::Begin("Skill");
+			
+				//--------スキルのデバッグGUI--------//
+				if (ImGui::Button("sup_skill_chant"))
+				{
+					switch (skill_manager->get_selected_sup_skill_type())
+					{
+					case SP_SKILLTYPE::PHYSICAL_UP:
+						skill_manager->chant_physical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed);
+						break;
+					case SP_SKILLTYPE::REGENERATE:
+						transition_magic_buff_state();//状態遷移
+
+						break;
+					case SP_SKILLTYPE::RESTRAINNT:
+						transition_attack_pull_slash_state();
+						break;
+					default:
+						break;
+					}
+				}
+				ImGui::SameLine();
+				DirectX::XMFLOAT3 launch_pos;
+				if (ImGui::Button("atk_skill_chant"))
+				{
+					switch (skill_manager->get_selected_atk_skill_type())
+					{
+					case ATK_SKILLTYPE::MAGICBULLET:
+						model->fech_by_bone(transform, left_hand, launch_pos);
+
+						if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+						{
+							transition_attack_bullet_state();//状態遷移
+						}
+						break;
+					case ATK_SKILLTYPE::SPEARS_SEA:
+						if (skill_manager->chant_spear_sea(graphics, position))
+						{
+							transition_attack_ground_state();
+						}
+						break;
+					default:
+						break;
+					}
+				}
+				ImGui::End();
 		}
 		ImGui::End();
-
-		ImGui::Begin("Skill");
-		{
-			ImGui::Text("player_skill_system");
-			
-			
-		}
-		ImGui::End();
-		skill_manager.get()->debug_gui(graphics);
 
 	}
+
+
+
+	skill_manager.get()->debug_gui(graphics);
 	slash_efect->debug_gui("slash_efect");
 #endif // USE_IMGUI
 

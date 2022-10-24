@@ -11,13 +11,13 @@ public:
 	virtual void debug_gui(int unique_id){};
 protected:
 	//定数バッファ
-	struct CBDirLightParam {
+	struct DirLightParam {
 		DirectX::XMFLOAT4 dir_light_dir;
 		DirectX::XMFLOAT4 dir_light_color;
 	};
 
 public:
-	std::unique_ptr<Constants<CBDirLightParam>> light_constants{};
+	std::unique_ptr<Constants<DirLightParam>> light_constants{};
 };
 
 //平行光
@@ -31,6 +31,9 @@ public:
 
 	void set_direction(DirectX::XMFLOAT3 position);
 	void set_color(float r, float g, float b);
+
+	DirectX::XMFLOAT3 get_direction();
+	DirectX::XMFLOAT3 get_color();
 };
 
 //点光源
@@ -45,4 +48,8 @@ public:
 	void set_position(DirectX::XMFLOAT3 position);
 	void set_color(float r, float g, float b);
 	void set_distance(float d);
+
+	DirectX::XMFLOAT3 get_position();
+	DirectX::XMFLOAT3 get_color();
+	float get_distance();
 };

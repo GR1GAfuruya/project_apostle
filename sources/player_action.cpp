@@ -185,6 +185,10 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 		transition_r_attack_combo1_state();
 	}
 
+	//スキル入力
+	input_chant_support_skill(graphics);
+	input_chant_attack_skill(graphics);
+
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 }
@@ -204,6 +208,10 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 		transition_r_attack_combo1_state();
 	}
 
+	//スキル入力
+	input_chant_support_skill(graphics);
+	input_chant_attack_skill(graphics);
+
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 }
@@ -213,15 +221,15 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
 {
 	//徐々に速度を落としていく
-	velocity.x /= 2;
-	velocity.z /= 2;
+	velocity.x /= 2.0f;
+	velocity.z /= 2.0f;
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 	if (model->anime_param.frame_index > 33 / 2)
 	{
 		//地面に足がついたフレームからはさらに速度落とす
-		velocity.x /= 2;
-		velocity.z /= 2;
+		velocity.x /= 2.0f;
+		velocity.z /= 2.0f;
 	}
 	else
 	{
@@ -256,6 +264,11 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	{
 		transition_idle_state();
 	}
+
+	//スキル入力
+	input_chant_support_skill(graphics);
+	input_chant_attack_skill(graphics);
+
 	//速力処理更新
 	update_velocity(elapsed_time, position, stage);
 }
@@ -267,6 +280,8 @@ void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, C
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 }
 
 void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
@@ -275,6 +290,8 @@ void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapse
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 
 }
 
@@ -284,6 +301,8 @@ void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_ti
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 
 }
 
@@ -293,6 +312,8 @@ void Player::update_attack_ground_state(Graphics& graphics, float elapsed_time, 
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 
 }
 
@@ -302,6 +323,8 @@ void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Cam
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 }
 
 void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
@@ -310,6 +333,8 @@ void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, 
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 }
 
 void Player::update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
@@ -318,6 +343,8 @@ void Player::update_attack_slash_up_state(Graphics& graphics, float elapsed_time
 	{
 		transition_idle_state();
 	}
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 }
 
 void Player::update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage)
@@ -326,6 +353,8 @@ void Player::update_r_attack_forward_state(Graphics& graphics, float elapsed_tim
 	//	ルートモーションに関する更新	   //
 	//*************************************//
 	root_motion_manual(Math::get_posture_forward(orientation), 1.5f);
+	//速力処理更新
+	update_velocity(elapsed_time, position, stage);
 }
 
 
@@ -352,7 +381,7 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 	//*************************************//
 	DirectX::XMFLOAT3 sword_pos;
 	DirectX::XMFLOAT4X4 bone_ori = {};
-	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	model->fech_by_bone(transform, root, sword_pos, &bone_ori);
 	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
 	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
 	if (model->anime_param.frame_index == 20 / 2)
@@ -400,7 +429,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 {
 	DirectX::XMFLOAT3 sword_pos;
 	DirectX::XMFLOAT4X4 bone_ori = {};
-	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	model->fech_by_bone(transform, root, sword_pos, &bone_ori);
 	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
 	if (model->anime_param.frame_index == 12 / 2)
 	{
@@ -445,7 +474,7 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 {
 	DirectX::XMFLOAT3 sword_pos;
 	DirectX::XMFLOAT4X4 bone_ori = {};
-	model->fech_by_bone(transform, sword_hand, sword_pos, &bone_ori);
+	model->fech_by_bone(transform, root, sword_pos, &bone_ori);
 	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
 	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
 	//一振り目の斬撃

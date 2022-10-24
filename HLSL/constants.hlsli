@@ -21,18 +21,6 @@ cbuffer SCENE_CONSTANT : register(b3)
 };
 
 
-cbuffer GRASS_CONSTANTS : register(b4)
-{
-    float grass_height_factor;
-    float grass_width_factor;
-    float grass_curvature;
-    float grass_withered_factor;
-    float grass_height_variance;
-    float perlin_noise_distribution_factor;
-    float tesselation_max_subdivision;
-    float tesselation_max_distance;
-    float4 grass_specular_color;
-};
 
 
 
@@ -60,7 +48,6 @@ cbuffer POST_EFFECTS_CONSTANT : register(b5)
     float brightness;
 }
 
-#define CELL_COUNT 5 
 
 cbuffer DEFFERD_LIGHT_CONSTANT : register(b7)
 {

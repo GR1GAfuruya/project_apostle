@@ -67,4 +67,5 @@ private:
 	float length;
 	//Œ•‚Ì‘¾‚³
 	float radius;
+	bool display_imgui;
 };

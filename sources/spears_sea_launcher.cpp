@@ -5,7 +5,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
 }
 
-void SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
+bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 {
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
@@ -14,7 +14,9 @@ void SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
 		chantable = false;
+		return true;
 	}
+	return false;
 }
 
 void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
@@ -25,11 +27,21 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 			object_colider.start, object_colider.end, object_colider.radius))
 		{
 			s->skill_hit();
-			damaged_func(s->get_power(), s->get_invinsible_time());
+			damaged_func(s->get_power(), s->get_invinsible_time(),WINCE_TYPE::SMALL);
 		}
 	}
 }
 
 void SpearSeaLauncher::debug_gui()
 {
+#if USE_IMGUI
+	imgui_menu_bar("Skill", "SpearSea", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin("SpearSea");
+
+		ImGui::End();
+	}
+#endif
+
 }

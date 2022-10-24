@@ -7,7 +7,7 @@ public:
 	SpearSeaLauncher(Graphics& graphics);
 	~SpearSeaLauncher() override {};
 
-	void chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
+	bool chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
 
 	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
 	//DebugGUI•\Ž¦

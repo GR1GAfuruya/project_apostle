@@ -20,7 +20,7 @@ enum class FB_FLAG : uint8_t
 class FrameBuffer
 {
 public:
-	FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, FB_FLAG flags = FB_FLAG::COLOR_DEPTH_STENCIL);
+	FrameBuffer(ID3D11Device* device, uint32_t width, uint32_t height, FB_FLAG flags = FB_FLAG::COLOR_DEPTH_STENCIL,DXGI_FORMAT format = DXGI_FORMAT_R16G16B16A16_FLOAT);
 	virtual ~FrameBuffer() = default;
 
 

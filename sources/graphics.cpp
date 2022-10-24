@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "lambert_shader.h"
 #include "PBR_shader.h"
+#include "shadow_map_shader.h"
 #include <d3dcompiler.h>
 #include <d3dcommon.h>
 //==============================================================
@@ -149,6 +150,17 @@ void Graphics::initialize(HWND hwnd)
 	sampler_desc.BorderColor[3] = 0;
 	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::CLAMP)].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+	//	シャドウマップ用
+	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampler_desc.BorderColor[0] = 1000;
+	sampler_desc.BorderColor[1] = 1000;
+	sampler_desc.BorderColor[2] = 1000;
+	sampler_desc.BorderColor[3] = 1000;
+	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::SHADOW_MAP)].GetAddressOf());
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	//-----------------------------------------------//
 	//					深度テスト					//
 	//-----------------------------------------------//
@@ -264,18 +276,16 @@ void Graphics::initialize(HWND hwnd)
 	
 		// シェーダーの登録
 		{
-			std::shared_ptr<MeshShader> shader;//シェアードポインタで作成　エラー出る
-			//Shader* shader = nullptr; //生ポインタで作成　メモリリークでる
+			std::shared_ptr<MeshShader> shader;//シェアードポインタで作　エラー出る
 			// LAMBERT
-			
-			//shader = new LambertShader(device.Get());
 			shader = make_shared<LambertShader>(device.Get());
 			shaders.insert(std::make_pair(SHADER_TYPES::LAMBERT, shader));
-			//// PBR
-			//Shader* shader2 = new PBRShader(device.Get());
+			// PBR
 			shader.reset(new PBRShader(device.Get()));
 			shaders.insert(std::make_pair(SHADER_TYPES::PBR, shader));
-			
+			// シャドウマップ用
+			shader.reset(new ShadowMapShader(device.Get()));
+			shaders.insert(std::make_pair(SHADER_TYPES::SHADOW, shader));
 		}
 		
 	}
@@ -374,13 +384,14 @@ BOOL Graphics::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)
 	return GetOpenFileNameW(&o);
 }
 
-void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader)
+void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader,string id)
 {
 	//////シェーダーのコンパイル
 #ifdef USE_IMGUI
-	ImGui::Begin("compile_shader");
-
-	if (ImGui::Button("compile"))
+	string id_name = "compile" + id;
+	ImGui::Begin("compile");
+	ImGui::PushID(id.c_str());
+	if (ImGui::Button(id_name.c_str()))
 	{
 		TCHAR init {};
 		TCHAR name[MAX_PATH];
@@ -391,10 +402,8 @@ void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader)
 
 			D3D_SHADER_MACRO macros[] =
 			{
-				
-					{"DEFINE_MACRO", "float4(0, 1, 1, 1)"},
-					{nullptr, nullptr},
-				
+					{"EXAMPLE_DEFINE", "1"},
+					{NULL, NULL},
 			};
 
 			UINT compileFlag = 0;
@@ -402,18 +411,19 @@ void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader)
 			compileFlag |= D3DCOMPILE_DEBUG | D3DCOMPILE_ENABLE_STRICTNESS;
 			const char* entryPoint = "main";
 			const char* shaderTarget = "ps_5_0";
-			Microsoft::WRL::ComPtr<ID3DBlob> pShaderBlob, pErrorMsg = nullptr;
+			ID3DBlob* pShaderBlob = nullptr;
+			ID3DBlob* pErrorMsg = nullptr;
 			//シェーダのコンパイル
 			D3DCompileFromFile(
 				s.c_str(),
 				macros,
-				nullptr,
+				D3D_COMPILE_STANDARD_FILE_INCLUDE,
 				entryPoint,
 				shaderTarget,
 				compileFlag,
 				0,
-				pShaderBlob.GetAddressOf(),
-				pErrorMsg.GetAddressOf());
+				&pShaderBlob,
+				&pErrorMsg);
 			//ID3D11ComputeShaderの作成
 			device->CreatePixelShader(
 				pShaderBlob->GetBufferPointer(),
@@ -422,6 +432,7 @@ void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader)
 				pixel_shader);
 		}
 	}
+	ImGui::PopID();
 	ImGui::End();
 #endif
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "skill.h"
+#include "mesh_effect.h"
 class MagicBullet : public Skill
 {
 public:
@@ -42,7 +43,7 @@ protected:
 	DirectX::XMFLOAT3 position{};
 	DirectX::XMFLOAT3 velocity{};
 	float acceleration;
-
+	std::unique_ptr<MeshEffect> main_effect;
 	//==============================================================
 	// 
 	// íËêî

@@ -31,7 +31,7 @@ public:
 		// Н╩УxТ▓Ро
 		float saturation = 1;
 		// Ц╛УxТ▓Ро
-		float brightness = 2.1f;
+		float brightness = 1.5f;
 		float pad3;
 	};
 
@@ -53,5 +53,5 @@ public:
 
 	std::unique_ptr<Constants<CB_PostEffect>> cb_post_effect;
 
-	bool display_post_effects_imgui = true;
+	bool display_post_effects_imgui = false;
 };

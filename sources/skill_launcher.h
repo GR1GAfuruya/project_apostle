@@ -55,6 +55,7 @@ protected:
 	float cool_time_attenuation_speed;
 	std::vector<std::unique_ptr<Skill>> skills;
 
+	bool display_imgui = false;
 	//==============================================================
 	// 
 	// ’è”

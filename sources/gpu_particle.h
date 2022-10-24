@@ -5,7 +5,9 @@
 #include <directxmath.h>
 #include <memory>
 #include <vector>
+#include <string>
 #include "constant.h"
+#include "graphics.h"
 class GPU_Particles
 {
 public:
@@ -54,13 +56,13 @@ public:
 	GPU_Particles& operator=(GPU_Particles&&) noexcept = delete;
 	virtual ~GPU_Particles() = default;
 
-	void initialize(ID3D11DeviceContext* dc);
+	void initialize(Graphics& graphics);
 	void launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
 	void particle_emit(ID3D11DeviceContext* dc);
 	void update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs = nullptr);
 	void render(ID3D11DeviceContext * dc, ID3D11Device* device);
 	void emitter_update(ID3D11DeviceContext* dc, float elapsed_time);
-	void debug_gui(const char* str_id);
+	void debug_gui(std::string str_id);
 
 	UINT get_particle_pool_count(ID3D11DeviceContext* dc) const;
 
@@ -101,5 +103,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constant_buffer;
 	//DebugGui
-	bool display_imgui = true;
+	bool display_imgui = false;
 };

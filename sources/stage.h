@@ -13,4 +13,5 @@ public:
 
 	virtual bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) = 0;
 
+	bool display_imgui = false;
 };

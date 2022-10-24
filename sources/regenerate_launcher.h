@@ -7,7 +7,7 @@ public:
 	RegenerateLauncher(Graphics& graphics);
 	~RegenerateLauncher() override {};
 
-	void chant(Graphics& graphics, int* health_up);
+	bool chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health);
 
 	//DebugGUI•\Ž¦
 	void debug_gui() override;

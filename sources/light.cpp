@@ -2,7 +2,7 @@
 #include "imgui_include.h"
 Light::Light(Graphics& graphics)
 {
-	light_constants = std::make_unique<Constants<CBDirLightParam>>(graphics.get_device().Get());
+	light_constants = std::make_unique<Constants<DirLightParam>>(graphics.get_device().Get());
 }
 
 
@@ -35,6 +35,16 @@ void DirectionalLight::set_direction(DirectX::XMFLOAT3 dir)
 void DirectionalLight::set_color(float r, float g, float b)
 {
 	light_constants->data.dir_light_color = { r,g,b,1.0f };
+}
+
+DirectX::XMFLOAT3 DirectionalLight::get_direction()
+{
+	return DirectX::XMFLOAT3(light_constants->data.dir_light_dir.x, light_constants->data.dir_light_dir.y, light_constants->data.dir_light_dir.z);
+}
+
+DirectX::XMFLOAT3 DirectionalLight::get_color()
+{
+	return DirectX::XMFLOAT3(light_constants->data.dir_light_color.x, light_constants->data.dir_light_color.y, light_constants->data.dir_light_color.z);
 }
 
 
@@ -75,6 +85,21 @@ void PointLight::set_color(float r, float g, float b)
 void PointLight::set_distance(float d)
 {
 	light_constants->data.dir_light_dir.w = d;
+}
+
+DirectX::XMFLOAT3 PointLight::get_position()
+{
+	return DirectX::XMFLOAT3(light_constants->data.dir_light_dir.x, light_constants->data.dir_light_dir.y, light_constants->data.dir_light_dir.z);
+}
+
+DirectX::XMFLOAT3 PointLight::get_color()
+{
+	return DirectX::XMFLOAT3(light_constants->data.dir_light_color.x, light_constants->data.dir_light_color.y, light_constants->data.dir_light_color.z);
+}
+
+float PointLight::get_distance()
+{
+	return light_constants->data.dir_light_dir.w;
 }
 
 

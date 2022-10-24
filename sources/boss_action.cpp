@@ -188,15 +188,17 @@ void Boss::update_walk_state(Graphics& graphics, float elapsed_time, Stage* stag
 	Move(dir_target_vec.x, dir_target_vec.z, WALK_SPEED);
 	Turn(elapsed_time, dir_target_vec, turn_speed, orientation);
 
-	if (length_to_target < 15)
+	if (length_to_target < NORMAL_ATTACK_LENGTH)
 	{
 		transition_attack_state();
+		return;
 	}
+	update_velocity(elapsed_time, position, stage);
 }
 
 void Boss::update_run_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
-
+	update_velocity(elapsed_time, position, stage);
 }
 
 //---------------------------//
@@ -204,9 +206,11 @@ void Boss::update_run_state(Graphics& graphics, float elapsed_time, Stage* stage
 //---------------------------//
 void Boss::update_attack_state(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+	sickle_attack_param.is_attack = true;
 	if (model->is_end_animation())
 	{
 		transition_idle_state();
+		sickle_attack_param.is_attack = false;
 	}
 }
 
