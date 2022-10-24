@@ -9,7 +9,7 @@ bool RegenerateLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<Regenerate>();
+	unique_ptr<Skill> skill = make_unique<Regenerate>();
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
 		chantable = false;

@@ -202,13 +202,12 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	///						        UI  				            ///
 	//***************************************************************//
 	//仮置きの操作説明
-	operation_ui->begin(graphics.get_dc().Get());
+	/*operation_ui->begin(graphics.get_dc().Get());
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
-	operation_ui->end(graphics.get_dc().Get());	
+	operation_ui->end(graphics.get_dc().Get());	*/
 
 	player->render_ui(graphics,elapsed_time);
 	camera->debug_gui();
-	ImGui::ShowDemoWindow();
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());

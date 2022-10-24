@@ -10,7 +10,7 @@ bool RestraintLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos,
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<Restrain>();
+	unique_ptr<Skill> skill = make_unique<Restrain>();
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
 		chantable = false;

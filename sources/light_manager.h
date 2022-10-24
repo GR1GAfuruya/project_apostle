@@ -1,5 +1,5 @@
 #pragma once
-#define CAST_SHADOW 0
+#define CAST_SHADOW 1
 #include "graphics.h"
 #include "light.h"
 #include "fullscreen_quad.h"

@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include "constant.h"
+#include "graphics.h"
 class GPU_Particles
 {
 public:
@@ -55,7 +56,7 @@ public:
 	GPU_Particles& operator=(GPU_Particles&&) noexcept = delete;
 	virtual ~GPU_Particles() = default;
 
-	void initialize(ID3D11DeviceContext* dc);
+	void initialize(Graphics& graphics);
 	void launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
 	void particle_emit(ID3D11DeviceContext* dc);
 	void update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs = nullptr);

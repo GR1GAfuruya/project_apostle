@@ -98,22 +98,24 @@ static UINT align(UINT num, UINT alignment)
 {
 	return (num + (alignment - 1)) & ~(alignment - 1);
 }
-void GPU_Particles::initialize(ID3D11DeviceContext* dc)
-{
-	
-	//パーティクルの資料をコンピュートシェーダーに転送
-	dc->CSSetShader(init_cs.Get(), NULL, 0);
 
-	dc->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), nullptr);
-	dc->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), nullptr);
+
+void GPU_Particles::initialize(Graphics& graphics)
+{
+	std::lock_guard<std::mutex> lock(graphics.get_mutex());
+	//パーティクルの資料をコンピュートシェーダーに転送
+	graphics.get_dc().Get()->CSSetShader(init_cs.Get(), NULL, 0);
+
+	graphics.get_dc().Get()->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), nullptr);
+	graphics.get_dc().Get()->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), nullptr);
 	//----<コンピュートシェーダーの実行>----//
 	UINT num_threads = align(static_cast<UINT>(max_particle_count), THREAD_NUM_X);
-	dc->Dispatch(num_threads /THREAD_NUM_X, 1, 1);
+	graphics.get_dc().Get()->Dispatch(num_threads /THREAD_NUM_X, 1, 1);
 	
 	//必ずnullでクリア
 	ID3D11UnorderedAccessView* null_unordered_access_view{};
-	dc->CSSetUnorderedAccessViews(0, 1, &null_unordered_access_view, nullptr);
-	dc->CSSetUnorderedAccessViews(1, 1, &null_unordered_access_view, nullptr);
+	graphics.get_dc().Get()->CSSetUnorderedAccessViews(0, 1, &null_unordered_access_view, nullptr);
+	graphics.get_dc().Get()->CSSetUnorderedAccessViews(1, 1, &null_unordered_access_view, nullptr);
 }
 
 

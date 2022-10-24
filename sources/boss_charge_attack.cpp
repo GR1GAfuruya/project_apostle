@@ -40,7 +40,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particle‚Ì‰Šúİ’è
 	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 150000);
-	particle.get()->initialize(graphics.get_dc().Get());
+	particle.get()->initialize(graphics);
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 }
@@ -104,7 +104,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	DirectX::XMFLOAT3 emit_pos{};
 	emit_pos.y = core_pos.y;
 	const float radius = 70.0f;
-	for (float theta = 0; theta < 360; theta += 120)
+	for (float theta = 0; theta < 360.0f; theta += 120.0f)
 	{
 		emit_pos.x = core_pos.x + (radius * sinf(DirectX::XMConvertToRadians(theta)));
 		emit_pos.z = core_pos.z + (radius * cosf(DirectX::XMConvertToRadians(theta)));
@@ -256,11 +256,13 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 {
 	//™X‚ÉÁ‚¦‚Ä‚¢‚­ŠÖ”
-	auto fade_out = [=](float alpha) {return (std::max)(alpha - 7.0f * elapsed_time, 0.0f); };
+	const float fade_out_speed = 7.0f;
+	auto fade_out = [=](float alpha) {return (std::max)(alpha - fade_out_speed * elapsed_time, 0.0f); };
 	
 	wave->constants->data.particle_color.w = fade_out(wave->constants->data.particle_color.w);
 	//wave->constants->data.scroll_speed += elapsed_time;
-	wave->constants->data.threshold = (std::min)(wave->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
+	const float threshold_speed = 2.0f;
+	wave->constants->data.threshold = (std::min)(wave->constants->data.threshold + threshold_speed * elapsed_time, 1.0f);
 	wave->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 520 * elapsed_time);
 
 
@@ -268,7 +270,7 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 	tornado->set_scale({ tornado->get_scale().x + expand,tornado->get_scale().y + expand,tornado->get_scale().z + expand });
 	tornado->constants->data.particle_color.w = fade_out(tornado->constants->data.particle_color.w);
 	tornado->set_rotate_quaternion(MeshEffect::AXIS::UP, 360 * elapsed_time);
-	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + 2.0f * elapsed_time, 1.0f);
+	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + threshold_speed * elapsed_time, 1.0f);
 	
 	if (tornado->constants->data.threshold > 0.9f) stop();
 }

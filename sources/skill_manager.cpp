@@ -319,7 +319,7 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 	if (cross < 0) ang = 360.0f - ang;
 	//ƒXƒƒbƒg”Ô†‚ðŒˆ’è
 	int selected_index;
-	selected_index = ang / slots_ang_size;
+	selected_index = static_cast<int>(ang / slots_ang_size);
 	return selected_index;
 }
 

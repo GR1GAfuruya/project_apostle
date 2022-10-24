@@ -63,7 +63,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 
 	
 	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
-	attack1.get()->initialize(graphics.get_dc().Get());
+	attack1.get()->initialize(graphics);
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
