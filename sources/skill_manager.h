@@ -94,7 +94,7 @@ private:
 	std::unique_ptr<PhysicalUpLauncher> physical_up;
 	std::unique_ptr<RegenerateLauncher> regenerate;
 	std::unique_ptr<RestraintLauncher> restraint;
-
+	 
 	std::unique_ptr<MagicBulletLauncher> magick_bullet;
 	std::unique_ptr<SpearSeaLauncher> spear_sea;
 	

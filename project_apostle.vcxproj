@@ -285,6 +285,7 @@
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="sources\damage_func.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
+    <ClInclude Include="sources\noise.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />
     <ClInclude Include="sources\restraint_launcher.h" />

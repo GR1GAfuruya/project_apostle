@@ -1,8 +1,12 @@
 #include "spears_sea_launcher.h"
-#include "skill_spears_sea.h"
+
 #include "collision.h"
 SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
+	init_param.power = 5;
+	init_param.invinsible_time = 1.0f;
+	init_param.radius = 5;
+	init_param.collider_radius = 5;
 }
 
 bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
@@ -10,8 +14,9 @@ bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<SpearsSea>(graphics, launch_pos);
+	std:unique_ptr<Skill> skill = make_unique<SpearsSea>(graphics, launch_pos, init_param);
 		//ÉäÉXÉgÇ…í«â¡
+		cool_time = skill->get_cool_time();
 		skills.push_back(std::move(skill));
 		chantable = false;
 		return true;
@@ -39,7 +44,23 @@ void SpearSeaLauncher::debug_gui()
 	if (display_imgui)
 	{
 		ImGui::Begin("SpearSea");
-
+		if (ImGui::CollapsingHeader("SpearSeaLauncher", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::DragFloat("cool_time", &cool_time);
+			ImGui::DragFloat("init_cool_time", &init_param.cool_time);
+			ImGui::DragFloat("power", &init_param.power);
+			ImGui::DragFloat("invinsible_time", &init_param.invinsible_time);
+			ImGui::DragFloat("radius", &init_param.radius);
+			ImGui::DragFloat("collider_radius", &init_param.collider_radius);
+			ImGui::Separator();
+			int count = 0;
+			for (auto& s : skills)
+			{
+				s->debug_gui(to_string(count).c_str());
+				count++;
+				ImGui::Separator();
+			}
+		}
 		ImGui::End();
 	}
 #endif

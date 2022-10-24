@@ -695,6 +695,9 @@
     <ClInclude Include="sources\mesh_effect.h">
       <Filter>sources\Effects\MeshEffect</Filter>
     </ClInclude>
+    <ClInclude Include="sources\noise.h">
+      <Filter>sources\User</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">

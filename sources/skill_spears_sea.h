@@ -5,11 +5,23 @@ class SpearsSea : public Skill
 public:
 	//==============================================================
 	// 
+	// 構造体、列挙型
+	// 
+	//==============================================================
+	struct InitializeParam
+	{
+		float power;
+		float invinsible_time;
+		float cool_time;
+		float radius;
+		float collider_radius;
+	};
+	//==============================================================
+	// 
 	// public関数
 	// 
 	//==============================================================
-	SpearsSea() {}
-	SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
+	SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, InitializeParam initparam);
 	~SpearsSea() {}
 
 	void initialize(Graphics& graphics) override;
@@ -17,25 +29,22 @@ public:
 	void render(Graphics& graphics)override;
 
 	void debug_gui(string str_id);
-protected:
+private:
 	//==============================================================
 	// 
-	// 構造体、列挙型
+	// 定数
 	// 
 	//==============================================================
-
+	static constexpr int MAX_NUM = 8;
 
 	//==============================================================
 	// 
 	// 変数
 	// 
 	//==============================================================
-	DirectX::XMFLOAT3 pos;
-	//==============================================================
-	// 
-	// 定数
-	// 
-	//==============================================================
+	std::unique_ptr<MeshEffect> main_effect[MAX_NUM];
+	float life_span = 0;
+	float radius;
 public:
 
 };

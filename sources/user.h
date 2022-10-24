@@ -994,7 +994,7 @@ namespace Math
     //--------------------------------------------------------------
     //  オブジェクトを円状に配置
     //--------------------------------------------------------------
-    //  戻り値：長さが１のベクトル
+    //  戻り値：位置
     //--------------------------------------------------------------
     inline DirectX::XMFLOAT2 circumferential_placement(DirectX::XMFLOAT2 center, float radius, int index, int divisions, bool clockwise = true, float add_angle = 0)
     {

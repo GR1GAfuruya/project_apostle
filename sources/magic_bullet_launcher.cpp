@@ -17,6 +17,7 @@ bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, 
 	{
 		unique_ptr<Skill> skill = make_unique<MagicBullet>(graphics, init_pos, dir, skill_init_param);
 		cool_time = skill->get_cool_time();
+
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
 		chantable = false;
@@ -49,7 +50,6 @@ void MagicBulletLauncher::debug_gui()
 		ImGui::Begin("MagicBullet");
 		if (ImGui::CollapsingHeader("MagicBulletLauncher", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::PushID("MagicBulletLauncher");
 			ImGui::DragFloat("cool_time", &cool_time);
 			ImGui::DragFloat("init_cool_time", &skill_init_param.cool_time);
 			ImGui::DragFloat("power", &skill_init_param.power);
@@ -57,7 +57,6 @@ void MagicBulletLauncher::debug_gui()
 			ImGui::DragFloat("acceleration", &skill_init_param.acceleration);
 			ImGui::DragFloat("collider_radius", &skill_init_param.collider_radius);
 			int count = 0;
-			ImGui::PopID();
 			for (auto& s : skills)
 			{
 				s->debug_gui(to_string(count).c_str());

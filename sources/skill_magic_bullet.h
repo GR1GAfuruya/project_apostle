@@ -1,6 +1,6 @@
 #pragma once
 #include "skill.h"
-#include "mesh_effect.h"
+
 class MagicBullet : public Skill
 {
 public:

@@ -1,6 +1,6 @@
 #pragma once
 #include "skill_launcher.h"
-
+#include "skill_spears_sea.h"
 class SpearSeaLauncher : public SkillLauncher
 {
 public:
@@ -13,5 +13,5 @@ public:
 	//DebugGUI•\Ž¦
 	void debug_gui() override;
 
-
+	SpearsSea::InitializeParam init_param;
 };
