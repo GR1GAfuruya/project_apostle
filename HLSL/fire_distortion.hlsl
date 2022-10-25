@@ -32,8 +32,9 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 result_color = main_color * mask;
     
     //マスク
-    scroll_speed = float2(0.5, 0.5);
-    distortion_tile = float2(5.0, 5.0);
+    scroll_speed = float2(0.0, 1.0);
+    distortion_tile = float2(1.5, 2.0);
+    tile = float2(0.5, 1.0);
     uv = pin.texcoord.yx + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float alpha = texture_mask.Sample(sampler_texture, tex_coord(uv, tile)).r;
     //カラー出力

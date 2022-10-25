@@ -22,7 +22,7 @@ MeshEffect::MeshEffect(Graphics& graphics, const char* fbx_filename)
 //==============================================================
 void MeshEffect::play(DirectX::XMFLOAT3 pos)
 {
-	if (active == true) return;//すでにアクティブ状態なら更新しない
+	
 	position = pos;
 	active = true;
 	orientation = Math::orientation_reset();

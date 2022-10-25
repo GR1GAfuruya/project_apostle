@@ -6,7 +6,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	init_param.power = 5;
 	init_param.invinsible_time = 1.0f;
 	init_param.radius = 5;
-	init_param.collider_radius = 5;
+	init_param.collider_radius = 8;
 }
 
 bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)

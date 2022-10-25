@@ -13,8 +13,8 @@ public:
 		static Noise instance;
 		return instance;
 	}
-
 	uint32_t get_rnd() { return static_cast<uint32_t> (mt()); }
+private:
 	std::random_device rnd;
 	std::mt19937 mt;
 };

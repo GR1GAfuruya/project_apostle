@@ -15,7 +15,6 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, Initializ
 		main_effect[i]->set_scale(0.5f);
 		main_effect[i]->set_life_span(2);
 		
-		
 		main_effect[i]->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	};
 	power = initparam.power;
@@ -40,15 +39,17 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 		DirectX::XMFLOAT3 appearance_pos;
 		for (int i = 0; i < MAX_NUM ; i++)
 		{
-			
+			if (main_effect[i]->get_active() == true) continue; //‚·‚Å‚ÉÄ¶ó‘Ô‚È‚çXV‚µ‚È‚¢
+
 			int random = Noise::instance().get_rnd();
 			float circle_radius = random % static_cast<int>(radius);
-
 			appearance_pos.x = Math::circumferential_placement({ position.x,position.z }, circle_radius, i, MAX_NUM).x;
 			appearance_pos.y = position.y;
 			appearance_pos.z = Math::circumferential_placement({ position.x,position.z }, circle_radius, i, MAX_NUM).y;
 			main_effect[i]->play(appearance_pos);
-			main_effect[i]->rotate_base_axis(MeshEffect::AXIS::FORWARD, DirectX::XMFLOAT3(0, 1, 0));
+			float random_dir = random % 10 / 10.0f - 0.5f; //-0.5‚©‚ç0.5‚Ì’l
+			DirectX::XMFLOAT3 spear_dir = Math::Normalize(DirectX::XMFLOAT3(random_dir, 1.01f, random_dir));
+			main_effect[i]->rotate_base_axis(MeshEffect::AXIS::FORWARD, spear_dir);
 			main_effect[i]->set_is_loop(true);
 		}
 	}
