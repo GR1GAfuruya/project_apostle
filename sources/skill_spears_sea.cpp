@@ -17,6 +17,11 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, Initializ
 		
 		main_effect[i]->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	};
+	instance_mesh = std::make_unique<InstanceMesh>(graphics, "./resources/Effects/Meshes/eff_spear.fbx",20);
+	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
+	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	instance_mesh->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	power = initparam.power;
 	invinsible_time = initparam.invinsible_time;
 	cool_time = initparam.cool_time;
@@ -53,10 +58,11 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 			main_effect[i]->set_is_loop(true);
 		}
 	}
+	instance_mesh->update(graphics, elapsed_time);
 	//槍エフェクトの更新
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		main_effect[i]->update(graphics, elapsed_time);
+		//main_effect[i]->update(graphics, elapsed_time);
 	}
 
 	if (life_time > life_span) skill_end_flag = true;
@@ -66,8 +72,9 @@ void SpearsSea::render(Graphics& graphics)
 {
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		main_effect[i]->render(graphics);
+		//main_effect[i]->render(graphics);
 	}
+	instance_mesh->render(graphics);
 }
 
 void SpearsSea::debug_gui(string str_id)

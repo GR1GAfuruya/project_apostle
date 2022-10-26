@@ -199,6 +199,9 @@
     <Filter Include="sources\Effects\MeshEffect">
       <UniqueIdentifier>{d1f132fc-e30a-43e4-bbf8-aba00e109e72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Mesh\instancing">
+      <UniqueIdentifier>{d01b2f44-b6e8-4de9-9978-12854b3c56a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -434,6 +437,9 @@
     </ClCompile>
     <ClCompile Include="sources\mesh_effect.cpp">
       <Filter>sources\Effects\MeshEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\instancing_mesh.cpp">
+      <Filter>sources\Models</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -698,6 +704,9 @@
     <ClInclude Include="sources\noise.h">
       <Filter>sources\User</Filter>
     </ClInclude>
+    <ClInclude Include="sources\instancing_mesh.h">
+      <Filter>sources\Models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
@@ -910,6 +919,9 @@
     <FxCompile Include="HLSL\default_ps.hlsl">
       <Filter>Shaders\Mesh\default</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\instancing_mesh_vs.hlsl">
+      <Filter>Shaders\Mesh\instancing</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\sprite.hlsli">
@@ -968,6 +980,9 @@
     </None>
     <None Include="HLSL\geometric_primitive.hlsli">
       <Filter>Shaders\Mesh\geometry</Filter>
+    </None>
+    <None Include="HLSL\instancing_mesh.hlsli">
+      <Filter>Shaders\Mesh\instancing</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

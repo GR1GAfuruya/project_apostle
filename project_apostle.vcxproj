@@ -211,6 +211,7 @@
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
+    <ClCompile Include="sources\instancing_mesh.cpp" />
     <ClCompile Include="sources\mesh_effect.cpp" />
     <ClCompile Include="sources\field_spark_particle.cpp" />
     <ClCompile Include="sources\generic_frequent_entities.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="sources\damage_func.h" />
+    <ClInclude Include="sources\instancing_mesh.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
     <ClInclude Include="sources\noise.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
@@ -381,6 +383,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\instancing_mesh_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -932,6 +940,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\debug_figure.hlsli" />
+    <None Include="HLSL\instancing_mesh.hlsli" />
     <None Include="HLSL\math.hlsli" />
     <None Include="HLSL\mesh_effect.hlsli" />
     <None Include="HLSL\boss_charge_attack.hlsli" />

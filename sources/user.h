@@ -628,13 +628,22 @@ namespace Math
         DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(ori_axis, Normal);
         DirectX::XMStoreFloat(&angle, Ang);
         angle = acosf(angle);
+        float cross = { (OriAxis_.x * DirVec_.z) - (OriAxis_.z * DirVec_.x) };
         if (fabs(angle) > 1e-8f)
         {
             // 変換
             auto oriV = DirectX::XMLoadFloat4(&Orientation_);
 
             // 回転クォータニオンを算出
-            const auto rotQua = DirectX::XMQuaternionRotationAxis(axis, angle);
+            DirectX::XMVECTOR rotQua;
+            if (cross > 0)
+            {
+                rotQua = DirectX::XMQuaternionRotationAxis(axis, angle);//正の方向に動くクオータニオン
+            }
+            else
+            {
+                rotQua = DirectX::XMQuaternionRotationAxis(axis, -angle);//正の方向に動くクオータニオン
+            }
             oriV = DirectX::XMQuaternionMultiply(oriV, rotQua);
 
             DirectX::XMFLOAT4 ret{};

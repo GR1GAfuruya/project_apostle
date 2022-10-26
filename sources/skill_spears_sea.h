@@ -1,5 +1,6 @@
 #pragma once
 #include "skill.h"
+#include "instancing_mesh.h"
 class SpearsSea : public Skill
 {
 public:
@@ -43,6 +44,7 @@ private:
 	// 
 	//==============================================================
 	std::unique_ptr<MeshEffect> main_effect[MAX_NUM];
+	std::unique_ptr<InstanceMesh> instance_mesh;
 	float life_span = 0;
 	float radius;
 public:
