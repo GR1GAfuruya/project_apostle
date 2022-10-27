@@ -17,7 +17,7 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, Initializ
 		
 		main_effect[i]->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	};
-	instance_mesh = std::make_unique<InstanceMesh>(graphics, "./resources/Effects/Meshes/eff_spear.fbx",20);
+	instance_mesh = std::make_unique<InstanceMesh>(graphics, "./resources/Effects/Meshes/eff_spear.fbx",2);
 	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
 	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
@@ -28,7 +28,7 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, Initializ
 	radius = initparam.radius;
 	//power = initparam.power;
 	//寿命を設定
-	life_span = 5.0f;
+	life_span = 50.0f;
 }
 
 void SpearsSea::initialize(Graphics& graphics)
@@ -87,6 +87,8 @@ void SpearsSea::debug_gui(string str_id)
 	/*これより下にパラメーター記述*/
 	ImGui::BulletText(name.c_str());
 	ImGui::DragFloat("life_time", &life_time);
+	ImGui::DragFloat3("pos", &instance_mesh->pos.x);
+	ImGui::DragFloat("dir", &instance_mesh->dir.x,0.1f);
 	
 
 	/*これより上にパラメーター記述*/

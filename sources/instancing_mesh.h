@@ -14,9 +14,9 @@ public:
 private:
     struct Instance
     {
-        DirectX::XMFLOAT4 quaternion;
-        DirectX::XMFLOAT3 position;
-        DirectX::XMFLOAT3 scale;
+        DirectX::XMFLOAT4 quaternion = {0,0,0,1};
+        DirectX::XMFLOAT3 position{ 0,0,0 };
+        DirectX::XMFLOAT3 scale{ 1,1,1 };
     };
 
     struct OBJECT_CONSTANTS
@@ -52,4 +52,7 @@ private:
     std::unique_ptr<Constants<MATERIAL_CONSTANTS>> material_constants{};
     int used_instance_count;
 
+public:
+    DirectX::XMFLOAT3 pos = {};//デバッグ用仮置き
+    DirectX::XMFLOAT3 dir = {0,0,0};//デバッグ用仮置き
 };

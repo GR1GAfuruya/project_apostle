@@ -46,6 +46,10 @@ Boss::Boss(Graphics& graphics)
 //==============================================================
 void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 {
+#if _DEBUG
+	 if(!is_update) return;
+#endif
+
 	(this->*act_update)(graphics, elapsed_time, stage);
 	model->update_animation(elapsed_time);
 	
@@ -59,7 +63,6 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 	model->fech_by_bone(transform, sickle_hand, sickle_attack_param.collision.start, &sickle_bone_mat);
 	sickle_attack_param.collision.end = sickle_attack_param.collision.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
 	update_invicible_timer(elapsed_time);
-	debug_gui();
 }
 //==============================================================
 // 
@@ -68,6 +71,10 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 //==============================================================
 void Boss::render_d(Graphics& graphics, float elapsed_time)
 {
+#if _DEBUG
+	if (!is_render) return;
+#endif
+
 	transform = Math::calc_world_matrix(scale, orientation, position);
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 }
@@ -79,6 +86,7 @@ void Boss::render_d(Graphics& graphics, float elapsed_time)
 void Boss::render_f(Graphics& graphics, float elapsed_time)
 {
 	efc_charge_attack->render(graphics);
+	debug_gui();
 	
 }
 //==============================================================
@@ -116,18 +124,19 @@ void Boss::debug_gui()
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
 		{
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
+#if _DEBUG
+			ImGui::Checkbox("is_update", &is_update);
+			ImGui::Separator();
+			ImGui::Checkbox("is_render", &is_render);
+#endif
+
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 
 				//位置
 				ImGui::DragFloat3("Position", &position.x);
-				//回転
-				DirectX::XMFLOAT3 forward;
-				DirectX::XMStoreFloat3(&forward, Math::get_posture_forward_vec(orientation));
-				ImGui::DragFloat3("forward", &forward.x);
-				ImGui::DragFloat4("ori", &orientation.x);
-				
+				//回転				
 				ImGui::DragFloat3("scale:", &scale.x);
 				ImGui::DragFloat3("velocity:", &velocity.x);
 			}

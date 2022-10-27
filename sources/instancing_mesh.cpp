@@ -2,6 +2,7 @@
 #include "resource_manager.h"
 #include "noise.h"
 #include "texture.h"
+#include "user.h"
 InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename,int max_instance)
 {
 	model = ResourceManager::instance().load_model_resource(graphics.get_device().Get(), fbx_filename, true, 60.0f);
@@ -46,22 +47,32 @@ InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename,int max_
 	//----------------------------------------------//
 	object_constants = std::make_unique<Constants<OBJECT_CONSTANTS>>(graphics.get_device().Get());
 	//material_constants = std::make_unique<Constants<MATERIAL_CONSTANTS>>(graphics.get_device().Get());
+
+	//static DirectX::XMFLOAT3 pos = {};
+	//for (size_t i = 0; i < used_instance_count; ++i)
+	//{
+	//	int random = Noise::instance().get_rnd();
+	//	float randoom = random % static_cast<int>(10) * 0.5f;
+	//	CPU_instance_data[i].position = { 0,5,0 };
+	//	//CPU_instance_data[i].position.y = pos.y + randoom;
+	//	//CPU_instance_data[i].position.z = pos.z + randoom;
+	//	//CPU_instance_data[i].position.y += velocity * elapsed_time;
+	//	CPU_instance_data[i].scale = { 1,1,1 };
+	//	CPU_instance_data[i].quaternion = { 0,0,0,1 };
+	//}
 }
 
 void InstanceMesh::update(Graphics& graphics, float elapsed_time)
 {
-	static DirectX::XMFLOAT3 pos = {};
+	
+	
 	for (size_t i = 0; i < used_instance_count; ++i)
 	{
-		int random = Noise::instance().get_rnd();
-		float randoom = random % static_cast<int>(10) * 0.5f;
 		CPU_instance_data[i].position = pos;
-		//CPU_instance_data[i].position.y = pos.y * randoom;
-		//CPU_instance_data[i].position.y += velocity * elapsed_time;
-		CPU_instance_data[i].scale = {1,1,1 };
-		CPU_instance_data[i].quaternion = { 0,0,0,1 };
+		CPU_instance_data[i].scale = { 1,1,1 };
+		CPU_instance_data[i].quaternion = Math::rot_quaternion(CPU_instance_data[i].quaternion, DirectX::XMFLOAT3(0,1,0), DirectX::XMConvertToRadians(dir.x),elapsed_time);
+		//CPU_instance_data[i].quaternion.w = 1;
 	}
-
 	ReplaceBufferContents(graphics, instance_data.Get(), sizeof(Instance) * used_instance_count, CPU_instance_data.get());
 
 }
@@ -106,9 +117,11 @@ void InstanceMesh::render(Graphics& graphics)
 		// シェーダーセット
 		graphics.get_dc().Get()->VSSetShader(vertex_shader.Get(), nullptr, 0);
 		graphics.get_dc().Get()->PSSetShader(pixel_shader.Get(), nullptr, 0);
-
-		//描画命令
-		graphics.get_dc().Get()->DrawIndexedInstanced(mesh.indices.size(), used_instance_count, 0, 0, 0);
+		for (const ModelResource::mesh::subset& subset : mesh.subsets)
+		{
+			//描画命令
+			graphics.get_dc().Get()->DrawIndexedInstanced(subset.index_count, used_instance_count, 0, 0, 0);
+		}
 	}
 
 

@@ -1,18 +1,53 @@
 #include "instancing_mesh.hlsli"
 #include "constants.hlsli"
+#include "math.hlsli"
+
 VS_OUT main(InstancedVertex In)
 {
-    VS_OUT Out = (VS_OUT) 0;
     float sigma = In.tangent.w;
+    VS_OUT Out;
+    
+#if 1
+    
+    float4x4 world, C, transform, scalling, quaternion;                     
+    
+    //RHS-Y-UP
+    C = float4x4(
+        -1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1 );
+
+   
+    world = mul(global_transform, mul(C, calc_world_transform(In.InstScale, In.InstRotation, In.InstPosition)));
+    
+    Out.position = mul(float4(In.position, 1), mul(world, view_projection));
+    Out.world_position = mul(float4(In.position, 1), world);
+    Out.world_normal = normalize(mul(float4(In.normal, 0), world));
+    Out.world_tangent = normalize(mul(In.tangent, world));
+    Out.texcoord = In.texcoord;
+    Out.color = float4(1, 1, 1, 1);
+
+       
+#else
+
     // Scale.
-    float3 position = In.position.xyz * 1;
 
     // Rotate vertex position and normal based on instance quaternion...
-    //position = RotateVectorByQuaternion(In.InstRotation, position);
+   // position = RotateVectorByQuaternion(In.InstRotation, position);
     float3 normal = RotateVectorByQuaternion(In.InstRotation, In.normal);
 
     // Move to world space.
-    position += In.InstPosition.xyz;
+    
+    //RHS-Y-UP
+    float4x4 C =
+    {
+        -1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+
+    };
 
     float3 scale = In.InstScale;
     float4x4 S =
@@ -58,13 +93,15 @@ VS_OUT main(InstancedVertex In)
         t.x, t.y, t.z, 1
     };
     //トランスフォーム
+    //float4x4 transform = mul(mul(mul(C, S), R), T);
     float4x4 transform = mul(mul(S, R), T);
     float4x4 W = mul(global_transform, transform);
+    
     // ...and clip.
-    Out.position = mul(float4(position, 1), mul(W, view_projection));
+    Out.position = mul(float4(In.position, 1), mul(W, view_projection));
 
     // World space transform
-    Out.world_position = float4(position, 1);
+    Out.world_position = mul(float4(In.position, 1), W);
     
     // Finally, output  normal and color
     Out.world_normal = float4(normal, 0);
@@ -72,5 +109,6 @@ VS_OUT main(InstancedVertex In)
     Out.color = float4(1, 1, 1, 1);
     Out.world_tangent = float4(In.tangent.xyz, 0.0f);
     Out.world_tangent.w = float4(In.tangent.xyz, 0.0f);
+#endif
     return Out;
 }

@@ -963,9 +963,6 @@
     <None Include="HLSL\debug_figure.hlsli">
       <Filter>Shaders\debug</Filter>
     </None>
-    <None Include="HLSL\math.hlsli">
-      <Filter>Shaders\Effect</Filter>
-    </None>
     <None Include="HLSL\noise.hlsli">
       <Filter>Shaders\Effect</Filter>
     </None>
@@ -983,6 +980,9 @@
     </None>
     <None Include="HLSL\instancing_mesh.hlsli">
       <Filter>Shaders\Mesh\instancing</Filter>
+    </None>
+    <None Include="HLSL\math.hlsli">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

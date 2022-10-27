@@ -15,7 +15,8 @@
 	 position = init_pos;
 	 velocity = acceleration * Math::Normalize(dir);
 	 //エフェクト
-	 main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
+	 main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Model/Sphere.fbx");
+	// main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
 	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
 	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
