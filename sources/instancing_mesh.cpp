@@ -1,9 +1,6 @@
 #include "instancing_mesh.h"
 #include "resource_manager.h"
-#include "noise.h"
-#include "texture.h"
-#include "user.h"
-InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename,int max_instance)
+InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const int max_instance)
 {
 	model = ResourceManager::instance().load_model_resource(graphics.get_device().Get(), fbx_filename, true, 60.0f);
 
@@ -33,63 +30,28 @@ InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename,int max_
 
 
 	{
-		CD3D11_BUFFER_DESC bufferDesc(sizeof(Instance) * used_instance_count, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+		CD3D11_BUFFER_DESC bufferDesc(sizeof(Instance) * max_instance, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 		bufferDesc.StructureByteStride = sizeof(Instance);
 
-		
 		graphics.get_device().Get()->CreateBuffer(&bufferDesc, nullptr, instance_data.ReleaseAndGetAddressOf());
 	}
 
-
-	CPU_instance_data.reset(new Instance[used_instance_count]);
+	
+	CPU_instance_data.reset(new Instance[max_instance]);
 	//-----------------------------------------------//
 	//				定数バッファの生成
 	//----------------------------------------------//
 	object_constants = std::make_unique<Constants<OBJECT_CONSTANTS>>(graphics.get_device().Get());
-	//material_constants = std::make_unique<Constants<MATERIAL_CONSTANTS>>(graphics.get_device().Get());
-
-	//static DirectX::XMFLOAT3 pos = {};
-	//for (size_t i = 0; i < used_instance_count; ++i)
-	//{
-	//	int random = Noise::instance().get_rnd();
-	//	float randoom = random % static_cast<int>(10) * 0.5f;
-	//	CPU_instance_data[i].position = { 0,5,0 };
-	//	//CPU_instance_data[i].position.y = pos.y + randoom;
-	//	//CPU_instance_data[i].position.z = pos.z + randoom;
-	//	//CPU_instance_data[i].position.y += velocity * elapsed_time;
-	//	CPU_instance_data[i].scale = { 1,1,1 };
-	//	CPU_instance_data[i].quaternion = { 0,0,0,1 };
-	//}
-}
-
-void InstanceMesh::update(Graphics& graphics, float elapsed_time)
-{
 	
-	
-	for (size_t i = 0; i < used_instance_count; ++i)
-	{
-		CPU_instance_data[i].position = pos;
-		CPU_instance_data[i].scale = { 1,1,1 };
-		CPU_instance_data[i].quaternion = Math::rot_quaternion(CPU_instance_data[i].quaternion, DirectX::XMFLOAT3(0,1,0), DirectX::XMConvertToRadians(dir.x),elapsed_time);
-		//CPU_instance_data[i].quaternion.w = 1;
-	}
-	ReplaceBufferContents(graphics, instance_data.Get(), sizeof(Instance) * used_instance_count, CPU_instance_data.get());
-
 }
 
 void InstanceMesh::render(Graphics& graphics)
 {
 
-	// Set input assembler state.
+	ReplaceBufferContents(graphics, instance_data.Get(), sizeof(Instance) * used_instance_count, CPU_instance_data.get());
 	graphics.get_dc().Get()->IASetInputLayout(input_layout.Get());
-
-	// We're rendering a triangle list.
 	graphics.get_dc().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Set up the vertex buffers. We have 3 streams:
-	// Stream 1 contains per-primitive vertices defining the cubes.
-	// Stream 2 contains the per-instance data for scale, position and orientation
-	// Stream 3 contains the per-instance data for color.
 	for (ModelResource::mesh& mesh : model->get_meshes())
 	{
 		UINT Strides[] = { sizeof(ModelResource::vertex), sizeof(Instance) };
@@ -106,7 +68,7 @@ void InstanceMesh::render(Graphics& graphics)
 		XMStoreFloat4x4(&object_constants->data.global_transform,
 			XMLoadFloat4x4(&mesh.default_global_transform));
 
-		object_constants->bind(graphics.get_dc().Get(), 0, CB_FLAG::PS_VS);
+		object_constants->bind(graphics.get_dc().Get(), 0, CB_FLAG::VS);
 		int resource_num = 0;
 		const int send_texture_num = 1;
 		for (auto& s : shader_resources)
@@ -115,21 +77,19 @@ void InstanceMesh::render(Graphics& graphics)
 			resource_num++;
 		}
 		// シェーダーセット
-		graphics.get_dc().Get()->VSSetShader(vertex_shader.Get(), nullptr, 0);
-		graphics.get_dc().Get()->PSSetShader(pixel_shader.Get(), nullptr, 0);
+		
 		for (const ModelResource::mesh::subset& subset : mesh.subsets)
 		{
 			//描画命令
 			graphics.get_dc().Get()->DrawIndexedInstanced(subset.index_count, used_instance_count, 0, 0, 0);
 		}
 	}
-
-
 }
 
-void InstanceMesh::create_pixel_shader(ID3D11Device* device, const char* cso_name)
+void InstanceMesh::active(ID3D11DeviceContext* immediate_context, ID3D11PixelShader* alter_pixcel_shader)
 {
-	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
+	immediate_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
+	immediate_context->PSSetShader(alter_pixcel_shader, nullptr, 0);
 }
 
 void InstanceMesh::ReplaceBufferContents(Graphics& graphics,ID3D11Buffer* buffer, size_t bufferSize, const void* data)
@@ -139,12 +99,4 @@ void InstanceMesh::ReplaceBufferContents(Graphics& graphics,ID3D11Buffer* buffer
 	graphics.get_dc().Get()->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	memcpy(mapped.pData, data, bufferSize);
 	graphics.get_dc().Get()->Unmap(buffer, 0);
-}
-void InstanceMesh::register_shader_resource(ID3D11Device* device, const wchar_t* filename)
-{
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
-	D3D11_TEXTURE2D_DESC texture2d_desc{};
-	load_texture_from_file(device, filename, shader_resource_view.ReleaseAndGetAddressOf(), &texture2d_desc);
-
-	shader_resources.push_back(shader_resource_view);
 }

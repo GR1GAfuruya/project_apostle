@@ -3,21 +3,28 @@
 class InstanceMesh
 {
 public:
-	InstanceMesh(Graphics& graphics, const char* fbx_filename, int max_instance);
+	InstanceMesh(Graphics& graphics, const char* fbx_filename, const int max_instance);
 
-    void update(Graphics& graphics, float elapsed_time);
+    void active(ID3D11DeviceContext* immediate_context, ID3D11PixelShader* alter_pixcel_shader);
 
-    void render(Graphics& graphics/*, const DirectX::XMFLOAT4X4& world*/);
-    void create_pixel_shader(ID3D11Device* device, const char* cso_name);
-    void ReplaceBufferContents(Graphics& graphics, ID3D11Buffer* buffer, size_t bufferSize, const void* data);
-    void register_shader_resource(ID3D11Device* device, const wchar_t* filename);
-private:
+    void render(Graphics& graphics);
     struct Instance
     {
         DirectX::XMFLOAT4 quaternion = {0,0,0,1};
         DirectX::XMFLOAT3 position{ 0,0,0 };
         DirectX::XMFLOAT3 scale{ 1,1,1 };
     };
+
+    void set_position(DirectX::XMFLOAT3 p, int index) { CPU_instance_data[index].position = p; }
+    void set_orientation(DirectX::XMFLOAT4 o, int index) { CPU_instance_data[index].quaternion = o; }
+    void set_scale(DirectX::XMFLOAT3 s, int index) { CPU_instance_data[index].scale = s; }
+    void set_scale(float s, int index) { CPU_instance_data[index].scale = { s,s,s }; }
+
+    DirectX::XMFLOAT3 get_position(int index) { return CPU_instance_data[index].position; }
+    DirectX::XMFLOAT4 get_orientation(int index) { return CPU_instance_data[index].quaternion; }
+    DirectX::XMFLOAT3 get_scale(int index) { return CPU_instance_data[index].scale; }
+private:
+    void ReplaceBufferContents(Graphics& graphics, ID3D11Buffer* buffer, size_t bufferSize, const void* data);
 
     struct OBJECT_CONSTANTS
     {
@@ -41,12 +48,11 @@ private:
     Microsoft::WRL::ComPtr<ID3D11InputLayout>   input_layout;
     Microsoft::WRL::ComPtr<ID3D11Buffer>        vertex_buffer;
     Microsoft::WRL::ComPtr<ID3D11Buffer>        instance_data;
-    Microsoft::WRL::ComPtr<ID3D11VertexShader>  vertex_shader;
+    Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
 
     struct aligned_deleter { void operator()(void* p) { _aligned_free(p); } };
     std::unique_ptr<Instance[]> CPU_instance_data;
     std::shared_ptr<ModelResource> model;
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
     std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> shader_resources;
     std::unique_ptr<Constants<OBJECT_CONSTANTS>> object_constants{};
     std::unique_ptr<Constants<MATERIAL_CONSTANTS>> material_constants{};

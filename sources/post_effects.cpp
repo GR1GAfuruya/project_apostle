@@ -41,31 +41,28 @@ void PostEffects::begin(ID3D11DeviceContext* dc)
 void PostEffects::end(ID3D11DeviceContext* dc)
 {
 	original_frame_buffer->deactivate(dc);
+
+
 #if USE_IMGUI
+	imgui_menu_bar("window", "post_effect", display_post_effects_imgui);
 	if (display_post_effects_imgui)
 	{
-	ImGui::Begin("PostEffectImage");
-	ImGui::Text("original");
-	ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
-	ImGui::Text("lumina");
-	ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
-	ImGui::End();
-	//パラメータ設定
 	ImGui::Begin("PostEffect");
-	imgui_menu_bar("objects", "post_effect", display_post_effects_imgui);
+	if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text("original");
+		ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
+		ImGui::Text("lumina");
+		ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
+	}
+	//パラメータ設定
 	if (display_post_effects_imgui)
 	{
 		if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			/*ImGui::DragFloat("l_min", &cb_post_effect->data.l_min.x, 0.1f, 0.0f, 1.0f);
-			ImGui::DragFloat("l_max", &cb_post_effect->data.l_max.x, 0.1f, 0.0f, 1.0f);
-			ImGui::DragFloat4("lumina", &cb_post_effect->data.lumina.x, 0.1f, 0.0f, 1.0f);*/
 			ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
 			ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
 			ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 0.0f, 10.0f);
-			ImGui::DragFloat("meta", &cb_post_effect->data.ray_power, 1, 1.0f, 20.0f);
-			ImGui::DragFloat("smo", &cb_post_effect->data.origin.x, 0.1f, 0.0f, 10.0f);
-
 		}
 	}
 	ImGui::End();

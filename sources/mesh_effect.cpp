@@ -86,6 +86,7 @@ void MeshEffect::render(Graphics& graphics)
 	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
 	//定数バッファ送信
 	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
+	//シェーダーリソース送信
 	int resource_num = 0;
 	const int send_texture_num = 1;
 	for (auto& s : shader_resources)

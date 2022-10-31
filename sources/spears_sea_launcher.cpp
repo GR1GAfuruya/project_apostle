@@ -52,6 +52,7 @@ void SpearSeaLauncher::debug_gui()
 			ImGui::DragFloat("invinsible_time", &init_param.invinsible_time);
 			ImGui::DragFloat("radius", &init_param.radius);
 			ImGui::DragFloat("collider_radius", &init_param.collider_radius);
+			ImGui::DragFloat2("dir", &init_param.dir.x,0.1f);
 			ImGui::Separator();
 			int count = 0;
 			for (auto& s : skills)

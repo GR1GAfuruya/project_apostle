@@ -441,6 +441,9 @@
     <ClCompile Include="sources\instancing_mesh.cpp">
       <Filter>sources\Models</Filter>
     </ClCompile>
+    <ClCompile Include="sources\instance_mesh_effect.cpp">
+      <Filter>sources\Effects\MeshEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\fullscreen_quad.h">
@@ -706,6 +709,9 @@
     </ClInclude>
     <ClInclude Include="sources\instancing_mesh.h">
       <Filter>sources\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\instance_mesh_effect.h">
+      <Filter>sources\Effects\MeshEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 #include "skill.h"
-#include "instancing_mesh.h"
+#include "instance_mesh_effect.h"
 class SpearsSea : public Skill
 {
 public:
@@ -16,6 +16,7 @@ public:
 		float cool_time;
 		float radius;
 		float collider_radius;
+		DirectX::XMFLOAT2 dir{};
 	};
 	//==============================================================
 	// 
@@ -36,7 +37,7 @@ private:
 	// íËêî
 	// 
 	//==============================================================
-	static constexpr int MAX_NUM = 8;
+	static constexpr int MAX_NUM = 20;
 
 	//==============================================================
 	// 
@@ -44,9 +45,10 @@ private:
 	// 
 	//==============================================================
 	std::unique_ptr<MeshEffect> main_effect[MAX_NUM];
-	std::unique_ptr<InstanceMesh> instance_mesh;
+	std::unique_ptr<InstanceMeshEffect> instance_mesh;
 	float life_span = 0;
 	float radius;
+	DirectX::XMFLOAT2 dir{};
 public:
 
 };
