@@ -70,6 +70,11 @@ public:
 	DirectX::XMFLOAT3 get_position() { return position; }
 	DirectX::XMFLOAT4 get_orientation() { return orientation; }
 	DirectX::XMFLOAT3 get_scale() { return scale; }
+
+	DirectX::XMFLOAT3 get_position(int index) { return  model->get_position(index); }
+	DirectX::XMFLOAT4 get_orientation(int index) { return  model->get_orientation(index); }
+	DirectX::XMFLOAT3 get_scale(int index) { return  model->get_scale(index);; }
+
 	DirectX::XMFLOAT3 get_velosity() { return velosity; }
 	float get_life_time() { return life_time; }
 	bool get_active() { return active; }

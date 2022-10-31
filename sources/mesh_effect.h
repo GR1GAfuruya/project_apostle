@@ -112,7 +112,7 @@ protected:
 	//デバッグGUIフラグ
 	bool display_imgui = false;
 
-	
+	string instance_id;
 	//==============================================================
 	// 
 	// 定数

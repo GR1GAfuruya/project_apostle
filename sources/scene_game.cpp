@@ -39,7 +39,8 @@ void SceneGame::initialize(Graphics& graphics)
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
 	 test_mesh_effect->set_scale(0.1f);
 	 
 #endif

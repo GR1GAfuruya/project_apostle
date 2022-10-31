@@ -1,5 +1,10 @@
 #include "instancing_mesh.h"
 #include "resource_manager.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const int max_instance)
 {
 	model = ResourceManager::instance().load_model_resource(graphics.get_device().Get(), fbx_filename, true, 60.0f);
@@ -44,7 +49,11 @@ InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const i
 	object_constants = std::make_unique<Constants<OBJECT_CONSTANTS>>(graphics.get_device().Get());
 	
 }
-
+//==============================================================
+// 
+// 描画
+// 
+//==============================================================
 void InstanceMesh::render(Graphics& graphics)
 {
 
@@ -76,7 +85,6 @@ void InstanceMesh::render(Graphics& graphics)
 			graphics.get_dc().Get()->PSSetShaderResources(20 + resource_num, send_texture_num, s.GetAddressOf());
 			resource_num++;
 		}
-		// シェーダーセット
 		
 		for (const ModelResource::mesh::subset& subset : mesh.subsets)
 		{
@@ -85,13 +93,21 @@ void InstanceMesh::render(Graphics& graphics)
 		}
 	}
 }
-
+//==============================================================
+// 
+// シェーダーのセット
+// 
+//==============================================================
 void InstanceMesh::active(ID3D11DeviceContext* immediate_context, ID3D11PixelShader* alter_pixcel_shader)
 {
 	immediate_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
 	immediate_context->PSSetShader(alter_pixcel_shader, nullptr, 0);
 }
-
+//==============================================================
+// 
+// 位置、姿勢、大きさをバッファに格納
+// 
+//==============================================================
 void InstanceMesh::ReplaceBufferContents(Graphics& graphics,ID3D11Buffer* buffer, size_t bufferSize, const void* data)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped;

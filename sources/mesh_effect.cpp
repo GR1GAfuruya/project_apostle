@@ -25,7 +25,7 @@ void MeshEffect::play(DirectX::XMFLOAT3 pos)
 	
 	position = pos;
 	active = true;
-	orientation = Math::orientation_reset();
+	//orientation = Math::orientation_reset();
 }
 //==============================================================
 // 
@@ -70,7 +70,15 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
-	graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(),"mesh");
+#if USE_IMGUI
+	if (display_imgui)
+	{
+		ImGui::Begin(instance_id.c_str());
+		graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(), instance_id.c_str());
+		ImGui::End();
+	}
+
+#endif
 }
 //==============================================================
 // 
@@ -213,6 +221,7 @@ void MeshEffect::reset_orientation()
 void MeshEffect::debug_gui(string str_id)
 {
 #if USE_IMGUI
+	instance_id = str_id;
 	imgui_menu_bar("Effects", str_id, display_imgui);
 	if (display_imgui)
 	{

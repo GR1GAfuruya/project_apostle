@@ -5,7 +5,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
 	init_param.power = 5;
 	init_param.invinsible_time = 1.0f;
-	init_param.radius = 5;
+	init_param.radius = 15;
 	init_param.collider_radius = 8;
 }
 
@@ -52,14 +52,12 @@ void SpearSeaLauncher::debug_gui()
 			ImGui::DragFloat("invinsible_time", &init_param.invinsible_time);
 			ImGui::DragFloat("radius", &init_param.radius);
 			ImGui::DragFloat("collider_radius", &init_param.collider_radius);
-			ImGui::DragFloat2("dir", &init_param.dir.x,0.1f);
 			ImGui::Separator();
 			int count = 0;
 			for (auto& s : skills)
 			{
 				s->debug_gui(to_string(count).c_str());
 				count++;
-				ImGui::Separator();
 			}
 		}
 		ImGui::End();

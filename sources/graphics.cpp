@@ -389,7 +389,6 @@ void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader,string id
 	//////シェーダーのコンパイル
 #ifdef USE_IMGUI
 	string id_name = "compile" + id;
-	ImGui::Begin("compile");
 	ImGui::PushID(id.c_str());
 	if (ImGui::Button(id_name.c_str()))
 	{
@@ -433,7 +432,6 @@ void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader,string id
 		}
 	}
 	ImGui::PopID();
-	ImGui::End();
 #endif
 }
 

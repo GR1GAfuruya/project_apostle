@@ -430,12 +430,14 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 	DirectX::XMFLOAT3 sword_pos;
 	DirectX::XMFLOAT4X4 bone_ori = {};
 	model->fech_by_bone(transform, root, sword_pos, &bone_ori);
+	DirectX::XMFLOAT3 up = Math::get_posture_up(orientation);
 	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
 	if (model->anime_param.frame_index == 12 / 2)
 	{
 		slash_efect->play(sword->get_equipped_position());
 		slash_efect->set_life_span(0.1f);
 		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
 		slash_efect->rot_speed.y = sword_swing_speed;
 
 		//UŒ‚”»’èON

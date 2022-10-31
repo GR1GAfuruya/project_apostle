@@ -16,7 +16,6 @@ public:
 		float cool_time;
 		float radius;
 		float collider_radius;
-		DirectX::XMFLOAT2 dir{};
 	};
 	//==============================================================
 	// 
@@ -37,7 +36,9 @@ private:
 	// íËêî
 	// 
 	//==============================================================
-	static constexpr int MAX_NUM = 20;
+	static constexpr int MAX_NUM = 50;
+	static constexpr float SPEAR_SIZE = 0.5f;
+	//static constexpr DirectX::XMFLOAT3 SPEAR_SIZE = { 0.5f,0.5f,1.0f };
 
 	//==============================================================
 	// 
@@ -48,7 +49,8 @@ private:
 	std::unique_ptr<InstanceMeshEffect> instance_mesh;
 	float life_span = 0;
 	float radius;
-	DirectX::XMFLOAT2 dir{};
+	float spear_length;
+	float spear_length_rate;
 public:
 
 };
