@@ -204,7 +204,7 @@ private:
 	//UŒ‚—Í
 	int add_damage;
 
-	float sword_swing_speed = 1500.0f;
+	float sword_swing_speed = 2000.0f;
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;

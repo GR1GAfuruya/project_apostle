@@ -260,6 +260,11 @@ public:
 	State state;
 	AttackParam sickle_attack_param;
 	BodyCollision boss_body_collision;
+
+#if _DEBUG
+	bool is_update = true;
+	bool is_render = true;
+#endif
 	//==============================================================
 	// 
 	// ’è”

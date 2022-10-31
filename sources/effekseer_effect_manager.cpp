@@ -2,6 +2,7 @@
 //初期化
 void EffekseerEffectManager::initialize(Graphics& graphics)
 {
+	std::lock_guard<std::mutex> lock(graphics.get_mutex());
 	// エフェクトのレンダラーの作成
 	effekseer_renderer = EffekseerRendererDX11::Renderer::Create(graphics.get_device().Get(),
 		graphics.get_dc().Get(), 2048);

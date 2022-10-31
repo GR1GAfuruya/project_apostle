@@ -334,7 +334,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 		case ATK_SKILLTYPE::SPEARS_SEA:
 			if (skill_manager->chant_spear_sea(graphics, position))
 			{
-			transition_attack_ground_state();
+			   transition_attack_ground_state();
 			}
 			break;
 		default:

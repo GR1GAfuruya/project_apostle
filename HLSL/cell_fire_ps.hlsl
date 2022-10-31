@@ -36,30 +36,73 @@ uint3 uhash33(uint3 n)
 float hash11(float p)
 {   
 //GLSL‚Å‚Íuvec2 n = floatBitsToUint(p);
-    //uint n = asuint(p);
+    uint n = asuint(p);
     return float(uhash11(n)) / float(UINT_MAX);
 }
 float hash21(float2 p)
 {
-   // uint2 n = asuint(p);
+    uint2 n = asuint(p);
     return float(uhash22(n).x) / float(UINT_MAX);
 }
 float hash31(float3 p)
 {
-    //uint3 n = asuint(p);
+    uint3 n = asuint(p);
     return float(uhash33(n).x) / float(UINT_MAX);
 }
 float2 hash22(float2 p)
 {
-    //uint2 n = asuint(p);
+    uint2 n = asuint(p);
     return float2(uhash22(n)) / float2(UINT_MAX, UINT_MAX);
 }
 float3 hash33(float3 p)
 {
-   // uint3 n = asuint(p);
+    uint3 n = asuint(p);
     return float3(uhash33(n)) / float3(UINT_MAX, UINT_MAX, UINT_MAX);
 }
-#endif
+
+float fdist21(float2 p)
+{
+    float2 n = floor(p + 0.5);
+    float dist = sqrt(2.0);
+    for(float j = 0.0; j <= 2.0; j ++ ){
+        float2 glid;
+        glid.y = n.y + sign(fmod(j, 2.0) - 0.5) * ceil(j * 0.5);
+        if (abs(glid.y - p.y) - 0.5 > dist){
+            continue;
+        }
+        for(float i = -1.0; i <= 1.0; i ++ ){
+            glid.x = n.x + i;
+            float2 jitter = hash22(glid) - 0.5;
+            dist = min(dist, length(glid + jitter - p));
+        }
+    }
+    return dist;
+}
+float fdist31(float3 p)
+{
+    float3 n = floor(p + 0.5);
+    float dist = sqrt(3.0);
+    for(float k = 0.0; k <= 2.0; k ++ ){
+        float3 glid;
+            glid.z = n.z + sign(fmod(k, 2.0) - 0.5) * ceil(k * 0.5);
+            if (abs(glid.z - p.z) - 0.5 > dist){
+                continue;
+            }
+        for(float j = 0.0; j <= 2.0; j ++ ){
+            glid.y = n.y + sign(fmod(j, 2.0) - 0.5) * ceil(j * 0.5);
+            if (abs(glid.y - p.y) - 0.5 > dist){
+                continue;
+            }
+            for(float i = -1.0; i <= 1.0; i ++ ){
+                glid.x = n.x + i;
+                float3 jitter = hash33(glid) - 0.5;
+                dist = min(dist, length(glid + jitter - p));
+            }
+        }
+    }
+    return dist;
+}
+#else
 //end hash
 float fdist21(float2 p)
 {
@@ -115,7 +158,7 @@ float fdist31(float3 p)
     return dist;
 }
 
-
+#endif
 float4 main(VS_OUT pin) : SV_TARGET
 {
     float2 pos = pin.texcoord.yx;

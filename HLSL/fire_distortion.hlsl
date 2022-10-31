@@ -24,6 +24,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float2 uv = pin.texcoord + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float4 main_color = texture_map.Sample(sampler_texture, tex_coord(uv, tile));
     main_color *= particle_color;
+    //main_color *= float4(2.0, 0.6, 0.2, 1);
     //黒い部分
     scroll_speed = float2(0.1, 0.5);
     distortion_tile = float2(2.0, 2.0);
@@ -32,10 +33,12 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 result_color = main_color * mask;
     
     //マスク
-    scroll_speed = float2(0.5, 0.5);
-    distortion_tile = float2(5.0, 5.0);
+    scroll_speed = float2(0.0, 1.0);
+    distortion_tile = float2(1.5, 2.0);
+    tile = float2(0.5, 1.0);
     uv = pin.texcoord.yx + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float alpha = texture_mask.Sample(sampler_texture, tex_coord(uv, tile)).r;
     //カラー出力
     return float4(result_color.rgb, alpha * particle_color.a);
+    //return float4(result_color.rgb, alpha );
 }
