@@ -18,12 +18,9 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, Initializ
 	radius = initparam.radius;
 	//power = initparam.power;
 	//寿命を設定
-	life_span = 50.0f;
+	life_span = 10.0f;
 	spear_length = 0;
 	spear_length_rate = 8.0f;
-
-	//std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(1, -30, 1), 30.0f, 0.0f, 1.0f, 1.0f);
-	//light_manager->register_light(p);
 }
 
 void SpearsSea::initialize(Graphics& graphics)
@@ -47,7 +44,8 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 				int random = std::abs(static_cast<int>(Noise::instance().get_rnd()));
 				float circle_radius = random % static_cast<int>(radius);
 				appearance_pos.x = Math::circumferential_placement({ position.x,position.z }, circle_radius, i, MAX_NUM).x;
-				appearance_pos.y = position.y;
+				static float GROUND = -12.0f;
+				appearance_pos.y = GROUND;
 				appearance_pos.z = Math::circumferential_placement({ position.x,position.z }, circle_radius, i, MAX_NUM).y;
 				//ばらばらに生やす
 				DirectX::XMFLOAT3 spear_dir = Math::Normalize(DirectX::XMFLOAT3(cosf(i), 1.01f, sinf(i)));
@@ -56,6 +54,12 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 				instance_mesh->set_orientation(instance_mesh->rotate_base_axis(InstanceMeshEffect::AXIS::FORWARD, spear_dir, i), i);
 				instance_mesh->set_is_loop(true);
 			}
+
+			//ライト設置
+			DirectX::XMFLOAT3 point_light_pos = { position.x,position.y + 10.0f,position.z };//槍の位置より少し上に配置
+			std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, point_light_pos, 30.0f, 1.0f, 0.8f, 5.5f);
+			LightManager::instance().register_light("SpearsSea", p);
+
 		}
 	}
 
@@ -65,7 +69,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 	{
 		//---槍を徐々に伸ばす---//
 		//割合
-		float rate = (i * deley_rate + 0.3f) * elapsed_time ;//0を避けるため0.1を足して底上げ
+		float rate = 7.0f * elapsed_time ;
 		//伸ばす
 		spear_length = lerp(instance_mesh->get_scale(i).z, SPEAR_SIZE, rate);
 		instance_mesh->set_scale({ SPEAR_SIZE,SPEAR_SIZE,spear_length }, i);
@@ -76,10 +80,6 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 void SpearsSea::render(Graphics& graphics)
 {
-	for (int i = 0; i < MAX_NUM; i++)
-	{
-		//main_effect[i]->render(graphics);
-	}
 	instance_mesh->render(graphics);
 }
 

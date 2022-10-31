@@ -1,6 +1,7 @@
 #include "light_manager.h"
 #include "user.h"
-LightManager::LightManager(Graphics& graphics)
+
+void LightManager::initialize(Graphics& graphics)
 {
 	HRESULT hr;
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_light.cso", deferred_light.GetAddressOf());
@@ -14,9 +15,19 @@ LightManager::LightManager(Graphics& graphics)
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
-void LightManager::register_light(std::shared_ptr<Light> light)
+void LightManager::register_light(std::string name, std::shared_ptr<Light> light)
 {
-	lights.push_back(light);
+	int unique_id = 0;
+	std::string old_name = name;
+	for (auto& light : lights)
+	{
+		if (name == light.first)
+		{
+			unique_id++;
+			name = old_name + to_string(unique_id);
+		}
+	}
+	lights.insert(make_pair(name, light));
 }
 
 
@@ -31,7 +42,7 @@ void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int r
 	//’Êíƒ‰ƒCƒg•`‰æ
 	for (auto& light : lights)
 	{
-		light->light_constants->bind(graphics.get_dc().Get(), 7);
+		light.second->light_constants->bind(graphics.get_dc().Get(), 7);
 		light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, deferred_light.Get());
 	}
 	
@@ -45,9 +56,9 @@ void LightManager::debug_gui()
 #if CAST_SHADOW
 		shadow_dir_light->debug_gui(-1);
 #endif
-		for (int i = 0; i < lights.size(); i++)
+		for (auto& light : lights)
 		{
-			lights.at(i)->debug_gui(i);
+			light.second->debug_gui(light.first);
 		}
 	}
 }

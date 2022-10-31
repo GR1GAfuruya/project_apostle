@@ -1,5 +1,6 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
+#include "light_manager.h"
 #include "texture.h"
 #include "user.h"
 //==============================================================
@@ -104,10 +105,10 @@ void DeferredRenderer::active(Graphics& graphics)
 // ディファードレンダー書き込み終了
 // 
 //==============================================================
-void DeferredRenderer::deactive(Graphics& graphics, LightManager& light_manager)
+void DeferredRenderer::deactive(Graphics& graphics)
 {
 	//ライティング実行
-	lighting(graphics, light_manager);
+	lighting(graphics);
 	//描画先を戻す
 	graphics.get_dc()->OMSetRenderTargets(1, cached_render_target_view.GetAddressOf(),
 		cached_depth_stencil_view.Get());
@@ -118,7 +119,7 @@ void DeferredRenderer::deactive(Graphics& graphics, LightManager& light_manager)
 // ライティング
 // 
 //==============================================================
-void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager) const
+void DeferredRenderer::lighting(Graphics& graphics) const
 {
 	ID3D11RenderTargetView* rtv = l_light->get_rtv();
 	// レンダーターゲットビュー設定
@@ -150,7 +151,7 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 #if CAST_SHADOW
 	graphics.get_dc().Get()->PSSetShaderResources(16, 1, shadow_frame_buffer->get_color_map().GetAddressOf());
 #endif
-	light_manager.draw(graphics, g_buffers, G_BUFFERS_NUM);
+	LightManager::instance().draw(graphics, g_buffers, G_BUFFERS_NUM);
 
 	//ライトの合成 ブレンドステートをアルファに
 	graphics.set_blend_state(ST_BLEND::ALPHA);
@@ -161,7 +162,7 @@ void DeferredRenderer::lighting(Graphics& graphics, LightManager& light_manager)
 
 	deferred_screen->blit(graphics.get_dc().Get(), g_buffers, 0, G_BUFFERS_NUM, deferred_composite_light.Get());
 
-	light_manager.debug_gui();
+	LightManager::instance().debug_gui();
 }
 
 //==============================================================
@@ -211,7 +212,7 @@ void DeferredRenderer::render(Graphics& graphics)
 // 
 //==============================================================
 #if CAST_SHADOW
-void DeferredRenderer::shadow_active(Graphics& graphics, LightManager& light_manager)
+void DeferredRenderer::shadow_active(Graphics& graphics)
 {
 	shadow_frame_buffer->clear(graphics.get_dc().Get());
 	shadow_frame_buffer->activate(graphics.get_dc().Get());

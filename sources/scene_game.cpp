@@ -26,12 +26,12 @@ void SceneGame::initialize(Graphics& graphics)
 	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\UI\\operations.png", 1);
 
 	deferred = std::make_unique<DeferredRenderer>(graphics);
-	light_manager = std::make_unique<LightManager>(graphics);
+	LightManager::instance().initialize(graphics);
 	skybox = std::make_unique<SkyBox>(graphics);
 	std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(1, -30, 1), 30.0f, 0.0f, 1.0f,1.0f);
-	light_manager->register_light(p);
+	LightManager::instance().register_light("test_point",p);
 	std::shared_ptr<DirectionalLight> d = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(0.6f, -0.6f, 1.6f), 0.4f, 0.1f, 0.0f);
-	light_manager->register_light(d);
+	LightManager::instance().register_light("scene_dir",d);
 
 	//テスト用
 #if _DEBUG
@@ -136,7 +136,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 
 	//ここで各種ライティング（環境光、平行光、点光源）
-	deferred->deactive(graphics,*light_manager);
+	deferred->deactive(graphics);
 
 	//レンダーターゲットを戻す
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
