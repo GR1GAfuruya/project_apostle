@@ -2,9 +2,13 @@
 #include "noise.h"
 #include "user.h"
 #include "light_manager.h"
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, InitializeParam initparam)
 {
-	position = launch_pos;
 
 	instance_mesh = std::make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx",MAX_NUM);
 	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
@@ -12,31 +16,51 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, Initializ
 	instance_mesh->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
 	instance_mesh->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	instance_mesh->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
+	position = launch_pos;
 	power = initparam.power;
 	invinsible_time = initparam.invinsible_time;
 	cool_time = initparam.cool_time;
 	radius = initparam.radius;
-	//power = initparam.power;
+	
+	collision_type = CollisionType::SPHERE;
 	//寿命を設定
-	life_span = 10.0f;
+	life_span = 3.0f;
 	spear_length = 0;
 	spear_length_rate = 8.0f;
 }
-
+//==============================================================
+// 
+//デストラクタ
+// 
+//==============================================================
+SpearsSea::~SpearsSea()
+{
+	LightManager::instance().delete_light(spear_light->name);
+}
+//==============================================================
+// 
+//初期化
+// 
+//==============================================================
 void SpearsSea::initialize(Graphics& graphics)
 {
 }
-
+//==============================================================
+// 
+//更新処理
+// 
+//==============================================================
 void SpearsSea::update(Graphics& graphics, float elapsed_time)
 {
 	life_time += elapsed_time;
 	//槍エフェクトの再生
 	if (life_time > 0.5f)
 	{
-		DirectX::XMFLOAT3 appearance_pos{};
 		//すでに再生状態なら更新しない
 		if (!instance_mesh->get_active())
 		{
+			//各槍の出現位置
+			DirectX::XMFLOAT3 appearance_pos{};
 			for (int i = 0; i < MAX_NUM; i++)
 			{
 				instance_mesh->play(appearance_pos);
@@ -57,9 +81,12 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 			//ライト設置
 			DirectX::XMFLOAT3 point_light_pos = { position.x,position.y + 10.0f,position.z };//槍の位置より少し上に配置
-			std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, point_light_pos, 30.0f, 1.0f, 0.8f, 5.5f);
-			LightManager::instance().register_light("SpearsSea", p);
+			spear_light = make_shared<PointLight>(graphics, point_light_pos, 30.0f, 1.0f, 0.8f, 5.5f);
+			LightManager::instance().register_light("SpearsSea", spear_light);
 
+			//攻撃の当たり判定パラメーター設定
+			attack_colider.start = position;
+			attack_colider.radius = radius;
 		}
 	}
 
@@ -75,14 +102,25 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 		instance_mesh->set_scale({ SPEAR_SIZE,SPEAR_SIZE,spear_length }, i);
 	}
 
+	
+
+
 	if (life_time > life_span) skill_end_flag = true;
 }
-
+//==============================================================
+// 
+//描画
+// 
+//==============================================================
 void SpearsSea::render(Graphics& graphics)
 {
 	instance_mesh->render(graphics);
 }
-
+//==============================================================
+// 
+//デバッグGUI
+// 
+//==============================================================
 void SpearsSea::debug_gui(string str_id)
 {
 #if USE_IMGUI

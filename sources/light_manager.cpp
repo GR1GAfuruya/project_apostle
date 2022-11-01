@@ -1,12 +1,18 @@
 #include "light_manager.h"
 #include "user.h"
 
+//==============================================================
+// 
+//初期化
+// 
+//==============================================================
 void LightManager::initialize(Graphics& graphics)
 {
 	HRESULT hr;
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_light.cso", deferred_light.GetAddressOf());
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_light_shadow.cso", shadow_map_light.GetAddressOf());
 	light_screen = std::make_unique<FullscreenQuad>(graphics.get_device().Get());
+	lights.clear();
 #if CAST_SHADOW
 	DirectX::XMFLOAT3 shadow_light_dir = { 1.0f, 1.0f, -1.0 };
 	DirectX::XMFLOAT3 shadow_color = { 0.2f, 0.2f, 0.2f };
@@ -14,27 +20,51 @@ void LightManager::initialize(Graphics& graphics)
 #endif
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
-
+//==============================================================
+// 
+//デストラクタ
+// 
+//==============================================================
+LightManager::~LightManager()
+{
+	lights.clear();
+}
+//==============================================================
+// 
+//ライトの登録
+// 
+//==============================================================
 void LightManager::register_light(std::string name, std::shared_ptr<Light> light)
 {
-	int unique_id = 0;
-	std::string old_name = name;
-	for (auto& light : lights)
+	//ID
+	int id = 0;
+	//元の名前
+	std::string  unique_name = name;
+	for (auto& l : lights)
 	{
-		if (name == light.first)
+		//もし名前がかぶっていたら
+		if (name == l.first)
 		{
-			unique_id++;
-			name = old_name + to_string(unique_id);
+			//元の名前の後ろに数字を付け足す
+			id++;
+			name = unique_name + to_string(id);
 		}
 	}
-	lights.insert(make_pair(name, light));
+	//マップに登録
+	lights[name] = light;
+	//ライトに変更した名前を登録
+	light->name = name;
 }
 
-
+//==============================================================
+// 
+//ライトバッファにライトを書き込む
+// 
+//==============================================================
 void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int rtv_num)
 {
-	//影用ライト描画
 	
+	//影用ライト描画
 #if CAST_SHADOW
 	shadow_dir_light->light_constants->bind(graphics.get_dc().Get(), 7);
 	light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, shadow_map_light.Get());
@@ -42,12 +72,22 @@ void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int r
 	//通常ライト描画
 	for (auto& light : lights)
 	{
-		light.second->light_constants->bind(graphics.get_dc().Get(), 7);
-		light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, deferred_light.Get());
+		//リンクが切れていないかチェック
+		if (!light.second.expired())
+		{
+			//監視しているライトの関数処理
+			light.second.lock()->light_constants->bind(graphics.get_dc().Get(), 7);
+			light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, deferred_light.Get());
+		}
+		//要素がないのにmapの領域をとっているときに警告を出す
+		_ASSERT_EXPR(!light.second.expired(), L"light_mapにnullptrが存在しています\n delete_light()を呼び忘れている可能性があります");
 	}
-	
 }
-
+//==============================================================
+// 
+//デバッグGUI
+// 
+//==============================================================
 void LightManager::debug_gui()
 {
 	imgui_menu_bar("Lights", "Light", display_imgui);
@@ -56,9 +96,30 @@ void LightManager::debug_gui()
 #if CAST_SHADOW
 		shadow_dir_light->debug_gui(-1);
 #endif
-		for (auto& light : lights)
+		int size = lights.size();
+		ImGui::DragInt("size", &size);
+		for (auto& l : lights)
 		{
-			light.second->debug_gui(light.first);
+			if (!l.second.expired())
+			{
+				l.second.lock()->debug_gui(l.first);
+
+			}
+
+			ImGui::Text(l.first.c_str());
+			ImGui::SameLine();
+			l.second.expired() ? ImGui::Text(":nullptr") : ImGui::Text(":exist");
+			
 		}
 	}
+}
+//==============================================================
+// 
+//ライトの削除
+// 
+//==============================================================
+void LightManager::delete_light(std::string name)
+{
+	//指定のキーの要素をマップから削除
+	lights.erase(name);
 }

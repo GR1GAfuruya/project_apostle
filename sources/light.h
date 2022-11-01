@@ -18,6 +18,7 @@ protected:
 
 public:
 	std::unique_ptr<Constants<DirLightParam>> light_constants{};
+	std::string name;
 };
 
 //•½sŒõ

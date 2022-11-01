@@ -66,8 +66,11 @@ public:
 	
 	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
 
-	//スキル当たり判定
+	//----スキル当たり判定----//
+	//MagickBullet
 	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);
+	//SpearSea
+	void judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);
 	//スキルセレクト中かどうか
 	bool is_selecting_skill() {
 		if (is_selecting_support_skill) return true;
@@ -97,7 +100,7 @@ private:
 	 
 	std::unique_ptr<MagicBulletLauncher> magick_bullet;
 	std::unique_ptr<SpearSeaLauncher> spear_sea;
-	
+
 
 	SupportSkillType selected_sup_skill_type;
 	AttackSkillType selected_atk_skill_type;

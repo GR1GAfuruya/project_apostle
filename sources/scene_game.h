@@ -39,7 +39,7 @@ private:
 	std::unique_ptr<DeferredRenderer> deferred;
 	std::unique_ptr<SkyBox> skybox;
 	std::unique_ptr<SpriteBatch> operation_ui;
-
+	std::shared_ptr<DirectionalLight> dir_light;
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect;

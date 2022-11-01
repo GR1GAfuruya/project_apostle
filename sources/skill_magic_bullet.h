@@ -1,5 +1,6 @@
 #pragma once
 #include "skill.h"
+#include "light.h"
 
 class MagicBullet : public Skill
 {
@@ -21,10 +22,9 @@ public:
 	// 
 	// publicä÷êî
 	// 
-	//==============================================================
-	MagicBullet(){}
+	//=============================================================
 	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir, InitializeParam initparam);
-	~MagicBullet() {}
+	~MagicBullet();
 
 	void initialize(Graphics& graphics) ;
 	void update(Graphics& graphics, float elapsed_time)override;
@@ -44,6 +44,8 @@ protected:
 	DirectX::XMFLOAT3 velocity{};
 	float acceleration;
 	std::unique_ptr<MeshEffect> main_effect;
+	std::shared_ptr<PointLight> spear_light;
+
 	//==============================================================
 	// 
 	// íËêî

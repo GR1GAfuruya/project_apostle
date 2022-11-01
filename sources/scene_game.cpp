@@ -28,10 +28,8 @@ void SceneGame::initialize(Graphics& graphics)
 	deferred = std::make_unique<DeferredRenderer>(graphics);
 	LightManager::instance().initialize(graphics);
 	skybox = std::make_unique<SkyBox>(graphics);
-	std::shared_ptr<PointLight> p = make_shared<PointLight>(graphics, DirectX::XMFLOAT3(1, -30, 1), 30.0f, 0.0f, 1.0f,1.0f);
-	LightManager::instance().register_light("test_point",p);
-	std::shared_ptr<DirectionalLight> d = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(0.6f, -0.6f, 1.6f), 0.4f, 0.1f, 0.0f);
-	LightManager::instance().register_light("scene_dir",d);
+	dir_light = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(0.6f, -0.6f, 1.6f), 0.4f, 0.1f, 0.0f);
+	LightManager::instance().register_light("scene_dir", dir_light);
 
 	//テスト用
 #if _DEBUG
@@ -212,6 +210,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	debug_figure->render_all_figures(graphics.get_dc().Get());
 	
 }

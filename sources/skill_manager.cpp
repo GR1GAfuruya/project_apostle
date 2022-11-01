@@ -73,6 +73,8 @@ void SkillManager::initialize(Graphics& graphics)
 		attack_ui_init.color = { 1,1,1,0 };
 		atk_slots_ui->initialize(attack_ui_init, static_cast<int>(AttackSkillType::ATK_SKILL_MAX));
 	}
+
+
 }
 
 
@@ -274,6 +276,11 @@ bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_
 void SkillManager::judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	magick_bullet->skill_object_hit_judgment(object_colider, damaged_func);
+}
+
+void SkillManager::judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func)
+{
+	spear_sea->skill_object_hit_judgment(object_colider, damaged_func);
 }
 
 //==============================================================

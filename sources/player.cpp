@@ -352,6 +352,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
+	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func);
 }
 //==============================================================
 // 
