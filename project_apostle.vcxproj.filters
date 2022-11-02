@@ -202,6 +202,12 @@
     <Filter Include="Shaders\Mesh\instancing">
       <UniqueIdentifier>{d01b2f44-b6e8-4de9-9978-12854b3c56a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Effect\Particle\gpu_particle">
+      <UniqueIdentifier>{bed01cc4-bb4d-4a49-bf44-972113e658ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\Particle\object_particle">
+      <UniqueIdentifier>{2671a355-c055-4286-91d1-56177fcd3918}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -443,6 +449,9 @@
     </ClCompile>
     <ClCompile Include="sources\instance_mesh_effect.cpp">
       <Filter>sources\Effects\MeshEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\object_particle.cpp">
+      <Filter>sources\Effects\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -713,6 +722,9 @@
     <ClInclude Include="sources\instance_mesh_effect.h">
       <Filter>sources\Effects\MeshEffect</Filter>
     </ClInclude>
+    <ClInclude Include="sources\object_particle.h">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
@@ -784,29 +796,8 @@
     <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
       <Filter>Shaders\Effect\MeshEffect</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_cs.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_gs.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_ps.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_vs.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\color_filter_ps.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_init_cs.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_emit_cs.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\gpu_particles_update_cs.hlsl">
-      <Filter>Shaders\Effect\Particle</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\final_sprite_ps.hlsl">
       <Filter>Shaders\defferd</Filter>
@@ -928,6 +919,33 @@
     <FxCompile Include="HLSL\instancing_mesh_vs.hlsl">
       <Filter>Shaders\Mesh\instancing</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_cs.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_emit_cs.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_gs.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_init_cs.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_ps.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_update_cs.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\gpu_particles_vs.hlsl">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\object_particles_copy_buffer_cs.hlsl">
+      <Filter>Shaders\Effect\Particle\object_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\object_particles_cs.hlsl">
+      <Filter>Shaders\Effect\Particle\object_particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\sprite.hlsli">
@@ -953,9 +971,6 @@
     </None>
     <None Include="HLSL\mesh_effect.hlsli">
       <Filter>Shaders\Effect\MeshEffect</Filter>
-    </None>
-    <None Include="HLSL\gpu_particles.hlsli">
-      <Filter>Shaders\Effect\Particle</Filter>
     </None>
     <None Include="HLSL\PBR_function.hlsli">
       <Filter>Shaders\Mesh\PBR</Filter>
@@ -989,6 +1004,12 @@
     </None>
     <None Include="HLSL\math.hlsli">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="HLSL\gpu_particles.hlsli">
+      <Filter>Shaders\Effect\Particle\gpu_particle</Filter>
+    </None>
+    <None Include="HLSL\object_particles.hlsli">
+      <Filter>Shaders\Effect\Particle\object_particle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

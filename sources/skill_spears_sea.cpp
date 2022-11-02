@@ -85,7 +85,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 			LightManager::instance().register_light("SpearsSea", spear_light);
 
 			//攻撃の当たり判定パラメーター設定
-			attack_colider.start = position;
+			attack_colider.start = { position.x,appearance_pos.y,position.z };
 			attack_colider.radius = radius;
 		}
 	}

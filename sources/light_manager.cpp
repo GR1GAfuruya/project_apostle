@@ -103,13 +103,7 @@ void LightManager::debug_gui()
 			if (!l.second.expired())
 			{
 				l.second.lock()->debug_gui(l.first);
-
 			}
-
-			ImGui::Text(l.first.c_str());
-			ImGui::SameLine();
-			l.second.expired() ? ImGui::Text(":nullptr") : ImGui::Text(":exist");
-			
 		}
 	}
 }

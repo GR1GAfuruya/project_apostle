@@ -24,7 +24,7 @@ public:
 		float max_particle;//このエミッタが放出するパーティクルの最大数
 	};
 
-	struct PARTICLE_DATA
+	struct ParticleData
 	{
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 velocity;
@@ -37,7 +37,7 @@ public:
 		bool is_active;
 	};
 
-	struct PARTICLE_CONSTANTS 
+	struct ParticleConstants 
 	{
 		Emitter emitter{};
 		DirectX::XMFLOAT2 particle_size = {0.1f,0.1f};
@@ -47,7 +47,7 @@ public:
 		float pad3;
 		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
 	};
-	std::unique_ptr<Constants<PARTICLE_CONSTANTS>> particle_constants{};
+	std::unique_ptr<Constants<ParticleConstants>> particle_constants{};
 
 	GPU_Particles(ID3D11Device* device,const int max_particle = 500000);
 	GPU_Particles(const GPU_Particles&) = delete;
