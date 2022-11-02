@@ -37,10 +37,9 @@ private:
 	std::unique_ptr<LambertShader> lambert_shader;
 	std::unique_ptr<Particles> particles;
 	std::unique_ptr<DeferredRenderer> deferred;
-	std::unique_ptr<LightManager> light_manager;
 	std::unique_ptr<SkyBox> skybox;
 	std::unique_ptr<SpriteBatch> operation_ui;
-
+	std::shared_ptr<DirectionalLight> dir_light;
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect;

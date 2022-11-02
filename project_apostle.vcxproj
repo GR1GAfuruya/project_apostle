@@ -223,6 +223,7 @@
     <ClCompile Include="sources\magic_bullet_launcher.cpp" />
     <ClCompile Include="sources\mesh_shader.cpp" />
     <ClCompile Include="sources\model_resource.cpp" />
+    <ClCompile Include="sources\object_particle.cpp" />
     <ClCompile Include="sources\particle.cpp" />
     <ClCompile Include="sources\PBR_shader.cpp" />
     <ClCompile Include="sources\charactor.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="sources\instancing_mesh.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
     <ClInclude Include="sources\noise.h" />
+    <ClInclude Include="sources\object_particle.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />
     <ClInclude Include="sources\restraint_launcher.h" />
@@ -720,6 +722,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="HLSL\object_particles_copy_buffer_cs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\object_particles_cs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
     <FxCompile Include="HLSL\PBR_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -953,6 +963,7 @@
     <None Include="HLSL\noise.hlsli" />
     <None Include="HLSL\object_mesh.hlsli" />
     <None Include="HLSL\gpu_particles.hlsli" />
+    <None Include="HLSL\object_particles.hlsli" />
     <None Include="HLSL\PBR_function.hlsli" />
     <None Include="HLSL\ramp_shader.hlsli" />
     <None Include="HLSL\shading_functions.hlsli" />

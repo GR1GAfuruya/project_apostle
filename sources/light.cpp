@@ -13,16 +13,14 @@ DirectionalLight::DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, flo
 	light_constants->data.dir_light_color = { r,g,b,1.0f };
 }
 
-void DirectionalLight::debug_gui(int unique_id)
+void DirectionalLight::debug_gui(std::string name)
 {
-	string id = std::to_string(unique_id);
-	string name = "dir_light:id " + id;
 #if USE_IMGUI
 	ImGui::Begin("light");
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		ImGui::DragFloat3(string("dir " + id).c_str(), &light_constants->data.dir_light_dir.x, 0.1f );
-		ImGui::DragFloat3(string("color " + id).c_str(), &light_constants->data.dir_light_color.x, 0.1f);
+		ImGui::DragFloat3(string("dir " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.1f );
+		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f);
 	}
 	ImGui::End();
 #endif // 0
@@ -56,17 +54,15 @@ PointLight::PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float dis
 	
 }
 
-void PointLight::debug_gui(int unique_id)
+void PointLight::debug_gui(std::string name)
 {
-	string id = std::to_string(unique_id);
-	string name = "point_light:id " + id;
 #if USE_IMGUI
 	ImGui::Begin("light");
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		ImGui::DragFloat3(string("position " + id).c_str(), &light_constants->data.dir_light_dir.x, 0.5f);
-		ImGui::DragFloat3(string("color " + id).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0, 255);
-		ImGui::DragFloat(string("distance " + id).c_str(), &light_constants->data.dir_light_dir.w,0.1f,1,500);
+		ImGui::DragFloat3(string("position " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.5f);
+		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0, 255);
+		ImGui::DragFloat(string("distance " + name).c_str(), &light_constants->data.dir_light_dir.w,0.1f,1,500);
 	}
 	ImGui::End();
 #endif // 0

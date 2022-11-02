@@ -8,7 +8,7 @@ public:
 	~Light(){}
 
 	//-------<関数>-------//
-	virtual void debug_gui(int unique_id){};
+	virtual void debug_gui(std::string name){};
 protected:
 	//定数バッファ
 	struct DirLightParam {
@@ -18,6 +18,7 @@ protected:
 
 public:
 	std::unique_ptr<Constants<DirLightParam>> light_constants{};
+	std::string name;
 };
 
 //平行光
@@ -27,7 +28,7 @@ public:
 	DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, float r, float g, float b);
 	~DirectionalLight() {}
 
-	void debug_gui(int unique_id) override;
+	void debug_gui(std::string name) override;
 
 	void set_direction(DirectX::XMFLOAT3 position);
 	void set_color(float r, float g, float b);
@@ -43,7 +44,7 @@ public:
 	PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float distance, float r, float g, float b);
 	~PointLight(){}
 
-	void debug_gui(int unique_id) override;
+	void debug_gui(std::string name) override;
 
 	void set_position(DirectX::XMFLOAT3 position);
 	void set_color(float r, float g, float b);

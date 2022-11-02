@@ -1,6 +1,7 @@
 #pragma once
 #include "skill.h"
 #include "instance_mesh_effect.h"
+#include "light.h"
 class SpearsSea : public Skill
 {
 public:
@@ -23,7 +24,7 @@ public:
 	// 
 	//==============================================================
 	SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, InitializeParam initparam);
-	~SpearsSea() {}
+	~SpearsSea();
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;
@@ -51,6 +52,6 @@ private:
 	float radius;
 	float spear_length;
 	float spear_length_rate;
-public:
-
+	std::shared_ptr<PointLight> spear_light;
+	
 };

@@ -3,7 +3,7 @@
 #include "g_buffer.h"
 #include "fullscreen_quad.h"
 #include "framebuffer.h"
-#include "light_manager.h"
+
 class DeferredRenderer
 {
 public:
@@ -12,13 +12,13 @@ public:
 
 
 	void active(Graphics& graphics);
-	void deactive(Graphics& graphics, LightManager& light_manager);
+	void deactive(Graphics& graphics);
 	void render(Graphics& graphics);
 #if CAST_SHADOW
-	void shadow_active(Graphics& graphics, LightManager& light_manager);
+	void shadow_active(Graphics& graphics);
 	void shadow_deactive(Graphics& graphics);
 #endif
-	void lighting(Graphics& graphics,LightManager& light_manager) const;
+	void lighting(Graphics& graphics) const;
 
 	ID3D11DepthStencilView* get_dsv() { return depth_stencil_view.Get(); }
 private:

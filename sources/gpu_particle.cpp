@@ -18,8 +18,8 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 	HRESULT hr{ S_OK };
 
 	D3D11_BUFFER_DESC buffer_desc{};
-	buffer_desc.ByteWidth = static_cast<UINT>(sizeof(PARTICLE_DATA) * max_particle_count);
-	buffer_desc.StructureByteStride = sizeof(PARTICLE_DATA);
+	buffer_desc.ByteWidth = static_cast<UINT>(sizeof(ParticleData) * max_particle_count);
+	buffer_desc.StructureByteStride = sizeof(ParticleData);
 	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 	buffer_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	buffer_desc.CPUAccessFlags = 0;
@@ -73,7 +73,7 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	
 	//定数バッファ
-	particle_constants = std::make_unique<Constants<PARTICLE_CONSTANTS>>(device);
+	particle_constants = std::make_unique<Constants<ParticleConstants>>(device);
 
 
 	create_vs_from_cso(device, "shaders/gpu_particles_vs.cso", vertex_shader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
