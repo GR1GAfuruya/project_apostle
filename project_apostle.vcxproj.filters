@@ -208,6 +208,9 @@
     <Filter Include="Shaders\Effect\Particle\object_particle">
       <UniqueIdentifier>{2671a355-c055-4286-91d1-56177fcd3918}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\UI">
+      <UniqueIdentifier>{2c760045-fcf6-47ae-be77-58e7e7bf73d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -452,6 +455,12 @@
     </ClCompile>
     <ClCompile Include="sources\object_particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_ui.cpp">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\hp_gauge.cpp">
+      <Filter>sources\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -724,6 +733,15 @@
     </ClInclude>
     <ClInclude Include="sources\object_particle.h">
       <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_ui.h">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\UI.h">
+      <Filter>sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\hp_gauge.h">
+      <Filter>sources\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

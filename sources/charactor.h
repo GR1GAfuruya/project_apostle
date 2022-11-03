@@ -43,7 +43,9 @@ public:
 	// HP
 	int get_health() const { return health; }
 	// Å‘åHP
-	uint32_t GetMaxHealth() const { return max_health; }
+	int GetMaxHealth() const { return max_health; }
+
+	float get_hp_percent() const { return health <= 0 ? 0.0f : static_cast<float>(health) / static_cast<float>(max_health); }
 	// ’n–Ê”»’è
 	bool get_is_ground() const { return is_ground; }
 	//‚‚³æ“¾

@@ -205,6 +205,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	operation_ui->render(graphics.get_dc().Get(), { 0, 10 }, { 2, 2 });
 	operation_ui->end(graphics.get_dc().Get());	*/
 
+	boss->render_ui(graphics,elapsed_time);
 	player->render_ui(graphics,elapsed_time);
 	camera->debug_gui();
 	//デバッグレンダー

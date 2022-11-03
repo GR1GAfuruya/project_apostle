@@ -68,8 +68,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 				int random = std::abs(static_cast<int>(Noise::instance().get_rnd()));
 				float circle_radius = random % static_cast<int>(radius);
 				appearance_pos.x = Math::circumferential_placement({ position.x,position.z }, circle_radius, i, MAX_NUM).x;
-				static float GROUND = -12.0f;
-				appearance_pos.y = GROUND;
+				appearance_pos.y = position.y;
 				appearance_pos.z = Math::circumferential_placement({ position.x,position.z }, circle_radius, i, MAX_NUM).y;
 				//ÇŒÇÁÇŒÇÁÇ…ê∂Ç‚Ç∑
 				DirectX::XMFLOAT3 spear_dir = Math::Normalize(DirectX::XMFLOAT3(cosf(i), 1.01f, sinf(i)));

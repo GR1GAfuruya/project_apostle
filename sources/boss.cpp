@@ -19,7 +19,6 @@ void Boss::initialize()
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_attack_param.collision.radius = 8.0f;
 	vs_wall_ray_power = 10.0f;
-
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.radius = 10;
 	boss_body_collision.height = 25;
@@ -35,6 +34,7 @@ Boss::Boss(Graphics& graphics)
 {
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
 	efc_charge_attack = make_unique<ChargeAttack>(graphics);
+	ui = make_unique<BossUi>(graphics);
 
 	initialize();
 
@@ -63,6 +63,8 @@ void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
 	model->fech_by_bone(transform, sickle_hand, sickle_attack_param.collision.start, &sickle_bone_mat);
 	sickle_attack_param.collision.end = sickle_attack_param.collision.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
 	update_invicible_timer(elapsed_time);
+
+	ui->update(graphics, elapsed_time);
 }
 //==============================================================
 // 
@@ -88,6 +90,16 @@ void Boss::render_f(Graphics& graphics, float elapsed_time)
 	efc_charge_attack->render(graphics);
 	debug_gui();
 	
+}
+//==============================================================
+// 
+//•`‰æˆ—iUIj
+// 
+//==============================================================
+void Boss::render_ui(Graphics& graphics, float elapsed_time)
+{
+	ui->set_hp_percent(get_hp_percent());
+	ui->render(graphics.get_dc().Get());
 }
 //==============================================================
 // 

@@ -35,13 +35,13 @@ private:
 	int selected_skill_index;
 	int slots_num;
 
-	float expansion_start = 30;
-	float expansion_end = 150;
-	float add_alpha_speed = 5;
+	float expansion_start;
+	float expansion_end;
+	float add_alpha_speed;
 
-	float add_ang_start = -120;
-	float add_ang_end = -90;
-	float add_ang_lerp_speed = 6;
+	float add_ang_start;
+	float add_ang_end;
+	float add_ang_lerp_speed;
 
 	bool display_imgui = false;
 };

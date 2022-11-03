@@ -207,10 +207,12 @@
     <ClCompile Include="sources\boss.cpp" />
     <ClCompile Include="sources\boss_action.cpp" />
     <ClCompile Include="sources\boss_charge_attack.cpp" />
+    <ClCompile Include="sources\boss_ui.cpp" />
     <ClCompile Include="sources\camera.cpp" />
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
+    <ClCompile Include="sources\hp_gauge.cpp" />
     <ClCompile Include="sources\instance_mesh_effect.cpp" />
     <ClCompile Include="sources\instancing_mesh.cpp" />
     <ClCompile Include="sources\mesh_effect.cpp" />
@@ -286,7 +288,9 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\boss_ui.h" />
     <ClInclude Include="sources\damage_func.h" />
+    <ClInclude Include="sources\hp_gauge.h" />
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
@@ -365,6 +369,7 @@
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />
     <ClInclude Include="sources\trail.h" />
+    <ClInclude Include="sources\UI.h" />
     <ClInclude Include="sources\user.h" />
     <ClInclude Include="sources\collision.h" />
     <ClInclude Include="sources\primitive.h" />

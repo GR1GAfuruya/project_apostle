@@ -6,6 +6,7 @@
 #include "boss_charge_attack.h"
 #include "light.h"
 #include "primitive.h"
+#include "boss_ui.h"
 class Boss :public Charactor
 {
 private:
@@ -93,6 +94,7 @@ public:
 	void render_d(Graphics& graphics, float elapsed_time);
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time);
+	void render_ui(Graphics& graphics, float elapsed_time);
 
 	//デバッグ用GUI描画
 	void debug_gui();
@@ -242,6 +244,7 @@ public:
 	ActUpdate act_update = &Boss::update_idle_state;
 	std::unique_ptr<SkeletalMesh> model;
 	std::unique_ptr<ChargeAttack> efc_charge_attack;
+	std::unique_ptr<BossUi> ui;
 
 	//鎌腕のボーン
 	skeleton::bone sickle_hand;

@@ -10,6 +10,18 @@ void SkillUI::initialize(SlotsUi init_param,int slots_num)
 {
 	slots_ui = init_param;
 	this->slots_num = slots_num;
+
+	 slots_ui = {};
+	 skill_select = false;
+	 selected_skill_index = 0;
+
+	expansion_start = 30;
+	expansion_end = 150;
+	add_alpha_speed = 5;
+
+	add_ang_start = -120;
+	add_ang_end = -90;
+	add_ang_lerp_speed = 6;
 }
 
 void SkillUI::update(Graphics& graphics, float elapsed_time)
@@ -31,8 +43,8 @@ void SkillUI::icon_render(Graphics& graphics)
 {
 	const int TILE_NUM_X = 4;
 	const int TILE_NUM_Y = 4;
-	DirectX::XMFLOAT2 tex_size = { (skill_slot_icon->get_tex_width() / TILE_NUM_X) * MAGNI_RESOLUTION_WIDTH,
-		(skill_slot_icon->get_tex_height() / TILE_NUM_Y) * MAGNI_RESOLUTION_HEIGHT };
+	DirectX::XMFLOAT2 tex_size = { (skill_slot_icon->get_tex_width() / TILE_NUM_X) ,
+		(skill_slot_icon->get_tex_height() / TILE_NUM_Y)  };
 
 	skill_slot_icon->begin(graphics.get_dc().Get());
 
@@ -48,12 +60,14 @@ void SkillUI::icon_render(Graphics& graphics)
 			{ slots_ui.size * MAGNI_RESOLUTION_WIDTH, slots_ui.size * MAGNI_RESOLUTION_HEIGHT },//アイコンの大きさ
 			slots_ui.color,//アイコンの色
 			0,//アイコンの角度
-			{ (i % TILE_NUM_X) * tex_size.x,(i / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置
+			{ (i % TILE_NUM_X) * tex_size.x,(i / TILE_NUM_Y) * tex_size.y},//画像の中のアイコンの位置
 			tex_size);//画像の切り取りサイズ
 	}
 
 	skill_slot_icon->end(graphics.get_dc().Get());
 }
+
+//現在選択されているスキルのアイコン表示
 void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 pos)
 {
 	const int TILE_NUM_X = 4;
@@ -68,7 +82,7 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 		{  slots_ui.size * MAGNI_RESOLUTION_WIDTH, slots_ui.size * MAGNI_RESOLUTION_HEIGHT  },//アイコンの大きさ
 		{1,1,1,1},//アイコンの色
 		0,//アイコンの角度
-		{ (selected_skill_index % TILE_NUM_X) * tex_size.x,(selected_skill_index / TILE_NUM_X) * tex_size.y },//画像の中のアイコンの位置
+		{ (selected_skill_index % TILE_NUM_X) * tex_size.x ,(selected_skill_index / TILE_NUM_Y) * tex_size.y  },//画像の中のアイコンの位置
 		tex_size);//画像の切り取りサイズ
 
 	skill_slot_icon->end(graphics.get_dc().Get());
