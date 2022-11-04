@@ -462,6 +462,9 @@
     <ClCompile Include="sources\hp_gauge.cpp">
       <Filter>sources\UI</Filter>
     </ClCompile>
+    <ClCompile Include="sources\player_ui.cpp">
+      <Filter>sources\Charactor\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\fullscreen_quad.h">
@@ -742,6 +745,9 @@
     </ClInclude>
     <ClInclude Include="sources\hp_gauge.h">
       <Filter>sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\player_ui.h">
+      <Filter>sources\Charactor\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

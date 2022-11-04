@@ -6,7 +6,7 @@ class HpGauge : public UI
 public:
 	//--------<constructor/destructor>--------//
 	HpGauge()
-	:hp_percent(0)
+	:hp_percent(1)
 	{}
 	virtual ~HpGauge() {}
 

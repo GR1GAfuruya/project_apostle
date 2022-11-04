@@ -12,7 +12,7 @@ MeshEffect::MeshEffect(Graphics& graphics, const char* fbx_filename)
 	constants = std::make_unique<Constants<CONSTANTS>>(graphics.get_device().Get());
 	create_vs_from_cso(graphics.get_device().Get(), "shaders/mesh_effect_vs.cso",
 		vertex_shader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
-	create_ps_from_cso(graphics.get_device().Get(), "shaders/aura_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
+
 	shader = make_unique<MeshShader>(graphics.get_device().Get());
 }
 //==============================================================
@@ -25,7 +25,7 @@ void MeshEffect::play(DirectX::XMFLOAT3 pos)
 	
 	position = pos;
 	active = true;
-	//orientation = Math::orientation_reset();
+	orientation = Math::orientation_reset();
 }
 //==============================================================
 // 
@@ -90,6 +90,8 @@ void MeshEffect::render(Graphics& graphics)
 	//エフェクトがアクティブ状態の場合のみ描画
 	if (!active) return;
 
+	//ピクセルシェーダーが設定されていなければ警告
+	_ASSERT_EXPR(pixel_shader, "ピクセルシェーダーが設定されていません");
 	//シェーダーをアクティブ状態に
 	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
 	//定数バッファ送信

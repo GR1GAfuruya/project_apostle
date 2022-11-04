@@ -9,6 +9,19 @@
 #include "texture.h"
 #include "shader.h"
 
+
+#if _DEBUG
+CONST LONG SCREEN_WIDTH{ 1280 };
+CONST LONG SCREEN_HEIGHT{ 720 };
+#else
+CONST LONG SCREEN_WIDTH{ 1920 };
+CONST LONG SCREEN_HEIGHT{ 1080 };
+#endif
+//解像度による差分の倍率
+CONST FLOAT MAGNI_RESOLUTION_WIDTH{ SCREEN_WIDTH / 1280.0f };
+//解像度による差分の倍率
+CONST FLOAT MAGNI_RESOLUTION_HEIGHT{ SCREEN_HEIGHT / 720.0f };
+
 SpriteBatch::SpriteBatch(ID3D11Device* device, const wchar_t* filename, size_t maxSprites)
 	:  maxVertices(maxSprites * 6)
 {
@@ -106,6 +119,10 @@ void SpriteBatch::render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, Di
 	UINT numViewports{ 1 };
 	dc->RSGetViewports(&numViewports, &viewport); //ラスタライザステージにバインドされたビューポートの配列を取得
 
+	//解像度の違いによる差分を補正
+	position = { position.x * MAGNI_RESOLUTION_WIDTH, position.y * MAGNI_RESOLUTION_HEIGHT };
+	scale = { scale.x * MAGNI_RESOLUTION_WIDTH, scale.y * MAGNI_RESOLUTION_HEIGHT };
+	
 	//renderメンバ関数の引数から矩形の各頂点の位置を計算する
 	// (x0, y0) *----* (x1, y1)
 	//			|   /|
@@ -175,6 +192,9 @@ void SpriteBatch::render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, Di
 	D3D11_VIEWPORT viewport{};
 	UINT num_viewports{ 1 };
 	dc->RSGetViewports(&num_viewports, &viewport);
+
+	position = { position.x * MAGNI_RESOLUTION_WIDTH, position.y * MAGNI_RESOLUTION_HEIGHT };
+	scale = { scale.x * MAGNI_RESOLUTION_WIDTH, scale.y * MAGNI_RESOLUTION_HEIGHT };
 
 	// renderメンバ関数の引数（dx, dy, dw, dh）から矩形の各頂点の位置（スクリーン座標系）を計算する
 	//  (x0, y0) *----* (x1, y1)

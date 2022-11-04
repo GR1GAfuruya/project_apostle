@@ -8,6 +8,8 @@
 #include "sword.h"
 #include "skill_manager.h"
 #include "primitive.h"
+#include "player_ui.h"
+
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -209,6 +211,7 @@ private:
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;
 	std::unique_ptr<Sword> sword;
+	std::unique_ptr<PlayerUI> ui;
 	skeleton::bone left_hand;
 	skeleton::bone right_hand;
 	DirectX::XMFLOAT3 root_defference_velosity;

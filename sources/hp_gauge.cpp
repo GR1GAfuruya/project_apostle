@@ -6,7 +6,7 @@
 void HpGauge::update(Graphics& graphics, float elapsed_time)
 {
   
-    //現在は処理なし
+    //アニメーションなどを行う　＊現在は処理なし
 }
 
 void HpGauge::render(ID3D11DeviceContext* dc)

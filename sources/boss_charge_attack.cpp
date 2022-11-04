@@ -29,7 +29,6 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
 	wave->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	//tornado‚Ì‰Šúİ’è
-	//tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
 	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");

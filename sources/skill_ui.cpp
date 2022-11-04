@@ -11,7 +11,6 @@ void SkillUI::initialize(SlotsUi init_param,int slots_num)
 	slots_ui = init_param;
 	this->slots_num = slots_num;
 
-	 slots_ui = {};
 	 skill_select = false;
 	 selected_skill_index = 0;
 
@@ -56,8 +55,8 @@ void SkillUI::icon_render(Graphics& graphics)
 		slots_ui.icon_pos =
 			Math::circumferential_placement(slots_ui.center_pos, slots_ui.radius, i, slots_num, true, slots_ui.add_ang);
 		skill_slot_icon->render(graphics.get_dc().Get(),
-			{ slots_ui.icon_pos.x * MAGNI_RESOLUTION_WIDTH, slots_ui.icon_pos.y * MAGNI_RESOLUTION_HEIGHT },//各アイコンの位置
-			{ slots_ui.size * MAGNI_RESOLUTION_WIDTH, slots_ui.size * MAGNI_RESOLUTION_HEIGHT },//アイコンの大きさ
+			slots_ui.icon_pos,//各アイコンの位置
+			{ slots_ui.size , slots_ui.size  },//アイコンの大きさ
 			slots_ui.color,//アイコンの色
 			0,//アイコンの角度
 			{ (i % TILE_NUM_X) * tex_size.x,(i / TILE_NUM_Y) * tex_size.y},//画像の中のアイコンの位置
@@ -78,8 +77,8 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 	skill_slot_icon->begin(graphics.get_dc().Get());
 	//円周上にアイコンを並べる
 	skill_slot_icon->render(graphics.get_dc().Get(),
-		{ pos.x * MAGNI_RESOLUTION_WIDTH, pos.y * MAGNI_RESOLUTION_HEIGHT },//各アイコンの位置
-		{  slots_ui.size * MAGNI_RESOLUTION_WIDTH, slots_ui.size * MAGNI_RESOLUTION_HEIGHT  },//アイコンの大きさ
+		pos,//各アイコンの位置
+		{  slots_ui.size , slots_ui.size },//アイコンの大きさ
 		{1,1,1,1},//アイコンの色
 		0,//アイコンの角度
 		{ (selected_skill_index % TILE_NUM_X) * tex_size.x ,(selected_skill_index / TILE_NUM_Y) * tex_size.y  },//画像の中のアイコンの位置
@@ -90,7 +89,7 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 void SkillUI::debug_gui(string str_id)
 {
 #if USE_IMGUI
-	imgui_menu_bar("Skill", "UI", display_imgui);
+	imgui_menu_bar("UI", "skill", display_imgui);
 	if(display_imgui)
 	{
 		string name = str_id;

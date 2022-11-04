@@ -44,7 +44,7 @@ public:
 	int get_health() const { return health; }
 	// 最大HP
 	int GetMaxHealth() const { return max_health; }
-
+	//HPパーセンテージ
 	float get_hp_percent() const { return health <= 0 ? 0.0f : static_cast<float>(health) / static_cast<float>(max_health); }
 	// 地面判定
 	bool get_is_ground() const { return is_ground; }

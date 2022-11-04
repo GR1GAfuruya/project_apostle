@@ -246,6 +246,7 @@
     <ClCompile Include="sources\player.cpp" />
     <ClCompile Include="sources\light.cpp" />
     <ClCompile Include="sources\player_action.cpp" />
+    <ClCompile Include="sources\player_ui.cpp" />
     <ClCompile Include="sources\post_effects.cpp" />
     <ClCompile Include="sources\regenerate_launcher.cpp" />
     <ClCompile Include="sources\resource_manager.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="sources\noise.h" />
     <ClInclude Include="sources\object_particle.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
+    <ClInclude Include="sources\player_ui.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />
     <ClInclude Include="sources\restraint_launcher.h" />
     <ClInclude Include="sources\shadow_map_shader.h" />

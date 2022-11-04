@@ -51,6 +51,8 @@ Player::Player(Graphics& graphics, Camera* camera)
 	skill_manager = std::make_unique<SkillManager>(graphics);
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
+	//UI
+	ui = std::make_unique<PlayerUI>(graphics);
 	//攻撃時エフェクト
 	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Model/SlashMesh.fbx");
 	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
@@ -119,7 +121,9 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
-	
+	//UI
+	ui->set_hp_percent(get_hp_percent());
+	//ui->update(graphics, elapsed_time);
 }
 //==============================================================
 // 
@@ -165,6 +169,9 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 //==============================================================
 void Player::render_ui(Graphics& graphics, float elapsed_time)
 {
+	//プレイヤーのUI
+	ui->render(graphics);
+	//スキルのUI
 	skill_manager.get()->ui_render(graphics, elapsed_time);
 }
 
