@@ -6,6 +6,7 @@
 #include "scene_manager.h"
 #include "stage_main.h"
 #include "stage_manager.h"
+#include "scene_title.h"
 SceneGame::SceneGame(Graphics& graphics)
 {
 	
@@ -33,14 +34,14 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado2.fbx");
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx");
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
 	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
-	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
+	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/meteore_core.cso");
+	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
 	 test_mesh_effect->set_scale(0.1f);
-	 
+	 test_meteore = std::make_unique<Meteore>(graphics);
 #endif
 }
 
@@ -53,12 +54,12 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
 	StageManager& stageManager = StageManager::Instance();
 	//カメラの更新
-	camera->update(elapsed_time, stage.get());
+	camera->update(elapsed_time);
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_gazing_point());
 
 	//**********プレイヤーの更新**********//
-	player->update(graphics, elapsed_time, camera.get(), stage.get());
+	player->update(graphics, elapsed_time, camera.get());
 
 	player->calc_collision_vs_enemy(boss->get_body_collision().capsule, boss->get_body_collision().height);
 	
@@ -67,7 +68,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function);
 
 	//**********ボスの更新**********//
-	boss->update(graphics, elapsed_time, stage.get());
+	boss->update(graphics, elapsed_time);
 	
 	//ボスの攻撃対象を設定
 	boss->set_location_of_attack_target(player->get_position());
@@ -77,19 +78,21 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	stageManager.update(elapsed_time);
 
 	//particles->update(graphics,elapsed_time);
-	Mouse& mouse = Device::instance().get_mouse();
+	GamePad& gamepad = Device::instance().get_game_pad();
 
 
 #if _DEBUG
 	test_mesh_effect->set_life_span(5);
 	test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
+
+	test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
 	//シーンリセット（仮置き）
-	if (mouse.get_button() & Mouse::BTN_ENTER)
+	if (gamepad.get_button() & GamePad::BTN_START)
 	{
-		scene_reset();
+			SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTitle(graphics)));
 	}
 }
 
@@ -184,8 +187,25 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 		ImGui::DragFloat3("scale", &test_effect_scale.x, 0.1f);
 		ImGui::End();
 	}
-	#endif
 	test_mesh_effect->constants->data.particle_color = test_effect_color;
+
+	static DirectX::XMFLOAT3 test_meteore_pos = { 0.0f,10.0f,0.0f };
+	static DirectX::XMFLOAT3 test_meteore_dir = { 0.0f,10.0f,0.0f };
+	static float test_meteore_speed = 0.0f;
+
+	test_meteore->render(graphics);
+
+	ImGui::Begin("test_meteore");
+	if (ImGui::Button("test_meteore_launch"))
+	{
+		test_meteore->launch(test_meteore_pos, test_meteore_dir, test_meteore_speed);
+	}
+	ImGui::DragFloat3("meteore_pos", &test_meteore_pos.x);
+	ImGui::DragFloat3("meteore_dir", &test_meteore_dir.x, 0.1f);
+	ImGui::DragFloat("meteore_speed", &test_meteore_speed, 0.1f);
+	ImGui::End();
+	#endif
+
 #endif
 
 

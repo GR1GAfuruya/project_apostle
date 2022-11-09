@@ -70,7 +70,7 @@ protected:
 	//ジャンプ処理
 	void Jump(float speed);
 	//速力処理更新
-	void update_velocity(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage);
+	void update_velocity(float elapsed_time, DirectX::XMFLOAT3& position);
 	virtual void on_landing() {}
 	//死亡したときに呼ばれる
 	virtual void on_dead() {}
@@ -96,8 +96,6 @@ protected:
 	//キャラの頭のてっぺん
 	float head_top = 1.0f;
 	float radius = 1.0f;
-	//重力
-	float gravity = -1.0;
 	DirectX::XMFLOAT3 velocity = { 0, 0, 0 };
 	//地面に当たっているか
 	bool is_ground = false;
@@ -127,9 +125,9 @@ private:
 	//垂直速力更新処理
 	void update_vertical_velocity(float elapsed_flame) override;
 	//垂直移動更新処理
-	void update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)override;
+	void update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position)override;
 	//水平速力更新処理
-	void update_hrizontal_velocity(float elapsed_time) override;
+	void update_hrizontal_velocity(float elapsed_frame) override;
 	//水平移動更新処理
-	void update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage) override;
+	void update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position) override;
 };

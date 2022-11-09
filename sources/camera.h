@@ -15,10 +15,10 @@ public:
     ~Camera() = default;
 public:
     //--------< 関数 >--------//
-    void update(float elapsed_time,Stage* stage);
-    void update_with_tracking(float elapsed_time, Stage* stage);
-    void update_with_euler_angles(float elapsed_time, Stage* stage);
-    void update_with_quaternion(float elapsed_time, Stage* stage);
+    void update(float elapsed_time);
+    void update_with_tracking(float elapsed_time);
+    void update_with_euler_angles(float elapsed_time);
+    void update_with_quaternion(float elapsed_time);
     //void move_viewing_angle(bool is_move, float elapsed_time){};
     void calc_view_projection(Graphics& graphics, float elapsed_time);
     void debug_gui();
@@ -63,7 +63,7 @@ public:
 private:
     void calc_free_target();
     //--------< 関数ポインタ >--------//
-    typedef void (Camera::* p_Update)(float elapsed_time, Stage* stage);
+    typedef void (Camera::* p_Update)(float elapsed_time);
     p_Update p_update = &Camera::update_with_tracking;
     //--------< 関数 >--------//
     //

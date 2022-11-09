@@ -92,10 +92,10 @@ Player::~Player()
 //更新処理
 // 
 //==============================================================
-void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage)
+void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	//更新処理
-	(this->*p_update)(graphics, elapsed_time, camera,stage);
+	(this->*p_update)(graphics, elapsed_time, camera);
 	
 	//オブジェクト行列を更新
 	//無敵時間の更新

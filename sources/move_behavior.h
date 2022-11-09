@@ -1,6 +1,5 @@
 #pragma once
 #include "collision.h"
-#include "stage.h"
 class MoveBehavior
 {
 public:
@@ -21,15 +20,18 @@ protected:
     bool raycast{ false };
     float step_offset_y{ 2.0f };
     float step_offset_z{ 1.0f };
+    //重力
+    float gravity = -1.0;
+
 protected:
     //垂直速力更新処理
     virtual  void update_vertical_velocity(float elapsed_flame) {}
     //垂直移動更新処理
-    virtual void update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage) {}
+    virtual void update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position) {}
     //水平速力更新処理
     virtual void update_hrizontal_velocity(float elapsed_time) {}
     //水平移動更新処理
-    virtual void update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage) {}
+    virtual void update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position) {}
 public:
     void MovingProcess(float vx, float vz, float speed);
     virtual void Turn(float elapsed_time, DirectX::XMFLOAT3 move_velocity, float speed, DirectX::XMFLOAT3 position, DirectX::XMFLOAT4& orientation);

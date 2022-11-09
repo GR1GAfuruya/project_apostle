@@ -224,6 +224,7 @@
     <ClCompile Include="sources\light_manager.cpp" />
     <ClCompile Include="sources\magic_bullet_launcher.cpp" />
     <ClCompile Include="sources\mesh_shader.cpp" />
+    <ClCompile Include="sources\meteore.cpp" />
     <ClCompile Include="sources\model_resource.cpp" />
     <ClCompile Include="sources\object_particle.cpp" />
     <ClCompile Include="sources\particle.cpp" />
@@ -295,6 +296,7 @@
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
+    <ClInclude Include="sources\meteore.h" />
     <ClInclude Include="sources\noise.h" />
     <ClInclude Include="sources\object_particle.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
@@ -693,6 +695,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\meteore_core.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\noisy_signal_ps.hlsl">

@@ -6,10 +6,9 @@ RWStructuredBuffer<particle> particle_buffer : register(u0);
 AppendStructuredBuffer<uint> dead_list : register(u1);
 
 [numthreads(16, 1, 1)]
-void main(uint3 DTid : SV_DispatchThreadID, uint3 GT_id : SV_GroupThreadID)
+void main(uint3 DTid : SV_DispatchThreadID)
 {
     uint no = DTid.x;
-    uint group_num = GT_id.x;
     particle_buffer[no].is_active = false;
     particle_buffer[no].scale = 0;
     particle_buffer[no].streak_factor = 0;

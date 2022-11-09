@@ -44,13 +44,13 @@ Boss::Boss(Graphics& graphics)
 //XVˆ—
 // 
 //==============================================================
-void Boss::update(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update(Graphics& graphics, float elapsed_time)
 {
 #if _DEBUG
 	 if(!is_update) return;
 #endif
 
-	(this->*act_update)(graphics, elapsed_time, stage);
+	(this->*act_update)(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
 	efc_charge_attack->update(graphics, elapsed_time);

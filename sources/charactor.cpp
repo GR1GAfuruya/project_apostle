@@ -162,33 +162,32 @@ void Charactor::Jump(float speed)
 	//上方向の力を設定
 	velocity.y = speed;
 }
-void Charactor::update_velocity(float elapsedTime, DirectX::XMFLOAT3& position, Stage* stage)
+void Charactor::update_velocity(float elapsed_time, DirectX::XMFLOAT3& position)
 {
 	//経過フレーム
-	float elapsedFrame = 60.0f * elapsedTime;
+	float elapsed_frame = 60.0f * elapsed_time;
 
 
 	//垂直速力更新処理
-	update_vertical_velocity(elapsedFrame);
+	update_vertical_velocity(elapsed_frame);
 
 	//垂直移動更新処理
-	update_vertical_move(elapsedTime, position, stage);
+	update_vertical_move(elapsed_time, position);
 
 	//水平速力更新処理
-	update_hrizontal_velocity(elapsedFrame);
+	update_hrizontal_velocity(elapsed_frame);
 
 	//水平移動更新処理
-	update_horizontal_move(elapsedTime, position, stage);
+	update_horizontal_move(elapsed_time, position);
 
 }
 
-void Charactor::update_vertical_velocity(float elapsedFrame)
+void Charactor::update_vertical_velocity(float elapsed_frame)
 {
-	velocity.y += gravity * elapsedFrame;
+	velocity.y += gravity * elapsed_frame;
 }
 
-using namespace DirectX;
-void Charactor::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position, Stage* stage)
+void Charactor::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position)
 {
 	// キャラクターの下方向の移動量
 	float my = velocity.y * elapsed_time;
@@ -331,7 +330,7 @@ void Charactor::update_hrizontal_velocity(float elapsed_frame)
 }
 
 
-void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position, Stage* stage)
+void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position)
 {
 
 	// 水平速力計算

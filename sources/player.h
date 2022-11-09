@@ -20,7 +20,7 @@ public:
 	//初期化処理
 	void initialize();
 	//更新処理
-	void update(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	void update(Graphics& graphics, float elapsed_time, Camera* camera);
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
 	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
@@ -127,25 +127,25 @@ private:
 
 
 	//********各ステートのアップデート**********//r_はルートモーション付き
-	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
-	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//走り
-	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//回避
-	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//ジャンプ
-	void update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//前から被ダメ
-	void update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//前回転切り
-	void update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//敵を引き付けて斬る
-	void update_attack_ground_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//地面に手を付けて口寄せみたいな
-	void update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//バフ
-	void update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//空中に巻き上げ斬る
-	void update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//小さい魔法弾打つような
-	void update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//前進斬り
-	void update_attack_air_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//ジャンプして地面に魔法うつ
-	void update_r_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//コンボ2-1
-	void update_r_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//コンボ2-2
-	void update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//コンボ2-3
-	void update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);//後方に回避しながら魔法
+	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera);
+	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera);//走り
+	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera);//回避
+	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera);//ジャンプ
+	void update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera);//前から被ダメ
+	void update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera);//前回転切り
+	void update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera);//敵を引き付けて斬る
+	void update_attack_ground_state(Graphics& graphics, float elapsed_time, Camera* camera);//地面に手を付けて口寄せみたいな
+	void update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera);//バフ
+	void update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera);//空中に巻き上げ斬る
+	void update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera);//小さい魔法弾打つような
+	void update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera);//前進斬り
+	void update_attack_air_state(Graphics& graphics, float elapsed_time, Camera* camera);//ジャンプして地面に魔法うつ
+	void update_r_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-1
+	void update_r_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-2
+	void update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-3
+	void update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera);//後方に回避しながら魔法
 
-	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera, Stage* stage);
+	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
 	//
 	void Attack(Graphics& graphics, float elapsed_time);
 

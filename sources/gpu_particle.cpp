@@ -106,8 +106,8 @@ void GPU_Particles::initialize(Graphics& graphics)
 	//パーティクルの資料をコンピュートシェーダーに転送
 	graphics.get_dc().Get()->CSSetShader(init_cs.Get(), NULL, 0);
 
-	graphics.get_dc().Get()->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), nullptr);
-	graphics.get_dc().Get()->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), nullptr);
+	graphics.get_dc().Get()->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), 0);
+	graphics.get_dc().Get()->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), 0);
 	//----<コンピュートシェーダーの実行>----//
 	UINT num_threads = align(static_cast<UINT>(max_particle_count), THREAD_NUM_X);
 	graphics.get_dc().Get()->Dispatch(num_threads /THREAD_NUM_X, 1, 1);

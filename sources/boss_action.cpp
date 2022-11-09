@@ -171,7 +171,7 @@ void Boss::transition_stun_state()
 //---------------------------//
 //			ˆÚ“®Œn			 //
 //---------------------------//
-void Boss::update_idle_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_idle_state(Graphics& graphics, float elapsed_time)
 {
 	state_timer += elapsed_time;
 	if (state_timer > 1.0f)
@@ -181,7 +181,7 @@ void Boss::update_idle_state(Graphics& graphics, float elapsed_time, Stage* stag
 	}
 }
 
-void Boss::update_walk_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_walk_state(Graphics& graphics, float elapsed_time)
 {
 	DirectX::XMFLOAT3 dir_target_vec = Math::calc_vector_AtoB_normalize(position, target_pos);
 	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
@@ -193,18 +193,18 @@ void Boss::update_walk_state(Graphics& graphics, float elapsed_time, Stage* stag
 		transition_attack_state();
 		return;
 	}
-	update_velocity(elapsed_time, position, stage);
+	update_velocity(elapsed_time, position);
 }
 
-void Boss::update_run_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_run_state(Graphics& graphics, float elapsed_time)
 {
-	update_velocity(elapsed_time, position, stage);
+	update_velocity(elapsed_time, position);
 }
 
 //---------------------------//
 //			UŒ‚Œn			 //
 //---------------------------//
-void Boss::update_attack_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_attack_state(Graphics& graphics, float elapsed_time)
 {
 	sickle_attack_param.is_attack = true;
 	if (model->is_end_animation())
@@ -214,11 +214,11 @@ void Boss::update_attack_state(Graphics& graphics, float elapsed_time, Stage* st
 	}
 }
 
-void Boss::update_skill_1_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_1_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time)
 {
 	if (model->is_end_animation())
 	{
@@ -226,7 +226,7 @@ void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time, St
 	}
 }
 
-void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time)
 {
 	action_time += elapsed_time;
 	if (action_time > 5)
@@ -236,7 +236,7 @@ void Boss::update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Sta
 	}
 }
 
-void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time)
 {
 	if (model->is_end_animation())
 	{
@@ -244,7 +244,7 @@ void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stag
 	}
 }
 
-void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time)
 {
 
 }
@@ -253,7 +253,7 @@ void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time, Stage* s
 //---------------------------//
 //			ƒ_ƒEƒ“Œn		//
 //---------------------------//
-void Boss::update_air_bone_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_air_bone_state(Graphics& graphics, float elapsed_time)
 {
 	if (model->is_end_animation())
 	{
@@ -261,7 +261,7 @@ void Boss::update_air_bone_state(Graphics& graphics, float elapsed_time, Stage* 
 	}
 }
 
-void Boss::update_damage_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_damage_state(Graphics& graphics, float elapsed_time)
 {
 	if (model->is_end_animation())
 	{
@@ -269,44 +269,44 @@ void Boss::update_damage_state(Graphics& graphics, float elapsed_time, Stage* st
 	}
 }
 
-void Boss::update_dead_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_dead_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_die_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_die_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_down_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_down_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_downdead_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_downdead_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_fall_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_fall_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_groggy_end_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_groggy_end_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_groggy_loop_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_groggy_loop_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_groggy_start_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_groggy_start_state(Graphics& graphics, float elapsed_time)
 {
 }
 
-void Boss::update_stdand_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_stdand_state(Graphics& graphics, float elapsed_time)
 {
 
 }
 
-void Boss::update_stun_state(Graphics& graphics, float elapsed_time, Stage* stage)
+void Boss::update_stun_state(Graphics& graphics, float elapsed_time)
 {
 
 }

@@ -51,11 +51,11 @@ Camera::Camera(Graphics& graphics)
 	}
 }
 
-void Camera::update(float elapsed_time, Stage* stage)
+void Camera::update(float elapsed_time)
 {
 	using namespace DirectX;
 	// 任意のアップデートを実行
-	(this->*p_update)(elapsed_time,stage);
+	(this->*p_update)(elapsed_time);
 
 	//カメラのパラメータ設定(全アップデート共通)
 	{
@@ -131,7 +131,7 @@ void Camera::update(float elapsed_time, Stage* stage)
 
 
 
-void Camera::update_with_tracking(float elapsed_time, Stage* stage)
+void Camera::update_with_tracking(float elapsed_time)
 {
 	
 
@@ -167,7 +167,7 @@ void Camera::update_with_tracking(float elapsed_time, Stage* stage)
 	target = trakking_target;
 }
 
-void Camera::update_with_euler_angles(float elapsed_time, Stage* stage)
+void Camera::update_with_euler_angles(float elapsed_time)
 {
 	using namespace DirectX;
 	// X軸のカメラ回転を制限
@@ -193,7 +193,7 @@ void Camera::update_with_euler_angles(float elapsed_time, Stage* stage)
 
 }
 
-void Camera::update_with_quaternion(float elapsed_time, Stage* stage)
+void Camera::update_with_quaternion(float elapsed_time)
 {
 	using namespace DirectX;
 	// rangeの範囲制御

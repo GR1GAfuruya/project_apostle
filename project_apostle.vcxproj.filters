@@ -211,6 +211,9 @@
     <Filter Include="sources\UI">
       <UniqueIdentifier>{2c760045-fcf6-47ae-be77-58e7e7bf73d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\BossEffects\Meteorite">
+      <UniqueIdentifier>{836e2453-5a26-443e-b6a1-1f6d2d898d41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -464,6 +467,9 @@
     </ClCompile>
     <ClCompile Include="sources\player_ui.cpp">
       <Filter>sources\Charactor\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\meteore.cpp">
+      <Filter>sources\Effects\BossEffects\Meteorite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -749,6 +755,9 @@
     <ClInclude Include="sources\player_ui.h">
       <Filter>sources\Charactor\Player</Filter>
     </ClInclude>
+    <ClInclude Include="sources\meteore.h">
+      <Filter>sources\Effects\BossEffects\Meteorite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
@@ -969,6 +978,9 @@
     </FxCompile>
     <FxCompile Include="HLSL\object_particles_cs.hlsl">
       <Filter>Shaders\Effect\Particle\object_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\meteore_core.hlsl">
+      <Filter>Shaders\Effect\Fire</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

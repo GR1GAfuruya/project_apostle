@@ -1,6 +1,7 @@
 #pragma once
 #include "mesh_effect.h"
 #include "gpu_particle.h"
+#include "meteore.h"
 class ChargeAttack
 {
 public:
@@ -41,7 +42,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 
 	std::unique_ptr<GPU_Particles> particle;
-		
+	std::vector<unique_ptr<Meteore>> meteores;
 	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
 	const float ATTACK_TIME = 2.0f;
 	bool is_charge_max = false;
