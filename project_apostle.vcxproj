@@ -226,6 +226,7 @@
     <ClCompile Include="sources\mesh_shader.cpp" />
     <ClCompile Include="sources\meteore.cpp" />
     <ClCompile Include="sources\model_resource.cpp" />
+    <ClCompile Include="sources\noise.cpp" />
     <ClCompile Include="sources\object_particle.cpp" />
     <ClCompile Include="sources\particle.cpp" />
     <ClCompile Include="sources\PBR_shader.cpp" />

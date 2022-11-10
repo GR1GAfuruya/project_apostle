@@ -1,9 +1,16 @@
 #pragma once
 #include "mesh_effect.h"
 #include "move_behavior.h"
+#include "effekseer_effect.h"
 class Meteore :public MoveBehavior
 {
 public:
+	//==============================================================
+	// 
+	// public関数
+	// 
+	//==============================================================
+
 	Meteore(Graphics& graphics);
 	~Meteore() {};
 
@@ -27,8 +34,14 @@ public:
 	void update_velocity(float elapsed_time, DirectX::XMFLOAT3& position);
 
 	bool get_is_hit() const { return is_hit; }
-private:
 
+private:
+	//==============================================================
+	// 
+	// private関数
+	// 
+	//==============================================================
+	//移動に関するパラメーターをセット
 	void move(float vx, float vz, float speed);
 	//垂直速力更新処理
 	void update_vertical_velocity(float elapsed_frame) override;
@@ -38,7 +51,13 @@ private:
 	void update_hrizontal_velocity(float elapsed_frame) override;
 	//水平移動更新処理
 	void update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position) override;
-
+	//隕石が当たった時の処理
+	void on_hit();
+	//==============================================================
+	// 
+	// private変数
+	// 
+	//==============================================================
 	std::unique_ptr<MeshEffect> main_effect;
 
 	float ray_power = 5.0f;
@@ -46,4 +65,6 @@ private:
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 scale;
 	bool is_hit = false;
+
+	std::unique_ptr<EffekseerEffect> test_meteore_hit;
 };

@@ -30,12 +30,12 @@ void EffekseerEffectManager::initialize(Graphics& graphics)
 
 void EffekseerEffectManager::finalize()
 {
-	if(effekseer_manager.Get() != NULL)
+	if(effekseer_manager.Get() != nullptr)
 	{
 		effekseer_manager.Reset();
 	}
 
-	if (effekseer_renderer.Get() != NULL)
+	if (effekseer_renderer.Get() != nullptr)
 	{
 		effekseer_renderer.Reset();
 	}

@@ -471,6 +471,9 @@
     <ClCompile Include="sources\meteore.cpp">
       <Filter>sources\Effects\BossEffects\Meteorite</Filter>
     </ClCompile>
+    <ClCompile Include="sources\noise.cpp">
+      <Filter>sources\User</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\fullscreen_quad.h">

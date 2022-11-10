@@ -10,6 +10,7 @@
 #include "primitive.h"
 #include "player_ui.h"
 
+#include "effekseer_effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -210,8 +211,12 @@ private:
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;
+	std::unique_ptr<MeshEffect> test_slash_hit;
 	std::unique_ptr<Sword> sword;
 	std::unique_ptr<PlayerUI> ui;
+
+	//std::unique_ptr<EffekseerEffect> test_slash_hit;
+
 	skeleton::bone left_hand;
 	skeleton::bone right_hand;
 	DirectX::XMFLOAT3 root_defference_velosity;

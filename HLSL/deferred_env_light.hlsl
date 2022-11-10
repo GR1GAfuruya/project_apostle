@@ -56,7 +56,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 	//Lv	0	5	   8	    9 	  11
 	//1-R	1	0.9	   0.75		0.6   0.0
 	//1-	1   0.55   0.28     0.19  0.0
-    float level = pow(Roughness, 1.0);
+    float level = pow(Roughness, 5.0);
     level =  level;
     level *= 11;
 	//ミップマップを利用してぼかし

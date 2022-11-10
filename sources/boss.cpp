@@ -11,7 +11,8 @@ void Boss::initialize()
 	transition_idle_state();
 	position = { -24.0f, 0.0f,7.0f };
 	scale.x = scale.y = scale.z = 0.08f;
-	health = 1000;
+	max_health = 500;
+	health = max_health;
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
 	acceleration = 10.0f;
@@ -54,6 +55,7 @@ void Boss::update(Graphics& graphics, float elapsed_time)
 	model->update_animation(elapsed_time);
 	
 	efc_charge_attack->update(graphics, elapsed_time);
+	efc_charge_attack->set_target_pos(target_pos);
 	//bodyÇÃçUåÇópìñÇΩÇËîªíË
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
@@ -117,7 +119,7 @@ void Boss::on_dead()
 //==============================================================
 void Boss::on_damaged(WINCE_TYPE type)
 {
-	if (state != State::DAMAGE)
+	if (state != State::DAMAGE || state != State::ATTACK)
 	{
 		transition_damage_state();
 	}

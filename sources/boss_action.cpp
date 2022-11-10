@@ -39,14 +39,17 @@ void Boss::transition_skill_1_state()
 {
 	act_update = &Boss::update_skill_1_state;
 	model->play_animation(BossAnimation::SKILL_1, false);
-	state = State::SKILL_1;
+	//state = State::SKILL_1;
+	state = State::ATTACK;
+	
 }
 
 void Boss::transition_skill_2_start_state()
 {
 	act_update = &Boss::update_skill_2_start_state;
 	model->play_animation(BossAnimation::SKILL_2_START, false);
-	state = State::SKILL_2_START;
+	//state = State::SKILL_2_START;
+	state = State::ATTACK;
 
 }
 
@@ -54,7 +57,8 @@ void Boss::transition_skill_2_loop_state()
 {
 	act_update = &Boss::update_skill_2_loop_state;
 	model->play_animation(BossAnimation::SKILL_2_LOOP, true);
-	state = State::SKILL_2_LOOP;
+	//state = State::SKILL_2_LOOP;
+	state = State::ATTACK;
 	//チャージエフェクト発生
 	efc_charge_attack->play(position);
 }
@@ -63,7 +67,8 @@ void Boss::transition_skill_2_end_state()
 {
 	act_update = &Boss::update_skill_2_end_state;
 	model->play_animation(BossAnimation::SKILL_2_END, false);
-	state = State::SKILL_2_END;
+	//state = State::SKILL_2_END;
+	state = State::ATTACK;
 	//チャージエフェクトのチャージ状態をマックスに
 	efc_charge_attack->set_charge_max_state();
 }
@@ -72,7 +77,8 @@ void Boss::transition_skill_3_state()
 {
 	act_update = &Boss::update_skill_3_state;
 	model->play_animation(BossAnimation::SKILL_3, false);
-	state = State::SKILL_3;
+	//state = State::SKILL_3;
+	state = State::ATTACK;
 }
 
 
@@ -209,7 +215,7 @@ void Boss::update_attack_state(Graphics& graphics, float elapsed_time)
 	sickle_attack_param.is_attack = true;
 	if (model->is_end_animation())
 	{
-		transition_idle_state();
+		transition_skill_2_start_state();
 		sickle_attack_param.is_attack = false;
 	}
 }
