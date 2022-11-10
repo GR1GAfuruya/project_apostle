@@ -31,8 +31,9 @@ public:
 		// 彩度調整
 		float saturation = 1;
 		// 明度調整
-		float brightness = 1.5f;
-		float pad3;
+		float brightness = 2.4f;
+		//コントラスト
+		float contrast = 7.0f;
 	};
 
 	void begin(ID3D11DeviceContext* dc);

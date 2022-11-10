@@ -41,33 +41,6 @@ void PostEffects::begin(ID3D11DeviceContext* dc)
 void PostEffects::end(ID3D11DeviceContext* dc)
 {
 	original_frame_buffer->deactivate(dc);
-
-
-#if USE_IMGUI
-	imgui_menu_bar("window", "post_effect", display_post_effects_imgui);
-	if (display_post_effects_imgui)
-	{
-	ImGui::Begin("PostEffect");
-	if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Text("original");
-		ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
-		ImGui::Text("lumina");
-		ImGui::Image(post_effect_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
-	}
-	//パラメータ設定
-	if (display_post_effects_imgui)
-	{
-		if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
-			ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
-			ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 0.0f, 10.0f);
-		}
-	}
-	ImGui::End();
-	}
-#endif
 }
 
 
@@ -88,14 +61,35 @@ void PostEffects::blit(Graphics& graphics)
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	final_sprite->blit(graphics.get_dc().Get(), post_effect_frame_buffer->get_color_map().GetAddressOf(), 0, 1, post_effects.Get());
 
+
+
 #if USE_IMGUI
+	imgui_menu_bar("Window", "post_effect", display_post_effects_imgui);
 	if (display_post_effects_imgui)
 	{
 		ImGui::Begin("PostEffect");
-		ImGui::DragFloat("blur_threshold", &cb_post_effect->data.bloom_extraction_threshold, 0.1f, -1.0f, 10.0f);
-		ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
+		//パラメータ設定
+		if (display_post_effects_imgui)
+		{
+			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
+				ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
+				ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 1.0f, 10.0f);
+				ImGui::DragFloat("contrast", &cb_post_effect->data.contrast, 0.1f, 0.0f, 50.0f);
+				ImGui::DragFloat("ray_power", &cb_post_effect->data.ray_power, 0.1f, 0.0f, 50.0f);
+				ImGui::DragFloat("blur_threshold", &cb_post_effect->data.bloom_extraction_threshold, 0.1f, -1.0f, 10.0f);
+				ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
+
+			}
+			if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("original");
+				ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
+			}
+
+		}
 		ImGui::End();
-		graphics.recompile_pixel_shader(post_effects.GetAddressOf(),"_post");
 	}
 #endif
 

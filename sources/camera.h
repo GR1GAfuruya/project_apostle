@@ -114,4 +114,7 @@ private:
     bool display_camera_imgui = false;
     bool camera_operate_stop;
 
+    //カメラストップ用の変数（ヒットストップなど）
+    bool camera_stop = false;
+    float stop_timer = 0.0f;
 };
