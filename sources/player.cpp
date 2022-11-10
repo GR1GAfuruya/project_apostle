@@ -370,7 +370,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 //スキルの当たり判定処理
 // 
 //==============================================================
-void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func)
+void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
 	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func);
@@ -389,7 +389,7 @@ void Player::calc_collision_vs_enemy(Capsule collider, float collider_height)
 //自分の攻撃と敵の当たり判定処理
 // 
 //==============================================================
-void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
+void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, Camera* camera)
 {
 	//剣の攻撃中のみ当たり判定
 	if (attack_sword_param.is_attack)
@@ -401,10 +401,13 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
 			//ヒットエフェクト再生
 			if (!test_slash_hit->get_active())
 			{
+				//ヒットエフェクト
 				test_slash_hit->play({ collider.start.x, collider.start.y +20, collider.start.z});
 				test_slash_hit->set_life_span(0.1f);
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
+				//ヒットストップ
+				camera->set_camera_stop(0.1f);
 			}
 			//test_slash_hit->play(attack_sword_param.collision.end,100.0f);
 		}

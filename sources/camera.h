@@ -56,10 +56,12 @@ public:
     void set_is_move(bool m) { this->is_move = m; }
     //視野角取得
     const float& get_cape_vision()const { return cape_vision; }
+    //カメラがストップ状態か
+    const bool get_camera_stop() const { return camera_stop; }
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
-    
-
+    //カメラストップ
+    void set_camera_stop(float stop_time);
 private:
     void calc_free_target();
     //--------< 関数ポインタ >--------//
@@ -116,5 +118,5 @@ private:
 
     //カメラストップ用の変数（ヒットストップなど）
     bool camera_stop = false;
-    float stop_timer = 0.0f;
+    float camera_stop_timer = 0.0f;
 };

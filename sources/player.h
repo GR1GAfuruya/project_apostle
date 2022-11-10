@@ -40,10 +40,10 @@ public:
 	void calc_collision_vs_enemy(Capsule capsule_collider, float colider_height);
 
 	//プレイヤーの攻撃と敵の当たり判定
-	void calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func);
+	void calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, Camera* camera);
 
-	//スキルとと当たり判定
-	void judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func);
+	//スキルと敵の当たり判定
+	void judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 private:
 	//==============================================================
 	// 

@@ -63,30 +63,36 @@ void SceneGame::finalize()
 //==============================================================
 void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
-	StageManager& stageManager = StageManager::Instance();
-	//カメラの更新
+	//**********カメラの更新**********//
 	camera->update(elapsed_time);
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_gazing_point());
-
+	//カメラの経過時間
+	float camera_elapsed_time = elapsed_time;
+	//ヒットストップ時の経過時間処理
+	if (camera->get_camera_stop())
+	{
+		//経過時間を0に
+		camera_elapsed_time = 0;
+	}
 	//**********プレイヤーの更新**********//
-	player->update(graphics, elapsed_time, camera.get());
+	player->update(graphics, camera_elapsed_time, camera.get());
 
 	player->calc_collision_vs_enemy(boss->get_body_collision().capsule, boss->get_body_collision().height);
 	
-	player->calc_attack_vs_enemy(boss->get_body_collision().capsule, boss->damaged_function);
+	player->calc_attack_vs_enemy(boss->get_body_collision().capsule, boss->damaged_function, camera.get());
 
-	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function);
+	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function, camera.get());
 
 	//**********ボスの更新**********//
-	boss->update(graphics, elapsed_time);
+	boss->update(graphics, camera_elapsed_time);
 	
 	//ボスの攻撃対象を設定
 	boss->set_location_of_attack_target(player->get_position());
 	boss->calc_attack_vs_player(player->collider.start, player->collider.end, player->collider.radius, player->damaged_function);
 	
 	//**********ステージの更新**********//
-	stageManager.update(elapsed_time);
+	StageManager::Instance().update(elapsed_time);
 
 	//particles->update(graphics,elapsed_time);
 	GamePad& gamepad = Device::instance().get_game_pad();

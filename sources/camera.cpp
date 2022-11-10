@@ -127,6 +127,19 @@ void Camera::update(float elapsed_time)
 		XMMATRIX projection_mat = XMMatrixPerspectiveFovLH(XMConvertToRadians(cape_vision), aspect_ratio, near_far.x, near_far.y); // P
 		XMStoreFloat4x4(&projection, projection_mat);
 	}
+
+	//カメラストップのタイマーの更新
+	{
+		if (camera_stop_timer > 0.0f)
+		{
+			camera_stop_timer -= elapsed_time;
+		}
+		else
+		{
+			//タイマーが切れたらcamera_stopをオフに
+			camera_stop = false;
+		}
+	}
 }
 
 
@@ -302,6 +315,17 @@ void Camera::debug_gui()
 	}
 
 #endif
+}
+
+void Camera::set_camera_stop(float stop_time)
+{
+	//カメラストップ状態でないなら
+	if (!camera_stop)
+	{
+		//カメラを止め、タイマー設定
+		camera_stop = true;
+		camera_stop_timer = stop_time;
+	}
 }
 
 void Camera::calc_free_target()
