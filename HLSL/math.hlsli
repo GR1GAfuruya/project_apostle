@@ -50,3 +50,5 @@ float4x4 calc_world_transform(float3 scale, float4 quaternion, float3 position)
 {
     return float4x4(mul(mul(matrix_scalling(scale), matrix_rotation_quaternion(quaternion)), matrix_transform(position)));
 }
+
+

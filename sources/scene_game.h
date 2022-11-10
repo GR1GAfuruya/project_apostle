@@ -27,22 +27,31 @@ public:
 	void debug_gui();
 	void scene_reset();
 private:
+	//カメラ
 	std::unique_ptr<Camera> camera = nullptr;
+	//プレイヤー
 	std::unique_ptr<Player> player = nullptr;
+	//ボス
 	std::unique_ptr<Boss> boss = nullptr;
-	std::unique_ptr<Stage> stage = nullptr;
+	//キャラ初期位置
 	DirectX::XMFLOAT3 chara_pos{};
+	//ポストエフェクト
 	std::unique_ptr<PostEffects> post_effect;
+	//フィールド上の火花
 	std::unique_ptr<field_spark_particles> field_spark_particle;
-	std::unique_ptr<LambertShader> lambert_shader;
 	std::unique_ptr<Particles> particles;
+	//ディファードレンダー
 	std::unique_ptr<DeferredRenderer> deferred;
+	//スカイボックス
 	std::unique_ptr<SkyBox> skybox;
+	//操作説明UI（仮）
 	std::unique_ptr<SpriteBatch> operation_ui;
+	//平行光
 	std::shared_ptr<DirectionalLight> dir_light;
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect;
+	//std::unique_ptr<Meteore> test_meteore;
 	
 #endif
 };

@@ -7,7 +7,7 @@
 #include "Operators.h"
 #include "../external/magic_enum/include/magic_enum.hpp"
 #include "collision.h"
-
+#include "noise.h"
 //==============================================================
 // 
 // 初期化
@@ -51,15 +51,25 @@ Player::Player(Graphics& graphics, Camera* camera)
 	skill_manager = std::make_unique<SkillManager>(graphics);
 	//キャラが持つ剣
 	sword = std::make_unique<Sword>(graphics);
+	//UI
+	ui = std::make_unique<PlayerUI>(graphics);
 	//攻撃時エフェクト
-	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Model/SlashMesh.fbx");
+	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
 	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	//slash_efect->create_pixel_shader(graphics.get_device().Get(), "shaders/slash_ps.cso");
 	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
 	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
 	slash_efect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
+
+	//ヒットエフェクト
+	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
+	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
+	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
+	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
+	test_slash_hit->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	test_slash_hit->set_scale(2.0f);
+	test_slash_hit->constants->data.particle_color = { 2.5f,2.5f,5.9f,0.5f };
 
 	
 	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
@@ -72,6 +82,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
+
 	initialize();
 }
 
@@ -90,15 +101,16 @@ Player::~Player()
 //更新処理
 // 
 //==============================================================
-void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage* stage)
+void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	//更新処理
-	(this->*p_update)(graphics, elapsed_time, camera,stage);
+	(this->*p_update)(graphics, elapsed_time, camera);
 	
 	//オブジェクト行列を更新
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
 	slash_efect->update(graphics,elapsed_time);
+	test_slash_hit->update(graphics,elapsed_time);
 	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
@@ -119,7 +131,9 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera,Stage
 	
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
-	
+	//UI
+	ui->set_hp_percent(get_hp_percent());
+	//ui->update(graphics, elapsed_time);
 }
 //==============================================================
 // 
@@ -150,6 +164,7 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
+	test_slash_hit->render(graphics);
 	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	skill_manager.get()->render(graphics);
 	attack1->debug_gui("player_attack1");
@@ -165,6 +180,9 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 //==============================================================
 void Player::render_ui(Graphics& graphics, float elapsed_time)
 {
+	//プレイヤーのUI
+	ui->render(graphics);
+	//スキルのUI
 	skill_manager.get()->ui_render(graphics, elapsed_time);
 }
 
@@ -349,7 +367,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 //スキルの当たり判定処理
 // 
 //==============================================================
-void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func)
+void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
 	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func);
@@ -368,7 +386,7 @@ void Player::calc_collision_vs_enemy(Capsule collider, float collider_height)
 //自分の攻撃と敵の当たり判定処理
 // 
 //==============================================================
-void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
+void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, Camera* camera)
 {
 	//剣の攻撃中のみ当たり判定
 	if (attack_sword_param.is_attack)
@@ -377,6 +395,18 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func)
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
 			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE);
+			//ヒットエフェクト再生
+			if (!test_slash_hit->get_active())
+			{
+				//ヒットエフェクト
+				test_slash_hit->play({ collider.start.x, collider.start.y +20, collider.start.z});
+				test_slash_hit->set_life_span(0.1f);
+				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
+				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
+				//ヒットストップ
+				camera->set_camera_stop(0.1f);
+			}
+			//test_slash_hit->play(attack_sword_param.collision.end,100.0f);
 		}
 	}
 }
@@ -576,6 +606,7 @@ void Player::debug_gui(Graphics& graphics)
 
 	skill_manager.get()->debug_gui(graphics);
 	slash_efect->debug_gui("slash_efect");
+	test_slash_hit->debug_gui("test_slash_hit");
 #endif // USE_IMGUI
 
 }

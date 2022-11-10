@@ -12,6 +12,8 @@
 
 #include "constant.h"
 
+
+
 class SpriteBatch
 {
 public:
@@ -39,21 +41,25 @@ public:
 	float get_tex_width()const { return static_cast<float>(texture2d_desc.Width); }
 	float get_tex_height()const { return static_cast<float>(texture2d_desc.Height); }
 	//ÉÅÉìÉoä÷êî
-	void render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
+	void render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
 	            DirectX::XMFLOAT4 color,
 	            float angle);
 
-	void render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale
+	void render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale
 		);
 
-	void render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
+	void render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
 		DirectX::XMFLOAT4 color,float angle,
 		DirectX::XMFLOAT2 tex_pos, DirectX::XMFLOAT2 tex_size);
 
-	void begin(ID3D11DeviceContext* immediate_context,
-		ID3D11PixelShader* replaced_pixel_shader = nullptr/*UNIT.10*/, ID3D11ShaderResourceView* replaced_shader_resource_view = nullptr/*UNIT.10*/);
+	void render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
+		DirectX::XMFLOAT2 pivot, DirectX::XMFLOAT4 color, float angle,
+		DirectX::XMFLOAT2 texpos, DirectX::XMFLOAT2 texsize);
 
-	void end(ID3D11DeviceContext* immediate_context);
+	void begin(ID3D11DeviceContext* dc,
+		ID3D11PixelShader* replaced_pixel_shader = nullptr, ID3D11ShaderResourceView* replaced_shader_resource_view = nullptr);
+
+	void end(ID3D11DeviceContext* dc);
 
 	SpriteBatch(ID3D11Device* device, const wchar_t* filename, size_t maxSprites);
 	~SpriteBatch();

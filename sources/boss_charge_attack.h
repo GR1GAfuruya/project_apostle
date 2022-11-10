@@ -1,6 +1,7 @@
 #pragma once
 #include "mesh_effect.h"
 #include "gpu_particle.h"
+#include "meteore.h"
 class ChargeAttack
 {
 public:
@@ -14,6 +15,7 @@ public:
 	void debug_gui(const char* str_id);
 	
 	void set_charge_max_state() { is_charge_max = true; }
+	void set_target_pos(DirectX::XMFLOAT3 target) { target_pos = target; }
 private:
 	void charging_update(Graphics& graphics, float elapsed_time);
 	void activities_update(Graphics& graphics, float elapsed_time);
@@ -41,7 +43,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 
 	std::unique_ptr<GPU_Particles> particle;
-		
+	std::vector<unique_ptr<Meteore>> meteores;
+	float meteo_time = 0;
+	float meteo_span = 0;
 	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
 	const float ATTACK_TIME = 2.0f;
 	bool is_charge_max = false;
@@ -60,4 +64,7 @@ private:
 	float life_time = 0;
 	//アクティブ状態か
 	bool active = false;
+
+	//攻撃対象の座標
+	DirectX::XMFLOAT3 target_pos;
 };

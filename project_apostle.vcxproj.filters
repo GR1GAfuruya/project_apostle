@@ -91,9 +91,6 @@
     <Filter Include="sources\Effects\Thunder">
       <UniqueIdentifier>{3c4f444e-db8b-4c74-b586-10cb6d6638a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\Effekseer">
-      <UniqueIdentifier>{3632d23b-1fce-43e1-88a8-b724665f2f6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Effects\Light">
       <UniqueIdentifier>{cf080af7-6f4f-4e28-b163-2c0a7a2adec9}</UniqueIdentifier>
     </Filter>
@@ -208,6 +205,12 @@
     <Filter Include="Shaders\Effect\Particle\object_particle">
       <UniqueIdentifier>{2671a355-c055-4286-91d1-56177fcd3918}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\UI">
+      <UniqueIdentifier>{2c760045-fcf6-47ae-be77-58e7e7bf73d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\BossEffects\Meteorite">
+      <UniqueIdentifier>{836e2453-5a26-443e-b6a1-1f6d2d898d41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -317,12 +320,6 @@
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\effekseer_effect.cpp">
-      <Filter>sources\Effects\Effekseer</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\effekseer_effect_manager.cpp">
-      <Filter>sources\Effects\Effekseer</Filter>
     </ClCompile>
     <ClCompile Include="sources\field_spark_particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
@@ -453,6 +450,21 @@
     <ClCompile Include="sources\object_particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="sources\boss_ui.cpp">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\hp_gauge.cpp">
+      <Filter>sources\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\player_ui.cpp">
+      <Filter>sources\Charactor\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\meteore.cpp">
+      <Filter>sources\Effects\BossEffects\Meteorite</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\noise.cpp">
+      <Filter>sources\User</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\fullscreen_quad.h">
@@ -574,12 +586,6 @@
     </ClInclude>
     <ClInclude Include="external\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\effekseer_effect.h">
-      <Filter>sources\Effects\Effekseer</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\effekseer_effect_manager.h">
-      <Filter>sources\Effects\Effekseer</Filter>
     </ClInclude>
     <ClInclude Include="sources\field_spark_particle.h">
       <Filter>sources\Effects\Particle</Filter>
@@ -724,6 +730,21 @@
     </ClInclude>
     <ClInclude Include="sources\object_particle.h">
       <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_ui.h">
+      <Filter>sources\Charactor\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\UI.h">
+      <Filter>sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\hp_gauge.h">
+      <Filter>sources\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\player_ui.h">
+      <Filter>sources\Charactor\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\meteore.h">
+      <Filter>sources\Effects\BossEffects\Meteorite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -945,6 +966,9 @@
     </FxCompile>
     <FxCompile Include="HLSL\object_particles_cs.hlsl">
       <Filter>Shaders\Effect\Particle\object_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\meteore_core.hlsl">
+      <Filter>Shaders\Effect\Fire</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

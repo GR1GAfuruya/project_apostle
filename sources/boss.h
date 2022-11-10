@@ -6,6 +6,7 @@
 #include "boss_charge_attack.h"
 #include "light.h"
 #include "primitive.h"
+#include "boss_ui.h"
 class Boss :public Charactor
 {
 private:
@@ -86,13 +87,14 @@ public:
 	void initialize();
 
 	//更新
-	void update(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update(Graphics& graphics, float elapsed_time);
 
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
 	void render_d(Graphics& graphics, float elapsed_time);
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time);
+	void render_ui(Graphics& graphics, float elapsed_time);
 
 	//デバッグ用GUI描画
 	void debug_gui();
@@ -177,11 +179,11 @@ public:
 	//---------------------------//
 	
 	//待機状態更新
-	void update_idle_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_idle_state(Graphics& graphics, float elapsed_time);
 	//歩き状態更新
-	void update_walk_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_walk_state(Graphics& graphics, float elapsed_time);
 	//走り状態更新
-	void update_run_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_run_state(Graphics& graphics, float elapsed_time);
 
 
 	//---------------------------//
@@ -189,45 +191,45 @@ public:
 	//---------------------------//
 	
 	//右腕横振り攻撃状態更新
-	void update_attack_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_attack_state(Graphics& graphics, float elapsed_time);
 	//手を振り上げ地面に打ち付ける攻撃状態更新
-	void update_skill_1_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_skill_1_state(Graphics& graphics, float elapsed_time);
 	//チャージ終了状態更新
-	void update_skill_2_end_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_skill_2_end_state(Graphics& graphics, float elapsed_time);
 	//チャージ中状態更新
-	void update_skill_2_loop_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_skill_2_loop_state(Graphics& graphics, float elapsed_time);
 	//チャージ開始状態更新
-	void update_skill_2_start_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_skill_2_start_state(Graphics& graphics, float elapsed_time);
 	//少し溜め右腕を振り払う攻撃状態更新
-	void update_skill_3_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_skill_3_state(Graphics& graphics, float elapsed_time);
 
 	//---------------------------//
 	//			ダウン系		 //
 	//---------------------------//
 	//空中吹き飛び状態更新
-	void update_air_bone_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_air_bone_state(Graphics& graphics, float elapsed_time);
 	//ダメージ怯み状態更新
-	void update_damage_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_damage_state(Graphics& graphics, float elapsed_time);
 	//死亡中（不動）状態更新
-	void update_dead_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_dead_state(Graphics& graphics, float elapsed_time);
 	//死亡状態更新
-	void update_die_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_die_state(Graphics& graphics, float elapsed_time);
 	//倒れながら呼吸状態更新
-	void update_down_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_down_state(Graphics& graphics, float elapsed_time);
 	//ダウン状態（不動）状態更新
-	void update_downdead_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_downdead_state(Graphics& graphics, float elapsed_time);
 	//空中に吹き飛ばされた状態から落下状態更新
-	void update_fall_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_fall_state(Graphics& graphics, float elapsed_time);
 	//地面に手をつきダウン（初期）状態更新
-	void update_groggy_start_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_groggy_start_state(Graphics& graphics, float elapsed_time);
 	//地面に手をつきダウン（ループ）状態更新
-	void update_groggy_loop_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_groggy_loop_state(Graphics& graphics, float elapsed_time);
 	//地面に手をつきダウンから起き上がり状態更新
-	void update_groggy_end_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_groggy_end_state(Graphics& graphics, float elapsed_time);
 	//倒れた状態から起き上がる状態更新
-	void update_stdand_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_stdand_state(Graphics& graphics, float elapsed_time);
 	//立ったままスタン状態更新
-	void update_stun_state(Graphics& graphics, float elapsed_time, Stage* stage);
+	void update_stun_state(Graphics& graphics, float elapsed_time);
 
 	//ー－－－
 	void on_dead() override;
@@ -238,10 +240,11 @@ public:
 	// 変数
 	// 
 	//==============================================================
-	typedef void (Boss::* ActUpdate)(Graphics& graphics, float elapsed_time, Stage* stage);
+	typedef void (Boss::* ActUpdate)(Graphics& graphics, float elapsed_time);
 	ActUpdate act_update = &Boss::update_idle_state;
 	std::unique_ptr<SkeletalMesh> model;
 	std::unique_ptr<ChargeAttack> efc_charge_attack;
+	std::unique_ptr<BossUi> ui;
 
 	//鎌腕のボーン
 	skeleton::bone sickle_hand;

@@ -4,7 +4,7 @@
 SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
 	init_param.power = 5;
-	init_param.invinsible_time = 3.0f;
+	init_param.invinsible_time = 1.5f;
 	init_param.radius = 15;
 	init_param.collider_radius = 8;
 }

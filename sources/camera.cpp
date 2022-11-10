@@ -51,11 +51,11 @@ Camera::Camera(Graphics& graphics)
 	}
 }
 
-void Camera::update(float elapsed_time, Stage* stage)
+void Camera::update(float elapsed_time)
 {
 	using namespace DirectX;
 	// 任意のアップデートを実行
-	(this->*p_update)(elapsed_time,stage);
+	(this->*p_update)(elapsed_time);
 
 	//カメラのパラメータ設定(全アップデート共通)
 	{
@@ -127,11 +127,24 @@ void Camera::update(float elapsed_time, Stage* stage)
 		XMMATRIX projection_mat = XMMatrixPerspectiveFovLH(XMConvertToRadians(cape_vision), aspect_ratio, near_far.x, near_far.y); // P
 		XMStoreFloat4x4(&projection, projection_mat);
 	}
+
+	//カメラストップのタイマーの更新
+	{
+		if (camera_stop_timer > 0.0f)
+		{
+			camera_stop_timer -= elapsed_time;
+		}
+		else
+		{
+			//タイマーが切れたらcamera_stopをオフに
+			camera_stop = false;
+		}
+	}
 }
 
 
 
-void Camera::update_with_tracking(float elapsed_time, Stage* stage)
+void Camera::update_with_tracking(float elapsed_time)
 {
 	
 
@@ -167,7 +180,7 @@ void Camera::update_with_tracking(float elapsed_time, Stage* stage)
 	target = trakking_target;
 }
 
-void Camera::update_with_euler_angles(float elapsed_time, Stage* stage)
+void Camera::update_with_euler_angles(float elapsed_time)
 {
 	using namespace DirectX;
 	// X軸のカメラ回転を制限
@@ -193,7 +206,7 @@ void Camera::update_with_euler_angles(float elapsed_time, Stage* stage)
 
 }
 
-void Camera::update_with_quaternion(float elapsed_time, Stage* stage)
+void Camera::update_with_quaternion(float elapsed_time)
 {
 	using namespace DirectX;
 	// rangeの範囲制御
@@ -302,6 +315,17 @@ void Camera::debug_gui()
 	}
 
 #endif
+}
+
+void Camera::set_camera_stop(float stop_time)
+{
+	//カメラストップ状態でないなら
+	if (!camera_stop)
+	{
+		//カメラを止め、タイマー設定
+		camera_stop = true;
+		camera_stop_timer = stop_time;
+	}
 }
 
 void Camera::calc_free_target()

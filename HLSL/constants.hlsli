@@ -46,6 +46,8 @@ cbuffer POST_EFFECTS_CONSTANT : register(b5)
     float saturation;
     // 明度調整
     float brightness;
+    //コントラスト
+    float contrast;
 }
 
 

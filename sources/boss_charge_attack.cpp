@@ -1,6 +1,6 @@
 #include "boss_charge_attack.h"
 #include "user.h"
-#include <algorithm>
+#include "noise.h"
 ChargeAttack::ChargeAttack(Graphics& graphics)
 {
 	//auraの初期設定
@@ -29,7 +29,6 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
 	wave->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	//tornadoの初期設定
-	//tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
 	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
@@ -43,6 +42,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	particle.get()->initialize(graphics);
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
+	meteo_span = 0.5f;
 }
 
 void ChargeAttack::play(DirectX::XMFLOAT3 pos)
@@ -61,21 +61,17 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	core->set_scale( 0);
 	core->set_is_loop(true);
 	core->constants->data.particle_color = FIRE_COLOR;
-	//core->constants->data.scroll_direction = { 1.0f,-1.0f };
 	//wave初期設定
 	wave->play(core_pos);
 	wave->set_scale(0.0f);
-	//wave->constants->data.scroll_direction = { 0.5f,0.8f };
 	wave->constants->data.threshold = 0;
 	wave->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f};
 	DirectX::XMFLOAT4 wave_ori = wave->get_orientation();
 	//下を向かせる
-	//wave->set_orientation(Math::rot_quaternion_dir(wave_ori, Math::get_posture_forward(wave_ori), { 0,-1,0 }));
 	wave->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, 90);
 
 	//トルネード初期化
 	tornado->play(pos);
-	//tornado->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
 	tornado->set_scale(0);
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
@@ -93,7 +89,6 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		//2本のうちの1つの角度をずらして螺旋っぽく
 
 		aura[i]->constants->data.particle_color = FIRE_COLOR;
-		//aura[i]->constants->data.scroll_direction.y = 1.5f;
 		aura[i]->constants->data.threshold = 0.0f;
 		aura[i]->rot_speed.z = 520;
 		aura[i]->set_scale({ 2.0f, 2.0f, 1.5f });
@@ -116,6 +111,9 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		particle.get()->particle_constants->data.particle_color = FIRE_COLOR;
 		particle.get()->launch_emitter(emit_cs);
 	}
+
+	meteo_time = 0;
+	
 	
 	constants->data.core_pos = core_pos;
 }
@@ -140,6 +138,11 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 		//更新
 		(this->*charge_attack_update)(graphics, elapsed_time);	
 	}
+	for (auto& m : meteores)
+	{
+		m->update(graphics, elapsed_time);
+	}
+
 	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
 }
 
@@ -157,8 +160,15 @@ void ChargeAttack::render(Graphics& graphics)
 
 		tornado->render(graphics);
 		wave->render(graphics);
-		particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
 	}
+
+	for (auto& m : meteores)
+	{
+		m->render(graphics);
+	}
+
+	particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
+
 }
 
 void ChargeAttack::debug_gui(const char* str_id)
@@ -170,6 +180,7 @@ void ChargeAttack::debug_gui(const char* str_id)
 		ImGui::Begin("boss_charge");
 		ImGui::DragFloat3("position", &position.x, 0.1f);
 		ImGui::DragFloat("core_gravitation", &constants->data.core_gravitation, 0.1f, 0);
+		ImGui::DragFloat("meteo_span", &meteo_span, 0.1f, 0);
 		ImGui::DragFloat("core_radius", &constants->data.core_radius, 1, 0);
 		ImGui::End();
 	}
@@ -189,8 +200,8 @@ void ChargeAttack::debug_gui(const char* str_id)
 void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 {
 	//更新処理
-	float core_s = lerp(core->get_scale().x, 0.3f, 0.2f * elapsed_time);
-	core->set_scale(core_s);
+	float core_scale = lerp(core->get_scale().x, 0.3f, 0.2f * elapsed_time);
+	core->set_scale(core_scale);
 	core->constants->data.scroll_speed += elapsed_time;
 	core->update(graphics, elapsed_time);
 	for (int i = 0; i < 2; i++)
@@ -217,7 +228,6 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 {
 	
-	attack_time += elapsed_time;
 	auto fade_out = [=](float alpha) {return (std::max)(alpha - 0.5f * elapsed_time, 0.0f); };
 
 	const float core_s = lerp(core->get_scale().x, 0.0f, 3.5f * elapsed_time);
@@ -246,9 +256,33 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	//竜巻エフェクト
 	float scale_xy = lerp(tornado->get_scale().y, 15.0f, 5.0f * elapsed_time);
 	tornado->set_scale({ scale_xy, tornado->get_scale().y, scale_xy });
-	//tornado->constants->data.scroll_speed += elapsed_time;
 	tornado->set_rotate_quaternion(MeshEffect::AXIS::UP, 260 * elapsed_time);
 
+	attack_time += elapsed_time;
+	//メテオ発生
+	if (attack_time <= ATTACK_TIME)
+	{
+		meteo_time += elapsed_time;
+		
+		if(meteo_time  >= meteo_span)
+		{
+			////生成
+			//unique_ptr<Meteore> meteore = std::make_unique<Meteore>(graphics);
+			////位置
+			//DirectX::XMFLOAT3 meteore_pos = { core->get_position()};
+			////方向
+			//DirectX::XMFLOAT3 direction = Math::calc_vector_AtoB_normalize(meteore_pos, target_pos);
+			////power
+			//const int random = Noise::instance().get_rnd();
+			//const int range = 30;
+			//const int ofset = 80;
+			//float power = random % range + ofset;
+			//meteore->launch(meteore_pos, direction, power);
+			//meteores.push_back(std::move(meteore));
+
+			meteo_time = 0;
+		}
+	}
 	if (attack_time >= ATTACK_TIME) charge_attack_update = &ChargeAttack::vanishing_update;
 }
 

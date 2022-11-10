@@ -96,8 +96,6 @@ void LightManager::debug_gui()
 #if CAST_SHADOW
 		shadow_dir_light->debug_gui(-1);
 #endif
-		int size = lights.size();
-		ImGui::DragInt("size", &size);
 		for (auto& l : lights)
 		{
 			if (!l.second.expired())

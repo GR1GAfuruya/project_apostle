@@ -15,10 +15,10 @@ public:
     ~Camera() = default;
 public:
     //--------< 関数 >--------//
-    void update(float elapsed_time,Stage* stage);
-    void update_with_tracking(float elapsed_time, Stage* stage);
-    void update_with_euler_angles(float elapsed_time, Stage* stage);
-    void update_with_quaternion(float elapsed_time, Stage* stage);
+    void update(float elapsed_time);
+    void update_with_tracking(float elapsed_time);
+    void update_with_euler_angles(float elapsed_time);
+    void update_with_quaternion(float elapsed_time);
     //void move_viewing_angle(bool is_move, float elapsed_time){};
     void calc_view_projection(Graphics& graphics, float elapsed_time);
     void debug_gui();
@@ -56,14 +56,16 @@ public:
     void set_is_move(bool m) { this->is_move = m; }
     //視野角取得
     const float& get_cape_vision()const { return cape_vision; }
+    //カメラがストップ状態か
+    const bool get_camera_stop() const { return camera_stop; }
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
-    
-
+    //カメラストップ
+    void set_camera_stop(float stop_time);
 private:
     void calc_free_target();
     //--------< 関数ポインタ >--------//
-    typedef void (Camera::* p_Update)(float elapsed_time, Stage* stage);
+    typedef void (Camera::* p_Update)(float elapsed_time);
     p_Update p_update = &Camera::update_with_tracking;
     //--------< 関数 >--------//
     //
@@ -114,4 +116,7 @@ private:
     bool display_camera_imgui = false;
     bool camera_operate_stop;
 
+    //カメラストップ用の変数（ヒットストップなど）
+    bool camera_stop = false;
+    float camera_stop_timer = 0.0f;
 };

@@ -57,7 +57,7 @@ void SkillManager::initialize(Graphics& graphics)
 		support_ui_init.center_pos = { 800 ,450 };
 		support_ui_init.radius = 0;
 		support_ui_init.icon_pos = { 0 ,0 };
-		support_ui_init.size = 0.1f;
+		support_ui_init.size = 0.4f;
 		support_ui_init.add_ang = -90.0f;
 		support_ui_init.expansion_speed = 10.0f;
 		support_ui_init.color = { 1,1,1,0 };
@@ -67,7 +67,7 @@ void SkillManager::initialize(Graphics& graphics)
 		attack_ui_init.center_pos = { 800 ,450 };
 		attack_ui_init.radius = 0;
 		attack_ui_init.icon_pos = { 0 ,0 };
-		attack_ui_init.size = 0.1f;
+		attack_ui_init.size = 0.4f;
 		attack_ui_init.add_ang = -90.0f;
 		attack_ui_init.expansion_speed = 10.0f;
 		attack_ui_init.color = { 1,1,1,0 };

@@ -104,7 +104,7 @@ protected:
 	//生存時間
 	float life_time = 0;
 	//寿命
-	float life_span = 0;
+	float life_span = FLT_MAX;
 	//アクティブ状態か
 	bool active = false;
 	//ループ再生するかどうか

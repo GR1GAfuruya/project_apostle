@@ -20,7 +20,7 @@ void DirectionalLight::debug_gui(std::string name)
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
 		ImGui::DragFloat3(string("dir " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.1f );
-		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f);
+		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f,0.0f);
 	}
 	ImGui::End();
 #endif // 0
@@ -61,7 +61,7 @@ void PointLight::debug_gui(std::string name)
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
 		ImGui::DragFloat3(string("position " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.5f);
-		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0, 255);
+		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0);
 		ImGui::DragFloat(string("distance " + name).c_str(), &light_constants->data.dir_light_dir.w,0.1f,1,500);
 	}
 	ImGui::End();

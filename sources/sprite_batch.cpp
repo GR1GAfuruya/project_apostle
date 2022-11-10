@@ -9,6 +9,19 @@
 #include "texture.h"
 #include "shader.h"
 
+
+#if _DEBUG
+CONST LONG SCREEN_WIDTH{ 1280 };
+CONST LONG SCREEN_HEIGHT{ 720 };
+#else
+CONST LONG SCREEN_WIDTH{ 1920 };
+CONST LONG SCREEN_HEIGHT{ 1080 };
+#endif
+//解像度による差分の倍率
+CONST FLOAT MAGNI_RESOLUTION_WIDTH{ SCREEN_WIDTH / 1280.0f };
+//解像度による差分の倍率
+CONST FLOAT MAGNI_RESOLUTION_HEIGHT{ SCREEN_HEIGHT / 720.0f };
+
 SpriteBatch::SpriteBatch(ID3D11Device* device, const wchar_t* filename, size_t maxSprites)
 	:  maxVertices(maxSprites * 6)
 {
@@ -77,7 +90,7 @@ inline auto rotate(float& x, float& y, float cx, float cy, float cos, float sin)
 };
 
 
-void SpriteBatch::render(ID3D11DeviceContext* immediate_context,
+void SpriteBatch::render(ID3D11DeviceContext* dc,
                          DirectX::XMFLOAT2 position,
                          //矩形の左上の座標(スクリーン座標系)
                          DirectX::XMFLOAT2 scale,
@@ -87,16 +100,16 @@ void SpriteBatch::render(ID3D11DeviceContext* immediate_context,
 )
 {
 	// UNIT.06
-	render(immediate_context, position, scale, color, angle, { 0.0f, 0.0f }, { static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height) });
+	render(dc, position, scale, color, angle, { 0.0f, 0.0f }, { static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height) });
 }
 
-void SpriteBatch::render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale)
+void SpriteBatch::render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale)
 {
-	render(immediate_context, { position },{ scale },{ 1.0f, 1.0f, 1.0f, 1.0f}, 0.0f,
+	render(dc, { position },{ scale },{ 1.0f, 1.0f, 1.0f, 1.0f}, 0.0f,
 		{ 0.0f, 0.0f }, { static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height) });
 }
 
-void SpriteBatch::render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
+void SpriteBatch::render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale,
 	DirectX::XMFLOAT4 color,float angle,
 	DirectX::XMFLOAT2 tex_pos, DirectX::XMFLOAT2 tex_size
 )
@@ -104,8 +117,12 @@ void SpriteBatch::render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOA
 	//スクリーン(ビューポート)のサイズを取得する
 	D3D11_VIEWPORT viewport{}; //ビューポートの寸法の定義　https://docs.microsoft.com/ja-jp/windows/win32/api/d3d11/ns-d3d11-d3d11_viewport
 	UINT numViewports{ 1 };
-	immediate_context->RSGetViewports(&numViewports, &viewport); //ラスタライザステージにバインドされたビューポートの配列を取得
+	dc->RSGetViewports(&numViewports, &viewport); //ラスタライザステージにバインドされたビューポートの配列を取得
 
+	//解像度の違いによる差分を補正
+	position = { position.x * MAGNI_RESOLUTION_WIDTH, position.y * MAGNI_RESOLUTION_HEIGHT };
+	scale = { scale.x * MAGNI_RESOLUTION_WIDTH, scale.y * MAGNI_RESOLUTION_HEIGHT };
+	
 	//renderメンバ関数の引数から矩形の各頂点の位置を計算する
 	// (x0, y0) *----* (x1, y1)
 	//			|   /|
@@ -116,17 +133,17 @@ void SpriteBatch::render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOA
 
 
 	// left-top
-	float x0{ position.x };
-	float y0{ position.y };
-	//right-top
-	float x1{ position.x + static_cast<float>(texture2d_desc.Width) * scale.x };
-	float y1{ position.y };
-	//left-bottom
-	float x2{ position.x };
-	float y2{ position.y + static_cast<float>(texture2d_desc.Height) * scale.y };
-	//right-bottom
-	float x3{ position.x + static_cast<float>(texture2d_desc.Width) * scale.x };
-	float y3{ position.y + static_cast<float>(texture2d_desc.Height) * scale.y };
+	float x0{ position.x - scale.x };
+	float y0{ position.y - scale.y };
+	// right-top
+	float x1{ position.x + (fabsf(tex_size.x) * scale.x) };
+	float y1{ position.y - scale.y };
+	// left-bottom
+	float x2{ position.x - scale.x };
+	float y2{ position.y + (fabsf(tex_size.y) * scale.y) };
+	// right-bottom
+	float x3{ position.x + (fabsf(tex_size.x)  * scale.x) };
+	float y3{ position.y + (fabsf(tex_size.y) * scale.y) };
 
 	
 
@@ -170,12 +187,88 @@ void SpriteBatch::render(ID3D11DeviceContext* immediate_context, DirectX::XMFLOA
 	
 }
 
-void SpriteBatch::begin(ID3D11DeviceContext* immediate_context,
+void SpriteBatch::render(ID3D11DeviceContext* dc, DirectX::XMFLOAT2 position, DirectX::XMFLOAT2 scale, DirectX::XMFLOAT2 pivot, DirectX::XMFLOAT4 color, float angle, DirectX::XMFLOAT2 texpos, DirectX::XMFLOAT2 texsize)
+{
+	D3D11_VIEWPORT viewport{};
+	UINT num_viewports{ 1 };
+	dc->RSGetViewports(&num_viewports, &viewport);
+
+	position = { position.x * MAGNI_RESOLUTION_WIDTH, position.y * MAGNI_RESOLUTION_HEIGHT };
+	scale = { scale.x * MAGNI_RESOLUTION_WIDTH, scale.y * MAGNI_RESOLUTION_HEIGHT };
+
+	// renderメンバ関数の引数（dx, dy, dw, dh）から矩形の各頂点の位置（スクリーン座標系）を計算する
+	//  (x0, y0) *----* (x1, y1)
+	//           |   /|
+	//           |  / |
+	//           | /  |
+	//           |/   |
+	//  (x2, y2) *----* (x3, y3)
+
+	// left-top
+	float x0{ position.x - (pivot.x * scale.x) };
+	float y0{ position.y - (pivot.y * scale.y) };
+	// right-top
+	float x1{ position.x + ((fabsf(texsize.x) - pivot.x) * scale.x) };
+	float y1{ position.y - (pivot.y * scale.y) };
+	// left-bottom
+	float x2{ position.x - (pivot.x * scale.x) };
+	float y2{ position.y + ((fabsf(texsize.y) - pivot.y) * scale.y) };
+	// right-bottom
+	float x3{ position.x + ((fabsf(texsize.x) - pivot.x) * scale.x) };
+	float y3{ position.y + ((fabsf(texsize.y) - pivot.y) * scale.y) };
+
+	//回転の中心を矩形の中心点にした場合
+	float cx = position.x;
+	float cy = position.y;
+	float cos{ cosf(DirectX::XMConvertToRadians(angle)) };
+	float sin{ sinf(DirectX::XMConvertToRadians(angle)) };
+	rotate(x0, y0, cx, cy, cos, sin);
+	rotate(x1, y1, cx, cy, cos, sin);
+	rotate(x2, y2, cx, cy, cos, sin);
+	rotate(x3, y3, cx, cy, cos, sin);
+
+	// Convert to NDC space
+	x0 = 2.0f * x0 / viewport.Width - 1.0f;
+	y0 = 1.0f - 2.0f * y0 / viewport.Height;
+	x1 = 2.0f * x1 / viewport.Width - 1.0f;
+	y1 = 1.0f - 2.0f * y1 / viewport.Height;
+	x2 = 2.0f * x2 / viewport.Width - 1.0f;
+	y2 = 1.0f - 2.0f * y2 / viewport.Height;
+	x3 = 2.0f * x3 / viewport.Width - 1.0f;
+	y3 = 1.0f - 2.0f * y3 / viewport.Height;
+
+	float u0{ texpos.x / texture2d_desc.Width };
+	float v0{ texpos.y / texture2d_desc.Height };
+	float u1{ (texpos.x + texsize.x) / texture2d_desc.Width };
+	float v1{ (texpos.y + texsize.y) / texture2d_desc.Height };
+
+	if (scale.x >= 0)
+	{
+		vertices.push_back({ { x0, y0 , 0 }, { color.x, color.y, color.z, color.w }, { u0, v0 } });
+		vertices.push_back({ { x1, y1 , 0 }, { color.x, color.y, color.z, color.w }, { u1, v0 } });
+		vertices.push_back({ { x2, y2 , 0 }, { color.x, color.y, color.z, color.w }, { u0, v1 } });
+		vertices.push_back({ { x2, y2 , 0 }, { color.x, color.y, color.z, color.w }, { u0, v1 } });
+		vertices.push_back({ { x1, y1 , 0 }, { color.x, color.y, color.z, color.w }, { u1, v0 } });
+		vertices.push_back({ { x3, y3 , 0 }, { color.x, color.y, color.z, color.w }, { u1, v1 } });
+	}
+	else
+	{
+		vertices.push_back({ { x1, y1 , 0 }, { color.x, color.y, color.z, color.w }, { u1, v0 } });
+		vertices.push_back({ { x0, y0 , 0 }, { color.x, color.y, color.z, color.w }, { u0, v0 } });
+		vertices.push_back({ { x3, y3 , 0 }, { color.x, color.y, color.z, color.w }, { u1, v1 } });
+		vertices.push_back({ { x3, y3 , 0 }, { color.x, color.y, color.z, color.w }, { u1, v1 } });
+		vertices.push_back({ { x0, y0 , 0 }, { color.x, color.y, color.z, color.w }, { u0, v0 } });
+		vertices.push_back({ { x2, y2 , 0 }, { color.x, color.y, color.z, color.w }, { u0, v1 } });
+	}
+
+}
+
+void SpriteBatch::begin(ID3D11DeviceContext* dc,
 	ID3D11PixelShader* replaced_pixel_shader, ID3D11ShaderResourceView* replaced_shader_resource_view)
 {
 	vertices.clear();
-	immediate_context->VSSetShader(vertex_shader.Get(), nullptr, 0);
-	replaced_pixel_shader ? immediate_context->PSSetShader(replaced_pixel_shader, nullptr, 0) : immediate_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
+	dc->VSSetShader(vertex_shader.Get(), nullptr, 0);
+	replaced_pixel_shader ? dc->PSSetShader(replaced_pixel_shader, nullptr, 0) : dc->PSSetShader(pixel_shader.Get(), nullptr, 0);
 	
 	// UNIT.10
 	//immediate_context->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
@@ -191,22 +284,22 @@ void SpriteBatch::begin(ID3D11DeviceContext* immediate_context,
 
 		texture2d->GetDesc(&texture2d_desc);
 
-		immediate_context->PSSetShaderResources(0, 1, &replaced_shader_resource_view);
+		dc->PSSetShaderResources(0, 1, &replaced_shader_resource_view);
 	}
 	else
 	{
-		immediate_context->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());	//デバイスのゼロベースの配列にインデックスを付けて、シェーダーリソースの設定を開始 第2引数:設定するシェーダーリソースの数　第3引数：デバイスに設定するシェーダーリソースビューインターフェイスの配列
+		dc->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());	//デバイスのゼロベースの配列にインデックスを付けて、シェーダーリソースの設定を開始 第2引数:設定するシェーダーリソースの数　第3引数：デバイスに設定するシェーダーリソースビューインターフェイスの配列
 	}
 	//定数バッファ
-	scroll_constants->bind(immediate_context, 2, ::CB_FLAG::PS_VS);
+	scroll_constants->bind(dc, 2, ::CB_FLAG::PS_VS);
 
 }
 
-void SpriteBatch::end(ID3D11DeviceContext* immediate_context)
+void SpriteBatch::end(ID3D11DeviceContext* dc)
 {
 	HRESULT hr{ S_OK };
 	D3D11_MAPPED_SUBRESOURCE mapped_subresource{};
-	hr = immediate_context->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
+	hr = dc->Map(vertex_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_subresource);
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
 	size_t vertex_count = vertices.size();
@@ -218,23 +311,23 @@ void SpriteBatch::end(ID3D11DeviceContext* immediate_context)
 		memcpy_s(data, maxVertices * sizeof(vertex) , p, vertex_count * sizeof(vertex));
 	}
 
-	immediate_context->Unmap(vertex_buffer.Get(), 0);
+	dc->Unmap(vertex_buffer.Get(), 0);
 
 	
 	//頂点バッファーのバインド
 	UINT stride{ sizeof(vertex) };
 	UINT offset{ 0 };
-	immediate_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+	dc->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 	
 	//プリミティブタイプおよびデータの順序に関する情報のバインド
-	immediate_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);	//TRIANGLELISTにしたら3角形１つになった
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);	//TRIANGLELISTにしたら3角形１つになった
 
 	//入力レイアウトオブジェクトのバインド
-	immediate_context->IASetInputLayout(input_layout.Get());
+	dc->IASetInputLayout(input_layout.Get());
 	//シェーダーのバインド
 	
 	//プリミティブの描画
-	immediate_context->Draw(static_cast<UINT>(vertex_count), 0);
+	dc->Draw(static_cast<UINT>(vertex_count), 0);
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
 	shader_resource_view.Get()->GetResource(resource.GetAddressOf());

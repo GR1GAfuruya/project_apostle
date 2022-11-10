@@ -96,10 +96,10 @@ void Graphics::initialize(HWND hwnd)
 	sampler_desc.MipLODBias = 0;			//計算されたミップマップレベルからのオフセット。
 	sampler_desc.MaxAnisotropy = 16;		//フィルタでD3D11_FILTER_ANISOTROPICまたは
 	sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;	//サンプリングされたデータを既存のサンプリングされたデータと比較する関数
-	sampler_desc.BorderColor[0] = 0;		//AddressU、AddressV、またはAddressWにD3D11_TEXTURE_ADDRESS_BORDERが指定されている場合に使用する境界線の色
-	sampler_desc.BorderColor[1] = 0;
-	sampler_desc.BorderColor[2] = 0;
-	sampler_desc.BorderColor[3] = 0;
+	sampler_desc.BorderColor[0] = 0.0f;		//AddressU、AddressV、またはAddressWにD3D11_TEXTURE_ADDRESS_BORDERが指定されている場合に使用する境界線の色
+	sampler_desc.BorderColor[1] = 0.0f;
+	sampler_desc.BorderColor[2] = 0.0f;
+	sampler_desc.BorderColor[3] = 0.0f;
 	sampler_desc.MinLOD = 0;	//アクセスをクランプするミップマップ範囲の下限。0は最大かつ最も詳細なミップマップレベルであり、それより高いレベルは詳細度が低くなります
 	sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;	//アクセスをクランプするミップマップ範囲の上限。0は最大かつ最も詳細なミップマップレベルであり、それより高いレベルは詳細度が低くなります
 	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::POINT)].GetAddressOf());
@@ -123,10 +123,10 @@ void Graphics::initialize(HWND hwnd)
 	sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-	sampler_desc.BorderColor[0] = 0;
-	sampler_desc.BorderColor[1] = 0;
-	sampler_desc.BorderColor[2] = 0;
-	sampler_desc.BorderColor[3] = 0;
+	sampler_desc.BorderColor[0] = 0.0f;
+	sampler_desc.BorderColor[1] = 0.0f;
+	sampler_desc.BorderColor[2] = 0.0f;
+	sampler_desc.BorderColor[3] = 0.0f;
 	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::LINEAR_BORDER_BLACK)].GetAddressOf());
 	
 	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
