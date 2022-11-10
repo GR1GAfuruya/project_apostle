@@ -8,7 +8,6 @@
 #include "../external/magic_enum/include/magic_enum.hpp"
 #include "collision.h"
 #include "noise.h"
-#include "effekseer_effect_manager.h"
 //==============================================================
 // 
 // 初期化
@@ -84,8 +83,6 @@ Player::Player(Graphics& graphics, Camera* camera)
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
 
-	//test_slash_hit = make_unique<EffekseerEffect>(graphics, "./resources/DemoEffect/slash_hit.efk");
-	//test_slash_hit = make_unique<EffekseerEffect>(graphics, "./resources/DemoEffect/DemoEffect/beam_base2.efk");
 	initialize();
 }
 

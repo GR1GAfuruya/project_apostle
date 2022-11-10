@@ -10,7 +10,6 @@
 #include "primitive.h"
 #include "player_ui.h"
 
-#include "effekseer_effect.h"
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {

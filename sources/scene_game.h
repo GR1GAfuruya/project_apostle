@@ -52,7 +52,6 @@ private:
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect;
 	//std::unique_ptr<Meteore> test_meteore;
-	std::unique_ptr<EffekseerEffect> test_meteore;
 	
 #endif
 };

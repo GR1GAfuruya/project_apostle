@@ -1,5 +1,4 @@
 #include "framework.h"
-#include "effekseer_effect_manager.h"
 #include "scene_title.h"
 #include <array>
 #include <d3dcompiler.h>
@@ -21,8 +20,6 @@ bool framework::initialize()
 
 	// debug_flags
 	debug_flags = std::make_unique<DebugFlag>();
-	//エフェクトマネージャー初期化
-	EffekseerEffectManager::Instance().initialize(*graphics);
 	SceneManager::instance().change_scene(*graphics, new SceneTitle(*graphics));
 	return true;
 }
@@ -227,5 +224,4 @@ int framework::run()
 
 framework::~framework()
 {
-	EffekseerEffectManager::Instance().finalize();
 }

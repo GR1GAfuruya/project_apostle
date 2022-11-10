@@ -1,6 +1,5 @@
 #include "meteore.h"
 #include "stage_manager.h"
-#include "effekseer_effect_manager.h"
 
 //==============================================================
 // 
@@ -16,7 +15,6 @@ Meteore::Meteore(Graphics& graphics)
 	main_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
 
-	test_meteore_hit = make_unique<EffekseerEffect>(graphics, "./resources/DemoEffect/DemoEffect/beam_base2.efk");
 
 	//パラメーター初期化
 	initialize();
@@ -237,5 +235,4 @@ void Meteore::update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& posi
 void Meteore::on_hit()
 {
 	is_hit = true;
-	test_meteore_hit->play(position);
 }

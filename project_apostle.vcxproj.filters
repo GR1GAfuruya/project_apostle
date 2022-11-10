@@ -91,9 +91,6 @@
     <Filter Include="sources\Effects\Thunder">
       <UniqueIdentifier>{3c4f444e-db8b-4c74-b586-10cb6d6638a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\Effekseer">
-      <UniqueIdentifier>{3632d23b-1fce-43e1-88a8-b724665f2f6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Effects\Light">
       <UniqueIdentifier>{cf080af7-6f4f-4e28-b163-2c0a7a2adec9}</UniqueIdentifier>
     </Filter>
@@ -323,12 +320,6 @@
     </ClCompile>
     <ClCompile Include="external\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\effekseer_effect.cpp">
-      <Filter>sources\Effects\Effekseer</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\effekseer_effect_manager.cpp">
-      <Filter>sources\Effects\Effekseer</Filter>
     </ClCompile>
     <ClCompile Include="sources\field_spark_particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
@@ -595,12 +586,6 @@
     </ClInclude>
     <ClInclude Include="external\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\effekseer_effect.h">
-      <Filter>sources\Effects\Effekseer</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\effekseer_effect_manager.h">
-      <Filter>sources\Effects\Effekseer</Filter>
     </ClInclude>
     <ClInclude Include="sources\field_spark_particle.h">
       <Filter>sources\Effects\Particle</Filter>

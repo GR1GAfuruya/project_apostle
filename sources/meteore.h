@@ -1,7 +1,6 @@
 #pragma once
 #include "mesh_effect.h"
 #include "move_behavior.h"
-#include "effekseer_effect.h"
 class Meteore :public MoveBehavior
 {
 public:
@@ -66,5 +65,4 @@ private:
 	DirectX::XMFLOAT3 scale;
 	bool is_hit = false;
 
-	std::unique_ptr<EffekseerEffect> test_meteore_hit;
 };

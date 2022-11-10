@@ -8,7 +8,6 @@
 #include "stage_manager.h"
 #include "scene_title.h"
 
-#include "effekseer_effect_manager.h"
 SceneGame::SceneGame(Graphics& graphics)
 {
 	
@@ -48,7 +47,6 @@ void SceneGame::initialize(Graphics& graphics)
 	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
 	 test_mesh_effect->set_scale(0.1f);
 	// test_meteore = std::make_unique<Meteore>(graphics);
-	 test_meteore = std::make_unique<EffekseerEffect>(graphics, "./resources/DemoEffect/DemoEffect/beam_base2.efk");
 #endif
 }
 
@@ -70,11 +68,11 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//カメラの経過時間
 	float camera_elapsed_time = elapsed_time;
 	//ヒットストップ時の経過時間処理
-	if (camera->get_camera_stop())
-	{
-		//経過時間を0に
-		camera_elapsed_time = 0;
-	}
+	//if (camera->get_camera_stop())
+	//{
+	//	//経過時間を0に
+	//	camera_elapsed_time = 0;
+	//}
 	//**********プレイヤーの更新**********//
 	player->update(graphics, camera_elapsed_time, camera.get());
 
@@ -98,7 +96,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	GamePad& gamepad = Device::instance().get_game_pad();
 
 	//エフェクト更新
-	EffekseerEffectManager::Instance().update(graphics, elapsed_time);
 #if _DEBUG
 	test_mesh_effect->set_life_span(5);
 	test_mesh_effect->update(graphics,elapsed_time);
@@ -223,7 +220,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	if (ImGui::Button("test_meteore_launch"))
 	{
 		//test_meteore->launch(test_meteore_pos, test_meteore_dir, test_meteore_speed);
-		test_meteore->play(test_meteore_pos, test_meteore_speed);
 	}
 	ImGui::DragFloat3("meteore_pos", &test_meteore_pos.x);
 	ImGui::DragFloat3("meteore_dir", &test_meteore_dir.x, 0.1f);
@@ -235,7 +231,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//テストエフェクト更新
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE);
-	EffekseerEffectManager::Instance().render(*camera);
 
 	//***************************************************************//
 	///						ポストエフェクト  				        ///
