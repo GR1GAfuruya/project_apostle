@@ -119,11 +119,13 @@ void Boss::on_dead()
 //==============================================================
 void Boss::on_damaged(WINCE_TYPE type)
 {
-	if (state != State::DAMAGE || state != State::ATTACK)
+	if (state == State::DAMAGE || state == State::ATTACK )
 	{
-		transition_damage_state();
+		return;
 	}
-}//==============================================================
+	transition_damage_state();
+};
+//==============================================================
 // 
 //デバッグGUI表示
 // 

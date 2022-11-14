@@ -60,6 +60,17 @@ float4 Contrast(float4 c)
     return color;
 }
 
+//ビネット
+float4 Vignette(float4 c,float2 uv)
+{
+    float3 color = c.rgb;
+    float2 center = float2(0.5, 0.5);
+    float len = length(uv - center);
+    color *= smoothstep(1., falloff, len * (amount + falloff));
+    return float4(color, 1.0);
+
+}
+
 
 float4 main(VS_OUT pin) : SV_Target0
 {
@@ -69,6 +80,7 @@ float4 main(VS_OUT pin) : SV_Target0
     color = color_filter(color);
     //コントラスト
     color = Contrast(color);
-
+    //ビネット
+    color = Vignette(color,pin.texcoord);
     return color;
 }

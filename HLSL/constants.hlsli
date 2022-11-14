@@ -48,6 +48,9 @@ cbuffer POST_EFFECTS_CONSTANT : register(b5)
     float brightness;
     //コントラスト
     float contrast;
+    //ビネット
+    float falloff;
+    float amount;
 }
 
 

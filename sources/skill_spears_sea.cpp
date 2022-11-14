@@ -80,7 +80,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 			//ライト設置
 			DirectX::XMFLOAT3 point_light_pos = { position.x,position.y + 10.0f,position.z };//槍の位置より少し上に配置
-			spear_light = make_shared<PointLight>(graphics, point_light_pos, 30.0f, 1.0f, 0.8f, 5.5f);
+			spear_light = make_shared<PointLight>(graphics, point_light_pos, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
 			LightManager::instance().register_light("SpearsSea", spear_light);
 
 			//攻撃の当たり判定パラメーター設定

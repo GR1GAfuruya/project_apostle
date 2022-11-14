@@ -3,7 +3,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h>
-
+#include "post_effects.h"
 #include "constant.h"
 #include "graphics.h"
 #include "stage.h"
@@ -62,6 +62,11 @@ public:
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
     //カメラストップ
     void set_camera_stop(float stop_time);
+
+    //ポストエフェクト
+    //std::unique_ptr<PostEffects> post_effect;
+    PostEffects post_effect;
+
 private:
     void calc_free_target();
     //--------< 関数ポインタ >--------//
@@ -87,7 +92,7 @@ private:
     //--------< 変数 >--------//
     std::unique_ptr<Constants<SCENE_CONSTANTS>> scene_constant_buffer{};
 
-
+    ////注視点からの距離
     float range;
     DirectX::XMFLOAT3 eye; //視点
     DirectX::XMFLOAT3 trakking_target;//注視点
@@ -101,18 +106,26 @@ private:
     bool is_move;
     float attend_rate; // 減衰比率
     float cape_vision = 60.0f;//視野角
-    float roll_speed = 90;
+    float roll_speed = 90;//回転速度
 
+    //垂直遅延
     float vertical_rotation_degree = 0;
+    //平行遅延
     float horizon_rotation_degree = 0;
     DirectX::XMFLOAT4 light_color = { 1.0f,1.0f, 1.0f,1.0f };
     DirectX::XMFLOAT4 light_direction{ 1.0f,1.0f, 1.0f,1.0f };
+    //上下の向ける角度制限
     float max_angle_x;
     float min_angle_x;
+    //マウス操作
     bool is_mouse_operation;
+    //view
     DirectX::XMFLOAT4X4 view;
+    //projection
     DirectX::XMFLOAT4X4 projection;
+    //view_projection
     DirectX::XMFLOAT4X4 view_projection;
+    //デバッグGUI表示
     bool display_camera_imgui = false;
     bool camera_operate_stop;
 

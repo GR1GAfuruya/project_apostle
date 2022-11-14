@@ -27,7 +27,7 @@
 	 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(dir));
 	 main_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	 //ÉâÉCÉgê∂ê¨
-	 spear_light = make_shared<PointLight>(graphics, position, 30.0f, 1.0f, 0.8f, 5.5f);
+	 spear_light = make_shared<PointLight>(graphics, position, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
 	 LightManager::instance().register_light("MagicBullet", spear_light);
 
 }

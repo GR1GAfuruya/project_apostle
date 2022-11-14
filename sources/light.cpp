@@ -6,11 +6,11 @@ Light::Light(Graphics& graphics)
 }
 
 
-DirectionalLight::DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, float r, float g, float b) :Light(graphics)
+DirectionalLight::DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, DirectX::XMFLOAT3 color) :Light(graphics)
 {
 	//平行光は｛方向x、方向y、方向z、0.0｝
 	light_constants->data.dir_light_dir = { dir.x, dir.y, dir.z, 0.0f };
-	light_constants->data.dir_light_color = { r,g,b,1.0f };
+	light_constants->data.dir_light_color = { color.x, color.y, color.z, 1.0f };
 }
 
 void DirectionalLight::debug_gui(std::string name)
@@ -30,9 +30,9 @@ void DirectionalLight::set_direction(DirectX::XMFLOAT3 dir)
 {
 	light_constants->data.dir_light_dir = { dir.x, dir.y, dir.z, 0.0f };
 }
-void DirectionalLight::set_color(float r, float g, float b)
+void DirectionalLight::set_color(DirectX::XMFLOAT3 color)
 {
-	light_constants->data.dir_light_color = { r,g,b,1.0f };
+	light_constants->data.dir_light_color = { color.x, color.y, color.z, 1.0f };
 }
 
 DirectX::XMFLOAT3 DirectionalLight::get_direction()
@@ -46,11 +46,11 @@ DirectX::XMFLOAT3 DirectionalLight::get_color()
 }
 
 
-PointLight::PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float distance, float r, float g, float b) :Light(graphics)
+PointLight::PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float distance, DirectX::XMFLOAT3 color) :Light(graphics)
 {
 	//点光源は｛位置x、位置y、位置z、減衰距離｝
 	light_constants->data.dir_light_dir = { position.x, position.y, position.z, distance };
-	light_constants->data.dir_light_color = { r,g,b,1.0f };
+	light_constants->data.dir_light_color = { color.x, color.y, color.z, 1.0f };
 	
 }
 
@@ -74,9 +74,9 @@ void PointLight::set_position(DirectX::XMFLOAT3 position)
 	light_constants->data.dir_light_dir.y = position.y;
 	light_constants->data.dir_light_dir.z = position.z;
 }
-void PointLight::set_color(float r, float g, float b)
+void PointLight::set_color(DirectX::XMFLOAT3 color)
 {
-	light_constants->data.dir_light_color = { r,g,b,1.0f };
+	light_constants->data.dir_light_color = { color.x, color.y, color.z, 1.0f };
 }
 void PointLight::set_distance(float d)
 {

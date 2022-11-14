@@ -17,6 +17,7 @@ Camera::Camera(Graphics& graphics)
 	, view()
 	, projection()
 	, is_mouse_operation(false)
+	,post_effect(graphics.get_device().Get())
 {
 	HRESULT hr{ S_OK };
 	//----定数バッファ----//

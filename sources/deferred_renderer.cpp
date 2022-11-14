@@ -42,7 +42,8 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 
 	deferred_screen = std::make_unique<FullscreenQuad>(graphics.get_device().Get());
 	D3D11_TEXTURE2D_DESC texture2d_desc{};
-	hr = load_texture_from_file(graphics.get_device().Get(), L"./resources/Sprite/emv_map.DDS", env_texture.ReleaseAndGetAddressOf(), &texture2d_desc);
+	//hr = load_texture_from_file(graphics.get_device().Get(), L"./resources/Sprite/emv_map.DDS", env_texture.ReleaseAndGetAddressOf(), &texture2d_desc);
+	hr = load_texture_from_file(graphics.get_device().Get(), L"./resources/Sprite/loading.png", env_texture.ReleaseAndGetAddressOf(), &texture2d_desc);
 
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_env_light.cso", deferred_env_light.GetAddressOf());
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_composite_light.cso", deferred_composite_light.GetAddressOf());

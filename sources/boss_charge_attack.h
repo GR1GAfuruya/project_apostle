@@ -2,6 +2,7 @@
 #include "mesh_effect.h"
 #include "gpu_particle.h"
 #include "meteore.h"
+#include "light.h"
 class ChargeAttack
 {
 public:
@@ -30,22 +31,28 @@ private:
 		float core_radius{};
 		DirectX::XMFLOAT3 pad{};
 	};
-	//地面からコアに伸びる支柱
-	std::unique_ptr<MeshEffect> aura[2];
 	//コア
 	std::unique_ptr<MeshEffect> core;
-
+	//波動
 	std::unique_ptr<MeshEffect> wave;
-
+	//トルネード
 	std::unique_ptr<MeshEffect> tornado;
-
+	//GPUパーティクルのエミッターCS
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
+	//GPUパーティクルのアップデートCS
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
-
+	//GPUパーティクル
 	std::unique_ptr<GPU_Particles> particle;
+	//メテオ
 	std::vector<unique_ptr<Meteore>> meteores;
 	float meteo_time = 0;
 	float meteo_span = 0;
+	//---<PointLight>-----//
+	//
+	shared_ptr<PointLight> boss_light;
+
+
+	//定数バッファ
 	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
 	const float ATTACK_TIME = 2.0f;
 	bool is_charge_max = false;

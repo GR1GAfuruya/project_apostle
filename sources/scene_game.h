@@ -14,6 +14,7 @@
 #include "sky_box.h"
 #include "field_spark_particle.h"
 #include "generic_frequent_entities.h"
+
 class SceneGame :public Scene, public GenericFrequentEntities
 {
 public:
@@ -35,22 +36,20 @@ private:
 	std::unique_ptr<Boss> boss = nullptr;
 	//キャラ初期位置
 	DirectX::XMFLOAT3 chara_pos{};
-	//ポストエフェクト
-	std::unique_ptr<PostEffects> post_effect;
 	//フィールド上の火花
-	std::unique_ptr<field_spark_particles> field_spark_particle;
-	std::unique_ptr<Particles> particles;
+	std::unique_ptr<field_spark_particles> field_spark_particle = nullptr;
+	std::unique_ptr<Particles> particles = nullptr;
 	//ディファードレンダー
-	std::unique_ptr<DeferredRenderer> deferred;
+	std::unique_ptr<DeferredRenderer> deferred = nullptr;
 	//スカイボックス
-	std::unique_ptr<SkyBox> skybox;
+	std::unique_ptr<SkyBox> skybox = nullptr;
 	//操作説明UI（仮）
-	std::unique_ptr<SpriteBatch> operation_ui;
+	std::unique_ptr<SpriteBatch> operation_ui = nullptr;
 	//平行光
-	std::shared_ptr<DirectionalLight> dir_light;
+	std::shared_ptr<DirectionalLight> dir_light = nullptr;
 	//テスト用
 #if _DEBUG
-	std::unique_ptr<MeshEffect> test_mesh_effect;
+	std::unique_ptr<MeshEffect> test_mesh_effect = nullptr;
 	//std::unique_ptr<Meteore> test_meteore;
 	
 #endif

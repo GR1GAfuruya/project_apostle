@@ -1,19 +1,9 @@
 #include "boss_charge_attack.h"
 #include "user.h"
 #include "noise.h"
+#include "light_manager.h"
 ChargeAttack::ChargeAttack(Graphics& graphics)
 {
-	//auraの初期設定
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i] = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spiral.fbx");
-		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-		aura[i]->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
-		aura[i]->constants->data.particle_color = FIRE_COLOR;
-
-	}
 	//coreの初期設定
 	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
 	core->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
@@ -38,11 +28,14 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particleの初期設定
-	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 150000);
+	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 100000);
 	particle.get()->initialize(graphics);
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 	meteo_span = 0.5f;
+
+	boss_light = make_shared<PointLight>(graphics, position, 20.0f, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
+
 }
 
 void ChargeAttack::play(DirectX::XMFLOAT3 pos)
@@ -76,25 +69,6 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
 	tornado->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f };
-	//コアへ延びるエフェクトのプレイ時の処理　
-	//ボス周りに3角形の位置
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->play(pos);
-		aura[i]->set_is_loop(true);
-
-		DirectX::XMFLOAT4 aura_q = aura[i]->get_orientation();
-		DirectX::XMFLOAT3 aura_forward = Math::get_posture_forward(aura_q);
-		aura[i]->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
-		//2本のうちの1つの角度をずらして螺旋っぽく
-
-		aura[i]->constants->data.particle_color = FIRE_COLOR;
-		aura[i]->constants->data.threshold = 0.0f;
-		aura[i]->rot_speed.z = 520;
-		aura[i]->set_scale({ 2.0f, 2.0f, 1.5f });
-	}
-	aura[1]->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 180);
-
 	
 	DirectX::XMFLOAT3 emit_pos{};
 	emit_pos.y = core_pos.y;
@@ -116,18 +90,18 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	
 	
 	constants->data.core_pos = core_pos;
+	boss_light->set_position({ position.x,position.y + 10.0f,position.z });
+	LightManager::instance().register_light("charge_light", boss_light);
 }
 
 void ChargeAttack::stop()
 {
 	active = false;
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->stop();
-	}
 	core->stop();
 
 	wave->stop();
+
+	LightManager::instance().delete_light(boss_light->name);
 }
 
 void ChargeAttack::update(Graphics& graphics, float elapsed_time)
@@ -151,10 +125,6 @@ void ChargeAttack::render(Graphics& graphics)
 
 	if (active)
 	{
-		for (int i = 0; i < 2; i++)
-		{
-			aura[i]->render(graphics);
-		}
 		core->render(graphics);
 
 
@@ -185,10 +155,6 @@ void ChargeAttack::debug_gui(const char* str_id)
 		ImGui::End();
 	}
 #endif
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->debug_gui(to_string(i).c_str());
-	}
 	core->debug_gui("core");
 
 	wave->debug_gui("wave");
@@ -204,13 +170,6 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 	core->set_scale(core_scale);
 	core->constants->data.scroll_speed += elapsed_time;
 	core->update(graphics, elapsed_time);
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->update(graphics, elapsed_time);
-		aura[i]->constants->data.scroll_speed += elapsed_time;
-		aura[i]->constants->data.threshold = 0.5f;
-
-	}
 
 	//コアの重力設定
 	constants->data.core_gravitation = 0.5f;
@@ -235,12 +194,6 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	core->constants->data.scroll_speed += elapsed_time;
 	core->update(graphics, elapsed_time);
 
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->update(graphics, elapsed_time);
-		aura[i]->constants->data.scroll_speed += elapsed_time;
-		aura[i]->constants->data.particle_color.w = fade_out(aura[i]->constants->data.particle_color.w);
-	}
 	//コアの重力設定
 	//反転させてパーティクルを飛び散らせる
 	constants->data.core_gravitation = -0.4f;
