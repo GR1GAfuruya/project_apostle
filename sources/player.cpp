@@ -19,7 +19,7 @@ void Player::initialize()
 	position = { 0.0f, 10.0f,-20.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	move_speed = 30.0f;
-	turn_speed = DirectX::XMConvertToRadians(720);
+	turn_speed = DirectX::XMConvertToRadians(360);
 	health = 1000;
 	max_health = 1000;
 	invincible_timer = 0.0f;
@@ -187,6 +187,7 @@ void Player::render_ui(Graphics& graphics, float elapsed_time)
 }
 
 
+
 //==============================================================
 // 
 //移動ベクトル処理（コントローラー）
@@ -258,9 +259,23 @@ bool Player::input_move(float elapsedTime, Camera* camera)
 
 	//移動処理
 	Move(move_vec.x, move_vec.z, this->move_speed);
-	Turn(elapsedTime, move_vec, this->turn_speed/2.0f, orientation);
+	Turn(elapsedTime, move_vec, this->turn_speed, orientation);
 
 	return move_vec.x != 0.0f || move_vec.y != 0.0f || move_vec.z != 0.0f;
+}
+
+//移動速度と回転速度を制限した移動入力
+bool Player::input_move(float elapsedTime, Camera* camera, float restriction_move, float restriction_turn)
+{
+	//進行ベクトル取得
+	const DirectX::XMFLOAT3 move_vec = get_move_vec(camera);
+
+	//移動処理
+	Move(move_vec.x, move_vec.z, this->move_speed / restriction_move);
+	Turn(elapsedTime, move_vec, this->turn_speed / restriction_turn, orientation);
+
+	return move_vec.x != 0.0f || move_vec.y != 0.0f || move_vec.z != 0.0f;
+	return false;
 }
 
 //==============================================================
@@ -308,7 +323,7 @@ void Player::input_chant_support_skill(Graphics& graphics)
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
 		case SP_SKILLTYPE::PHYSICAL_UP:
-			if (skill_manager->chant_physical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed))
+			if (skill_manager->chant_physical_up(graphics, position, &move_speed, &jump_speed))
 			{
 				transition_magic_buff_state();//状態遷移
 			}
@@ -478,6 +493,20 @@ void Player::root_motion_manual(DirectX::XMFLOAT3 dir, float speed)
 	velocity.z = dir.z * speed;
 }
 
+//少し浮遊する
+bool Player::floating()
+{
+	//落下中なら
+	if (velocity.y < 0)
+	{
+		//落下速度を弱める
+		velocity.y /= floating_value;
+		return true;
+	}
+	//浮遊中でない
+	return false;
+}
+
 //==============================================================
 // 
 //デバッグGUI表示
@@ -516,8 +545,9 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragInt("health", &health);
 				ImGui::DragFloat("radius", &radius);
 				ImGui::DragFloat("gravity", &gravity);
+				ImGui::DragFloat("floating_value", &floating_value);
 				ImGui::DragFloat("invinsible_timer", &invincible_timer);
-				ImGui::DragFloat("maxMoveSpeed", &move_speed);
+				ImGui::DragFloat("MoveSpeed", &move_speed);
 				ImGui::DragFloat("avoidance_speed", &avoidance_speed);
 				ImGui::DragFloat("friction", &friction);
 				ImGui::DragFloat("acceleration", &acceleration);

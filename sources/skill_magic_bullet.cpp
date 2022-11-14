@@ -39,7 +39,7 @@
  }
 void MagicBullet::initialize(Graphics& graphics)
 {
-	life_time = 5;
+	life_time = 0.5f;
 	collision_type = CollisionType::SPHERE;
 
 }

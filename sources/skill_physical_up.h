@@ -8,8 +8,8 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed) {}
-	~PhysicalUp() {}
+	PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* run_speed, float* jump_speed);
+	~PhysicalUp();
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;
@@ -29,12 +29,14 @@ protected:
 	// ïœêî
 	// 
 	//==============================================================
-
+	//ã≠âªî{ó¶
+	float magnification = 2.0f;
 	//==============================================================
 	// 
 	// íËêî
 	// 
 	//==============================================================
 public:
-
+	std::unique_ptr<float> enhanced_run_speed;
+	std::unique_ptr<float> enhanced_jump_speed;
 };
