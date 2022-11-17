@@ -1,11 +1,20 @@
 #include "skill_ui.h"
 #include "user.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 SkillUI::SkillUI(Graphics& graphics, const wchar_t* filename)
 {
 	skill_slot_icon = make_unique<SpriteBatch>(graphics.get_device().Get(), filename, 8);
 
 }
-
+//==============================================================
+// 
+// 初期化
+// 
+//==============================================================
 void SkillUI::initialize(SlotsUi init_param,int slots_num)
 {
 	slots_ui = init_param;
@@ -23,6 +32,11 @@ void SkillUI::initialize(SlotsUi init_param,int slots_num)
 	add_ang_lerp_speed = 6;
 }
 
+//==============================================================
+// 
+//更新処理
+// 
+//==============================================================
 void SkillUI::update(Graphics& graphics, float elapsed_time)
 {
 	
@@ -38,6 +52,11 @@ void SkillUI::update(Graphics& graphics, float elapsed_time)
 	slots_ui.add_ang = lerp(slots_ui.add_ang, tar_add_ang, add_ang_lerp_speed * elapsed_time);
 }
 
+//==============================================================
+// 
+//描画処理（装備中のスキルアイコン）
+// 
+//==============================================================
 void SkillUI::icon_render(Graphics& graphics)
 {
 	const int TILE_NUM_X = 4;
@@ -65,8 +84,11 @@ void SkillUI::icon_render(Graphics& graphics)
 
 	skill_slot_icon->end(graphics.get_dc().Get());
 }
-
-//現在選択されているスキルのアイコン表示
+//==============================================================
+// 
+//描画処理　(現在選択されているスキルのアイコン表示)
+// 
+//==============================================================
 void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 pos)
 {
 	const int TILE_NUM_X = 4;
@@ -86,6 +108,12 @@ void SkillUI::selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 p
 
 	skill_slot_icon->end(graphics.get_dc().Get());
 }
+
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void SkillUI::debug_gui(string str_id)
 {
 #if USE_IMGUI

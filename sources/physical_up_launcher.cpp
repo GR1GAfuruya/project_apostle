@@ -1,9 +1,18 @@
 #include "physical_up_launcher.h"
 #include "skill_physical_up.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
 {
 }
-
+//==============================================================
+// 
+// スキル発動
+// 
+//==============================================================
 bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	//詠唱可能な状態なら
@@ -19,7 +28,11 @@ bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 	}
 	return false;
 }
-
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void PhysicalUpLauncher::debug_gui()
 {
 #if USE_IMGUI

@@ -39,5 +39,5 @@ float4 main(VS_OUT pin) : SV_TARGET
     uv = pin.texcoord.yx + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float alpha = texture_mask.Sample(sampler_texture, tex_coord(uv, tile)).r;
     //ÉJÉâÅ[èoóÕ
-    return float4(result_color.rgb, alpha );
+    return float4(result_color.rgb, alpha);
 }

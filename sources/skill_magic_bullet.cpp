@@ -1,8 +1,12 @@
 #include "skill_magic_bullet.h"
 #include "Operators.h"
 #include "light_manager.h"
-
- MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir, InitializeParam init_param)
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
+MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir, InitializeParam init_param)
 {
 	 initialize(graphics);
 	
@@ -32,18 +36,32 @@
 
 }
 
-
- MagicBullet::~MagicBullet()
+//==============================================================
+// 
+//デストラクタ
+// 
+//==============================================================
+MagicBullet::~MagicBullet()
  {
+	//ライト消去
 	 LightManager::instance().delete_light(spear_light->name);
  }
-void MagicBullet::initialize(Graphics& graphics)
+ //==============================================================
+ // 
+ //初期化
+ // 
+ //==============================================================
+ void MagicBullet::initialize(Graphics& graphics)
 {
 	life_time = 0.5f;
 	collision_type = CollisionType::SPHERE;
 
 }
-
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void MagicBullet::update(Graphics& graphics, float elapsed_time)
 {
 	

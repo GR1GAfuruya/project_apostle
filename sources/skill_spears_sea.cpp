@@ -101,8 +101,6 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 		instance_mesh->set_scale({ SPEAR_SIZE,SPEAR_SIZE,spear_length }, i);
 	}
 
-	
-
 
 	if (life_time > life_span) skill_end_flag = true;
 }

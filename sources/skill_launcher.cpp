@@ -2,7 +2,11 @@
 #include "user.h"
 #include "imgui_include.h"
 #include "collision.h"
+//==============================================================
+// 
 //èâä˙âª
+// 
+//==============================================================
 void SkillLauncher::initialize(Graphics& graphics)
 {
 	 cool_time = 0;
@@ -12,7 +16,11 @@ void SkillLauncher::initialize(Graphics& graphics)
 	 cool_time_attenuation_speed = 1.0f;
 	// skill.clear();
 }
+//==============================================================
+// 
 //çXêV
+// 
+//==============================================================
 void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 {
 	for (auto& s : skills)
@@ -37,8 +45,11 @@ void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 }
 
 
-
+//==============================================================
+// 
 //ï`âÊ
+// 
+//==============================================================
 void SkillLauncher::render(Graphics& graphics)
 {
 	for (auto& s : skills)

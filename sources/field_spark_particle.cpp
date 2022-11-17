@@ -4,7 +4,11 @@
 #include "user.h"
 #include "shader.h"
 #include "misc.h"
-
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 field_spark_particles::field_spark_particles(ID3D11Device* device, DirectX::XMFLOAT3 initial_position)
 {
 	// Radius of outermost orbit 
@@ -105,6 +109,12 @@ static UINT align(UINT num, UINT alignment)
 {
 	return (num + (alignment - 1)) & ~(alignment - 1);
 }
+
+//==============================================================
+// 
+//更新処理
+// 
+//==============================================================
 void field_spark_particles::update(ID3D11DeviceContext* dc, float elapsed_time, DirectX::XMFLOAT3 eye_position)
 {
 	HRESULT hr{ S_OK };
@@ -123,6 +133,11 @@ void field_spark_particles::update(ID3D11DeviceContext* dc, float elapsed_time, 
 
 }
 
+//==============================================================
+// 
+//描画処理
+// 
+//==============================================================
 void field_spark_particles::render(ID3D11DeviceContext* dc)
 {
 	dc->VSSetShader(vertex_shader.Get(), NULL, 0);

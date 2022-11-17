@@ -1,5 +1,9 @@
 #include "skill_physical_up.h"
-
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 PhysicalUp::PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* run_speed, float* jump_speed)
 {
 	*run_speed *= magnification;
@@ -18,13 +22,21 @@ PhysicalUp::~PhysicalUp()
 
 
 }
-
+//==============================================================
+// 
+//初期化
+// 
+//==============================================================
 void PhysicalUp::initialize(Graphics& graphics)
 {
 	cool_time = 15.0f;
 	life_time = 10.0f;
 }
-
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void PhysicalUp::update(Graphics& graphics, float elapsed_time)
 {
 	life_time -= elapsed_time;
@@ -33,11 +45,20 @@ void PhysicalUp::update(Graphics& graphics, float elapsed_time)
 		skill_end_flag = true;
 	}
 }
-
+//==============================================================
+// 
+//描画
+// 
+//==============================================================
 void PhysicalUp::render(Graphics& graphics)
 {
-}
 
+}
+//==============================================================
+// 
+//デバッグGUI
+// 
+//==============================================================
 void PhysicalUp::debug_gui(string str_id)
 {
 #if USE_IMGUI

@@ -995,7 +995,8 @@ namespace Math
     //--------------------------------------------------------------
     //  オブジェクトを円状に配置
     //--------------------------------------------------------------
-    //  戻り値：位置
+    //  引数：center 中心　radius：半径　index：番号　divitions：総数 clockwise : 並び順 add_ang : 初期角度
+    // 　戻り値：位置
     //--------------------------------------------------------------
     inline DirectX::XMFLOAT2 circumferential_placement(DirectX::XMFLOAT2 center, float radius, int index, int divisions, bool clockwise = true, float add_angle = 0)
     {

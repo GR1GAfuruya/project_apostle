@@ -6,20 +6,30 @@
 class ChargeAttack
 {
 public:
+	//コンストラクタ
 	ChargeAttack(Graphics& grapghics);
+	//デストラクタ
 	~ChargeAttack(){}
-
+	//再生
 	void play(DirectX::XMFLOAT3 pos);
+	//停止
 	void stop();
+	//更新
 	void update(Graphics& graphics, float elapsed_time);
+	//描画
 	void render(Graphics& graphics);
+	//デバッグGUI
 	void debug_gui(const char* str_id);
-	
+	//チャージ完了したかどうか
 	void set_charge_max_state() { is_charge_max = true; }
+	//攻撃対象設定
 	void set_target_pos(DirectX::XMFLOAT3 target) { target_pos = target; }
 private:
+	//チャージ中の更新
 	void charging_update(Graphics& graphics, float elapsed_time);
+	//発動中の更新
 	void activities_update(Graphics& graphics, float elapsed_time);
+	//消滅時の更新
 	void vanishing_update(Graphics& graphics, float elapsed_time);
 
 	typedef void (ChargeAttack::* ChargeAttackUpdate)(Graphics& graphics, float elapsed_time);
@@ -44,9 +54,11 @@ private:
 	//GPUパーティクル
 	std::unique_ptr<GPU_Particles> particle;
 	//メテオ
-	std::vector<unique_ptr<Meteore>> meteores;
+	unique_ptr<Meteore> meteores;
 	float meteo_time = 0;
 	float meteo_span = 0;
+	float meteo_launch_radius = 0;
+	int meteo_launch_count = 0;
 	//---<PointLight>-----//
 	//
 	shared_ptr<PointLight> boss_light;
@@ -54,7 +66,7 @@ private:
 
 	//定数バッファ
 	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
-	const float ATTACK_TIME = 2.0f;
+	const float ATTACK_TIME = 3.0f;
 	bool is_charge_max = false;
 	float attack_time = 0.0f;
 	//位置
