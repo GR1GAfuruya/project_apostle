@@ -15,7 +15,7 @@ public:
 	}
 	uint32_t get_rnd() { return static_cast<uint32_t> (mt()); }
 
-	float random_range(float min, int max);
+	float random_range(float offset, int range);
 private:
 	std::random_device rnd;
 	std::mt19937 mt;

@@ -25,13 +25,13 @@ public:
 class DirectionalLight :public Light
 {
 public:
-	DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, float r, float g, float b);
+	DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, DirectX::XMFLOAT3 color);
 	~DirectionalLight() {}
 
 	void debug_gui(std::string name) override;
 
 	void set_direction(DirectX::XMFLOAT3 position);
-	void set_color(float r, float g, float b);
+	void set_color(DirectX::XMFLOAT3 color);
 
 	DirectX::XMFLOAT3 get_direction();
 	DirectX::XMFLOAT3 get_color();
@@ -41,13 +41,13 @@ public:
 class PointLight :public Light
 {
 public:
-	PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float distance, float r, float g, float b);
+	PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float distance, DirectX::XMFLOAT3 color);
 	~PointLight(){}
 
 	void debug_gui(std::string name) override;
 
 	void set_position(DirectX::XMFLOAT3 position);
-	void set_color(float r, float g, float b);
+	void set_color(DirectX::XMFLOAT3 color);
 	void set_distance(float d);
 
 	DirectX::XMFLOAT3 get_position();

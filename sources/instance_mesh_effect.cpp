@@ -1,24 +1,45 @@
 #include "instance_mesh_effect.h"
 #include "noise.h"
 #include "texture.h"
-
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 InstanceMeshEffect::InstanceMeshEffect(Graphics& graphics, const char* fbx_filename, const int max_instance)
 {
 	model = std::make_unique<InstanceMesh>(graphics, fbx_filename, max_instance);
 	constants = std::make_unique<Constants<CONSTANTS>>(graphics.get_device().Get());
 }
+
+//==============================================================
+// 
+//再生
+// 
+//==============================================================
 void InstanceMeshEffect::play(DirectX::XMFLOAT3 pos)
 {
 	position = pos;
 	active = true;
 }
 
+//==============================================================
+// 
+//停止
+// 
+//==============================================================
 void InstanceMeshEffect::stop()
 {
 	
 	active = false;
 	life_time = 0;
 }
+
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void InstanceMeshEffect::update(Graphics& graphics, float elapsed_time)
 {
 	//アクティブ状態なら
@@ -41,6 +62,11 @@ void InstanceMeshEffect::update(Graphics& graphics, float elapsed_time)
 		}
 	}
 }
+//==============================================================
+// 
+//描画
+// 
+//==============================================================
 void InstanceMeshEffect::render(Graphics& graphics)
 {
 	//エフェクトがアクティブ状態の場合のみ描画

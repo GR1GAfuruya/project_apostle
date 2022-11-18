@@ -1,12 +1,21 @@
 #pragma once
 #include "skill_launcher.h"
-
+//==============================================================
+// 
+// RegenerateLauncherクラス　
+// 
+//==============================================================
 class RegenerateLauncher : public SkillLauncher
 {
 public:
+	//==============================================================
+	// 
+	// public関数
+	// 
+	//==============================================================
 	RegenerateLauncher(Graphics& graphics);
 	~RegenerateLauncher() override {};
-
+	//発動
 	bool chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health);
 
 	//DebugGUI表示

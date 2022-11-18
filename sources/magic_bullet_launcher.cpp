@@ -1,6 +1,11 @@
 #include "magic_bullet_launcher.h"
 #include "user.h"
 #include "collision.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 {
 	skill_init_param.power = 5;
@@ -9,7 +14,11 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 	skill_init_param.collider_radius = 2.0f;
 	skill_init_param.cool_time = 0.5f;
 }
-
+//==============================================================
+// 
+// スキル発動
+// 
+//==============================================================
 bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir)
 {
 	//詠唱可能な状態なら
@@ -25,7 +34,11 @@ bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, 
 	}
 	return false;
 }
-
+//==============================================================
+// 
+//スキルの当たり判定
+// 
+//==============================================================
 void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	for (auto& s : skills)
@@ -40,7 +53,11 @@ void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddD
 	}
 }
 
-
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void MagicBulletLauncher::debug_gui()
 {
 #if USE_IMGUI

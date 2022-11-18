@@ -27,14 +27,14 @@ void SceneGame::initialize(Graphics& graphics)
 	camera = std::make_unique<Camera>(graphics);
 	player = std::make_unique<Player>(graphics, camera.get());
 	boss = std::make_unique<Boss>(graphics);
-	post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
+	//post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
 	field_spark_particle = std::make_unique<field_spark_particles>(graphics.get_device().Get(), player->get_position());
 	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\UI\\operations.png", 1);
 
 	deferred = std::make_unique<DeferredRenderer>(graphics);
 	LightManager::instance().initialize(graphics);
 	skybox = std::make_unique<SkyBox>(graphics);
-	dir_light = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(0.6f, -0.6f, 1.6f), 0.4f, 0.1f, 0.0f);
+	dir_light = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(0.6f, -0.6f, 1.6f), DirectX::XMFLOAT3(0.4f, 0.1f, 0.0f));
 	LightManager::instance().register_light("scene_dir", dir_light);
 
 	//テスト用
@@ -162,7 +162,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//レンダーターゲットを戻す
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
-	post_effect->begin(graphics.get_dc().Get());
+	camera->post_effect.begin(graphics.get_dc().Get());
 	deferred->render(graphics);
 
 	//***************************************************************//
@@ -236,9 +236,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	///						ポストエフェクト  				        ///
 	//***************************************************************//
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
-	post_effect->end(graphics.get_dc().Get());
-
-	post_effect->blit(graphics);
+	camera->post_effect.end(graphics.get_dc().Get());
+	camera->post_effect.blit(graphics);
 
 	//***************************************************************//
 	///						        UI  				            ///

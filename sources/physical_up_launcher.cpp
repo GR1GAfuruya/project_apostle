@@ -1,23 +1,38 @@
 #include "physical_up_launcher.h"
 #include "skill_physical_up.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
 {
 }
-
+//==============================================================
+// 
+// スキル発動
+// 
+//==============================================================
 bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
 		unique_ptr<Skill> skill = make_unique<PhysicalUp>(graphics, launch_pos, add_run_speed, add_jump_speed);
+		cool_time = skill->get_cool_time();
 		//リストに追加
 		skills.push_back(std::move(skill));
+		
 		chantable = false;
 		return true;
 	}
 	return false;
 }
-
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void PhysicalUpLauncher::debug_gui()
 {
 #if USE_IMGUI

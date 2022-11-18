@@ -122,8 +122,8 @@ void Player::transition_r_attack_combo1_state()
 	attack_sword_param.power = 10;
 	attack_sword_param.invinsible_time = 0.5f;
 	//ルートモーションを使用するか
-	is_root_motion = true;
-	root_motion_pos = position;
+	/*is_root_motion = true;
+	root_motion_pos = position;*/
 }
 
 void Player::transition_r_attack_combo2_state()
@@ -163,6 +163,8 @@ void Player::transition_r_attack_dodge_back_state()
 /*--------------------状態更新------------------------*/
 //
 ///////////////////////////////////////////////////////
+
+//待機
 void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (input_move(elapsed_time, camera))
@@ -187,6 +189,8 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }
+
+//移動
 void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (!input_move(elapsed_time, camera) && is_ground)
@@ -251,6 +255,7 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 
 }
 
+//ジャンプ
 void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	input_move(elapsed_time, camera);
@@ -258,6 +263,12 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	if (is_ground)
 	{
 		transition_idle_state();
+	}
+
+	//攻撃入力
+	if (game_pad->get_button_down() & game_pad->BTN_X)
+	{
+		transition_r_attack_combo1_state();
 	}
 
 	//スキル入力
@@ -268,7 +279,7 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	update_velocity(elapsed_time, position);
 }
 
-
+//正面からの攻撃を食らう
 void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
@@ -279,6 +290,7 @@ void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, C
 	update_velocity(elapsed_time, position);
 }
 
+//回転斬り
 void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
@@ -290,6 +302,7 @@ void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapse
 
 }
 
+//
 void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
@@ -312,6 +325,7 @@ void Player::update_attack_ground_state(Graphics& graphics, float elapsed_time, 
 
 }
 
+//バフ獲得アニメーション
 void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
@@ -322,6 +336,7 @@ void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Cam
 	update_velocity(elapsed_time, position);
 }
 
+//魔法弾射出行動
 void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
@@ -332,6 +347,7 @@ void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, 
 	update_velocity(elapsed_time, position);
 }
 
+//
 void Player::update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
@@ -388,6 +404,8 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 		slash_efect->rot_speed.y = -sword_swing_speed;
 		//攻撃判定ON
 		attack_sword_param.is_attack = true;
+		root_motion_manual(Math::get_posture_forward(orientation), floating_value);//ルートモーションじゃない手動入力
+
 	}
 	//*************************************//
 	//			遷移に関する更新	   //
@@ -407,13 +425,26 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 			//velocity = { 0,0,0 };
 			
 		}
+
+		if (input_move(elapsed_time, camera))
+		{
+			transition_move_state();
+		}
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
 	}
+	else
+	{
+		//空中にいる場合少し浮遊
+		if (floating())
+		{
+		}
+
+	}
+			input_move(elapsed_time, camera, floating_value, floating_value);
 	//*************************************//
 	//	ルートモーションに関する更新	   //
 	//*************************************//
-	root_motion_manual(Math::get_posture_forward(orientation), 8.0f);
 	//回避入力
 	input_avoidance();
 	//速力処理更新
@@ -463,6 +494,9 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 	root_motion_manual(Math::get_posture_forward(orientation), -1.0f);
 	//回避入力
 	input_avoidance();
+	//空中にいる場合少し浮遊
+	floating();
+
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }
@@ -531,6 +565,9 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 	
 	//回避入力
 	input_avoidance();
+	//空中にいる場合少し浮遊
+	floating();
+
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }

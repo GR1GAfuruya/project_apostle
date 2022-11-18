@@ -1,19 +1,14 @@
 #include "boss_charge_attack.h"
 #include "user.h"
 #include "noise.h"
+#include "light_manager.h"
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 ChargeAttack::ChargeAttack(Graphics& graphics)
 {
-	//auraの初期設定
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i] = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spiral.fbx");
-		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-		aura[i]->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-		aura[i]->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
-		aura[i]->constants->data.particle_color = FIRE_COLOR;
-
-	}
 	//coreの初期設定
 	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
 	core->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
@@ -38,13 +33,23 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particleの初期設定
-	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 150000);
+	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 100000);
+
+	meteores = std::make_unique<Meteore>(graphics, 10);
 	particle.get()->initialize(graphics);
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
-	meteo_span = 0.5f;
-}
+	meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
+	meteo_launch_radius = 5;
 
+	boss_light = make_shared<PointLight>(graphics, position, 20.0f, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
+
+}
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 {
 	//アクティブ状態に
@@ -76,25 +81,6 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
 	tornado->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f };
-	//コアへ延びるエフェクトのプレイ時の処理　
-	//ボス周りに3角形の位置
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->play(pos);
-		aura[i]->set_is_loop(true);
-
-		DirectX::XMFLOAT4 aura_q = aura[i]->get_orientation();
-		DirectX::XMFLOAT3 aura_forward = Math::get_posture_forward(aura_q);
-		aura[i]->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, -90);
-		//2本のうちの1つの角度をずらして螺旋っぽく
-
-		aura[i]->constants->data.particle_color = FIRE_COLOR;
-		aura[i]->constants->data.threshold = 0.0f;
-		aura[i]->rot_speed.z = 520;
-		aura[i]->set_scale({ 2.0f, 2.0f, 1.5f });
-	}
-	aura[1]->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, 180);
-
 	
 	DirectX::XMFLOAT3 emit_pos{};
 	emit_pos.y = core_pos.y;
@@ -112,24 +98,40 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		particle.get()->launch_emitter(emit_cs);
 	}
 
+	//隕石
 	meteo_time = 0;
-	
-	
+	meteores->initialize();
+	meteo_launch_count = 0;
+	for (int i = 0; i < meteores->get_max_num(); i++)
+	{
+		const int range = 20;
+		const int ofset = meteo_launch_radius;
+		const float random = fabs(Noise::instance().random_range(ofset, range));
+		meteores->create_on_circle(position, random, i);
+	}
 	constants->data.core_pos = core_pos;
+	boss_light->set_position({ position.x,position.y + 10.0f,position.z });
+	LightManager::instance().register_light("charge_light", boss_light);
 }
-
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 void ChargeAttack::stop()
 {
 	active = false;
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->stop();
-	}
 	core->stop();
 
 	wave->stop();
-}
 
+	LightManager::instance().delete_light(boss_light->name);
+}
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 {
 	if (active)
@@ -138,23 +140,20 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time)
 		//更新
 		(this->*charge_attack_update)(graphics, elapsed_time);	
 	}
-	for (auto& m : meteores)
-	{
-		m->update(graphics, elapsed_time);
-	}
+	meteores->update(graphics, elapsed_time);
 
 	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
 }
-
+//==============================================================
+// 
+//描画
+// 
+//==============================================================
 void ChargeAttack::render(Graphics& graphics)
 {
 
 	if (active)
 	{
-		for (int i = 0; i < 2; i++)
-		{
-			aura[i]->render(graphics);
-		}
 		core->render(graphics);
 
 
@@ -162,15 +161,17 @@ void ChargeAttack::render(Graphics& graphics)
 		wave->render(graphics);
 	}
 
-	for (auto& m : meteores)
-	{
-		m->render(graphics);
-	}
+	//隕石描画
+	meteores->render(graphics);
 
 	particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
 
 }
-
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 void ChargeAttack::debug_gui(const char* str_id)
 {
 #if USE_IMGUI
@@ -182,21 +183,21 @@ void ChargeAttack::debug_gui(const char* str_id)
 		ImGui::DragFloat("core_gravitation", &constants->data.core_gravitation, 0.1f, 0);
 		ImGui::DragFloat("meteo_span", &meteo_span, 0.1f, 0);
 		ImGui::DragFloat("core_radius", &constants->data.core_radius, 1, 0);
+		ImGui::DragFloat("launch_radius", &meteo_launch_radius, 1, 0);
 		ImGui::End();
 	}
 #endif
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->debug_gui(to_string(i).c_str());
-	}
 	core->debug_gui("core");
 
 	wave->debug_gui("wave");
 	tornado->debug_gui("tornad");
 	particle->debug_gui("boss_charge");
 }
-
+//==============================================================
+// 
 //チャージ中のアップデート
+// 
+//==============================================================
 void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 {
 	//更新処理
@@ -204,18 +205,25 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 	core->set_scale(core_scale);
 	core->constants->data.scroll_speed += elapsed_time;
 	core->update(graphics, elapsed_time);
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->update(graphics, elapsed_time);
-		aura[i]->constants->data.scroll_speed += elapsed_time;
-		aura[i]->constants->data.threshold = 0.5f;
-
-	}
 
 	//コアの重力設定
 	constants->data.core_gravitation = 0.5f;
 
 	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
+
+	//隕石を地面から浮き上がらせる
+	int range = 9;
+	int ofset = 1;
+	for (int i = 0; i < meteores->get_max_num(); i++)
+	{
+		float random = fabs(Noise::instance().random_range(ofset, range) / 10.0f);
+		range = 3;
+		ofset = 4;
+		float random_size = fabs(Noise::instance().random_range(ofset, range));
+		meteores->rising(elapsed_time, core->get_position(), random_size, random, i);
+	}
+
+	//チャージ完了時の処理
 	if (is_charge_max)
 	{
 		core->set_scale(0.7f);
@@ -223,8 +231,11 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 		tornado->set_scale({ 0.0f,15.0f,0.0f });
 	}
 }
-
+//==============================================================
+// 
 //チャージが完了し、発動したときのアップデート
+// 
+//==============================================================
 void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 {
 	
@@ -235,12 +246,6 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 	core->constants->data.scroll_speed += elapsed_time;
 	core->update(graphics, elapsed_time);
 
-	for (int i = 0; i < 2; i++)
-	{
-		aura[i]->update(graphics, elapsed_time);
-		aura[i]->constants->data.scroll_speed += elapsed_time;
-		aura[i]->constants->data.particle_color.w = fade_out(aura[i]->constants->data.particle_color.w);
-	}
 	//コアの重力設定
 	//反転させてパーティクルを飛び散らせる
 	constants->data.core_gravitation = -0.4f;
@@ -260,33 +265,35 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 
 	attack_time += elapsed_time;
 	//メテオ発生
-	if (attack_time <= ATTACK_TIME)
+	if (attack_time <= ATTACK_TIME || meteo_launch_count < meteores->get_max_num())
 	{
 		meteo_time += elapsed_time;
-		
-		if(meteo_time  >= meteo_span)
+		if (meteo_time >= meteo_span )
 		{
-			////生成
-			//unique_ptr<Meteore> meteore = std::make_unique<Meteore>(graphics);
-			////位置
-			//DirectX::XMFLOAT3 meteore_pos = { core->get_position()};
-			////方向
-			//DirectX::XMFLOAT3 direction = Math::calc_vector_AtoB_normalize(meteore_pos, target_pos);
-			////power
-			//const int random = Noise::instance().get_rnd();
-			//const int range = 30;
-			//const int ofset = 80;
-			//float power = random % range + ofset;
-			//meteore->launch(meteore_pos, direction, power);
-			//meteores.push_back(std::move(meteore));
-
+			//方向
+			DirectX::XMFLOAT3 direction = Math::calc_vector_AtoB_normalize(meteores->get_position(meteo_launch_count), target_pos);
+			//power
+			const int range = 30;
+			const int ofset = 50;
+			const int random = Noise::instance().random_range(ofset, range);
+			float power = random;
+			//射出
+			meteores->launch(direction, power, meteo_launch_count);
+			//間隔をあけるためのタイマーをリセット
 			meteo_time = 0;
-		}
+			//射出したカウントを増やす
+			meteo_launch_count++;
+		};
+
+		
 	}
 	if (attack_time >= ATTACK_TIME) charge_attack_update = &ChargeAttack::vanishing_update;
 }
-
+//==============================================================
+// 
 //消滅時のアップデート
+// 
+//==============================================================
 void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 {
 	//徐々に消えていく関数

@@ -1,10 +1,18 @@
 #include "restraint_launcher.h"
 #include "skill_restraint.h"
-
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 RestraintLauncher::RestraintLauncher(Graphics& graphics)
 {
 }
-
+//==============================================================
+// 
+// スキル発動
+// 
+//==============================================================
 bool RestraintLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos, DirectX::XMFLOAT3* down_speed)
 {
 	//詠唱可能な状態なら
@@ -18,7 +26,11 @@ bool RestraintLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos,
 	}
 	return false;
 }
-
+//==============================================================
+// 
+//デバッグGUI表示
+// 
+//==============================================================
 void RestraintLauncher::debug_gui()
 {
 #if USE_IMGUI

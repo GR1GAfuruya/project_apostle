@@ -151,6 +151,9 @@ private:
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
+
+	//制限付きの移動（攻撃中などの移動入力）
+	bool input_move(float elapsedTime, Camera* camera,float restriction_move, float restriction_turn);
 	const DirectX::XMFLOAT3 get_move_vec(Camera* camera) const;
 	//ジャンプ入力処理
 	void input_jump();
@@ -170,7 +173,8 @@ private:
 	//ルートモーション
 	void root_motion(DirectX::XMFLOAT3 dir, float speed);
 	void root_motion_manual(DirectX::XMFLOAT3 dir, float speed);
-
+	//少し浮遊する
+	bool floating();
 	//==============================================================
 	// 
 	// 変数
@@ -205,7 +209,8 @@ private:
 	float attack_time;
 	//攻撃力
 	int add_damage;
-
+	//浮遊度
+	float floating_value = 10.0f;
 	float sword_swing_speed = 2000.0f;
 	std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
@@ -218,7 +223,7 @@ private:
 
 	skeleton::bone left_hand;
 	skeleton::bone right_hand;
-	DirectX::XMFLOAT3 root_defference_velosity;
+	DirectX::XMFLOAT3 root_defference_velocity;
 	//当たり判定用変数
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };
 	AttackParam attack_sword_param;

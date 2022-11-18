@@ -1,10 +1,18 @@
 #include "skill_regenerate.h"
-
+//==============================================================
+// 
+//初期化
+// 
+//==============================================================
 void Regenerate::initialize(Graphics& graphics)
 {
 	life_time = 5.0f;
 }
-
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void Regenerate::update(Graphics& graphics, float elapsed_time)
 {
 	life_time -= elapsed_time;
@@ -13,11 +21,19 @@ void Regenerate::update(Graphics& graphics, float elapsed_time)
 		skill_end_flag = true;
 	}
 }
-
+//==============================================================
+// 
+//描画
+// 
+//==============================================================
 void Regenerate::render(Graphics& graphics)
 {
 }
-
+//==============================================================
+// 
+//デバッグGUI
+// 
+//==============================================================
 void Regenerate::debug_gui(string str_id)
 {
 #if USE_IMGUI

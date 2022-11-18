@@ -1,8 +1,12 @@
 #include "skill_magic_bullet.h"
 #include "Operators.h"
 #include "light_manager.h"
-
- MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir, InitializeParam init_param)
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
+MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir, InitializeParam init_param)
 {
 	 initialize(graphics);
 	
@@ -27,23 +31,37 @@
 	 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(dir));
 	 main_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	 //ライト生成
-	 spear_light = make_shared<PointLight>(graphics, position, 30.0f, 1.0f, 0.8f, 5.5f);
+	 spear_light = make_shared<PointLight>(graphics, position, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
 	 LightManager::instance().register_light("MagicBullet", spear_light);
 
 }
 
-
- MagicBullet::~MagicBullet()
+//==============================================================
+// 
+//デストラクタ
+// 
+//==============================================================
+MagicBullet::~MagicBullet()
  {
+	//ライト消去
 	 LightManager::instance().delete_light(spear_light->name);
  }
-void MagicBullet::initialize(Graphics& graphics)
+ //==============================================================
+ // 
+ //初期化
+ // 
+ //==============================================================
+ void MagicBullet::initialize(Graphics& graphics)
 {
-	life_time = 5;
+	life_time = 0.5f;
 	collision_type = CollisionType::SPHERE;
 
 }
-
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void MagicBullet::update(Graphics& graphics, float elapsed_time)
 {
 	

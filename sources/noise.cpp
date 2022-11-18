@@ -4,10 +4,10 @@
 #include <algorithm>
 #include <numeric>
 
-float Noise::random_range(float min, int max)
+float Noise::random_range(float offset, int range)
 {
-	_ASSERT_EXPR(max != 0, "division by zero");
-	return static_cast<uint32_t> (mt()) % max + min;
+	_ASSERT_EXPR(range != 0, "division by zero");
+	return static_cast<uint32_t> (mt()) % range + offset;
 }
 
 

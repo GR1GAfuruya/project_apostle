@@ -15,8 +15,6 @@ PostEffects::PostEffects(ID3D11Device* device)
 	post_effect_frame_buffer = make_unique<FrameBuffer>(device,
 		SCREEN_WIDTH, SCREEN_HEIGHT,FB_FLAG::COLOR);
 
-	//輝度抽出
-	luminance = make_unique<FullscreenQuad>(device);
 	//最終出力
 	final_sprite = make_unique<FullscreenQuad>(device);
 
@@ -27,7 +25,6 @@ PostEffects::PostEffects(ID3D11Device* device)
 	cb_post_effect = std::make_unique<Constants<CB_PostEffect>>(device);
 
 	//シェーダー
-	create_ps_from_cso(device, "shaders/luminance_extraction_ps.cso", luminance_ps.ReleaseAndGetAddressOf());
 	create_ps_from_cso(device, "shaders/post_effects.cso", post_effects.ReleaseAndGetAddressOf());
 }
 
@@ -73,6 +70,8 @@ void PostEffects::blit(Graphics& graphics)
 		{
 			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				ImGui::DragFloat2("origin", &cb_post_effect->data.origin.x, 1.0f, 0.0f, 20.0f);
+				ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
 				ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
 				ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
 				ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 1.0f, 10.0f);
@@ -80,6 +79,8 @@ void PostEffects::blit(Graphics& graphics)
 				ImGui::DragFloat("ray_power", &cb_post_effect->data.ray_power, 0.1f, 0.0f, 50.0f);
 				ImGui::DragFloat("blur_threshold", &cb_post_effect->data.bloom_extraction_threshold, 0.1f, -1.0f, 10.0f);
 				ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
+				ImGui::DragFloat("falloff", &cb_post_effect->data.falloff, 0.1f, 0, 1.0f);
+				ImGui::DragFloat("amount", &cb_post_effect->data.amount, 0.1f, 0, 1.0f);
 
 			}
 			if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))

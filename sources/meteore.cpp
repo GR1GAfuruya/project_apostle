@@ -6,16 +6,17 @@
 // コンストラクタ
 // 
 //==============================================================
-Meteore::Meteore(Graphics& graphics)
+Meteore::Meteore(Graphics& graphics, int max_num)
 {
-	main_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx");
+	main_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", max_num);
 	main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
 	main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
 	main_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
 	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
-
-
+	
+	MAX_NUM = max_num;
+	
 	//パラメーター初期化
 	initialize();
 }
@@ -30,6 +31,20 @@ void Meteore::initialize()
 	acceleration = 15.0f;
 	friction = 0.0f;
 	max_move_speed = 40.0f;
+	main_effect->stop();
+	main_effect->play({ 0,0,0 });
+	main_effect->set_is_loop(true);
+	//隕石ごとのパラメーター初期化
+	params.reset(new MeteoreParam[MAX_NUM]);
+	for (int i = 0; i < MAX_NUM; i++)
+	{
+		params[i].position = { 0,0,0 };
+		params[i].velocity = { 0,0,0 };
+		params[i].scale = { 0,0,0 };
+		params[i].is_calc_velocity = false;
+		main_effect->set_scale(0, i);
+		main_effect->set_position({ 0,0,0 }, i);
+	}
 }
 //==============================================================
 // 
@@ -38,13 +53,20 @@ void Meteore::initialize()
 //==============================================================
 void Meteore::update(Graphics& graphics, float elapsed_time)
 {
-	main_effect->set_position(position);
 	main_effect->update(graphics,elapsed_time);
 
-	if (!is_hit)
+
+	for (int i = 0; i < MAX_NUM; i++)
 	{
-		update_velocity(elapsed_time, position);
-	};
+		main_effect->set_position(params[i].position, i);
+		main_effect->set_scale(params[i].scale, i);
+		//速度計算をするかどうか
+		if (params[i].is_calc_velocity)
+		{
+			update_velocity(elapsed_time,i);
+		};
+	}
+	
 }
 //==============================================================
 // 
@@ -56,57 +78,82 @@ void Meteore::render(Graphics& graphics)
 	main_effect->render(graphics);
 }
 
-void Meteore::launch(DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 init_vec, float speed)
+void Meteore::create_on_circle(DirectX::XMFLOAT3 center, float radius, int index)
 {
-	main_effect->play(init_pos);
-	main_effect->set_scale(3.0f);
-	//初期位置設定
-	position = init_pos;
-	velocity = { 0,0,0 };
-	//発射方向設定
-	move(init_vec.x, init_vec.z, speed);
+	//隕石を円周上に配置
+	params[index].position.x = Math::circumferential_placement({ center.x,center.z }, radius, index, MAX_NUM).x;
+	params[index].position.y = center.y;
+	params[index].position.z = Math::circumferential_placement({ center.x,center.z }, radius, index, MAX_NUM).y;
+};
+
+void Meteore::rising(float elapsed_time, DirectX::XMFLOAT3 target_position, float target_scale, float rise_speed, int index)
+{
+	params[index].position = Math::lerp(params[index].position, target_position, rise_speed * elapsed_time);
+	params[index].scale = Math::lerp(params[index].scale, { target_scale,target_scale,target_scale }, rise_speed * elapsed_time);
+	DirectX::XMFLOAT3 s = params[index].scale;
+	int a;
 }
 
-void Meteore::update_velocity(float elapsed_time, DirectX::XMFLOAT3& position)
+void Meteore::launch(DirectX::XMFLOAT3 init_vec, float speed, int index)
+{
+	//すでに射出状態なら無視
+	if (params[index].is_calc_velocity) return;
+	//速度計算開始
+	params[index].is_calc_velocity = true;
+	//発射方向設定
+	move(init_vec.x, init_vec.z, speed, index);
+}
+
+void Meteore::all_launch(DirectX::XMFLOAT3 init_vec, float speed)
+{
+	for (int i = 0; i < MAX_NUM; i++)
+	{
+		params[i].is_calc_velocity = true;
+		main_effect->set_scale(0, i);
+		move(init_vec.x, init_vec.z, speed, i);
+	}
+}
+
+void Meteore::update_velocity(float elapsed_time, int index)
 {
 	//経過フレーム
 	float elapsed_frame = 60.0f * elapsed_time;
 
 
 	//垂直速力更新処理
-	update_vertical_velocity(elapsed_frame);
+	update_vertical_velocity(elapsed_frame, index);
 
 	//垂直移動更新処理
-	update_vertical_move(elapsed_time, position);
+	update_vertical_move(elapsed_time, index);
 
 	//水平速力更新処理
-	update_hrizontal_velocity(elapsed_frame);
+	update_hrizontal_velocity(elapsed_frame, index);
 
 	//水平移動更新処理
-	update_horizontal_move(elapsed_time, position);
+	update_horizontal_move(elapsed_time, index);
 
 }
 
-void Meteore::move(float vx, float vz, float speed)
+void Meteore::move(float vx, float vz, float speed, int index)
 {
 	//方向設定
-	move_vec_x = vx;
-	move_vec_z = vz;
+	params[index].move_vec.x = vx;
+	params[index].move_vec.z = vz;
 
 	//最大速度設定
 	max_move_speed = speed;
 }
 
-void Meteore::update_vertical_velocity(float elapsed_frame)
+void Meteore::update_vertical_velocity(float elapsed_frame, int index)
 {
-	velocity.y += gravity * elapsed_frame;
+	params[index].velocity.y += gravity * elapsed_frame;
 
 }
 
-void Meteore::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& position)
+void Meteore::update_vertical_move(float elapsed_time, int index)
 {
 	// キャラクターの下方向の移動量
-	float my = velocity.y * elapsed_time;
+	float my = params[index].velocity.y * elapsed_time;
 
 
 	// キャラクターのY軸方向となる法線ベクトル
@@ -114,55 +161,52 @@ void Meteore::update_vertical_move(float elapsed_time, DirectX::XMFLOAT3& positi
 	if (my < 0.0f)
 	{
 		//レイの開始位置は少し上
-		DirectX::XMFLOAT3 start = { position.x, position.y + 0.5f, position.z };
+		DirectX::XMFLOAT3 start = { params[index].position.x, params[index].position.y + 0.5f, params[index].position.z };
 		//レイの終点位置は移動後の位置
-		DirectX::XMFLOAT3 end = { position.x, position.y + my * ray_power  , position.z };
+		DirectX::XMFLOAT3 end = { params[index].position.x, params[index].position.y + my * ray_power  , params[index].position.z };
 
 		//レイキャストによる地面判定
 		HitResult hit;
 		if (StageManager::Instance().ray_cast(start, end, hit))
 		{
 			//地面に設置している
-			position = hit.position;
+			params[index].position = hit.position;
 
 		
 			//TODO:当たった時の処理に移行
-			if (!is_hit)
-			{
-				on_hit();
-			}
+			on_hit(index);
 			//main_effect->stop();
 			//動きを止める
-			velocity = { 0,0,0 };
-			move_vec_x = 0.0f;
-			move_vec_z = 0.0f;
+			params[index].velocity = { 0,0,0 };
+			params[index].move_vec.x = 0.0f;
+			params[index].move_vec.z = 0.0f;
 			
 		}
 		else
 		{
 			//空中に浮いている
-			position.y += my;
+			params[index].position.y += my;
 		}
 
 	}
 	// 上昇中
 	else if (my > 0.0f)
 	{
-		position.y += my;
+		params[index].position.y += my;
 	}
 
 }
 
-void Meteore::update_hrizontal_velocity(float elapsed_frame)
+void Meteore::update_hrizontal_velocity(float elapsed_frame, int index)
 {
 	//XZ平面の速力
-	float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+	float length = sqrtf(params[index].velocity.x * params[index].velocity.x + params[index].velocity.z * params[index].velocity.z);
 
 	//XZ平面の速力を加速する
 	if (length <= max_move_speed)
 	{
 		//移動ベクトルがゼロベクトルでないなら加速する
-		float moveVecLength = sqrtf(move_vec_x * move_vec_x + move_vec_z * move_vec_z);
+		float moveVecLength = sqrtf(params[index].move_vec.x * params[index].move_vec.x + params[index].move_vec.z * params[index].move_vec.z);
 
 
 		if (moveVecLength > 0.0f)
@@ -171,68 +215,66 @@ void Meteore::update_hrizontal_velocity(float elapsed_frame)
 			float acceleration = this->acceleration * elapsed_frame;
 			//空中にいるときは加速力を減らす
 			//移動ベクトルによる加速処理
-			velocity.x += move_vec_x * acceleration;
-			velocity.z += move_vec_z * acceleration;
+			params[index].velocity.x += params[index].move_vec.x * acceleration;
+			params[index].velocity.z += params[index].move_vec.z * acceleration;
 
 			//最大速度制限
-			float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+			float length = sqrtf(params[index].velocity.x * params[index].velocity.x + params[index].velocity.z * params[index].velocity.z);
 			if (length > max_move_speed)
 			{
-				float vx = velocity.x / length;
-				float vz = velocity.z / length;
-				velocity.x = vx * max_move_speed;
-				velocity.z = vz * max_move_speed;
+				float vx = params[index].velocity.x / length;
+				float vz = params[index].velocity.z / length;
+				params[index].velocity.x = vx * max_move_speed;
+				params[index].velocity.z = vz * max_move_speed;
 			}
 		}
 	}
 	else
 	{
-		move_vec_x = 0.0f;
-		move_vec_z = 0.0f;
+		params[index].move_vec.x = 0.0f;
+		params[index].move_vec.z = 0.0f;
 	}
 }
 
-void Meteore::update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position)
+void Meteore::update_horizontal_move(float elapsed_time, int index)
 {
 	// 水平速力計算
-	float velocity_length_xz = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+	float velocity_length_xz = sqrtf(params[index].velocity.x * params[index].velocity.x + params[index].velocity.z * params[index].velocity.z);
 	// もし速力があれば
 	if (velocity_length_xz > 0.0f)
 	{
 
 		// 水平移動値
-		float mx = velocity.x * elapsed_time;
-		float mz = velocity.z * elapsed_time;
+		float mx = params[index].velocity.x * elapsed_time;
+		float mz = params[index].velocity.z * elapsed_time;
 
 		// レイの開始位置と終点位置
-		DirectX::XMFLOAT3 start = { position.x - mx / 50.0f, position.y * 2, position.z - mz / 50.0f };
-		DirectX::XMFLOAT3 end = { position.x + mx * ray_power, start.y, position.z + mz * ray_power };
+		DirectX::XMFLOAT3 start = { params[index].position.x - mx / 50.0f, params[index].position.y * 2, params[index].position.z - mz / 50.0f };
+		DirectX::XMFLOAT3 end = { params[index].position.x + mx * ray_power, start.y, params[index].position.z + mz * ray_power };
 		HitResult hit;
 		if (StageManager::Instance().ray_cast(start, end, hit))//何か壁があれば
 		{
 
 			//TODO:当たった時の処理に移行
-			if (!is_hit)
-			{
-				on_hit();
-			}
+			on_hit(index);
 
-			position.x = hit.position.x;
-			position.z = hit.position.z;
-			velocity.x = 0;
-			velocity.z = 0;			
+			params[index].position.x = hit.position.x;
+			params[index].position.z = hit.position.z;
+			params[index].velocity.x = 0;
+			params[index].velocity.z = 0;			
 		}
 		else
 		{
 			//移動
-			position.x += mx;
-			position.z += mz;
+			params[index].position.x += mx;
+			params[index].position.z += mz;
 		}
 
 	}
 }
 
-void Meteore::on_hit()
+void Meteore::on_hit(int index)
 {
-	is_hit = true;
+	params[index].is_calc_velocity = false;
+	//params[index].scale = { 0,0,0 };
 }

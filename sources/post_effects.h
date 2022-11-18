@@ -34,6 +34,11 @@ public:
 		float brightness = 2.4f;
 		//コントラスト
 		float contrast = 7.0f;
+
+		//ビネット
+		float falloff = 0.3f;
+		float amount = 0.6f;
+		DirectX::XMFLOAT2 pad;
 	};
 
 	void begin(ID3D11DeviceContext* dc);
@@ -45,11 +50,8 @@ public:
 	//元画像保存用フレームバッファー
 	std::unique_ptr<FrameBuffer> original_frame_buffer;
 	std::unique_ptr<FrameBuffer> post_effect_frame_buffer;
-	//std::unique_ptr<FrameBuffer> original;
-	std::unique_ptr<FullscreenQuad> luminance;
 	std::unique_ptr<FullscreenQuad> final_sprite;
 
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>  luminance_ps;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>  post_effects;
 
 	std::unique_ptr<Constants<CB_PostEffect>> cb_post_effect;

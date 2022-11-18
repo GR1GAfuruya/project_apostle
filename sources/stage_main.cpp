@@ -3,7 +3,11 @@
 #include "user.h"
 
 static StageMain* instance = nullptr;
+//==============================================================
+// 
 //コンストラクタ
+// 
+//==============================================================
 StageMain::StageMain(Graphics& graphics)
 {
 	instance = this;
@@ -13,7 +17,11 @@ StageMain::StageMain(Graphics& graphics)
 	model_collision = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\Stage\\stage_hall_collision.fbx", 1);
 	scale = { 0.2f, 0.2f, 0.2f };
 }
-
+//==============================================================
+// 
+//デストラクタ
+// 
+//==============================================================
 StageMain::~StageMain()
 {
 	
@@ -24,12 +32,20 @@ StageMain& StageMain::Instance()
 	return *instance;
 }
 
-//更新処理
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void StageMain::update(float elapsedTime)
 {
 
 }
-
+//==============================================================
+// 
+//描画
+// 
+//==============================================================
 void StageMain::render(float elapsed_time, Graphics& graphics)
 {
 	static DirectX::XMFLOAT4 material_color = { 1,1,1,1 };
@@ -51,7 +67,11 @@ void StageMain::render(float elapsed_time, Graphics& graphics)
 	}
 #endif
 }
-
+//==============================================================
+// 
+//レイキャスト
+// 
+//==============================================================
 bool StageMain::ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)
 {
 	
