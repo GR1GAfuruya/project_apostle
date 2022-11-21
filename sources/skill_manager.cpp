@@ -226,7 +226,7 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 //PhycicalUp”­“®
 // 
 //==============================================================
-bool SkillManager::chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+bool SkillManager::chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	return physical_up->chant(graphics, launch_pos, add_run_speed, add_jump_speed);
 }

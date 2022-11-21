@@ -13,7 +13,7 @@ PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
 // ÉXÉLÉãî≠ìÆ
 // 
 //==============================================================
-bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* add_run_speed, float* add_jump_speed)
+bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)

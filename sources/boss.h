@@ -106,6 +106,9 @@ public:
 	void set_location_of_attack_target(DirectX::XMFLOAT3 target) { target_pos = target; }
 
 	BodyCollision get_body_collision() { return boss_body_collision; }
+
+	//カメラがプレイヤーを見るときに注視するポイント
+	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (height + 3), position.z); }
 	//==============================================================
 	// 
 	// private関数

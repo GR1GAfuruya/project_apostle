@@ -993,6 +993,23 @@ namespace Math
     }
 
     //--------------------------------------------------------------
+    //  クォータニオン同士の保管
+    //--------------------------------------------------------------
+    //  引数：保管させたい2つのquaternion、補完度
+    // 　戻り値：位置
+    //--------------------------------------------------------------
+    inline DirectX::XMFLOAT4 quaternion_lerp(DirectX::XMFLOAT4 q1, DirectX::XMFLOAT4 q2, float rate)
+    {
+        DirectX::XMVECTOR Q1 = DirectX::XMLoadFloat4(&q1);
+        DirectX::XMVECTOR Q2 = DirectX::XMLoadFloat4(&q2);
+
+        Q1 = DirectX::XMQuaternionSlerp(Q1, Q2, rate);
+        DirectX::XMFLOAT4 result_q;
+        DirectX::XMStoreFloat4(&result_q, Q1);
+        return result_q;
+
+    }
+    //--------------------------------------------------------------
     //  オブジェクトを円状に配置
     //--------------------------------------------------------------
     //  引数：center 中心　radius：半径　index：番号　divitions：総数 clockwise : 並び順 add_ang : 初期角度

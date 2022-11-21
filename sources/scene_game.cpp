@@ -65,6 +65,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->update(elapsed_time);
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_gazing_point());
+	camera->set_lock_on_target(boss.get()->get_gazing_point());
 	//カメラの経過時間
 	float camera_elapsed_time = elapsed_time;
 	//ヒットストップ時の経過時間処理

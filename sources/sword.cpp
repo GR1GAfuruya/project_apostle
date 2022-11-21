@@ -33,7 +33,7 @@ void Sword::render(Graphics &graphics)
 {
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 #if USE_IMGUI
-	imgui_menu_bar("Charactor", "player", display_imgui);
+	imgui_menu_and_sub_bar("Charactor", "wepon", "sword", display_imgui);
 	if (display_imgui)
 	{
 		ImGui::Begin("sword");

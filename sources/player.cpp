@@ -106,6 +106,11 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//更新処理
 	(this->*p_update)(graphics, elapsed_time, camera);
 	
+	if (game_pad->get_button_down() & GamePad::BTN_Y) //スペースを押したらジャンプ
+	{
+		camera->set_lock_on();
+	}
+
 	//オブジェクト行列を更新
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
@@ -323,7 +328,7 @@ void Player::input_chant_support_skill(Graphics& graphics)
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
 		case SP_SKILLTYPE::PHYSICAL_UP:
-			if (skill_manager->chant_physical_up(graphics, position, &move_speed, &jump_speed))
+			if (skill_manager->chant_physical_up(graphics, &position, &move_speed, &jump_speed))
 			{
 				transition_magic_buff_state();//状態遷移
 			}
@@ -414,7 +419,7 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 			if (!test_slash_hit->get_active())
 			{
 				//ヒットエフェクト
-				test_slash_hit->play({ collider.start.x, collider.start.y +20, collider.start.z});
+				test_slash_hit->play({ attack_sword_param.collision.end });
 				test_slash_hit->set_life_span(0.1f);
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
@@ -589,7 +594,7 @@ void Player::debug_gui(Graphics& graphics)
 					switch (skill_manager->get_selected_sup_skill_type())
 					{
 					case SP_SKILLTYPE::PHYSICAL_UP:
-						skill_manager->chant_physical_up(graphics, position, &skill_add_move_speed, &skill_add_jump_speed);
+						skill_manager->chant_physical_up(graphics, &position, &skill_add_move_speed, &skill_add_jump_speed);
 						break;
 					case SP_SKILLTYPE::REGENERATE:
 						transition_magic_buff_state();//状態遷移

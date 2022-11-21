@@ -1,15 +1,20 @@
 #include "skill_physical_up.h"
+#include "light_manager.h"
 //==============================================================
 // 
 //コンストラクタ
 // 
 //==============================================================
-PhysicalUp::PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* run_speed, float* jump_speed)
+PhysicalUp::PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* run_speed, float* jump_speed)
 {
 	*run_speed *= magnification;
 	*jump_speed *= magnification;
+	effect_position.reset(launch_pos);
 	enhanced_run_speed.reset(run_speed);
 	enhanced_jump_speed.reset(jump_speed);
+	//ライト生成
+	light = make_shared<PointLight>(graphics, position, 15.0f, DirectX::XMFLOAT3(1.1f, 1.8f, 0.5f));
+	LightManager::instance().register_light("PhysicalUp", light);
 	initialize(graphics);
 }
 
@@ -17,8 +22,11 @@ PhysicalUp::~PhysicalUp()
 {
 	*enhanced_run_speed /= magnification;
 	*enhanced_jump_speed /= magnification;
+	effect_position.release();
 	enhanced_run_speed.release();
 	enhanced_jump_speed.release();
+	//ライト消去
+	LightManager::instance().delete_light(light->name);
 
 
 }
@@ -29,7 +37,7 @@ PhysicalUp::~PhysicalUp()
 //==============================================================
 void PhysicalUp::initialize(Graphics& graphics)
 {
-	cool_time = 15.0f;
+	cool_time = 10.0f;
 	life_time = 10.0f;
 }
 //==============================================================
@@ -40,6 +48,8 @@ void PhysicalUp::initialize(Graphics& graphics)
 void PhysicalUp::update(Graphics& graphics, float elapsed_time)
 {
 	life_time -= elapsed_time;
+	DirectX::XMFLOAT3 light_pos = { effect_position->x ,effect_position->y +11.0f ,effect_position->z };
+	light->set_position(light_pos);
 	if (life_time < 0)
 	{
 		skill_end_flag = true;
@@ -69,6 +79,7 @@ void PhysicalUp::debug_gui(string str_id)
 	ImGui::BulletText(name.c_str());
 	ImGui::DragFloat("life_time", &life_time);
 	ImGui::DragFloat("enhanced_jump_speed", &(*enhanced_jump_speed));
+	ImGui::DragFloat3("pos", &position.x);
 	
 	/*これより上にパラメーター記述*/
 	ImGui::PopID();

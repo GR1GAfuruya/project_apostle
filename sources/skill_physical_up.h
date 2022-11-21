@@ -8,7 +8,7 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, float* run_speed, float* jump_speed);
+	PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* run_speed, float* jump_speed);
 	~PhysicalUp();
 
 	void initialize(Graphics& graphics) override;
@@ -39,4 +39,6 @@ protected:
 public:
 	std::unique_ptr<float> enhanced_run_speed;
 	std::unique_ptr<float> enhanced_jump_speed;
+	std::unique_ptr<DirectX::XMFLOAT3> effect_position;
+	std::shared_ptr<PointLight> light;
 };

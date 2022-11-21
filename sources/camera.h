@@ -7,6 +7,8 @@
 #include "constant.h"
 #include "graphics.h"
 #include "stage.h"
+#include "user.h"
+
 class Camera
 {
 public:
@@ -16,9 +18,12 @@ public:
 public:
     //--------< 関数 >--------//
     void update(float elapsed_time);
+    //対象を追従する
     void update_with_tracking(float elapsed_time);
-    void update_with_euler_angles(float elapsed_time);
-    void update_with_quaternion(float elapsed_time);
+    //ロックオン対象にカメラを向ける
+    void update_with_lock_on(float elapsed_time, DirectX::XMFLOAT4& orientation);
+    //コントローラーのスティックで操作
+    void control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& orientation);
     //void move_viewing_angle(bool is_move, float elapsed_time){};
     void calc_view_projection(Graphics& graphics, float elapsed_time);
     void debug_gui();
@@ -26,8 +31,8 @@ public:
     // 対象との距離
     void set_range(float r) { range = r; }
     // 見る対象
-    void set_target(const DirectX::XMFLOAT3& t) { target = t; }
-    const DirectX::XMFLOAT3& get_target() const { return target; }
+    void set_lock_on_target(const DirectX::XMFLOAT3& t) { lock_on_target = t; }
+    const DirectX::XMFLOAT3& get_lock_on_target() const { return lock_on_target; }
     // 追尾する対象
     void set_trakking_target(const DirectX::XMFLOAT3& t) { trakking_target = t; }
     const DirectX::XMFLOAT3& get_trakking_target() const { return trakking_target; }
@@ -49,15 +54,18 @@ public:
     //視点取得
     const DirectX::XMFLOAT3& get_eye()const { return eye; }
     //前方向取得
-    const DirectX::XMFLOAT3& get_forward()const { return forward; }
+    const DirectX::XMFLOAT3& get_forward()const { return Math::get_posture_forward(orientation); }
     //右方向取得
-    const DirectX::XMFLOAT3& get_right()const { return right; }
+    const DirectX::XMFLOAT3& get_right()const { return Math::get_posture_right(orientation); }
     //ターゲットが移動しているかどうか
     void set_is_move(bool m) { this->is_move = m; }
     //視野角取得
     const float& get_cape_vision()const { return cape_vision; }
     //カメラがストップ状態か
     const bool get_camera_stop() const { return camera_stop; }
+    //ロックオン
+    const bool get_lock_on() const { return lock_on; }
+    void set_lock_on()  {  lock_on = !lock_on; }
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
     //カメラストップ
@@ -96,13 +104,12 @@ private:
     float range;
     DirectX::XMFLOAT3 eye; //視点
     DirectX::XMFLOAT3 trakking_target;//注視点
-    DirectX::XMFLOAT3 target;//注視点
+    DirectX::XMFLOAT3 lock_on_target;//注視点
     DirectX::XMFLOAT3 angle;
-    DirectX::XMFLOAT4 orientation;
-    //カメラのベクトル
-    DirectX::XMFLOAT3 forward;
-    DirectX::XMFLOAT3 right;
+    DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
+    DirectX::XMFLOAT4 lock_on_orientation = { 0,0,0,1 };
 
+    float lock_on_rate = 0.7f;
     bool is_move;
     float attend_rate; // 減衰比率
     float cape_vision = 60.0f;//視野角
@@ -132,4 +139,7 @@ private:
     //カメラストップ用の変数（ヒットストップなど）
     bool camera_stop = false;
     float camera_stop_timer = 0.0f;
+
+    //ロックオンフラグ
+    bool lock_on = false;
 };
