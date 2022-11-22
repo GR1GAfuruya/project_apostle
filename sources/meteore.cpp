@@ -12,7 +12,7 @@ Meteore::Meteore(Graphics& graphics, int max_num)
 	main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
 	main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
 	main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	main_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	main_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/meteore_core.cso");
 	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
 	
 	MAX_NUM = max_num;

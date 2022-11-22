@@ -64,7 +64,7 @@ public:
 	//攻撃スキル詠唱
 	bool chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir);
 	
-	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos);
+	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
 	//----スキル当たり判定----//
 	//MagickBullet

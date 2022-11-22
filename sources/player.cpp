@@ -320,7 +320,7 @@ void Player::input_avoidance()
 //サポートスキル発動処理
 // 
 //==============================================================
-void Player::input_chant_support_skill(Graphics& graphics)
+void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 {
 	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
@@ -354,7 +354,7 @@ void Player::input_chant_support_skill(Graphics& graphics)
 //攻撃スキル発動処理
 // 
 //==============================================================
-void Player::input_chant_attack_skill(Graphics& graphics)
+void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 {
 	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
@@ -370,7 +370,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-			if (skill_manager->chant_spear_sea(graphics, position))
+			if (skill_manager->chant_spear_sea(graphics, position, camera->get_lock_on_target()))
 			{
 			   transition_attack_ground_state();
 			}
@@ -622,7 +622,7 @@ void Player::debug_gui(Graphics& graphics)
 						}
 						break;
 					case ATK_SKILLTYPE::SPEARS_SEA:
-						if (skill_manager->chant_spear_sea(graphics, position))
+						if (skill_manager->chant_spear_sea(graphics, position, position))
 						{
 							transition_attack_ground_state();
 						}

@@ -262,9 +262,9 @@ bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 laun
 //SpearSea”­“®
 // 
 //==============================================================
-bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos)
+bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
-	return spear_sea->chant(graphics, launch_pos);
+	return spear_sea->chant(graphics, launch_pos, target_pos);
 }
 
 

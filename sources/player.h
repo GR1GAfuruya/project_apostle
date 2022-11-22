@@ -160,9 +160,9 @@ private:
 	//回避入力
 	void input_avoidance();
 	//サポートスキル詠唱入力
-	void input_chant_support_skill(Graphics& graphics);
+	void input_chant_support_skill(Graphics& graphics, Camera* camera);
 	//攻撃スキル詠唱入力
-	void input_chant_attack_skill(Graphics& graphics);
+	void input_chant_attack_skill(Graphics& graphics, Camera* camera);
 	
 	//着地したか
 	void on_landing()override;

@@ -183,8 +183,8 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	input_chant_support_skill(graphics, camera);
+	input_chant_attack_skill(graphics, camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
@@ -208,8 +208,8 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	input_chant_support_skill(graphics, camera);
+	input_chant_attack_skill(graphics, camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
@@ -272,8 +272,8 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	input_chant_support_skill(graphics, camera);
+	input_chant_attack_skill(graphics, camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
