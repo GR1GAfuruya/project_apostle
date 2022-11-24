@@ -411,25 +411,19 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 	//			‘JˆÚ‚ÉŠÖ‚·‚éXV	   //
 	//*************************************//
 
-	if (model->anime_param.frame_index > 40 / 2)
+	if (model->anime_param.frame_index > 42 / 2)
 	{
 		if (model->is_end_animation())
 		{
 			transition_idle_state();
-			//velocity = { 0,0,0 };
 		}
 
 		if (game_pad->get_button() & game_pad->BTN_X)
 		{
 			transition_r_attack_combo2_state();
-			//velocity = { 0,0,0 };
-			
 		}
 
-		if (input_move(elapsed_time, camera))
-		{
-			transition_move_state();
-		}
+		
 		//UŒ‚”»’èOFF
 		attack_sword_param.is_attack = false;
 	}

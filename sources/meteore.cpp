@@ -42,6 +42,7 @@ void Meteore::initialize()
 		params[i].velocity = { 0,0,0 };
 		params[i].scale = { 0,0,0 };
 		params[i].is_calc_velocity = false;
+		params[i].is_hit = false;
 		main_effect->set_scale(0, i);
 		main_effect->set_position({ 0,0,0 }, i);
 	}
@@ -65,6 +66,13 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 		{
 			update_velocity(elapsed_time,i);
 		};
+
+		//仮でヒットした場合はサイズを０にする
+		if (params[i].is_hit)
+		{
+			params[i].scale = Math::lerp(params[i].scale, { 0,0,0 }, 1.0f * elapsed_time);
+			main_effect->set_scale(params[i].scale, i);
+		}
 	}
 	
 }
@@ -100,6 +108,7 @@ void Meteore::launch(DirectX::XMFLOAT3 init_vec, float speed, int index)
 	if (params[index].is_calc_velocity) return;
 	//速度計算開始
 	params[index].is_calc_velocity = true;
+	params[index].is_hit = false;
 	//発射方向設定
 	move(init_vec.x, init_vec.z, speed, index);
 }
@@ -109,6 +118,7 @@ void Meteore::all_launch(DirectX::XMFLOAT3 init_vec, float speed)
 	for (int i = 0; i < MAX_NUM; i++)
 	{
 		params[i].is_calc_velocity = true;
+		params[i].is_hit = false;
 		main_effect->set_scale(0, i);
 		move(init_vec.x, init_vec.z, speed, i);
 	}
@@ -276,5 +286,6 @@ void Meteore::update_horizontal_move(float elapsed_time, int index)
 void Meteore::on_hit(int index)
 {
 	params[index].is_calc_velocity = false;
+	params[index].is_hit = true;
 	//params[index].scale = { 0,0,0 };
 }

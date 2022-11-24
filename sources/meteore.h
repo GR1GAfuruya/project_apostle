@@ -16,6 +16,7 @@ public:
 		DirectX::XMFLOAT3 move_vec;
 		DirectX::XMFLOAT3 scale;
 		bool is_calc_velocity = false;
+		bool is_hit = false;
 
 	};
 
