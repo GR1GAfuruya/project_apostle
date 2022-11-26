@@ -11,8 +11,9 @@ bool RegenerateLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos,
 	{
 	unique_ptr<Skill> skill = make_unique<Regenerate>();
 		//ƒŠƒXƒg‚É’Ç‰Á
-		skills.push_back(std::move(skill));
-		chantable = false;
+	max_cool_time = skill->get_cool_time();
+	cool_time = max_cool_time;
+	chantable = false;
 		return true;
 	}
 	return false;

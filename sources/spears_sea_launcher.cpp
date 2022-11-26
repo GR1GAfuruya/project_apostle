@@ -7,7 +7,8 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	init_param.invinsible_time = 2.5f;
 	init_param.radius = 15;
 	init_param.collider_radius = 8;
-	init_param.cool_time = 10.0f;
+	init_param.cool_time = 3.0f;
+	init_param.life_span = 2.0f;
 	//ëÑÇÃí∑Ç≥
 	init_param.spear_length = 1.0f;
 	//í∑Ç≥ÇÃêLÇ—ó¶
@@ -25,7 +26,8 @@ bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, D
 	{
 	std:unique_ptr<Skill> skill = make_unique<SpearsSea>(graphics, launch_pos, target_pos, init_param);
 		//ÉäÉXÉgÇ…í«â¡
-		cool_time = skill->get_cool_time();
+		max_cool_time = skill->get_cool_time();
+		cool_time = max_cool_time;
 		skills.push_back(std::move(skill));
 		chantable = false;
 		return true;
@@ -57,6 +59,7 @@ void SpearSeaLauncher::debug_gui()
 		{
 			ImGui::DragFloat("cool_time", &cool_time);
 			ImGui::DragFloat("init_cool_time", &init_param.cool_time);
+			ImGui::DragFloat("life_span", &init_param.life_span);
 			ImGui::DragFloat("power", &init_param.power);
 			ImGui::DragFloat("invinsible_time", &init_param.invinsible_time);
 			ImGui::DragFloat("radius", &init_param.radius);

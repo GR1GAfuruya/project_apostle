@@ -28,8 +28,18 @@ SkillManager::SkillManager(Graphics& graphics)
 	//槍スキル
 	spear_sea = make_unique<SpearSeaLauncher>(graphics);
 
+	//初期スキル設定
+	selected_sup_skill = physical_up.get();
+	selected_atk_skill = magick_bullet.get();
+
+	//リストに追加
+	sup_skill_list = { physical_up, regenerate,restraint };
+	atk_skill_list = { magick_bullet, spear_sea };
+	//パラメーター初期化
 	initialize(graphics);
+	
 }
+
 
 //==============================================================
 // 
@@ -40,16 +50,14 @@ void SkillManager::initialize(Graphics& graphics)
 {
 	//スキルの初期化
 	{
-		//身体能力アップスキル
-		physical_up->initialize(graphics);
-		//リジェネスキル
-		regenerate->initialize(graphics);
-		//拘束スキル
-		restraint->initialize(graphics);
-		//魔法弾スキル
-		magick_bullet->initialize(graphics);
-		//槍スキル
-		spear_sea->initialize(graphics);
+		for (auto& s : sup_skill_list)
+		{
+			s->initialize(graphics);
+		}
+		for (auto& s : atk_skill_list)
+		{
+			s->initialize(graphics);
+		}
 	}
 	//UI初期設定
 	{
@@ -61,6 +69,7 @@ void SkillManager::initialize(Graphics& graphics)
 		support_ui_init.add_ang = -90.0f;
 		support_ui_init.expansion_speed = 10.0f;
 		support_ui_init.color = { 1,1,1,0 };
+		support_ui_init.cool_time_gauge_pos = { 1060.0f, 650.0f };
 		sup_slots_ui->initialize(support_ui_init, static_cast<int>(SupportSkillType::SUP_SKILL_MAX));
 
 		SkillUI::SlotsUi attack_ui_init{};
@@ -71,6 +80,7 @@ void SkillManager::initialize(Graphics& graphics)
 		attack_ui_init.add_ang = -90.0f;
 		attack_ui_init.expansion_speed = 10.0f;
 		attack_ui_init.color = { 1,1,1,0 };
+		attack_ui_init.cool_time_gauge_pos = { 1180.0f, 650.0f };
 		atk_slots_ui->initialize(attack_ui_init, static_cast<int>(AttackSkillType::ATK_SKILL_MAX));
 	}
 
@@ -85,20 +95,16 @@ void SkillManager::initialize(Graphics& graphics)
 //==============================================================
 void SkillManager::update(Graphics& graphics, float elapsed_time)
 {
-	//スキルの初期化
+	//サポートスキルの更新
+	for(auto& s : sup_skill_list)
 	{
-		//身体能力アップスキル
-		physical_up->update(graphics, elapsed_time);
-		//リジェネスキル
-		regenerate->update(graphics, elapsed_time);
-		//拘束スキル
-		restraint->update(graphics, elapsed_time);
-		//魔法弾スキル
-		magick_bullet->update(graphics, elapsed_time);
-		//槍スキル
-		spear_sea->update(graphics, elapsed_time);
+		s->update(graphics, elapsed_time);
 	}
-
+	//攻撃スキルの更新
+	for (auto& s : atk_skill_list)
+	{
+		s->update(graphics, elapsed_time);
+	}
 	//UIアップデート
 	sup_slots_ui->update(graphics, elapsed_time);
 	sup_slots_ui->set_selected_skill_index(static_cast<int>(selected_sup_skill_type));
@@ -182,16 +188,14 @@ void SkillManager::render(Graphics& graphics)
 {
 	//スキルの描画
 	{
-		//身体能力アップスキル
-		physical_up->render(graphics);
-		//リジェネスキル
-		regenerate->render(graphics);
-		//拘束スキル
-		restraint->render(graphics);
-		//魔法弾スキル
-		magick_bullet->render(graphics);
-		//槍スキル
-		spear_sea->render(graphics);
+		for (auto& s : sup_skill_list)
+		{
+			s->render(graphics);
+		}
+		for (auto& s : atk_skill_list)
+		{
+			s->render(graphics);
+		}
 	}
 }
 //==============================================================
@@ -219,6 +223,16 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 	sup_slots_ui->selected_skill_icon_render(graphics, pos1);
 	atk_slots_ui->icon_render(graphics);
 	atk_slots_ui->selected_skill_icon_render(graphics, pos2);
+
+	if (selected_sup_skill->get_cool_time_percent() > 0.0f)
+	{
+		sup_slots_ui->cool_time_render(graphics, elapsed_time, selected_sup_skill->get_cool_time_percent());
+	}
+	if (selected_atk_skill->get_cool_time_percent() > 0.0f)
+	{
+		atk_slots_ui->cool_time_render(graphics, elapsed_time, selected_atk_skill->get_cool_time_percent());
+	}
+
 }
 
 //==============================================================
@@ -291,6 +305,7 @@ void SkillManager::judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFun
 void SkillManager::set_support_skill(int skill_index)
 {
 	selected_sup_skill_type = static_cast<SupportSkillType>(skill_index);
+	selected_sup_skill = sup_skill_list.at(skill_index).get();
 }
 //==============================================================
 // 
@@ -300,6 +315,7 @@ void SkillManager::set_support_skill(int skill_index)
 void SkillManager::set_attack_skill(int skill_index)
 {
 	selected_atk_skill_type = static_cast<AttackSkillType>(skill_index);
+	selected_atk_skill = atk_skill_list.at(skill_index).get();
 }
 
 //==============================================================

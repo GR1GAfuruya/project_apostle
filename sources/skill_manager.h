@@ -94,16 +94,23 @@ private:
 	// 
 	//==============================================================
 	//プレイヤーが実際に実行するスキルの箱
-	std::unique_ptr<PhysicalUpLauncher> physical_up;
-	std::unique_ptr<RegenerateLauncher> regenerate;
-	std::unique_ptr<RestraintLauncher> restraint;
+	std::shared_ptr<PhysicalUpLauncher> physical_up;
+	std::shared_ptr<RegenerateLauncher> regenerate;
+	std::shared_ptr<RestraintLauncher> restraint;
 	 
-	std::unique_ptr<MagicBulletLauncher> magick_bullet;
-	std::unique_ptr<SpearSeaLauncher> spear_sea;
+	std::shared_ptr<MagicBulletLauncher> magick_bullet;
+	std::shared_ptr<SpearSeaLauncher> spear_sea;
 
+	std::array< std::shared_ptr<SkillLauncher>, static_cast<int>(SupportSkillType::SUP_SKILL_MAX)> sup_skill_list;
+	std::array< std::shared_ptr<SkillLauncher>, static_cast<int>(AttackSkillType::ATK_SKILL_MAX)> atk_skill_list;
 
+	//装備中のスキル
+	SkillLauncher* selected_sup_skill;
+	SkillLauncher* selected_atk_skill;
+	//装備中のスキルの種類
 	SupportSkillType selected_sup_skill_type;
 	AttackSkillType selected_atk_skill_type;
+	//スキルのUI
 	std::unique_ptr<SkillUI> sup_slots_ui;
 	std::unique_ptr<SkillUI> atk_slots_ui;
 	bool display_imgui;

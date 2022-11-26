@@ -217,15 +217,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//test_meteore->render(graphics);
 
-	ImGui::Begin("test_meteore");
-	if (ImGui::Button("test_meteore_launch"))
-	{
-		//test_meteore->launch(test_meteore_pos, test_meteore_dir, test_meteore_speed);
-	}
-	ImGui::DragFloat3("meteore_pos", &test_meteore_pos.x);
-	ImGui::DragFloat3("meteore_dir", &test_meteore_dir.x, 0.1f);
-	ImGui::DragFloat("meteore_speed", &test_meteore_speed, 0.1f);
-	ImGui::End();
 	#endif
 
 #endif

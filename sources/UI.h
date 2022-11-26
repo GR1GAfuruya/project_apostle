@@ -10,7 +10,6 @@ public:
     //--------< ŠÖ” >--------//
     virtual void update(Graphics& graphics, float elapsed_time) = 0;
     virtual void render(ID3D11DeviceContext* dc) = 0;
-protected:
     //--------< \‘¢‘Ì >--------//
     struct Element
     {

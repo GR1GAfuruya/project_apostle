@@ -79,7 +79,7 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 	//定数バッファ
 	particle_constants = std::make_unique<Constants<ParticleConstants>>(device);
 
-
+	//シェーダーの登録
 	create_vs_from_cso(device, "shaders/gpu_particles_vs.cso", vertex_shader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
 	create_ps_from_cso(device, "shaders/gpu_particles_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
 	create_gs_from_cso(device, "shaders/gpu_particles_gs.cso", geometry_shader.ReleaseAndGetAddressOf());

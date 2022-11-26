@@ -27,8 +27,9 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::
 	param = initparam;
 	collision_type = CollisionType::SPHERE;
 	//寿命を設定
-	life_span = 2.0f;
+	life_span = initparam.life_span;
 
+	instance_mesh->constants->data.threshold = 0.0f;
 
 	for (int i = 0; i < MAX_NUM; i++)
 	{
@@ -77,37 +78,20 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 		//各槍の出現位置
 		DirectX::XMFLOAT3 appearance_pos{};
 		instance_mesh->play(appearance_pos);
-		//ターゲットまでの距離が一定以下、あるいは追尾時間が一定に達することでフィニッシュ状態へ
-		if (Math::calc_vector_AtoB_length(position, target_position) > param.radius && follow_timer < param.follow_time)
+		//追尾時間が一定に達することでフィニッシュ状態へ
+		if ( follow_timer < param.follow_time)
 		{
-			if (!init_flag)
-			{
-				spear_emit(0,init_emit_num, SPEAR_SIZE );
-				init_flag = true;
-			}
-			//ターゲットまで位置を補完
-			position = Math::lerp(position, target_position, param.speed * elapsed_time);
-			//ターゲットに進みながら小さい槍を出す
-			int emit_rate = follow_timer * 10;
-			spear_emit(init_emit_num, 10, SPEAR_SIZE / 2);
 			//タイマーを進める
 			follow_timer += elapsed_time;
-			//槍すべてを一括更新
-			for (int i = 0; i < MAX_NUM; i++)
-			{
-				//---槍を徐々に伸ばす---//
-				//割合
-				float rate = param.spear_length_rate * elapsed_time;
-				//伸ばす
-				instance_mesh->set_scale({ instance_mesh->get_scale(i).x,instance_mesh->get_scale(i).y,SPEAR_SIZE / 2 }, i);
-			}
-
+			position = target_position;
+			//少し下に埋める
+			position.y = target_position.y - 2.0f;
 		}
 		else
 		{
 
 			//攻撃の当たり判定パラメーター設定
-			attack_colider.start = { position.x,appearance_pos.y,position.z };
+			attack_colider.start = { position.x,position.y,position.z };
 			attack_colider.radius = param.radius;
 			//フィニッシュ時は槍を一気にすべて出す
 			if (!finish)
@@ -136,6 +120,18 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 		}
 
+	}
+
+
+	const float threshold_rate = 2.0f;
+	const float start_threshold_time = 0.5f;
+	//ディゾルブ処理
+	if(life_time > life_span - start_threshold_time)
+	{
+		if (instance_mesh->constants->data.threshold <= 1.0f)
+		{
+			instance_mesh->constants->data.threshold += threshold_rate * elapsed_time;
+		}
 	}
 
 
@@ -194,6 +190,7 @@ void SpearsSea::debug_gui(string str_id)
 	/*これより下にパラメーター記述*/
 	//ImGui::BulletText(name.c_str());
 	ImGui::DragFloat("life_time", &life_time);
+	ImGui::DragFloat("threshold", &instance_mesh->constants->data.threshold,0.01f);
 	ImGui::DragInt("emit_num", &emit_num,0.1f);
 	ImGui::DragFloat3("pos", &position.x,0.1f);
 	ImGui::DragFloat3("target_position", &target_position.x,0.1f);

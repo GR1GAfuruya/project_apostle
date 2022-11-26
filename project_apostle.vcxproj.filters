@@ -109,9 +109,6 @@
     <Filter Include="sources\Charactor\Player">
       <UniqueIdentifier>{4b835f94-b299-4bbb-b458-3436d68e52b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Effect\BossEffect\Attack1">
-      <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Effects\PostEffects">
       <UniqueIdentifier>{aa4a1f7b-7194-480f-a024-4c46d037d94b}</UniqueIdentifier>
     </Filter>
@@ -210,6 +207,12 @@
     </Filter>
     <Filter Include="sources\Effects\BossEffects\Meteorite">
       <UniqueIdentifier>{836e2453-5a26-443e-b6a1-1f6d2d898d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\Player">
+      <UniqueIdentifier>{3f8c1fda-e96b-4e28-8c0a-ab5c55684d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\Player\Attack4">
+      <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -453,7 +456,7 @@
     <ClCompile Include="sources\boss_ui.cpp">
       <Filter>sources\Charactor\Boss</Filter>
     </ClCompile>
-    <ClCompile Include="sources\hp_gauge.cpp">
+    <ClCompile Include="sources\gauge_ui.cpp">
       <Filter>sources\UI</Filter>
     </ClCompile>
     <ClCompile Include="sources\player_ui.cpp">
@@ -737,7 +740,7 @@
     <ClInclude Include="sources\UI.h">
       <Filter>sources\UI</Filter>
     </ClInclude>
-    <ClInclude Include="sources\hp_gauge.h">
+    <ClInclude Include="sources\gauge_ui.h">
       <Filter>sources\UI</Filter>
     </ClInclude>
     <ClInclude Include="sources\player_ui.h">
@@ -883,12 +886,6 @@
     <FxCompile Include="HLSL\slash_vs.hlsl">
       <Filter>Shaders\Effect\Slash</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\boss_attack1_emit_cs.hlsl">
-      <Filter>Shaders\Effect\BossEffect\Attack1</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\boss_attack1_update_cs.hlsl">
-      <Filter>Shaders\Effect\BossEffect\Attack1</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\boss_charge_attack_emit.hlsl">
       <Filter>Shaders\Effect\BossEffect\ChargeAttack</Filter>
     </FxCompile>
@@ -969,6 +966,12 @@
     </FxCompile>
     <FxCompile Include="HLSL\meteore_core.hlsl">
       <Filter>Shaders\Effect\Fire</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\player_attack4_emit_cs.hlsl">
+      <Filter>Shaders\Effect\Player\Attack4</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\player_attack4_update_cs.hlsl">
+      <Filter>Shaders\Effect\Player\Attack4</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

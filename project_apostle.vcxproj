@@ -212,7 +212,7 @@
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
-    <ClCompile Include="sources\hp_gauge.cpp" />
+    <ClCompile Include="sources\gauge_ui.cpp" />
     <ClCompile Include="sources\instance_mesh_effect.cpp" />
     <ClCompile Include="sources\instancing_mesh.cpp" />
     <ClCompile Include="sources\mesh_effect.cpp" />
@@ -291,7 +291,7 @@
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="sources\boss_ui.h" />
     <ClInclude Include="sources\damage_func.h" />
-    <ClInclude Include="sources\hp_gauge.h" />
+    <ClInclude Include="sources\gauge_ui.h" />
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
@@ -427,7 +427,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\boss_attack1_emit_cs.hlsl">
+    <FxCompile Include="HLSL\player_attack4_emit_cs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
@@ -437,7 +437,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="HLSL\boss_attack1_update_cs.hlsl">
+    <FxCompile Include="HLSL\player_attack4_update_cs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>

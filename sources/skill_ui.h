@@ -1,6 +1,7 @@
 #pragma once
 #include "graphics.h"
 #include "sprite_batch.h"
+#include "gauge_ui.h"
 //==============================================================
 // 
 // SkillUIクラス :スキルのUIに関する部分をまとめたクラス
@@ -25,6 +26,7 @@ public:
 		float expansion;
 		float expansion_speed;
 		DirectX::XMFLOAT4 color;
+		DirectX::XMFLOAT2 cool_time_gauge_pos ;
 
 	};
 	//==============================================================
@@ -48,9 +50,14 @@ public:
 	void set_skill_select(bool s) { skill_select = s; };
 	//選択されているスキルの番号を設定
 	void set_selected_skill_index(int i) { selected_skill_index = i; };
+
+	void cool_time_render(Graphics& graphics, float elapsed_time, float skill_cool_time);
+
 private:
 	//スキルアイコンの参照画像
 	std::unique_ptr<SpriteBatch> skill_slot_icon;
+	std::unique_ptr<GaugeUi> cool_time_gauge;
+
 	//描画に関するパラメーター
 	SlotsUi slots_ui;
 	//スキルが選ばれているか

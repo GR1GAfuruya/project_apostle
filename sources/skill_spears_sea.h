@@ -18,6 +18,8 @@ public:
 		float invinsible_time;
 		//クールタイム
 		float cool_time;
+		//生存時間
+		float life_span;
 		//半径
 		float radius;
 		//当たり判定の半径

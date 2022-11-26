@@ -86,6 +86,11 @@ void Meteore::render(Graphics& graphics)
 	main_effect->render(graphics);
 }
 
+//==============================================================
+// 
+//円周上に隕石を配置
+// 
+//==============================================================
 void Meteore::create_on_circle(DirectX::XMFLOAT3 center, float radius, int index)
 {
 	//隕石を円周上に配置
@@ -94,6 +99,11 @@ void Meteore::create_on_circle(DirectX::XMFLOAT3 center, float radius, int index
 	params[index].position.z = Math::circumferential_placement({ center.x,center.z }, radius, index, MAX_NUM).y;
 };
 
+//==============================================================
+// 
+//指定の位置に上昇
+// 
+//==============================================================
 void Meteore::rising(float elapsed_time, DirectX::XMFLOAT3 target_position, float target_scale, float rise_speed, int index)
 {
 	params[index].position = Math::lerp(params[index].position, target_position, rise_speed * elapsed_time);
@@ -101,7 +111,11 @@ void Meteore::rising(float elapsed_time, DirectX::XMFLOAT3 target_position, floa
 	DirectX::XMFLOAT3 s = params[index].scale;
 	int a;
 }
-
+//==============================================================
+// 
+//一つずつ発射
+// 
+//==============================================================
 void Meteore::launch(DirectX::XMFLOAT3 init_vec, float speed, int index)
 {
 	//すでに射出状態なら無視
@@ -112,7 +126,11 @@ void Meteore::launch(DirectX::XMFLOAT3 init_vec, float speed, int index)
 	//発射方向設定
 	move(init_vec.x, init_vec.z, speed, index);
 }
-
+//==============================================================
+// 
+//すべて一気に発射
+// 
+//==============================================================
 void Meteore::all_launch(DirectX::XMFLOAT3 init_vec, float speed)
 {
 	for (int i = 0; i < MAX_NUM; i++)
@@ -123,7 +141,11 @@ void Meteore::all_launch(DirectX::XMFLOAT3 init_vec, float speed)
 		move(init_vec.x, init_vec.z, speed, i);
 	}
 }
-
+//==============================================================
+// 
+//速度更新
+// 
+//==============================================================
 void Meteore::update_velocity(float elapsed_time, int index)
 {
 	//経過フレーム
@@ -143,7 +165,11 @@ void Meteore::update_velocity(float elapsed_time, int index)
 	update_horizontal_move(elapsed_time, index);
 
 }
-
+//==============================================================
+// 
+//移動方向の設定
+// 
+//==============================================================
 void Meteore::move(float vx, float vz, float speed, int index)
 {
 	//方向設定
@@ -153,7 +179,11 @@ void Meteore::move(float vx, float vz, float speed, int index)
 	//最大速度設定
 	max_move_speed = speed;
 }
-
+//==============================================================
+// 
+//垂直方向の
+// 
+//==============================================================
 void Meteore::update_vertical_velocity(float elapsed_frame, int index)
 {
 	params[index].velocity.y += gravity * elapsed_frame;

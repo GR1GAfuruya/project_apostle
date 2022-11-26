@@ -147,7 +147,7 @@ private:
 
 	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
 	//
-	void Attack(Graphics& graphics, float elapsed_time);
+	void attack_combo4_effect(Graphics& graphics, float elapsed_time);
 
 	//ƒvƒŒƒCƒ„[‚ÌˆÚ“®“ü—Íˆ—
 	bool input_move(float elapsedTime, Camera* camera);
@@ -181,8 +181,8 @@ private:
 	// 
 	//==============================================================
 	ActUpdate p_update = &Player::update_idle_state;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_emit_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_update_cs;
 
 	State state;
 

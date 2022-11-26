@@ -100,7 +100,7 @@ void Boss::render_f(Graphics& graphics, float elapsed_time)
 //==============================================================
 void Boss::render_ui(Graphics& graphics, float elapsed_time)
 {
-	ui->set_hp_percent(get_hp_percent());
+	ui->set_percent(get_hp_percent());
 	ui->render(graphics.get_dc().Get());
 }
 //==============================================================

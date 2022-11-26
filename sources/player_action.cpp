@@ -375,7 +375,7 @@ void Player::update_attack_air_state(Graphics& graphics, float elapsed_time, Cam
 {
 	if (model->anime_param.frame_index > 43 / 2)
 	{
-		Attack(graphics, elapsed_time);
+		attack_combo4_effect(graphics, elapsed_time);
 	}
 	if (model->is_end_animation())
 	{

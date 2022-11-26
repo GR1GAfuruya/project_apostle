@@ -36,8 +36,7 @@ void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 	{
 		cool_time -= cool_time_attenuation_speed * elapsed_time;
 	}
-
-	if (cool_time <= 0)
+	else
 	{
 		cool_time = 0;
 		chantable = true;

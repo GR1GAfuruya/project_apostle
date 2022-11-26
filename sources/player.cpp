@@ -80,8 +80,8 @@ Player::Player(Graphics& graphics, Camera* camera)
 	left_hand = model->get_bone_by_name("pelvis");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_emit_cs.cso", attack4_emit_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_update_cs.cso", attack4_update_cs.ReleaseAndGetAddressOf());
 
 	initialize();
 }
@@ -116,7 +116,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	update_invicible_timer(elapsed_time);
 	slash_efect->update(graphics,elapsed_time);
 	test_slash_hit->update(graphics,elapsed_time);
-	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
+	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, attack4_update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
@@ -241,7 +241,7 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 //魔法
 // 
 //==============================================================
-void Player::Attack(Graphics& graphics, float elapsed_time)
+void Player::attack_combo4_effect(Graphics& graphics, float elapsed_time)
 {
 	DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
 	emit_pos.y = position.y + 3.0f;
@@ -249,7 +249,7 @@ void Player::Attack(Graphics& graphics, float elapsed_time)
 	attack1.get()->set_emitter_rate(150);
 	attack1.get()->set_particle_size({0.1f,0.1f});
 	attack1.get()->set_emitter_life_time(0.2f);
-	attack1.get()->launch_emitter( emit_cs);
+	attack1.get()->launch_emitter(attack4_emit_cs);
 }
 
 //==============================================================
