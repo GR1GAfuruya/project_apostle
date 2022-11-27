@@ -13,7 +13,7 @@ Meteore::Meteore(Graphics& graphics, int max_num)
 	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
 	
 	MAX_NUM = max_num;
-	
+	colider_sphere.resize(MAX_NUM);
 	//パラメーター初期化
 	initialize();
 }
@@ -31,6 +31,9 @@ void Meteore::initialize()
 	main_effect->stop();
 	main_effect->play({ 0,0,0 });
 	main_effect->set_is_loop(true);
+	//攻撃力設定
+	power = 10;
+	invinsible_time = 2.0f;
 	//隕石ごとのパラメーター初期化
 	params.reset(new MeteoreParam[MAX_NUM]);
 	for (int i = 0; i < MAX_NUM; i++)
@@ -42,6 +45,7 @@ void Meteore::initialize()
 		params[i].is_hit = false;
 		main_effect->set_scale(0, i);
 		main_effect->set_position({ 0,0,0 }, i);
+		colider_sphere.at(i).radius = params[i].scale.x;
 	}
 }
 //==============================================================
@@ -53,7 +57,7 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 {
 	main_effect->update(graphics,elapsed_time);
 
-
+	radius = 3.5f;
 	for (int i = 0; i < MAX_NUM; i++)
 	{
 		main_effect->set_position(params[i].position, i);
@@ -70,6 +74,9 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 			params[i].scale = Math::lerp(params[i].scale, { 0,0,0 }, 1.0f * elapsed_time);
 			main_effect->set_scale(params[i].scale, i);
 		}
+		//当たり判定の位置と大きさ更新
+		colider_sphere.at(i).center = params[i].position;
+		colider_sphere.at(i).radius = params[i].scale.x * radius;
 	}
 	
 }
@@ -106,7 +113,9 @@ void Meteore::rising(float elapsed_time, DirectX::XMFLOAT3 target_position, floa
 	params[index].position = Math::lerp(params[index].position, target_position, rise_speed * elapsed_time);
 	params[index].scale = Math::lerp(params[index].scale, { target_scale,target_scale,target_scale }, rise_speed * elapsed_time);
 	DirectX::XMFLOAT3 s = params[index].scale;
-	int a;
+	//当たり判定の位置と大きさ更新
+	colider_sphere.at(index).center = params[index].position;
+	colider_sphere.at(index).radius = params[index].scale.x;
 }
 //==============================================================
 // 
@@ -120,6 +129,11 @@ void Meteore::launch(DirectX::XMFLOAT3 init_vec, float speed, int index)
 	//速度計算開始
 	params[index].is_calc_velocity = true;
 	params[index].is_hit = false;
+
+	//当たり判定の位置と大きさ更新
+	colider_sphere.at(index).center = params[index].position;
+	colider_sphere.at(index).radius = params[index].scale.x * radius;
+
 	//発射方向設定
 	move(init_vec.x, init_vec.z, speed, index);
 }
@@ -160,6 +174,21 @@ void Meteore::update_velocity(float elapsed_time, int index)
 
 	//水平移動更新処理
 	update_horizontal_move(elapsed_time, index);
+
+}
+void Meteore::calc_meteore_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func)
+{
+	for (int i = 0; i < MAX_NUM; i++)
+	{
+		if (Collision::sphere_vs_capsule(colider_sphere.at(i).center, colider_sphere.at(i).radius,
+			capsule_start, capsule_end, colider_radius))
+		{
+			//当たり判定の位置と大きさ更新
+			damaged_func(power, invinsible_time, WINCE_TYPE::SMALL);
+			params[i].scale = { 0,0,0 };
+		}
+
+	}
 
 }
 //==============================================================

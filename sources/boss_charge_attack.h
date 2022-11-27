@@ -24,6 +24,9 @@ public:
 	void set_charge_max_state() { is_charge_max = true; }
 	//攻撃対象設定
 	void set_target_pos(DirectX::XMFLOAT3 target) { target_pos = target; }
+	//当たり判定
+	void calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
+
 private:
 	//チャージ中の更新
 	void charging_update(Graphics& graphics, float elapsed_time);

@@ -172,13 +172,14 @@ void Boss::debug_gui()
 }
 //==============================================================
 // 
-//©•ª‚ÌUŒ‚‚Æ“G‚Ì“–‚½‚è”»’èˆ—
+//ƒ{ƒX‚ÌUŒ‚‚ÆƒvƒŒƒCƒ„[‚Ì“–‚½‚è”»’èˆ—
 // 
 //==============================================================
 void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XMFLOAT3 player_cap_end, float colider_radius, AddDamageFunc damaged_func)
 {
 	if (sickle_attack_param.is_attack)
 	{
+
 		if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius,
 			sickle_attack_param.collision.start, sickle_attack_param.collision.end, sickle_attack_param.collision.radius))
 		{
@@ -187,5 +188,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time,WINCE_TYPE::NONE);
 		}
 	}
+
+	efc_charge_attack->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
 }
 

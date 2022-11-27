@@ -184,6 +184,17 @@ void ChargeAttack::debug_gui(const char* str_id)
 	tornado->debug_gui("tornad");
 	particle->debug_gui("boss_charge");
 }
+
+//==============================================================
+// 
+//プレイヤーとの当たり判定
+// 
+//==============================================================
+void ChargeAttack::calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func)
+{
+	//メテオの当たり判定
+	meteores->calc_meteore_vs_player(capsule_start, capsule_end, colider_radius, damaged_func);
+}
 //==============================================================
 // 
 //チャージ中のアップデート
@@ -261,13 +272,16 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 		meteo_time += elapsed_time;
 		if (meteo_time >= meteo_span )
 		{
-			//方向
-			DirectX::XMFLOAT3 direction = Math::calc_vector_AtoB_normalize(meteores->get_position(meteo_launch_count), target_pos);
 			//power
-			const int range = 30;
+			const int range = 50;
 			const int ofset = 50;
 			const int random = Noise::instance().random_range(ofset, range);
 			float power = random;
+			//方向
+			DirectX::XMFLOAT3 direction = Math::circumferential_placement(core->get_position(),
+				power,meteo_launch_count, meteores->get_max_num());
+			//正規化
+			direction = Math::Normalize(direction);
 			//射出
 			meteores->launch(direction, power, meteo_launch_count);
 			//間隔をあけるためのタイマーをリセット

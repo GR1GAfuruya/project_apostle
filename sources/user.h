@@ -1023,6 +1023,17 @@ namespace Math
         pos.y = center.y + radius * clockwise_rot * sinf(DirectX::XMConvertToRadians(add_angle + index * (360.0f / divisions)));
         return pos;
     }
+
+    inline DirectX::XMFLOAT3 circumferential_placement(DirectX::XMFLOAT3 center, float radius, int index, int divisions, bool clockwise = true, float add_angle = 0)
+    {
+        DirectX::XMFLOAT3 pos{};
+        int clockwise_rot = clockwise ? 1 : -1;
+        pos.x = center.x + radius * clockwise_rot * cosf(DirectX::XMConvertToRadians(add_angle + index * (360.0f / divisions)));
+        pos.y = center.y + radius * clockwise_rot * sinf(DirectX::XMConvertToRadians(add_angle + index * (360.0f / divisions)));
+        pos.z = center.z + radius * clockwise_rot * sinf(DirectX::XMConvertToRadians(add_angle + index * (360.0f / divisions)));
+        return pos;
+    }
+
 }
 //--------------------------------------------------------------
 //  strBit16    ®”‚ğ2i”i16bitj‚Ìstring‚É•ÏŠ·‚·‚é
