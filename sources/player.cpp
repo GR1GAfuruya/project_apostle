@@ -8,6 +8,7 @@
 #include "../external/magic_enum/include/magic_enum.hpp"
 #include "collision.h"
 #include "noise.h"
+
 //==============================================================
 // 
 // 初期化
@@ -55,19 +56,13 @@ Player::Player(Graphics& graphics, Camera* camera)
 	ui = std::make_unique<PlayerUI>(graphics);
 	//攻撃時エフェクト
 	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
-	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	slash_efect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	slash_efect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 
 	//ヒットエフェクト
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
-	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	test_slash_hit->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	test_slash_hit->set_scale(2.0f);
 	test_slash_hit->constants->data.particle_color = { 2.5f,2.5f,5.9f,0.5f };
 

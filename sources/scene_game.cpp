@@ -7,7 +7,7 @@
 #include "stage_main.h"
 #include "stage_manager.h"
 #include "scene_title.h"
-
+#include "material_manager.h"
 SceneGame::SceneGame(Graphics& graphics)
 {
 	
@@ -19,6 +19,8 @@ SceneGame::SceneGame(Graphics& graphics)
 //==============================================================
 void SceneGame::initialize(Graphics& graphics)
 {
+	//マテリアルのロード
+	MaterialManager::instance().create_materials(graphics);
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain(graphics);
@@ -40,10 +42,7 @@ void SceneGame::initialize(Graphics& graphics)
 	//テスト用
 #if _DEBUG
 	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/meteore_core.cso");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
 	 test_mesh_effect->set_scale(0.1f);
 	// test_meteore = std::make_unique<Meteore>(graphics);

@@ -21,10 +21,7 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX
 	 velocity = acceleration * Math::Normalize(dir);
 	 //エフェクト
 	 main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
-	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	 main_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	 main_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	 main_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 main_effect->set_scale(0.5f);
 	 main_effect->set_life_span(2);
 	 main_effect->play(position);

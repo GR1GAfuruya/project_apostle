@@ -214,6 +214,21 @@
     <Filter Include="Shaders\Effect\Player\Attack4">
       <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Material">
+      <UniqueIdentifier>{76bcf970-cbd4-4492-a1bd-c5a21c0404bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Material\Manager">
+      <UniqueIdentifier>{0346f51b-0b18-4adc-a39b-2a0b8b9c40e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Material\Base">
+      <UniqueIdentifier>{25c2e9ac-42fe-4a6d-900b-0b113debf28b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Material\FireDistortion">
+      <UniqueIdentifier>{5610701d-9bd3-4751-bb6c-356ee87cad49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Material\Meteore">
+      <UniqueIdentifier>{2be40a1e-7a01-4c8e-96c0-c8f8ffacab47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -467,6 +482,18 @@
     </ClCompile>
     <ClCompile Include="sources\noise.cpp">
       <Filter>sources\User</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\material_manager.cpp">
+      <Filter>sources\Material\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\material.cpp">
+      <Filter>sources\Material\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mat_fire_distortion.cpp">
+      <Filter>sources\Material\FireDistortion</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mat_meteore.cpp">
+      <Filter>sources\Material\Meteore</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -748,6 +775,18 @@
     </ClInclude>
     <ClInclude Include="sources\meteore.h">
       <Filter>sources\Effects\BossEffects\Meteorite</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\material_manager.h">
+      <Filter>sources\Material\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\material.h">
+      <Filter>sources\Material\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mat_fire_distortion.h">
+      <Filter>sources\Material\FireDistortion</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mat_meteore.h">
+      <Filter>sources\Material\Meteore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

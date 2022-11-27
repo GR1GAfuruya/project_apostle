@@ -11,24 +11,15 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 {
 	//coreの初期設定
 	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
-	core->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	core->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	core->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	core->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	core->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	core->constants->data.particle_color = FIRE_COLOR;
 	
 	//waveの初期設定
 	wave = std::make_unique<MeshEffect>(graphics,"./resources/Effects/Meshes/eff_aura.fbx");
-	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	wave->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	//tornadoの初期設定
 	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
-	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	tornado->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	tornado->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	tornado->constants->data.particle_color = FIRE_COLOR;
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
