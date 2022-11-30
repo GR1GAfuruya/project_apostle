@@ -25,7 +25,7 @@ void GaugeUi::update(Graphics& graphics, float elapsed_time)
 
 void GaugeUi::render(ID3D11DeviceContext* dc)
 {
-    gauge.color = { 2,2,2,1 };
+   
     //--back--//
     back->begin(dc);
     back->render(dc, gauge.position, gauge.scale, gauge.pivot, gauge.color, gauge.angle, gauge.texpos, gauge.texsize);

@@ -32,7 +32,7 @@ void Meteore::initialize()
 	main_effect->play({ 0,0,0 });
 	main_effect->set_is_loop(true);
 	//攻撃力設定
-	power = 10;
+	power = 60;
 	invinsible_time = 2.0f;
 	//隕石ごとのパラメーター初期化
 	params.reset(new MeteoreParam[MAX_NUM]);
@@ -56,7 +56,7 @@ void Meteore::initialize()
 void Meteore::update(Graphics& graphics, float elapsed_time)
 {
 	main_effect->update(graphics,elapsed_time);
-
+	//半径
 	radius = 3.5f;
 	for (int i = 0; i < MAX_NUM; i++)
 	{
@@ -68,10 +68,10 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 			update_velocity(elapsed_time,i);
 		};
 
-		//仮でヒットした場合はサイズを０にする
+		//ヒットした場合はサイズを０にする
 		if (params[i].is_hit)
 		{
-			params[i].scale = Math::lerp(params[i].scale, { 0,0,0 }, 1.0f * elapsed_time);
+			params[i].scale = { 0,0,0 };
 			main_effect->set_scale(params[i].scale, i);
 		}
 		//当たり判定の位置と大きさ更新

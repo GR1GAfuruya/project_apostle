@@ -1,6 +1,10 @@
 #include "spears_sea_launcher.h"
-
 #include "collision.h"
+//==============================================================
+// 
+// コンストラクタ
+// 
+//==============================================================
 SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
 	init_param.power = 10;
@@ -18,7 +22,11 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	//追従する時間
 	init_param.follow_time = 0.2f;
 }
-
+//==============================================================
+// 
+// 発動
+// 
+//==============================================================
 bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
 	//詠唱可能な状態なら
@@ -34,7 +42,11 @@ bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, D
 	}
 	return false;
 }
-
+//==============================================================
+// 
+// 当たり判定
+// 
+//==============================================================
 void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
 {
 	for (auto& s : skills)
@@ -47,7 +59,11 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 		}
 	}
 }
-
+//==============================================================
+// 
+// デバッグGUI
+// 
+//==============================================================
 void SpearSeaLauncher::debug_gui()
 {
 #if USE_IMGUI

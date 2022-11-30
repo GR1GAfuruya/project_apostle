@@ -41,8 +41,8 @@ private:
 	{
 		DirectX::XMFLOAT3 core_pos{};
 		float core_gravitation = 0.5;
+		DirectX::XMFLOAT3 particle_sub_color{};
 		float core_radius{};
-		DirectX::XMFLOAT3 pad{};
 	};
 	//ÉRÉA
 	std::unique_ptr<MeshEffect> core;

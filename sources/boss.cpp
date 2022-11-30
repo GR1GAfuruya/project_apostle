@@ -10,7 +10,7 @@
 void Boss::initialize()
 {
 	transition_idle_state();
-	position = { -24.0f, 0.0f,7.0f };
+	position = { -24.0f, -7.0f,7.0f };
 	scale.x = scale.y = scale.z = 0.08f;
 	max_health = 500;
 	health = max_health;
@@ -120,7 +120,9 @@ void Boss::on_dead()
 //==============================================================
 void Boss::on_damaged(WINCE_TYPE type)
 {
-	if (state == State::DAMAGE || state == State::ATTACK )
+	/*ステートがダメージを受けているか攻撃している途中
+	 あるいは怯み処理を行わない攻撃タイプの時は処理を飛ばす*/
+	if (state == State::DAMAGE || state == State::ATTACK  || type == WINCE_TYPE::NONE)
 	{
 		return;
 	}

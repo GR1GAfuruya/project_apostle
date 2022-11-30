@@ -48,7 +48,8 @@ void PhysicalUp::initialize(Graphics& graphics)
 void PhysicalUp::update(Graphics& graphics, float elapsed_time)
 {
 	life_time -= elapsed_time;
-	DirectX::XMFLOAT3 light_pos = { effect_position->x ,effect_position->y +11.0f ,effect_position->z };
+	const float offset = 11.0f;
+	DirectX::XMFLOAT3 light_pos = { effect_position->x ,effect_position->y + offset ,effect_position->z };
 	light->set_position(light_pos);
 	if (life_time < 0)
 	{

@@ -34,8 +34,8 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::
 		//伸ばす
 		instance_mesh->set_scale(0, i);
 	}
-
-
+	//当たり判定初期0
+	attack_colider.radius = 0.0f;
 }
 //==============================================================
 // 
@@ -76,11 +76,11 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 		DirectX::XMFLOAT3 appearance_pos{};
 		instance_mesh->play(appearance_pos);
 		//追尾時間が一定に達することでフィニッシュ状態へ
-		if ( follow_timer < param.follow_time)
+		if (follow_timer < param.follow_time)
 		{
 			//タイマーを進める
 			follow_timer += elapsed_time;
-			position = target_position;
+			//position = target_position;
 			//少し下に埋める
 			position.y = target_position.y - 2.0f;
 		}
@@ -89,11 +89,16 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 			//攻撃の当たり判定パラメーター設定
 			attack_colider.start = { position.x,position.y,position.z };
-			attack_colider.radius = param.radius;
+			//槍が一定の長さになったら当たり判定設定
+			if (param.spear_length > 0.4f)
+			{
+				attack_colider.radius = param.radius;
+			}
+
 			//フィニッシュ時は槍を一気にすべて出す
 			if (!finish)
 			{
-				spear_emit(0,MAX_NUM, SPEAR_SIZE);
+				spear_emit(0, MAX_NUM, SPEAR_SIZE);
 				finish = true;
 				//ライト設置
 				DirectX::XMFLOAT3 point_light_pos = { position.x,position.y + 10.0f,position.z };//槍の位置より少し上に配置

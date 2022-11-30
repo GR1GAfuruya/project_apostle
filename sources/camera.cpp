@@ -249,9 +249,11 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 
 	}
 
+	//カメラが上か下を向きすぎたときに補正する　※上を向きすぎたときの処理がうまくいってないので要修正）
 	if (Math::get_posture_up(ori).y <0.4f)
 	{
-		DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(-25.0f));
+		float correction_rate = -15.0f;
+		DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(correction_rate));
 		orientationVec = DirectX::XMQuaternionMultiply(orientationVec, correct_angles_axis);
 	}
 

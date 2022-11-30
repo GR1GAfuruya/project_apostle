@@ -119,7 +119,7 @@ void Player::transition_r_attack_combo1_state()
 	p_update = &Player::update_r_attack_combo1_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = 10;
+	attack_sword_param.power = ATTACK_TYPE1_POWER;
 	attack_sword_param.invinsible_time = 0.5f;
 	//ルートモーションを使用するか
 	/*is_root_motion = true;
@@ -131,7 +131,7 @@ void Player::transition_r_attack_combo2_state()
 	p_update = &Player::update_r_attack_combo2_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = 13;
+	attack_sword_param.power = ATTACK_TYPE2_POWER;
 	attack_sword_param.invinsible_time = 0.5f;
 	//ルートモーションを使用するか
 	is_root_motion = true;
@@ -144,7 +144,7 @@ void Player::transition_r_attack_combo3_state()
 	p_update = &Player::update_r_attack_combo3_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = 15;
+	attack_sword_param.power = ATTACK_TYPE3_POWER;
 	attack_sword_param.invinsible_time = 0.2f;
 
 }
@@ -543,10 +543,6 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 			transition_idle_state();
 		}
 
-		if (game_pad->get_button() & game_pad->BTN_X)
-		{
-			transition_attack_air_state();
-		}
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
 

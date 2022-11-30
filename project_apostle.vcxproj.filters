@@ -229,6 +229,9 @@
     <Filter Include="sources\Material\Meteore">
       <UniqueIdentifier>{2be40a1e-7a01-4c8e-96c0-c8f8ffacab47}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Tutorial">
+      <UniqueIdentifier>{01df8133-4bc6-46cb-8048-569d9d55d7f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -494,6 +497,9 @@
     </ClCompile>
     <ClCompile Include="sources\mat_meteore.cpp">
       <Filter>sources\Material\Meteore</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\tutorial.cpp">
+      <Filter>sources\Tutorial</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -787,6 +793,9 @@
     </ClInclude>
     <ClInclude Include="sources\mat_meteore.h">
       <Filter>sources\Material\Meteore</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\tutorial.h">
+      <Filter>sources\Tutorial</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -249,9 +249,9 @@ bool SkillManager::chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3* laun
 //Regenerate”­“®
 // 
 //==============================================================
-bool SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health)
+bool SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)
 {
-	return regenerate->chant(graphics, launch_pos, health);
+	return regenerate->chant(graphics, launch_pos, health, max_health);
 }
 //==============================================================
 // 

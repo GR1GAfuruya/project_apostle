@@ -16,6 +16,10 @@ public:
 	//==============================================================
 	MagicBulletLauncher(Graphics& graphics);
 	~MagicBulletLauncher() override {};
+	//更新
+	void update(Graphics& graphics, float elapsed_time) override;
+	//描画
+	void render(Graphics& graphics) override;
 	//発動
 	bool chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir);
 	//スキルの当たり判定
@@ -26,5 +30,6 @@ public:
 private:
 	//スキルの初期パラメーター
 	MagicBullet::InitializeParam skill_init_param;
+	std::unique_ptr<MeshEffect> test_slash_hit;
 
 };

@@ -283,6 +283,7 @@
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\thunder.cpp" />
     <ClCompile Include="sources\trail.cpp" />
+    <ClCompile Include="sources\tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\imgui\imconfig.h" />
@@ -378,6 +379,7 @@
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />
     <ClInclude Include="sources\trail.h" />
+    <ClInclude Include="sources\tutorial.h" />
     <ClInclude Include="sources\UI.h" />
     <ClInclude Include="sources\user.h" />
     <ClInclude Include="sources\collision.h" />

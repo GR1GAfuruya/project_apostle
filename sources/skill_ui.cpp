@@ -11,7 +11,7 @@ SkillUI::SkillUI(Graphics& graphics, const wchar_t* filename)
 	skill_slot_icon = make_unique<SpriteBatch>(graphics.get_device().Get(), filename, 8);
 	//クールタイムのゲージ（今は仮でプレイヤーのHP画像を使用）
 	cool_time_gauge = make_unique<GaugeUi>(graphics, L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
-		L"./resources/Sprite/UI/Player/player_hp_bar_front.png",
+		L"./resources/Sprite/UI/Player/bar.png",
 		nullptr);
 	cool_time_gauge->set_angle(-90);
 
@@ -169,8 +169,10 @@ void SkillUI::cool_time_render(Graphics& graphics, float elapsed_time, float ski
 	cool_time_gauge->set_angle(ang);
 	//サイズ設定
 	const DirectX::XMFLOAT2 t_size = { 60.0f,10.0f };
+	const DirectX::XMFLOAT4 cool_time_color = { 10.0f,10.0f,10.0f,1.0f };
 
 	cool_time_gauge->set_tex_size(t_size);
+	cool_time_gauge->set_color(cool_time_color);
 	//％設定
 	cool_time_gauge->set_percent(skill_cool_per);
 	cool_time_gauge->render(graphics.get_dc().Get());

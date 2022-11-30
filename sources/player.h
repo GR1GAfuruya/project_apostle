@@ -93,9 +93,13 @@ private:
 	static constexpr float ATTACK_TYPE2_MAX_TIME = 0.2f;
 	//UŒ‚3Œ‚–Ú‚Ì—P—\ŠÔ
 	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
-	//Œ•U‚èƒXƒs[ƒh
-	//static constexpr float SWORD_SWING_SPEED = 0.2f;
-	
+
+	//UŒ‚1Œ‚–Ú‚ÌUŒ‚—Í
+	static constexpr int ATTACK_TYPE1_POWER = 2;
+	//UŒ‚2Œ‚–Ú‚ÌUŒ‚—Í
+	static constexpr int ATTACK_TYPE2_POWER = 3;
+	//UŒ‚3Œ‚–Ú‚ÌUŒ‚—Í
+	static constexpr int ATTACK_TYPE3_POWER = 5;
 
 
 private:
@@ -116,8 +120,8 @@ private:
 	void transition_attack_pull_slash_state();//“G‚ğˆø‚«•t‚¯‚Äa‚é
 	void transition_attack_ground_state();//’n–Ê‚Éè‚ğ•t‚¯‚ÄŒûŠñ‚¹‚İ‚½‚¢‚È
 	void transition_magic_buff_state();//ƒoƒt
-	void transition_attack_bullet_state();//‹ó’†‚ÉŠª‚«ã‚°a‚é
-	void transition_attack_slash_up_state();//¬‚³‚¢–‚–@’e‘Å‚Â‚æ‚¤‚È
+	void transition_attack_bullet_state();//¬‚³‚¢–‚–@’e‘Å‚Â‚æ‚¤‚È
+	void transition_attack_slash_up_state();//‹ó’†‚ÉŠª‚«ã‚°a‚é
 	void transition_r_attack_forward_state();//‘Oia‚è
 	void transition_attack_air_state();//ƒWƒƒƒ“ƒv‚µ‚Ä’n–Ê‚É–‚–@‚¤‚Â
 	void transition_r_attack_combo1_state();//ƒRƒ“ƒ{2-1
@@ -212,7 +216,7 @@ private:
 	//•‚—V“x
 	float floating_value = 10.0f;
 	float sword_swing_speed = 2000.0f;
-	std::unique_ptr<GPU_Particles> attack1;
+	//std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;
 	std::unique_ptr<MeshEffect> test_slash_hit;

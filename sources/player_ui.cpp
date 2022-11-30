@@ -3,12 +3,13 @@
 #include "imgui_include.h"
 PlayerHpGauge::PlayerHpGauge(Graphics& graphics):
 GaugeUi(graphics, L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
-	L"./resources/Sprite/UI/Player/player_hp_bar_front.png",
+	L"./resources/Sprite/UI/Player/bar.png",
 	nullptr)
 
 {
 	gauge.position = { 30.0f,650.0f };
 	gauge.scale = { 0.15f, 0.1f };
+	gauge.color = { 2,2,0,1 };
 }
 
 

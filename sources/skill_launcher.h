@@ -26,11 +26,11 @@ public:
 	virtual ~SkillLauncher() {}
 
 	//‰Šú‰»
-	void initialize(Graphics& graphics);
+	virtual void initialize(Graphics& graphics);
 	//XV
-	void update(Graphics& graphics, float elapsed_time);
+	virtual void update(Graphics& graphics, float elapsed_time);
 	//•`‰æ
-	void render(Graphics& graphics);
+	virtual void render(Graphics& graphics);
 
 	//DebugGUI•\¦
 	virtual void debug_gui()= 0;

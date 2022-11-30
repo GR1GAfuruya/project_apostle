@@ -57,7 +57,7 @@ public:
 	//ÉXÉLÉãârè•
 	bool chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed);
 
-	bool chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, int* health);
+	bool chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health);
 
 	bool chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed);
 
