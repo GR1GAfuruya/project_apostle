@@ -119,7 +119,7 @@ void Player::transition_r_attack_combo1_state()
 	p_update = &Player::update_r_attack_combo1_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = 10;
+	attack_sword_param.power = ATTACK_TYPE1_POWER;
 	attack_sword_param.invinsible_time = 0.5f;
 	//ルートモーションを使用するか
 	/*is_root_motion = true;
@@ -131,7 +131,7 @@ void Player::transition_r_attack_combo2_state()
 	p_update = &Player::update_r_attack_combo2_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = 13;
+	attack_sword_param.power = ATTACK_TYPE2_POWER;
 	attack_sword_param.invinsible_time = 0.5f;
 	//ルートモーションを使用するか
 	is_root_motion = true;
@@ -144,7 +144,7 @@ void Player::transition_r_attack_combo3_state()
 	p_update = &Player::update_r_attack_combo3_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = 15;
+	attack_sword_param.power = ATTACK_TYPE3_POWER;
 	attack_sword_param.invinsible_time = 0.2f;
 
 }
@@ -183,8 +183,8 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	input_chant_support_skill(graphics, camera);
+	input_chant_attack_skill(graphics, camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
@@ -208,8 +208,8 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	input_chant_support_skill(graphics, camera);
+	input_chant_attack_skill(graphics, camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
@@ -272,8 +272,8 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics);
-	input_chant_attack_skill(graphics);
+	input_chant_support_skill(graphics, camera);
+	input_chant_attack_skill(graphics, camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
@@ -375,7 +375,7 @@ void Player::update_attack_air_state(Graphics& graphics, float elapsed_time, Cam
 {
 	if (model->anime_param.frame_index > 43 / 2)
 	{
-		Attack(graphics, elapsed_time);
+		attack_combo4_effect(graphics, elapsed_time);
 	}
 	if (model->is_end_animation())
 	{
@@ -411,25 +411,19 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 	//			遷移に関する更新	   //
 	//*************************************//
 
-	if (model->anime_param.frame_index > 40 / 2)
+	if (model->anime_param.frame_index > 42 / 2)
 	{
 		if (model->is_end_animation())
 		{
 			transition_idle_state();
-			//velocity = { 0,0,0 };
 		}
 
 		if (game_pad->get_button() & game_pad->BTN_X)
 		{
 			transition_r_attack_combo2_state();
-			//velocity = { 0,0,0 };
-			
 		}
 
-		if (input_move(elapsed_time, camera))
-		{
-			transition_move_state();
-		}
+		
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
 	}
@@ -549,10 +543,6 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 			transition_idle_state();
 		}
 
-		if (game_pad->get_button() & game_pad->BTN_X)
-		{
-			transition_attack_air_state();
-		}
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
 

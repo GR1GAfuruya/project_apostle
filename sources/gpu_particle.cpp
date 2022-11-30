@@ -79,7 +79,7 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 	//定数バッファ
 	particle_constants = std::make_unique<Constants<ParticleConstants>>(device);
 
-
+	//シェーダーの登録
 	create_vs_from_cso(device, "shaders/gpu_particles_vs.cso", vertex_shader.ReleaseAndGetAddressOf(), nullptr, nullptr, 0);
 	create_ps_from_cso(device, "shaders/gpu_particles_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
 	create_gs_from_cso(device, "shaders/gpu_particles_gs.cso", geometry_shader.ReleaseAndGetAddressOf());
@@ -101,6 +101,11 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 static UINT align(UINT num, UINT alignment)
 {
 	return (num + (alignment - 1)) & ~(alignment - 1);
+}
+
+GPU_Particles::~GPU_Particles()
+{
+	release_buffer();
 }
 
 //==============================================================
@@ -139,8 +144,8 @@ void GPU_Particles::particle_emit(ID3D11DeviceContext* dc)
 	//パーティクルの資料をコンピュートシェーダーに転送
 	 dc->CSSetShader(emit_cs.Get(), NULL, 0);
 
-	dc->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), nullptr);
-	dc->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), nullptr);
+	dc->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), 0);
+	dc->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), 0);
 	
 	//発生させるパーティクルの数をスレッドの倍数に
 	UINT num_threads = (static_cast<UINT>(particle_constants->data.emitter.emit_rate) / THREAD_NUM_X) * THREAD_NUM_X;
@@ -209,8 +214,8 @@ void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11Co
 	particle_constants->bind(dc, 9, CB_FLAG::CS_GS);
 	//パーティクルの資料をコンピュートシェーダーに転送
 	replace_update_cs ? dc->CSSetShader(replace_update_cs, NULL, 0) : dc->CSSetShader(update_cs.Get(), NULL, 0);
-	dc->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), nullptr);
-	dc->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), nullptr);
+	dc->CSSetUnorderedAccessViews(0, 1, particle_buffer_uav.GetAddressOf(), 0);
+	dc->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), 0);
 	//----<コンピュートシェーダーの実行>----//
 	UINT num_threads = align(static_cast<UINT>(max_particle_count), THREAD_NUM_X);
 	dc->Dispatch(num_threads / THREAD_NUM_X, 1, 1);
@@ -234,13 +239,14 @@ void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11Co
 void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 {
 
-	
+	//シェーダーのセット
 	dc->VSSetShader(vertex_shader.Get(), NULL, 0);
 	dc->PSSetShader(pixel_shader.Get(), NULL, 0);
 	dc->GSSetShader(geometry_shader.Get(), NULL, 0);
 	dc->GSSetShaderResources(9, 1, particle_buffer_srv.GetAddressOf());
 	dc->PSSetShaderResources(5, 1, texture.GetAddressOf());
 	
+	//Draw関数の実行
 	dc->IASetInputLayout(NULL);
 	dc->IASetVertexBuffers(0, 0, NULL, NULL, NULL);
 	dc->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
@@ -306,6 +312,46 @@ void GPU_Particles::debug_gui(string str_id)
 		ImGui::End();
 	}
 #endif
+}
+
+
+//==============================================================
+// 
+//バッファの明示的な開放
+// 
+//==============================================================
+void GPU_Particles::release_buffer()
+{
+	//particle_bufferとUAVの解放
+	if (particle_buffer != nullptr)
+	{
+		particle_buffer->Release();
+	}
+
+	if (particle_buffer_uav != nullptr)
+	{
+		particle_buffer_uav->Release();
+	}
+
+	//particle_pool_bufferとUAVの解放
+	if (particle_pool_buffer != nullptr)
+	{
+		particle_pool_buffer->Release();
+	}
+
+	if (particle_pool_buffer_uav != nullptr)
+	{
+		particle_pool_buffer_uav->Release();
+	}
+
+	//particle_count_bufferの解放
+	if (particle_count_buffer != nullptr)
+	{
+		particle_count_buffer->Release();
+	}
+
+
+
 }
 
 //==============================================================

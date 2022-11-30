@@ -31,22 +31,22 @@ std::shared_ptr<ModelResource> ResourceManager::load_model_resource(ID3D11Device
 	return model;
 }
 
-std::shared_ptr<SpriteBatch> ResourceManager::load_sprite_resource(ID3D11Device* device, const wchar_t* filename, size_t max_sprites)
-{
-	// マップの中からスプライトを検索
-	SpriteMap::iterator iter = sprites.find(filename);
-	if (iter != sprites.end())
-	{
-		//リンクが切れていないか確認
-		if (!iter->second.expired())
-		{
-			return iter->second.lock();
-		}
-	}
-	// もし検索しても見つからなければ
-    // 新規スプライトリソース読み込み
-	auto sprite = std::make_shared<SpriteBatch>(device, filename, max_sprites);
-	// マップに登録
-	sprites[filename] = sprite;
-	return sprite;
-}
+//std::shared_ptr<Material> ResourceManager::load_material_resource(Graphics& graphics, string id)
+//{
+//	// マップの中からスプライトを検索
+//	MaterialMap::iterator iter = materials.find(id);
+//	if (iter != materials.end())
+//	{
+//		//リンクが切れていないか確認
+//		if (!iter->second.expired())
+//		{
+//			return iter->second.lock();
+//		}
+//	}
+//	// もし検索しても見つからなければ
+//    // 新規スプライトリソース読み込み
+//	auto material = std::make_shared<Material>(graphics, id);
+//	// マップに登録
+//	materials[id] = material;
+//	return material;
+//}

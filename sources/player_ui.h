@@ -1,12 +1,11 @@
 #pragma once
-#include "hp_gauge.h"
+#include "gauge_ui.h"
 
-class PlayerHpGauge : public HpGauge
+class PlayerHpGauge : public GaugeUi
 {
 public:
 	PlayerHpGauge(Graphics& graphics);
 	~PlayerHpGauge() override {};
-	void update(Graphics& graphics, float elapsed_time) override;
 
 private:
 	bool display_imgui = false;

@@ -8,6 +8,7 @@
 #include "../external/magic_enum/include/magic_enum.hpp"
 #include "collision.h"
 #include "noise.h"
+
 //==============================================================
 // 
 // 初期化
@@ -16,7 +17,7 @@
 void Player::initialize()
 {
 	//パラメーター初期化
-	position = { 0.0f, 10.0f,-20.0f };
+	position = { 0.0f, -5.0f,-20.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
 	move_speed = 30.0f;
 	turn_speed = DirectX::XMConvertToRadians(360);
@@ -34,7 +35,7 @@ void Player::initialize()
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible, type); };
 	state = State::IDLE;
-	attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
+	//attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	sword->initialize();
 
 }
@@ -55,33 +56,27 @@ Player::Player(Graphics& graphics, Camera* camera)
 	ui = std::make_unique<PlayerUI>(graphics);
 	//攻撃時エフェクト
 	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
-	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	slash_efect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	slash_efect->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	slash_efect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	slash_efect->set_scale(0.15f);
 	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
 
 	//ヒットエフェクト
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
-	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
-	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	test_slash_hit->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	test_slash_hit->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	test_slash_hit->set_scale(2.0f);
 	test_slash_hit->constants->data.particle_color = { 2.5f,2.5f,5.9f,0.5f };
 
 	
-	attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
-	attack1.get()->initialize(graphics);
+	//attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
+	//attack1.get()->initialize(graphics);
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
 	left_hand = model->get_bone_by_name("pelvis");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_emit_cs.cso", emit_cs.ReleaseAndGetAddressOf());
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_attack1_update_cs.cso", update_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_emit_cs.cso", attack4_emit_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_update_cs.cso", attack4_update_cs.ReleaseAndGetAddressOf());
 
 	initialize();
 }
@@ -116,7 +111,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	update_invicible_timer(elapsed_time);
 	slash_efect->update(graphics,elapsed_time);
 	test_slash_hit->update(graphics,elapsed_time);
-	attack1.get()->update(graphics.get_dc().Get(),elapsed_time, update_cs.Get());
+	//attack1.get()->update(graphics.get_dc().Get(),elapsed_time, attack4_update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
@@ -170,9 +165,9 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	slash_efect->render(graphics);
 	test_slash_hit->render(graphics);
-	attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
+	//attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	skill_manager.get()->render(graphics);
-	attack1->debug_gui("player_attack1");
+	//attack1->debug_gui("player_attack1");
 	//デバッグGUI描画
 	debug_gui(graphics);
 
@@ -241,15 +236,15 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 //魔法
 // 
 //==============================================================
-void Player::Attack(Graphics& graphics, float elapsed_time)
+void Player::attack_combo4_effect(Graphics& graphics, float elapsed_time)
 {
-	DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
-	emit_pos.y = position.y + 3.0f;
-	attack1.get()->set_emitter_pos(emit_pos);
-	attack1.get()->set_emitter_rate(150);
-	attack1.get()->set_particle_size({0.1f,0.1f});
-	attack1.get()->set_emitter_life_time(0.2f);
-	attack1.get()->launch_emitter( emit_cs);
+	//DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
+	//emit_pos.y = position.y + 3.0f;
+	//attack1.get()->set_emitter_pos(emit_pos);
+	//attack1.get()->set_emitter_rate(150);
+	//attack1.get()->set_particle_size({0.1f,0.1f});
+	//attack1.get()->set_emitter_life_time(0.2f);
+	//attack1.get()->launch_emitter(attack4_emit_cs);
 }
 
 //==============================================================
@@ -320,7 +315,7 @@ void Player::input_avoidance()
 //サポートスキル発動処理
 // 
 //==============================================================
-void Player::input_chant_support_skill(Graphics& graphics)
+void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 {
 	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
@@ -334,10 +329,10 @@ void Player::input_chant_support_skill(Graphics& graphics)
 			}
 			break;
 			case SP_SKILLTYPE::REGENERATE:
-				//if (skill_manager->chant_regenerate(graphics, launch_pos, ))
-				//{
-				//	transition_magic_buff_state();//状態遷移
-				//};
+				if (skill_manager->chant_regenerate(graphics, &position, &health, GetMaxHealth()))
+				{
+					transition_attack_slash_up_state();
+				}
 
 			break;
 			case SP_SKILLTYPE::RESTRAINNT:
@@ -354,7 +349,7 @@ void Player::input_chant_support_skill(Graphics& graphics)
 //攻撃スキル発動処理
 // 
 //==============================================================
-void Player::input_chant_attack_skill(Graphics& graphics)
+void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 {
 	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
@@ -370,7 +365,7 @@ void Player::input_chant_attack_skill(Graphics& graphics)
 			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-			if (skill_manager->chant_spear_sea(graphics, position))
+			if (skill_manager->chant_spear_sea(graphics, position, camera->get_lock_on_target()))
 			{
 			   transition_attack_ground_state();
 			}
@@ -598,6 +593,7 @@ void Player::debug_gui(Graphics& graphics)
 						break;
 					case SP_SKILLTYPE::REGENERATE:
 						transition_magic_buff_state();//状態遷移
+						skill_manager->chant_regenerate(graphics, &position, &health, GetMaxHealth());
 
 						break;
 					case SP_SKILLTYPE::RESTRAINNT:
@@ -622,7 +618,7 @@ void Player::debug_gui(Graphics& graphics)
 						}
 						break;
 					case ATK_SKILLTYPE::SPEARS_SEA:
-						if (skill_manager->chant_spear_sea(graphics, position))
+						if (skill_manager->chant_spear_sea(graphics, position, position))
 						{
 							transition_attack_ground_state();
 						}

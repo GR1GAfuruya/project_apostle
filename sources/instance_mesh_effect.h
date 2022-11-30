@@ -5,6 +5,7 @@
 #include "graphics.h"
 #include "imgui_include.h"
 #include "user.h"
+#include "material.h"
 class InstanceMeshEffect
 {
 private:
@@ -63,9 +64,7 @@ public:
 	DirectX::XMFLOAT4 set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang, int index);
 	DirectX::XMFLOAT4 set_rotate_quaternion(AXIS axis, float ang, int index);
 	DirectX::XMFLOAT4 rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec, int index);
-	void register_shader_resource(ID3D11Device* device, const wchar_t* filename);
-	void register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv);
-	void create_pixel_shader(ID3D11Device* device, const char* cso_name);
+	void set_material(Material* m) { material = m; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return position; }
 	DirectX::XMFLOAT4 get_orientation() { return orientation; }
@@ -91,8 +90,8 @@ public:
 	DirectX::XMFLOAT3 rot_speed = { 0,0,0 };
 	std::unique_ptr<InstanceMesh> model = nullptr;
 protected:
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> shader_resources;
+	Material* material;
+
 	//ˆÊ’u
 	DirectX::XMFLOAT3 position = { 0,0,0 };
 	//‰ñ“]Ž²

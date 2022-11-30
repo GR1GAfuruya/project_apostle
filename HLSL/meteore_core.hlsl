@@ -17,22 +17,12 @@ float2 distortion(float2 texcoord, float2 tile, float2 scroll_speed)
 }
 float4 main(VS_OUT pin) : SV_TARGET
 {
-     // 法線を計算
-    float3 N = normalize(pin.world_normal.xyz);
-    
-    float3 E = normalize(pin.world_position.xyz - camera_position.xyz);
-    float d = -dot(N,E) ;
-    d = pow(d, 5);
-   // d = saturate(d);
-    float frenel = smoothstep(0.7, 1.0, d);
-    return float4(d, 0, 0, 1);
     //メインカラー
     float2 scroll_speed = float2(0.0, 0.5);
     float2 distortion_tile = float2(1.5, 1.5);
     float2 tile = float2(1.0, 1.0);
     float2 uv = pin.texcoord + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float4 main_color = texture_map.Sample(sampler_texture, tex_coord(uv, tile));
-    main_color *= frenel;
     main_color *= particle_color;
     //main_color *= float4(2.0, 0.6, 0.2, 1);
     //黒い部分
@@ -49,5 +39,5 @@ float4 main(VS_OUT pin) : SV_TARGET
     uv = pin.texcoord.yx + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float alpha = texture_mask.Sample(sampler_texture, tex_coord(uv, tile)).r;
     //カラー出力
-    return float4(d, d, 0, 1);
+    return float4(result_color.rgb, 1);
 }

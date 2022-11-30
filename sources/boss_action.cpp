@@ -114,7 +114,7 @@ void Boss::transition_die_state()
 void Boss::transition_down_state()
 {
 	act_update = &Boss::update_down_state;
-	model->play_animation(BossAnimation::DOWN, true);
+	model->play_animation(BossAnimation::DOWN, true,0.1f);
 	state = State::DOWN;
 }
 

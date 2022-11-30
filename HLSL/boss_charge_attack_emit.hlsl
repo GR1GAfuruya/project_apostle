@@ -29,6 +29,10 @@ void main( uint3 DTid : SV_DispatchThreadID )
     p.angle = angle;
         
     p.color = particle_color;
+    if (id % 8 == 0)
+    {
+        p.color.xyz = particle_sub_color;
+    };
     p.color.a = 0;
     
     particle_buffer[id] = p;

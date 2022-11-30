@@ -93,9 +93,13 @@ private:
 	static constexpr float ATTACK_TYPE2_MAX_TIME = 0.2f;
 	//攻撃3撃目の猶予時間
 	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
-	//剣振りスピード
-	//static constexpr float SWORD_SWING_SPEED = 0.2f;
-	
+
+	//攻撃1撃目の攻撃力
+	static constexpr int ATTACK_TYPE1_POWER = 2;
+	//攻撃2撃目の攻撃力
+	static constexpr int ATTACK_TYPE2_POWER = 3;
+	//攻撃3撃目の攻撃力
+	static constexpr int ATTACK_TYPE3_POWER = 5;
 
 
 private:
@@ -116,8 +120,8 @@ private:
 	void transition_attack_pull_slash_state();//敵を引き付けて斬る
 	void transition_attack_ground_state();//地面に手を付けて口寄せみたいな
 	void transition_magic_buff_state();//バフ
-	void transition_attack_bullet_state();//空中に巻き上げ斬る
-	void transition_attack_slash_up_state();//小さい魔法弾打つような
+	void transition_attack_bullet_state();//小さい魔法弾打つような
+	void transition_attack_slash_up_state();//空中に巻き上げ斬る
 	void transition_r_attack_forward_state();//前進斬り
 	void transition_attack_air_state();//ジャンプして地面に魔法うつ
 	void transition_r_attack_combo1_state();//コンボ2-1
@@ -147,7 +151,7 @@ private:
 
 	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
 	//
-	void Attack(Graphics& graphics, float elapsed_time);
+	void attack_combo4_effect(Graphics& graphics, float elapsed_time);
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
@@ -160,9 +164,9 @@ private:
 	//回避入力
 	void input_avoidance();
 	//サポートスキル詠唱入力
-	void input_chant_support_skill(Graphics& graphics);
+	void input_chant_support_skill(Graphics& graphics, Camera* camera);
 	//攻撃スキル詠唱入力
-	void input_chant_attack_skill(Graphics& graphics);
+	void input_chant_attack_skill(Graphics& graphics, Camera* camera);
 	
 	//着地したか
 	void on_landing()override;
@@ -181,8 +185,8 @@ private:
 	// 
 	//==============================================================
 	ActUpdate p_update = &Player::update_idle_state;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_emit_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_update_cs;
 
 	State state;
 
@@ -212,7 +216,7 @@ private:
 	//浮遊度
 	float floating_value = 10.0f;
 	float sword_swing_speed = 2000.0f;
-	std::unique_ptr<GPU_Particles> attack1;
+	//std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
 	std::unique_ptr<MeshEffect> slash_efect;
 	std::unique_ptr<MeshEffect> test_slash_hit;

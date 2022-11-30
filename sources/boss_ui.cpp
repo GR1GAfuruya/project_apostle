@@ -1,15 +1,15 @@
 #include "boss_ui.h"
 #include "imgui_include.h"
-#include "hp_gauge.h"
 #include "user.h"
 
-BossUi::BossUi(Graphics& graphics) 
+BossUi::BossUi(Graphics& graphics) :
+	GaugeUi(graphics, L"./resources/Sprite/UI/Boss/boss_hp_bar_back.png",
+	L"./resources/Sprite/UI/Boss/bar.png",
+	nullptr)
 {
-	back = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L"./resources/Sprite/UI/Boss/boss_hp_bar_back.png", 1);
-	body = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L"./resources/Sprite/UI/Boss/boss_hp_bar_front.png", 1);
-
 	gauge.position = { 100.0f,40.0f };
 	gauge.scale = { 1.0f, 0.1f };
+	gauge.color = { 1.5f,0.3f,0,1 };
 	gauge.texsize = { static_cast<float>(back->get_texture2d_desc().Width), static_cast<float>(back->get_texture2d_desc().Height) };
 }
 

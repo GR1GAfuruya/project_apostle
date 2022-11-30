@@ -11,24 +11,15 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 {
 	//coreの初期設定
 	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
-	core->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	core->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	core->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	core->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	core->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	core->constants->data.particle_color = FIRE_COLOR;
 	
 	//waveの初期設定
 	wave = std::make_unique<MeshEffect>(graphics,"./resources/Effects/Meshes/eff_aura.fbx");
-	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	wave->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	wave->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	//tornadoの初期設定
 	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
-	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/Mask/dissolve_animation.png");
-	tornado->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	tornado->create_pixel_shader(graphics.get_device().Get(), "./shaders/fire_distortion.cso");
+	tornado->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	tornado->constants->data.particle_color = FIRE_COLOR;
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
@@ -81,7 +72,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
 	tornado->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f };
-	
+	//GPUパーティクル
 	DirectX::XMFLOAT3 emit_pos{};
 	emit_pos.y = core_pos.y;
 	const float radius = 70.0f;
@@ -97,6 +88,9 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 		particle.get()->particle_constants->data.particle_color = FIRE_COLOR;
 		particle.get()->launch_emitter(emit_cs);
 	}
+	//サブカラー設定
+	const DirectX::XMFLOAT3 sub_color = { 3.0f,0.5f,3.8f };
+	constants->data.particle_sub_color = sub_color;
 
 	//隕石
 	meteo_time = 0;
@@ -181,6 +175,7 @@ void ChargeAttack::debug_gui(const char* str_id)
 		ImGui::Begin("boss_charge");
 		ImGui::DragFloat3("position", &position.x, 0.1f);
 		ImGui::DragFloat("core_gravitation", &constants->data.core_gravitation, 0.1f, 0);
+		ImGui::DragFloat3("particle_sub_color", &constants->data.particle_sub_color.x, 0.1f, 0);
 		ImGui::DragFloat("meteo_span", &meteo_span, 0.1f, 0);
 		ImGui::DragFloat("core_radius", &constants->data.core_radius, 1, 0);
 		ImGui::DragFloat("launch_radius", &meteo_launch_radius, 1, 0);
@@ -192,6 +187,17 @@ void ChargeAttack::debug_gui(const char* str_id)
 	wave->debug_gui("wave");
 	tornado->debug_gui("tornad");
 	particle->debug_gui("boss_charge");
+}
+
+//==============================================================
+// 
+//プレイヤーとの当たり判定
+// 
+//==============================================================
+void ChargeAttack::calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func)
+{
+	//メテオの当たり判定
+	meteores->calc_meteore_vs_player(capsule_start, capsule_end, colider_radius, damaged_func);
 }
 //==============================================================
 // 
@@ -270,13 +276,16 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 		meteo_time += elapsed_time;
 		if (meteo_time >= meteo_span )
 		{
-			//方向
-			DirectX::XMFLOAT3 direction = Math::calc_vector_AtoB_normalize(meteores->get_position(meteo_launch_count), target_pos);
 			//power
-			const int range = 30;
+			const int range = 50;
 			const int ofset = 50;
 			const int random = Noise::instance().random_range(ofset, range);
 			float power = random;
+			//方向
+			DirectX::XMFLOAT3 direction = Math::circumferential_placement(core->get_position(),
+				power,meteo_launch_count, meteores->get_max_num());
+			//正規化
+			direction = Math::Normalize(direction);
 			//射出
 			meteores->launch(direction, power, meteo_launch_count);
 			//間隔をあけるためのタイマーをリセット

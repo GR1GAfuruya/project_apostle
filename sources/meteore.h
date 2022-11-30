@@ -1,6 +1,9 @@
 #pragma once
 #include "instance_mesh_effect.h"
 #include "move_behavior.h"
+#include "primitive.h"
+#include "damage_func.h"
+#include "damage_func.h"
 class Meteore :public MoveBehavior
 {
 public:
@@ -16,6 +19,7 @@ public:
 		DirectX::XMFLOAT3 move_vec;
 		DirectX::XMFLOAT3 scale;
 		bool is_calc_velocity = false;
+		bool is_hit = false;
 
 	};
 
@@ -57,6 +61,8 @@ public:
 	void set_scale(const DirectX::XMFLOAT3& scale, int index) { this->params[index].scale = scale; }
 	//”­Ë’†‚Ì‚İ‘¬“xŒvZ
 	void update_velocity(float elapsed_time, int index);
+	//ƒvƒŒƒCƒ„[‚ÌUŒ‚‚Æ‚Ì“–‚½‚è”»’è
+	void calc_meteore_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);
 
 
 private:
@@ -86,7 +92,12 @@ private:
 	std::unique_ptr<MeteoreParam[]> params;
 	float ray_power = 5.0f;
 
-
 	int MAX_NUM;
+	std::vector<Sphere> colider_sphere;
+	float radius;
+	//UŒ‚—Í
+	int power;
+	//•t—^–³“GŠÔ
+	float invinsible_time;
 
 };

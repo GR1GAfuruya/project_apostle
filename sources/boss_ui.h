@@ -1,7 +1,7 @@
 #pragma once
-#include "hp_gauge.h"
+#include "gauge_ui.h"
 
-class BossUi :public HpGauge
+class BossUi :public GaugeUi
 {
 public:
 	BossUi(Graphics& graphics);

@@ -73,16 +73,11 @@ void InstanceMeshEffect::render(Graphics& graphics)
 	if (!active) return;
 
 	//シェーダーをアクティブ状態に
-	model->active(graphics.get_dc().Get(), pixel_shader.Get());
+	model->active(graphics.get_dc().Get(), material->get_ps().Get());
 	//定数バッファ送信
 	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
-	int resource_num = 0;
-	const int send_texture_num = 1;
-	for (auto& s : shader_resources)
-	{
-		graphics.get_dc().Get()->PSSetShaderResources(MATERIAL_START_SLOT + resource_num, send_texture_num, s.GetAddressOf());
-		resource_num++;
-	}
+	//シェーダーリソース送信
+	material->transfer_shader_resource_view(graphics);
 	model->render(graphics);
 }
 //==============================================================
@@ -109,37 +104,6 @@ void InstanceMeshEffect::debug_gui(string str_id)
 
 #endif
 
-}
-//==============================================================
-// 
-//リソースに登録（シェーダーリソースビューを受け取る）
-// 
-//==============================================================
-void InstanceMeshEffect::register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv)
-{
-	shader_resources.push_back(srv);
-}
-//==============================================================
-// 
-//リソースに登録（テクスチャのファイル名を受け取る）
-// 
-//==============================================================
-void InstanceMeshEffect::register_shader_resource(ID3D11Device* device, const wchar_t* filename)
-{
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
-	D3D11_TEXTURE2D_DESC texture2d_desc{};
-	load_texture_from_file(device, filename, shader_resource_view.ReleaseAndGetAddressOf(), &texture2d_desc);
-
-	shader_resources.push_back(shader_resource_view);
-}
-//==============================================================
-// 
-//ピクセルシェーダー生成
-// 
-//==============================================================
-void InstanceMeshEffect::create_pixel_shader(ID3D11Device* device, const char* cso_name)
-{
-	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
 }
 
 //==============================================================

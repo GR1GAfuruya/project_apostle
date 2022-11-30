@@ -7,7 +7,13 @@
 //==============================================================
 SkillUI::SkillUI(Graphics& graphics, const wchar_t* filename)
 {
+	//スキルのアイコン
 	skill_slot_icon = make_unique<SpriteBatch>(graphics.get_device().Get(), filename, 8);
+	//クールタイムのゲージ（今は仮でプレイヤーのHP画像を使用）
+	cool_time_gauge = make_unique<GaugeUi>(graphics, L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
+		L"./resources/Sprite/UI/Player/bar.png",
+		nullptr);
+	cool_time_gauge->set_angle(-90);
 
 }
 //==============================================================
@@ -30,6 +36,7 @@ void SkillUI::initialize(SlotsUi init_param,int slots_num)
 	add_ang_start = -120;
 	add_ang_end = -90;
 	add_ang_lerp_speed = 6;
+
 }
 
 //==============================================================
@@ -54,7 +61,7 @@ void SkillUI::update(Graphics& graphics, float elapsed_time)
 
 //==============================================================
 // 
-//描画処理（装備中のスキルアイコン）
+//描画処理（スキルリストのアイコン）
 // 
 //==============================================================
 void SkillUI::icon_render(Graphics& graphics)
@@ -137,6 +144,7 @@ void SkillUI::debug_gui(string str_id)
 		ImGui::DragFloat("add_ang_start", &add_ang_start);
 		ImGui::DragFloat("add_ang_end", &add_ang_end);
 		ImGui::DragFloat("add_ang_lerp_speed", &add_ang_lerp_speed,0.1f);
+		ImGui::DragFloat2("cool_time_gauge_pos", &slots_ui.cool_time_gauge_pos.x,0.1f);
 		ImGui::Separator();
 		ImGui::PopID();
 		ImGui::End();
@@ -144,4 +152,28 @@ void SkillUI::debug_gui(string str_id)
 
 #endif
 
+}
+
+
+//==============================================================
+// 
+//クールタイム表示
+// 
+//==============================================================
+void SkillUI::cool_time_render(Graphics& graphics, float elapsed_time, float skill_cool_per)
+{
+	//位置設定
+	cool_time_gauge->set_position(slots_ui.cool_time_gauge_pos);
+	//縦向きに
+	const float ang = -90;
+	cool_time_gauge->set_angle(ang);
+	//サイズ設定
+	const DirectX::XMFLOAT2 t_size = { 60.0f,10.0f };
+	const DirectX::XMFLOAT4 cool_time_color = { 10.0f,10.0f,10.0f,1.0f };
+
+	cool_time_gauge->set_tex_size(t_size);
+	cool_time_gauge->set_color(cool_time_color);
+	//％設定
+	cool_time_gauge->set_percent(skill_cool_per);
+	cool_time_gauge->render(graphics.get_dc().Get());
 }

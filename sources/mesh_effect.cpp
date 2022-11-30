@@ -70,15 +70,15 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
-#if USE_IMGUI
-	if (display_imgui)
-	{
-		ImGui::Begin(instance_id.c_str());
-		graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(), instance_id.c_str());
-		ImGui::End();
-	}
-
-#endif
+//#if USE_IMGUI
+//	if (display_imgui)
+//	{
+//		ImGui::Begin(instance_id.c_str());
+//		graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(), instance_id.c_str());
+//		ImGui::End();
+//	}
+//
+//#endif
 }
 //==============================================================
 // 
@@ -91,19 +91,13 @@ void MeshEffect::render(Graphics& graphics)
 	if (!active) return;
 
 	//ピクセルシェーダーが設定されていなければ警告
-	_ASSERT_EXPR(pixel_shader, "ピクセルシェーダーが設定されていません");
+	//_ASSERT_EXPR(pixel_shader, "ピクセルシェーダーが設定されていません");
 	//シェーダーをアクティブ状態に
-	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), pixel_shader.Get());
+	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), material->get_ps().Get());
 	//定数バッファ送信
 	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
 	//シェーダーリソース送信
-	int resource_num = 0;
-	const int send_texture_num = 1;
-	for (auto& s : shader_resources)
-	{
-		graphics.get_dc().Get()->PSSetShaderResources(MATERIAL_START_SLOT + resource_num, send_texture_num, s.GetAddressOf());
-		resource_num++;
-	}
+	material->transfer_shader_resource_view(graphics);
 	//トランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
 	//レンダー
@@ -180,32 +174,32 @@ void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 //リソースに登録（シェーダーリソースビューを受け取る）
 // 
 //==============================================================
-void MeshEffect::register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv)
-{
-	shader_resources.push_back(srv);
-}
+//void MeshEffect::register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv)
+//{
+//	shader_resources.push_back(srv);
+//}
 //==============================================================
 // 
 //リソースに登録（テクスチャのファイル名を受け取る）
 // 
 //==============================================================
-void MeshEffect::register_shader_resource(ID3D11Device* device, const wchar_t* filename)
-{
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
-	D3D11_TEXTURE2D_DESC texture2d_desc{};
-	load_texture_from_file(device, filename, shader_resource_view.ReleaseAndGetAddressOf(), &texture2d_desc);
-
-	shader_resources.push_back(shader_resource_view);
-}
+//void MeshEffect::register_shader_resource(ID3D11Device* device, const wchar_t* filename)
+//{
+//	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
+//	D3D11_TEXTURE2D_DESC texture2d_desc{};
+//	load_texture_from_file(device, filename, shader_resource_view.ReleaseAndGetAddressOf(), &texture2d_desc);
+//
+//	shader_resources.push_back(shader_resource_view);
+//}
 //==============================================================
 // 
 //ピクセルシェーダー生成
 // 
 //==============================================================
-void MeshEffect::create_pixel_shader(ID3D11Device* device, const char* cso_name)
-{
-	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
-}
+//void MeshEffect::create_pixel_shader(ID3D11Device* device, const char* cso_name)
+//{
+//	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
+//}
 //==============================================================
 // 
 //姿勢リセット

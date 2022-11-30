@@ -7,7 +7,7 @@
 #include "stage_main.h"
 #include "stage_manager.h"
 #include "scene_title.h"
-
+#include "material_manager.h"
 SceneGame::SceneGame(Graphics& graphics)
 {
 	
@@ -19,6 +19,8 @@ SceneGame::SceneGame(Graphics& graphics)
 //==============================================================
 void SceneGame::initialize(Graphics& graphics)
 {
+	//マテリアルのロード
+	MaterialManager::instance().create_materials(graphics);
 	// ステージ初期化
 	StageManager& stageManager = StageManager::Instance();
 	StageMain* stageMain = new StageMain(graphics);
@@ -32,6 +34,10 @@ void SceneGame::initialize(Graphics& graphics)
 	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\UI\\operations.png", 1);
 
 	deferred = std::make_unique<DeferredRenderer>(graphics);
+
+	tutorial = std::make_unique<Tutorial>(graphics);
+	tutorial->initialize(graphics);
+
 	LightManager::instance().initialize(graphics);
 	skybox = std::make_unique<SkyBox>(graphics);
 	dir_light = make_shared<DirectionalLight>(graphics, DirectX::XMFLOAT3(0.6f, -0.6f, 1.6f), DirectX::XMFLOAT3(0.4f, 0.1f, 0.0f));
@@ -40,10 +46,7 @@ void SceneGame::initialize(Graphics& graphics)
 	//テスト用
 #if _DEBUG
 	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill2_output.png");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");
-	 test_mesh_effect->register_shader_resource(graphics.get_device().Get(), L"./resources/TexMaps/distortion.tga");
-	 test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/meteore_core.cso");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
 	 test_mesh_effect->set_scale(0.1f);
 	// test_meteore = std::make_unique<Meteore>(graphics);
@@ -61,6 +64,18 @@ void SceneGame::finalize()
 //==============================================================
 void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
+	//ゲームパッド
+	GamePad& gamepad = Device::instance().get_game_pad();
+	if (gamepad.get_button_down() & GamePad::BTN_BACK)
+	{
+		tutorial->set_is_tutorial(!tutorial->get_is_tutorial());
+	}
+
+	if (tutorial->get_is_tutorial())
+	{
+		tutorial->update(graphics, elapsed_time);
+		return;
+	}
 	//**********カメラの更新**********//
 	camera->update(elapsed_time);
 	camera->calc_view_projection(graphics, elapsed_time);
@@ -94,7 +109,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	StageManager::Instance().update(elapsed_time);
 
 	//particles->update(graphics,elapsed_time);
-	GamePad& gamepad = Device::instance().get_game_pad();
 
 	//エフェクト更新
 #if _DEBUG
@@ -106,11 +120,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
-	//シーンリセット（仮置き）
-	if (gamepad.get_button() & GamePad::BTN_START)
-	{
-			SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTitle(graphics)));
-	}
 }
 
 //==============================================================
@@ -217,15 +226,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//test_meteore->render(graphics);
 
-	ImGui::Begin("test_meteore");
-	if (ImGui::Button("test_meteore_launch"))
-	{
-		//test_meteore->launch(test_meteore_pos, test_meteore_dir, test_meteore_speed);
-	}
-	ImGui::DragFloat3("meteore_pos", &test_meteore_pos.x);
-	ImGui::DragFloat3("meteore_dir", &test_meteore_dir.x, 0.1f);
-	ImGui::DragFloat("meteore_speed", &test_meteore_speed, 0.1f);
-	ImGui::End();
 	#endif
 
 #endif
@@ -251,12 +251,32 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	boss->render_ui(graphics,elapsed_time);
 	player->render_ui(graphics,elapsed_time);
 	camera->debug_gui();
+
+	//チュートリアル描画
+	tutorial->render(graphics.get_dc().Get());
+
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	debug_figure->render_all_figures(graphics.get_dc().Get());
 	
+
+#if USE_IMGUI
+	imgui_menu_bar("Game", "scene_game", display_imgui);
+	if (display_imgui)
+	{
+		if (ImGui::Button("back_title"))
+		{
+			//シーンリセット
+			SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTitle(graphics)));
+			return;
+		};
+
+
+	}
+#endif
+
 }
 
 void SceneGame::debug_gui()

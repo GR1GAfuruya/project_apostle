@@ -26,14 +26,18 @@ public:
 	virtual ~SkillLauncher() {}
 
 	//初期化
-	void initialize(Graphics& graphics);
+	virtual void initialize(Graphics& graphics);
 	//更新
-	void update(Graphics& graphics, float elapsed_time);
+	virtual void update(Graphics& graphics, float elapsed_time);
 	//描画
-	void render(Graphics& graphics);
+	virtual void render(Graphics& graphics);
 
 	//DebugGUI表示
 	virtual void debug_gui()= 0;
+	//クールタイム取得
+	float get_cool_time() { return cool_time ; }
+	//クールタイムのパーセント取得
+	float get_cool_time_percent() { return cool_time <= 0 ? 0.0f :1.0f - ( cool_time / max_cool_time); }
 
 	//※引数がそれぞれ異なるので継承先で実装
 	////スキルの当たり判定
@@ -48,7 +52,8 @@ protected:
 	// 変数
 	// 
 	//==============================================================
-	float cool_time;
+	float cool_time = 0;
+	float max_cool_time = 0;
 	//詠唱可能か
 	bool chantable;
 

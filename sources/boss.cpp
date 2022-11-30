@@ -1,6 +1,7 @@
 #include "boss.h"
 #include "user.h"
 #include "Operators.h"
+
 //==============================================================
 // 
 // 初期化
@@ -9,7 +10,7 @@
 void Boss::initialize()
 {
 	transition_idle_state();
-	position = { -24.0f, 0.0f,7.0f };
+	position = { -24.0f, -7.0f,7.0f };
 	scale.x = scale.y = scale.z = 0.08f;
 	max_health = 500;
 	health = max_health;
@@ -100,7 +101,7 @@ void Boss::render_f(Graphics& graphics, float elapsed_time)
 //==============================================================
 void Boss::render_ui(Graphics& graphics, float elapsed_time)
 {
-	ui->set_hp_percent(get_hp_percent());
+	ui->set_percent(get_hp_percent());
 	ui->render(graphics.get_dc().Get());
 }
 //==============================================================
@@ -119,7 +120,9 @@ void Boss::on_dead()
 //==============================================================
 void Boss::on_damaged(WINCE_TYPE type)
 {
-	if (state == State::DAMAGE || state == State::ATTACK )
+	/*ステートがダメージを受けているか攻撃している途中
+	 あるいは怯み処理を行わない攻撃タイプの時は処理を飛ばす*/
+	if (state == State::DAMAGE || state == State::ATTACK  || type == WINCE_TYPE::NONE)
 	{
 		return;
 	}
@@ -171,13 +174,14 @@ void Boss::debug_gui()
 }
 //==============================================================
 // 
-//自分の攻撃と敵の当たり判定処理
+//ボスの攻撃とプレイヤーの当たり判定処理
 // 
 //==============================================================
 void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XMFLOAT3 player_cap_end, float colider_radius, AddDamageFunc damaged_func)
 {
 	if (sickle_attack_param.is_attack)
 	{
+
 		if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius,
 			sickle_attack_param.collision.start, sickle_attack_param.collision.end, sickle_attack_param.collision.radius))
 		{
@@ -186,5 +190,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time,WINCE_TYPE::NONE);
 		}
 	}
+
+	efc_charge_attack->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
 }
 

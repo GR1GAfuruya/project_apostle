@@ -4,6 +4,7 @@
 #include "graphics.h"
 #include "imgui_include.h"
 #include "user.h"
+#include "material_manager.h"
 class MeshEffect
 {
 private:
@@ -57,9 +58,7 @@ public:
 	void set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang);
 	void set_rotate_quaternion(AXIS axis, float ang);
 	void rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec);
-	void register_shader_resource(ID3D11Device* device, const wchar_t* filename);
-	void register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv);
-	void create_pixel_shader(ID3D11Device* device, const char* cso_name);
+	void set_material(Material* m) { material = m; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return position; }
 	DirectX::XMFLOAT4 get_orientation() { return orientation; }
@@ -80,11 +79,13 @@ public:
 	DirectX::XMFLOAT3 rot_speed = { 0,0,0 };
 protected:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> shader_resources;
+	//Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
+	//std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> shader_resources;
 	std::unique_ptr<MeshShader> shader = nullptr;
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
+
+	Material* material;
 	//位置
 	DirectX::XMFLOAT3 position = {0,0,0};
 	//回転軸

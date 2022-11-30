@@ -14,7 +14,7 @@
 #include "sky_box.h"
 #include "field_spark_particle.h"
 #include "generic_frequent_entities.h"
-
+#include "tutorial.h"
 class SceneGame :public Scene, public GenericFrequentEntities
 {
 public:
@@ -47,6 +47,10 @@ private:
 	std::unique_ptr<SpriteBatch> operation_ui = nullptr;
 	//平行光
 	std::shared_ptr<DirectionalLight> dir_light = nullptr;
+
+	std::unique_ptr<Tutorial> tutorial = nullptr;
+	//タイトルに戻る　※テスト用
+	bool display_imgui = false;
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect = nullptr;

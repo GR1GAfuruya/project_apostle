@@ -38,6 +38,10 @@ float4 main(VS_OUT pin) : SV_TARGET
     tile = float2(0.5, 1.0);
     uv = pin.texcoord.yx + distortion(pin.texcoord, distortion_tile, scroll_speed);
     float alpha = texture_mask.Sample(sampler_texture, tex_coord(uv, tile)).r;
+    
+    //ディゾルブ
+    float4 dissolve = texture_map.Sample(sampler_texture, pin.texcoord);
+    alpha = lerp(alpha, 0, step(main_color.r, threshold));
     //カラー出力
     return float4(result_color.rgb, alpha);
 }

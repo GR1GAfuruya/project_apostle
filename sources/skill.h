@@ -43,6 +43,8 @@ public:
 	//当たり判定情報の取得
 	Capsule& get_colider() { return attack_colider; }
 
+	//ポジションのゲッター
+	const DirectX::XMFLOAT3 get_position() { return position; }
 	//スキルがヒットしたときに呼ぶ関数
 	virtual void skill_hit() {};
 	//デバッグGUI
