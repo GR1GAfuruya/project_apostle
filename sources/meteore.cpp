@@ -180,14 +180,17 @@ void Meteore::calc_meteore_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::X
 {
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		if (Collision::sphere_vs_capsule(colider_sphere.at(i).center, colider_sphere.at(i).radius,
-			capsule_start, capsule_end, colider_radius))
+		if (!params[i].is_hit)
 		{
-			//当たり判定の位置と大きさ更新
-			damaged_func(power, invinsible_time, WINCE_TYPE::SMALL);
-			params[i].scale = { 0,0,0 };
+			if (Collision::sphere_vs_capsule(colider_sphere.at(i).center, colider_sphere.at(i).radius,
+				capsule_start, capsule_end, colider_radius))
+			{
+				//当たり判定の位置と大きさ更新
+				damaged_func(power, invinsible_time, WINCE_TYPE::SMALL);
+				params[i].scale = { 0,0,0 };
+				params[i].is_hit = true;
+			}
 		}
-
 	}
 
 }

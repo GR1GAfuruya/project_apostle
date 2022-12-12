@@ -70,15 +70,6 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 	}
-//#if USE_IMGUI
-//	if (display_imgui)
-//	{
-//		ImGui::Begin(instance_id.c_str());
-//		graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(), instance_id.c_str());
-//		ImGui::End();
-//	}
-//
-//#endif
 }
 //==============================================================
 // 
@@ -169,37 +160,6 @@ void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 	}
 
 }
-//==============================================================
-// 
-//リソースに登録（シェーダーリソースビューを受け取る）
-// 
-//==============================================================
-//void MeshEffect::register_shader_resource(ID3D11Device* device, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv)
-//{
-//	shader_resources.push_back(srv);
-//}
-//==============================================================
-// 
-//リソースに登録（テクスチャのファイル名を受け取る）
-// 
-//==============================================================
-//void MeshEffect::register_shader_resource(ID3D11Device* device, const wchar_t* filename)
-//{
-//	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
-//	D3D11_TEXTURE2D_DESC texture2d_desc{};
-//	load_texture_from_file(device, filename, shader_resource_view.ReleaseAndGetAddressOf(), &texture2d_desc);
-//
-//	shader_resources.push_back(shader_resource_view);
-//}
-//==============================================================
-// 
-//ピクセルシェーダー生成
-// 
-//==============================================================
-//void MeshEffect::create_pixel_shader(ID3D11Device* device, const char* cso_name)
-//{
-//	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
-//}
 //==============================================================
 // 
 //姿勢リセット

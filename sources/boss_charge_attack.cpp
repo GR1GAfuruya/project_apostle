@@ -99,7 +99,7 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	for (int i = 0; i < meteores->get_max_num(); i++)
 	{
 		const int range = 20;
-		const int ofset = meteo_launch_radius;
+		const float ofset = meteo_launch_radius;
 		const float random = fabs(Noise::instance().random_range(ofset, range));
 		meteores->create_on_circle(position, random, i);
 	}
@@ -149,7 +149,6 @@ void ChargeAttack::render(Graphics& graphics)
 	if (active)
 	{
 		core->render(graphics);
-
 
 		tornado->render(graphics);
 		wave->render(graphics);
@@ -219,7 +218,7 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 
 	//隕石を地面から浮き上がらせる
 	int range = 9;
-	int ofset = 1;
+	float ofset = 1;
 	for (int i = 0; i < meteores->get_max_num(); i++)
 	{
 		float random = fabs(Noise::instance().random_range(ofset, range) / 10.0f);
@@ -308,7 +307,7 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 	//徐々に消えていく関数
 	const float fade_out_speed = 7.0f;
 	auto fade_out = [=](float alpha) {return (std::max)(alpha - fade_out_speed * elapsed_time, 0.0f); };
-	
+
 	wave->constants->data.particle_color.w = fade_out(wave->constants->data.particle_color.w);
 	//wave->constants->data.scroll_speed += elapsed_time;
 	const float threshold_speed = 2.0f;
@@ -320,7 +319,17 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
 	tornado->set_scale({ tornado->get_scale().x + expand,tornado->get_scale().y + expand,tornado->get_scale().z + expand });
 	tornado->constants->data.particle_color.w = fade_out(tornado->constants->data.particle_color.w);
 	tornado->set_rotate_quaternion(MeshEffect::AXIS::UP, 360 * elapsed_time);
-	tornado->constants->data.threshold = (std::min)(tornado->constants->data.threshold + threshold_speed * elapsed_time, 1.0f);
-	
-	if (tornado->constants->data.threshold > 0.9f) stop();
+
+	//トルネードのディゾルブ処理
+	const float dissolve_rate = 2.0f;
+	const float start_threshold_time = 0.5f;
+	if (tornado->constants->data.threshold <= 1.0f)
+	{
+		tornado->constants->data.threshold += dissolve_rate * elapsed_time;
+	}
+	//トルネードが消えたら終了
+	if (tornado->constants->data.threshold > 0.9f)
+	{
+		stop();
+	}
 }

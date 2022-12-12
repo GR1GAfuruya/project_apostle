@@ -317,7 +317,6 @@ void Player::input_avoidance()
 //==============================================================
 void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 {
-	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
 		switch (skill_manager->get_selected_sup_skill_type())

@@ -16,7 +16,7 @@ private:
 	struct CONSTANTS
 	{
 		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
-		DirectX::XMFLOAT2 scroll_direction = {0,0};
+		DirectX::XMFLOAT2 scroll_direction = { 0,0 };
 		float scroll_speed = 0;
 		float threshold = 0;
 	};

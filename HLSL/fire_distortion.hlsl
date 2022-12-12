@@ -32,7 +32,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 mask =  texture_mask.Sample(sampler_texture, tex_coord(uv, tile));
     float4 result_color = main_color * mask;
     
-    //マスク
+    //黒マスク
     scroll_speed = float2(0.0, 1.0);
     distortion_tile = float2(1.5, 2.0);
     tile = float2(0.5, 1.0);
@@ -41,7 +41,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     
     //ディゾルブ
     float4 dissolve = texture_map.Sample(sampler_texture, pin.texcoord);
-    alpha = lerp(alpha, 0, step(main_color.r, threshold));
+    alpha = alpha * step(threshold, dissolve.r);
+    clip(alpha - 0.01);
     //カラー出力
     return float4(result_color.rgb, alpha);
 }

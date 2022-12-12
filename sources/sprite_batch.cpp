@@ -64,7 +64,7 @@ SpriteBatch::SpriteBatch(ID3D11Device* device, const wchar_t* filename, size_t m
 		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
-	// UNIT.10
+	
 	create_vs_from_cso(device, "shaders/sprite_vs.cso", vertex_shader.GetAddressOf(), input_layout.GetAddressOf(),
 	                   input_element_desc, _countof(input_element_desc));
 	create_ps_from_cso(device, "shaders/sprite_ps.cso", pixel_shader.GetAddressOf());
@@ -99,7 +99,6 @@ void SpriteBatch::render(ID3D11DeviceContext* dc,
                          float angle/*degree*/
 )
 {
-	// UNIT.06
 	render(dc, position, scale, color, angle, { 0.0f, 0.0f }, { static_cast<float>(texture2d_desc.Width), static_cast<float>(texture2d_desc.Height) });
 }
 
@@ -270,8 +269,6 @@ void SpriteBatch::begin(ID3D11DeviceContext* dc,
 	dc->VSSetShader(vertex_shader.Get(), nullptr, 0);
 	replaced_pixel_shader ? dc->PSSetShader(replaced_pixel_shader, nullptr, 0) : dc->PSSetShader(pixel_shader.Get(), nullptr, 0);
 	
-	// UNIT.10
-	//immediate_context->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
 	if (replaced_shader_resource_view)
 	{
 		HRESULT hr{ S_OK };
@@ -288,7 +285,7 @@ void SpriteBatch::begin(ID3D11DeviceContext* dc,
 	}
 	else
 	{
-		dc->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());	//デバイスのゼロベースの配列にインデックスを付けて、シェーダーリソースの設定を開始 第2引数:設定するシェーダーリソースの数　第3引数：デバイスに設定するシェーダーリソースビューインターフェイスの配列
+		dc->PSSetShaderResources(0, 1, shader_resource_view.GetAddressOf());
 	}
 	//定数バッファ
 	scroll_constants->bind(dc, 2, ::CB_FLAG::PS_VS);
@@ -341,10 +338,6 @@ void SpriteBatch::end(ID3D11DeviceContext* dc)
 
 SpriteBatch::~SpriteBatch()
 {
-	/*vertex_shader->Release();
-	pixel_shader->Release();
-	input_layout->Release();
-	vertex_buffer->Release();
-	shader_resource_view->Release();*/
+	
 
 }

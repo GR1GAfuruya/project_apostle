@@ -124,15 +124,15 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 	}
 
-
-	const float threshold_rate = 2.0f;
+	//
+	const float dissolve_rate = 2.0f;
 	const float start_threshold_time = 0.5f;
 	//ƒfƒBƒ]ƒ‹ƒuˆ—
 	if(life_time > life_span - start_threshold_time)
 	{
 		if (instance_mesh->constants->data.threshold <= 1.0f)
 		{
-			instance_mesh->constants->data.threshold += threshold_rate * elapsed_time;
+			instance_mesh->constants->data.threshold += dissolve_rate * elapsed_time;
 		}
 	}
 

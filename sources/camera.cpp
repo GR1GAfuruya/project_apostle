@@ -115,14 +115,15 @@ void Camera::update_with_tracking(float elapsed_time)
 	if (lock_on)
 	{
 		//ロックオン時のカメラの挙動
-		update_with_lock_on(elapsed_time, orientation);
-		
+		update_with_lock_on(elapsed_time, orientation);	
 	}
 	else
 	{
 		//ロックオンしていないときのカメラの挙動
-		control_by_game_pad_stick(elapsed_time, orientation);
-
+		if (!camera_operate_stop)
+		{
+			control_by_game_pad_stick(elapsed_time, orientation);
+		}
 	}
 	//Y軸の回転値を-3.14~3.14に収まるようにする
 	if (angle.y < -DirectX::XM_PI) { angle.y += DirectX::XM_2PI; }

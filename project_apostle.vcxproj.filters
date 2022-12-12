@@ -232,6 +232,9 @@
     <Filter Include="sources\Tutorial">
       <UniqueIdentifier>{01df8133-4bc6-46cb-8048-569d9d55d7f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\Particle\GPUParticle">
+      <UniqueIdentifier>{dd6ac443-3040-4df3-93c5-18f2b6dba0af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -342,9 +345,6 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="sources\field_spark_particle.cpp">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="sources\particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
     </ClCompile>
@@ -383,12 +383,6 @@
     </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\skin_particles.cpp">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\gpu_particle.cpp">
-      <Filter>sources\Effects\Particle</Filter>
     </ClCompile>
     <ClCompile Include="sources\debug_figures.cpp">
       <Filter>sources\Debug</Filter>
@@ -468,9 +462,6 @@
     <ClCompile Include="sources\instance_mesh_effect.cpp">
       <Filter>sources\Effects\MeshEffect</Filter>
     </ClCompile>
-    <ClCompile Include="sources\object_particle.cpp">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="sources\boss_ui.cpp">
       <Filter>sources\Charactor\Boss</Filter>
     </ClCompile>
@@ -500,6 +491,24 @@
     </ClCompile>
     <ClCompile Include="sources\tutorial.cpp">
       <Filter>sources\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\emitter.cpp">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\coordinate_convert.cpp">
+      <Filter>sources\User</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\field_spark_particle.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\gpu_particle.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\object_particle.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skin_particles.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -623,12 +632,6 @@
     <ClInclude Include="external\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="sources\field_spark_particle.h">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\gpu_particle.h">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="sources\particle.h">
       <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
@@ -661,9 +664,6 @@
     </ClInclude>
     <ClInclude Include="sources\boss_charge_attack.h">
       <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\skin_particles.h">
-      <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
     <ClInclude Include="sources\debug_figures.h">
       <Filter>sources\Debug</Filter>
@@ -764,9 +764,6 @@
     <ClInclude Include="sources\instance_mesh_effect.h">
       <Filter>sources\Effects\MeshEffect</Filter>
     </ClInclude>
-    <ClInclude Include="sources\object_particle.h">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="sources\boss_ui.h">
       <Filter>sources\Charactor\Boss</Filter>
     </ClInclude>
@@ -796,6 +793,24 @@
     </ClInclude>
     <ClInclude Include="sources\tutorial.h">
       <Filter>sources\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\emitter.h">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\coordinate_convert.h">
+      <Filter>sources\User</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\field_spark_particle.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\gpu_particle.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\object_particle.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skin_particles.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

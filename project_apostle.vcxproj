@@ -209,9 +209,11 @@
     <ClCompile Include="sources\boss_charge_attack.cpp" />
     <ClCompile Include="sources\boss_ui.cpp" />
     <ClCompile Include="sources\camera.cpp" />
+    <ClCompile Include="sources\coordinate_convert.cpp" />
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
+    <ClCompile Include="sources\emitter.cpp" />
     <ClCompile Include="sources\gauge_ui.cpp" />
     <ClCompile Include="sources\instance_mesh_effect.cpp" />
     <ClCompile Include="sources\instancing_mesh.cpp" />
@@ -295,7 +297,9 @@
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="sources\boss_ui.h" />
+    <ClInclude Include="sources\coordinate_convert.h" />
     <ClInclude Include="sources\damage_func.h" />
+    <ClInclude Include="sources\emitter.h" />
     <ClInclude Include="sources\gauge_ui.h" />
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />

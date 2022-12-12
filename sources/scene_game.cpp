@@ -47,9 +47,9 @@ void SceneGame::initialize(Graphics& graphics)
 #if _DEBUG
 	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx");
 	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	 //test_mesh_effect->create_pixel_shader(graphics.get_device().Get(), "./shaders/cell_fire_ps.cso");
 	 test_mesh_effect->set_scale(0.1f);
-	// test_meteore = std::make_unique<Meteore>(graphics);
+
+	 test_emitter = std::make_unique<Emitter>(graphics,200);
 #endif
 }
 
@@ -116,7 +116,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
 
-	//test_meteore->update(graphics, elapsed_time);
+	test_emitter->update(graphics, elapsed_time);
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
@@ -193,6 +193,9 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
 	field_spark_particle->render(graphics.get_dc().Get());
+	test_emitter->render(graphics, *camera);
+
+	test_emitter->debug_gui(graphics, "emitter_test");
 
 	//テスト用
 #if _DEBUG
@@ -252,6 +255,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_ui(graphics,elapsed_time);
 	camera->debug_gui();
 
+
 	//チュートリアル描画
 	tutorial->render(graphics.get_dc().Get());
 
@@ -263,6 +267,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	
 
 #if USE_IMGUI
+
 	imgui_menu_bar("Game", "scene_game", display_imgui);
 	if (display_imgui)
 	{
