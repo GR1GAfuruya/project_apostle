@@ -69,6 +69,5 @@ void Particles::life_update(float elapsed_time)
 		is_active = false;
 	}
 
-
 }
 

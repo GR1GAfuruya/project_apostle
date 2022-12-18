@@ -510,6 +510,9 @@
     <ClCompile Include="sources\skin_particles.cpp">
       <Filter>sources\Effects\Particle\GPUParticle</Filter>
     </ClCompile>
+    <ClCompile Include="sources\particle_system.cpp">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sources\fullscreen_quad.h">
@@ -811,6 +814,9 @@
     </ClInclude>
     <ClInclude Include="sources\skin_particles.h">
       <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\particle_system.h">
+      <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -235,6 +235,7 @@
     <ClCompile Include="sources\noise.cpp" />
     <ClCompile Include="sources\object_particle.cpp" />
     <ClCompile Include="sources\particle.cpp" />
+    <ClCompile Include="sources\particle_system.cpp" />
     <ClCompile Include="sources\PBR_shader.cpp" />
     <ClCompile Include="sources\charactor.cpp" />
     <ClCompile Include="sources\collision.cpp" />
@@ -311,6 +312,7 @@
     <ClInclude Include="sources\meteore.h" />
     <ClInclude Include="sources\noise.h" />
     <ClInclude Include="sources\object_particle.h" />
+    <ClInclude Include="sources\particle_system.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
     <ClInclude Include="sources\player_ui.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />

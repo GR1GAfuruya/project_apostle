@@ -193,12 +193,12 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
 	field_spark_particle->render(graphics.get_dc().Get());
-	test_emitter->render(graphics, *camera);
 
-	test_emitter->debug_gui(graphics, "emitter_test");
 
 	//テスト用
 #if _DEBUG
+	test_emitter->debug_gui(graphics, "emitter_test");
+	test_emitter->render(graphics, *camera);
 	static DirectX::XMFLOAT4 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };

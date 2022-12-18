@@ -8,28 +8,41 @@ Emitter::Emitter(Graphics& graphics, int max_particles)
 	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L"./resources/Effects/Textures/Particle04.png", max_particles);
 	this->max_particles = max_particles;
 	emit_span = 1;
+	active = true;
 }
 
 Emitter::~Emitter()
 {
-	particles.clear();
 }
 
-void Emitter::create_emitter(Graphics& graphics)
+
+void Emitter::emit(Graphics& graphics, float elapsed_time)
 {
+	//エミッターがアクティブ状態でないなら処理しない
+	if (!active) return;
+	//エミット処理
+	emit_timer += elapsed_time;
+	
+	if (emit_timer >= emit_span)
+	{
+		int p_size = static_cast<int>(particles.size());
+		if (p_size < max_particles)
+		{
+			Particles::InitParam init_param;
+			init_param.position = position;
+			init_param.life_time = 0.5;
+			init_param.scale = { 1,1 };
+			init_param.velocity = emit_dir;
+			for (int i = 0; i < burst_num; i++)
+			{
+				particles.emplace_back(make_unique<Particles>(graphics, init_param));
+			}
+			//タイマーリセット
+			emit_timer = 0;
+		}
+	}
 }
 
-void Emitter::emit(Graphics& graphics)
-{
-	Particles::InitParam init_param;
-	init_param.position = position;
-	init_param.life_time = 5;
-	init_param.scale = { 1,1 };
-	init_param.velocity = emit_dir;
-
-	particles.emplace_back(make_unique<Particles>(graphics, init_param));
-
-}
 
 void Emitter::update(Graphics& graphics, float elapsed_time)
 {
@@ -46,19 +59,9 @@ void Emitter::update(Graphics& graphics, float elapsed_time)
 	//パーティクルの破棄処理
 	remove_update();
 
-	//エミット処理
-	timer += elapsed_time;
-	int p_size = static_cast<int>(particles.size());
-	if (timer >= emit_span)
-	{
-		if (p_size < max_particles)
-		{
-			//パーティクル発生
-			emit(graphics);
-		}
-		timer = 0;
-	}
-
+	//エミット時間処理
+	
+	emit(graphics, elapsed_time);
 }
 
 void Emitter::render(Graphics& graphics, Camera& camera)
@@ -84,15 +87,17 @@ void Emitter::debug_gui(Graphics& graphics, string id)
 		ImGui::Begin(id.c_str());
 		ImGui::DragFloat3("position", &position.x, 0.1f);
 		ImGui::DragFloat3("emit_dir", &emit_dir.x, 0.1f);
-		ImGui::DragFloat("life_time", &life_time, 0.1f);
+		ImGui::DragFloat("duration", &duration, 0.1f);
+		ImGui::DragFloat("life_timer", &life_timer, 0.1f);
+		ImGui::DragFloat("emit_timer", &emit_timer, 0.1f);
 		ImGui::DragFloat("emit_span", &emit_span, 0.1f);
 		int p_num = particles.size();
-		ImGui::DragInt("particle_num", &p_num, 0.1f);
-		if (ImGui::Button("emit"))
-		{
-			emit(graphics);
-		}
+		int r_num = removes.size();
+		ImGui::DragInt("particle_num", &p_num);
+		ImGui::DragInt("removes_num", &r_num);
+		ImGui::Checkbox("active", &active);
 		ImGui::End();
+		
 	}
 #endif // USE_IMGUI
 
@@ -106,9 +111,9 @@ void Emitter::position_update(float elapsed_time)
 
 void Emitter::life_update(float elapsed_time)
 {
-	life_time -= elapsed_time;
+	life_timer += elapsed_time;
 
-	if (timer > life_time)
+	if (life_timer > duration)
 	{
 		active = false;
 	}
@@ -126,11 +131,5 @@ void Emitter::life_update(float elapsed_time)
 void Emitter::remove_update()
 {
 	//破壊処理
-	for (auto& r : removes)
-	{
-		//パーティクルの廃棄処理
-		r.release();
-	}
-	//破棄リストをクリア
 	removes.clear();
 }

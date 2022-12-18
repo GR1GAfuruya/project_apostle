@@ -8,9 +8,8 @@ public:
 	Emitter(Graphics& graphics, int max_particles);
 	~Emitter();
 
-	void create_emitter(Graphics& graphics);
 
-	void emit(Graphics& graphics);
+	void emit(Graphics& graphics, float elapsed_time);
 
 	void update(Graphics& graphics, float elapsed_time);
 
@@ -31,7 +30,7 @@ public:
 	inline void set_material(Material* m) { material = m; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return position; }
-	float get_life_time() { return life_time; }
+	float get_duration() { return duration; }
 	bool get_active() { return active; }
 
 	struct InitParam
@@ -40,8 +39,8 @@ public:
 		DirectX::XMFLOAT3 position = { 0,0,0 };
 		//射出方向
 		DirectX::XMFLOAT3 emit_dir = { 0,0,0 };
-		//寿命
-		float life_time = FLT_MAX;
+		//期間
+		float duration = 5;
 		//ループ再生するかどうか
 		bool is_loop = false;
 		//生成し続ける時間
@@ -50,7 +49,8 @@ public:
 		float emit_rate;
 		// 発生間隔
 		float emit_span;
-
+		//一度に放出する数
+		int burst_num = 1;
 	};
 
 private:
@@ -65,23 +65,24 @@ private:
 	//速度
 	DirectX::XMFLOAT3 velocity;
 
-	//生成されてからの時間
-	float timer = 0;
-	//寿命
-	float life_time = 1;
+	//前回パーティクルを生成してからの時間
+	float emit_timer = 0;
+	//エミッターが発生してからの時間
+	float life_timer = 1;
 	//アクティブ状態か
 	bool active = false;
 	//ループ再生するかどうか
 	bool is_loop = false;
 	//生成し続ける時間
-	float emit_time;
+	float duration;
 	// 1秒間に何発発生するか
 	float emit_rate; 
 	// 発生間隔
 	float emit_span;
 	// 現在の発生カウント
 	int emit_count; 
-
+	//一度に放出する数
+	int burst_num = 1;
 	//パーティクルを格納するコンテナ
 	std::vector<std::unique_ptr<Particles>> particles;
 	std::vector<std::unique_ptr<Particles>> removes;

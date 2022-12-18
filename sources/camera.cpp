@@ -215,7 +215,7 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&ori);
 
 	DirectX::XMVECTOR forward = Math::get_posture_forward_vec(ori);
-	DirectX::XMVECTOR up = Math::get_posture_up_vec(ori);
+	DirectX::XMVECTOR up = { 0,1,0 };//カメラのY軸は常に（0,1,0）とする
 	DirectX::XMVECTOR right = Math::get_posture_right_vec(ori);
 
 	//縦回転
@@ -237,7 +237,7 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 	//横回転
 	{
 		//回転軸
-		DirectX::XMVECTOR axis = DirectX::XMVector3Cross(forward, right);
+		DirectX::XMVECTOR axis = up;
 
 		if (fabs(angle.y) > DirectX::XMConvertToRadians(0.1f))
 		{
@@ -249,13 +249,26 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 		}
 
 	}
-
-	//カメラが上か下を向きすぎたときに補正する　※上を向きすぎたときの処理がうまくいってないので要修正）
-	if (Math::get_posture_up(ori).y <0.4f)
+	//------------------------------------
+	//カメラが上か下を向きすぎたときに補正する
+	//------------------------------------
+	
+	//向きすぎと判断する値
+	const float overdirection = 0.4f;
+	if (Math::get_posture_up(ori).y < overdirection)
 	{
-		float correction_rate = -15.0f;
-		DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(correction_rate));
-		orientationVec = DirectX::XMQuaternionMultiply(orientationVec, correct_angles_axis);
+		if (Math::get_posture_forward(ori).y < 0.0f)
+		{
+			float correction_rate = -5.0f;
+			DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(correction_rate));
+			orientationVec = DirectX::XMQuaternionMultiply(orientationVec, correct_angles_axis);
+		}
+		else
+		{
+			float correction_rate = 5.0f;
+			DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(correction_rate));
+			orientationVec = DirectX::XMQuaternionMultiply(orientationVec, correct_angles_axis);
+		}
 	}
 
 
