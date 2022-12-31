@@ -235,6 +235,9 @@
     <Filter Include="sources\Effects\Particle\GPUParticle">
       <UniqueIdentifier>{dd6ac443-3040-4df3-93c5-18f2b6dba0af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Effect\Particle\sprite_particle">
+      <UniqueIdentifier>{0030c2d0-3661-4c76-9b1d-68377a7d5e29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -1042,6 +1045,15 @@
     <FxCompile Include="HLSL\player_attack4_update_cs.hlsl">
       <Filter>Shaders\Effect\Player\Attack4</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_ps.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_gs.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\sprite.hlsli">
@@ -1106,6 +1118,9 @@
     </None>
     <None Include="HLSL\object_particles.hlsli">
       <Filter>Shaders\Effect\Particle\object_particle</Filter>
+    </None>
+    <None Include="HLSL\sprite_particle.hlsli">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

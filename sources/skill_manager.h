@@ -66,6 +66,9 @@ public:
 	
 	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
+	//スキルクールタイム短縮
+	void cool_time_reduction();
+
 	//----スキル当たり判定----//
 	//MagickBullet
 	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);

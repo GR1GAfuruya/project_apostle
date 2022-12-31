@@ -13,7 +13,7 @@ void SkillLauncher::initialize(Graphics& graphics)
 	//詠唱可能か
 	 chantable = true;
 	 
-	 cool_time_attenuation_speed = 1.0f;
+	 reduction_rate = 1.0f;
 	// skill.clear();
 }
 //==============================================================
@@ -34,7 +34,7 @@ void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 	//クールタイム更新
 	if (cool_time > 0)
 	{
-		cool_time -= cool_time_attenuation_speed * elapsed_time;
+		cool_time -=  elapsed_time;
 	}
 	else
 	{
@@ -55,4 +55,22 @@ void SkillLauncher::render(Graphics& graphics)
 	{
 		s->render(graphics);
 	}
+}
+//==============================================================
+// 
+//クールタイム短縮
+// 
+//==============================================================
+void SkillLauncher::cool_time_reduction()
+{
+	//クールタイム更新
+	/*if (cool_time > 0)
+	{
+		cool_time -= elapsed_time;
+	}
+	else
+	{
+		cool_time = 0;
+		chantable = true;
+	}*/
 }

@@ -281,6 +281,10 @@ bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_
 	return spear_sea->chant(graphics, launch_pos, target_pos);
 }
 
+void SkillManager::cool_time_reduction()
+{
+}
+
 
 //==============================================================
 // 

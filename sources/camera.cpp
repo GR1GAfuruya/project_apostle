@@ -180,10 +180,8 @@ void Camera::update_with_lock_on(float elapsed_time, DirectX::XMFLOAT4& ori)
 		DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
 		orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate);
 	}
-	else
-	{
-		lock_on = false;
-	}
+	
+
 	if (Math::get_posture_up(ori).y < 0.4f)
 	{
 		DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(-25.0f));

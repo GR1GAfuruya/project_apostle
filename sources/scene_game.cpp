@@ -29,6 +29,7 @@ void SceneGame::initialize(Graphics& graphics)
 	camera = std::make_unique<Camera>(graphics);
 	player = std::make_unique<Player>(graphics, camera.get());
 	boss = std::make_unique<Boss>(graphics);
+	camera->set_lock_on_target(boss.get()->get_gazing_point());
 	//post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
 	field_spark_particle = std::make_unique<field_spark_particles>(graphics.get_device().Get(), player->get_position());
 	operation_ui = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\UI\\operations.png", 1);
@@ -49,7 +50,7 @@ void SceneGame::initialize(Graphics& graphics)
 	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 test_mesh_effect->set_scale(0.1f);
 
-	 test_emitter = std::make_unique<Emitter>(graphics,200);
+	 //test_emitter = std::make_unique<Emitter>(graphics,200);
 #endif
 }
 
@@ -80,7 +81,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->update(elapsed_time);
 	camera->calc_view_projection(graphics, elapsed_time);
 	camera->set_trakking_target(player.get()->get_gazing_point());
-	camera->set_lock_on_target(boss.get()->get_gazing_point());
+	
 	//カメラの経過時間
 	float camera_elapsed_time = elapsed_time;
 	//ヒットストップ時の経過時間処理
@@ -95,7 +96,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	player->calc_collision_vs_enemy(boss->get_body_collision().capsule, boss->get_body_collision().height);
 	
 	player->calc_attack_vs_enemy(boss->get_body_collision().capsule, boss->damaged_function, camera.get());
-
+	
 	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function, camera.get());
 
 	//**********ボスの更新**********//
@@ -116,7 +117,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
 
-	test_emitter->update(graphics, elapsed_time);
+	//test_emitter->update(graphics, elapsed_time);
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
@@ -158,7 +159,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
 	
 	//ステージ描画
-	stageManager.render(elapsed_time, graphics);
+	//stageManager.render(elapsed_time, graphics);
 
 	//プレイヤー描画
 	player->render_d(graphics,elapsed_time,camera.get());
@@ -192,13 +193,13 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//プレイヤー（フォワード）
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
-	field_spark_particle->render(graphics.get_dc().Get());
+//	field_spark_particle->render(graphics.get_dc().Get());
 
 
 	//テスト用
 #if _DEBUG
-	test_emitter->debug_gui(graphics, "emitter_test");
-	test_emitter->render(graphics, *camera);
+	/*test_emitter->debug_gui(graphics, "emitter_test");
+	test_emitter->render(graphics, *camera);*/
 	static DirectX::XMFLOAT4 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };

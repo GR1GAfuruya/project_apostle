@@ -101,7 +101,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//更新処理
 	(this->*p_update)(graphics, elapsed_time, camera);
 	
-	if (game_pad->get_button_down() & GamePad::BTN_Y) //スペースを押したらジャンプ
+	if (game_pad->get_button_down() & GamePad::BTN_Y) 
 	{
 		camera->set_lock_on();
 	}

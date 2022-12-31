@@ -27,11 +27,18 @@ public:
 	inline void set_position(DirectX::XMFLOAT3 p) { position = p; }
 	inline void set_emit_span(float span) { emit_span = span; }
 	inline void set_is_loop(bool loop) { is_loop = loop; }
-	inline void set_material(Material* m) { material = m; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return position; }
 	float get_duration() { return duration; }
 	bool get_active() { return active; }
+
+	// 頂点フォーマット
+	struct vertex
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT4 color;
+		DirectX::XMFLOAT2 texcoord;
+	};
 
 	struct InitParam
 	{
@@ -87,13 +94,24 @@ private:
 	std::vector<std::unique_ptr<Particles>> particles;
 	std::vector<std::unique_ptr<Particles>> removes;
 
-	Material* material;
-	std::unique_ptr<SpriteBatch> sprite = nullptr;
-
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> geometry_shader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;
+	//Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	ID3D11Buffer* vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> index_buffer;
+	D3D11_TEXTURE2D_DESC texture2d_desc;
+	
+	const size_t max_vertices;
+	vertex* vertices;
+	
 	const int MATERIAL_START_SLOT = 20;
 	//デバッグGUIフラグ
 	bool display_imgui = false;
 
 	int max_particles;
+	int active_count;
 
 };
