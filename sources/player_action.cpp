@@ -397,11 +397,10 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 	DirectX::XMFLOAT3 up = { bone_ori._11,bone_ori._12,bone_ori._13 };
 	if (model->anime_param.frame_index == 20 / 2)
 	{
-		slash_efect->play(sword->get_equipped_position());
-		slash_efect->set_life_span(0.1f);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efect->rot_speed.y = -sword_swing_speed;
+		slash_efects[0]->play(sword->get_equipped_position());
+		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efects[0]->rot_speed.y = -sword_swing_speed;
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
 		root_motion_manual(Math::get_posture_forward(orientation), floating_value);//ƒ‹[ƒgƒ‚[ƒVƒ‡ƒ“‚¶‚á‚È‚¢Žè“®“ü—Í
@@ -454,11 +453,10 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 	DirectX::XMFLOAT3 slash_dir = sword->get_dir_sword_top();
 	if (model->anime_param.frame_index == 12 / 2)
 	{
-		slash_efect->play(sword->get_equipped_position());
-		slash_efect->set_life_span(0.1f);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efect->rot_speed.y = sword_swing_speed;
+		slash_efects[1]->play(sword->get_equipped_position());
+		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efects[1]->rot_speed.y = sword_swing_speed;
 
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
@@ -505,11 +503,10 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 	//ˆêU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 4 / 2)
 	{
-		slash_efect->play(sword->get_equipped_position());
-		slash_efect->set_life_span(0.1f);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efect->rot_speed.y = -sword_swing_speed;
+		slash_efects[0]->play(sword->get_equipped_position());
+		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efects[0]->rot_speed.y = -sword_swing_speed;
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
 		add_impulse(Math::get_posture_forward(orientation) * 3.0f);
@@ -517,21 +514,19 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 	//“ñU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 30 / 2)
 	{
-		slash_efect->play(sword->get_equipped_position());
-		slash_efect->set_life_span(0.2f);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efect->rot_speed.y = sword_swing_speed;
+		slash_efects[1]->play(sword->get_equipped_position());
+		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efects[1]->rot_speed.y = sword_swing_speed;
 		add_impulse(Math::get_posture_forward(orientation) * 7.0f);
 	}
 	//ŽOU‚è–Ú‚ÌŽaŒ‚
 	if (model->anime_param.frame_index == 50 / 2)
 	{
-		slash_efect->play(sword->get_equipped_position());
-		slash_efect->set_life_span(0.2f);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
-		slash_efect->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efect->rot_speed.y = -sword_swing_speed;
+		slash_efects[2]->play(sword->get_equipped_position());
+		slash_efects[2]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
+		slash_efects[2]->rotate_base_axis(MeshEffect::AXIS::UP, up);
+		slash_efects[2]->rot_speed.y = -sword_swing_speed;
 		velocity.x /= 5.0f;
 		velocity.z /= 5.0f;
 	}

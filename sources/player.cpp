@@ -33,7 +33,7 @@ void Player::initialize()
 	acceleration = 15.0f;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible, type); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible, type); };
 	state = State::IDLE;
 	//attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	sword->initialize();
@@ -55,16 +55,21 @@ Player::Player(Graphics& graphics, Camera* camera)
 	//UI
 	ui = std::make_unique<PlayerUI>(graphics);
 	//攻撃時エフェクト
-	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
-	slash_efect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	slash_efect->set_scale(0.15f);
-	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
+	for (auto& se : slash_efects)
+	{
+		se = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
+		se->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		se->set_init_scale(0.15f);
+		se->set_life_span(0.2f);
+		se->set_color({ 1.8f, 1.8f, 5.2f, 0.8f });
+
+	}
 
 	//ヒットエフェクト
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	test_slash_hit->set_scale(2.0f);
-	test_slash_hit->constants->data.particle_color = { 2.5f,2.5f,5.9f,0.5f };
+	test_slash_hit->set_init_scale(2.0f);
+	test_slash_hit->set_color({ 2.5f,2.5f,5.9f,0.5f });
 
 	
 	//attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
@@ -109,7 +114,15 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//オブジェクト行列を更新
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
-	slash_efect->update(graphics,elapsed_time);
+	for (auto& se : slash_efects)
+	{
+		se->update(graphics, elapsed_time);
+		if (se->get_active())
+		{
+			se->set_scale(se->get_scale().x + (0.9f * elapsed_time));
+		}
+
+	}
 	test_slash_hit->update(graphics,elapsed_time);
 	//attack1.get()->update(graphics.get_dc().Get(),elapsed_time, attack4_update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
@@ -163,7 +176,10 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 //==============================================================
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
-	slash_efect->render(graphics);
+	for (auto& se : slash_efects)
+	{
+		se->render(graphics);
+	}
 	test_slash_hit->render(graphics);
 	//attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	skill_manager.get()->render(graphics);
@@ -408,7 +424,11 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
-			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE);
+			if (damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE))
+			{
+				//攻撃が当たったらスキルのクールタイムを短縮させる
+				skill_manager->cool_time_reduction();
+			}
 			//ヒットエフェクト再生
 			if (!test_slash_hit->get_active())
 			{
@@ -635,7 +655,6 @@ void Player::debug_gui(Graphics& graphics)
 
 
 	skill_manager.get()->debug_gui(graphics);
-	slash_efect->debug_gui("slash_efect");
 	test_slash_hit->debug_gui("test_slash_hit");
 #endif // USE_IMGUI
 

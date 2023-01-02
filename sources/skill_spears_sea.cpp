@@ -20,7 +20,6 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::
 	target_position = target_pos;
 	power = initparam.power;
 	invinsible_time = initparam.invinsible_time;
-	cool_time = initparam.cool_time;
 	param = initparam;
 	collision_type = CollisionType::SPHERE;
 	//éıñΩÇê›íË

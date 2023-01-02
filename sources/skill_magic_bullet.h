@@ -14,7 +14,6 @@ public:
 	{
 		float power;
 		float invisible_time;
-		float cool_time;
 		float acceleration;
 		float collider_radius;
 	};

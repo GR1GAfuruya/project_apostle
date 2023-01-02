@@ -16,8 +16,6 @@ public:
 		float power;
 		//無敵時間
 		float invinsible_time;
-		//クールタイム
-		float cool_time;
 		//生存時間
 		float life_span;
 		//半径

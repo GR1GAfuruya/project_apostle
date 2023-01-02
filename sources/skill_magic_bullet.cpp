@@ -15,7 +15,6 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX
 	 invinsible_time = init_param.invisible_time;
 	 acceleration = init_param.acceleration;
 	 attack_colider.radius = init_param.collider_radius;
-	 cool_time = init_param.cool_time;
 
 	 position = init_pos;
 	 velocity = acceleration * Math::Normalize(dir);

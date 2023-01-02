@@ -57,7 +57,7 @@ protected:
 	float max_cool_time = 0;
 	//詠唱可能か
 	bool chantable;
-
+	//クールタイム短縮率
 	float reduction_rate;
 	std::vector<std::unique_ptr<Skill>> skills;
 

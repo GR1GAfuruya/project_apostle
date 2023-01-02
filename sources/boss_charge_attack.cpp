@@ -53,13 +53,13 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	//コア位置設定
 	position = pos;
 	DirectX::XMFLOAT3 core_pos = { position.x,position.y + 70,position.z };
+	core->set_init_scale( 0);
 	core->play(core_pos);
-	core->set_scale( 0);
 	core->set_is_loop(true);
 	core->constants->data.particle_color = FIRE_COLOR;
 	//wave初期設定
 	wave->play(core_pos);
-	wave->set_scale(0.0f);
+	wave->set_init_scale(0.0f);
 	wave->constants->data.threshold = 0;
 	wave->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f};
 	DirectX::XMFLOAT4 wave_ori = wave->get_orientation();
@@ -67,8 +67,8 @@ void ChargeAttack::play(DirectX::XMFLOAT3 pos)
 	wave->set_rotate_quaternion(MeshEffect::AXIS::RIGHT, 90);
 
 	//トルネード初期化
+	tornado->set_init_scale(0);
 	tornado->play(pos);
-	tornado->set_scale(0);
 	tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 	tornado->constants->data.threshold = 0;
 	tornado->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f };

@@ -7,6 +7,7 @@
 //==============================================================
 RestraintLauncher::RestraintLauncher(Graphics& graphics)
 {
+	max_cool_time = 2;
 }
 //==============================================================
 // 
@@ -19,7 +20,6 @@ bool RestraintLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos,
 	if (chantable)
 	{
 		unique_ptr<Skill> skill = make_unique<Restrain>();
-		max_cool_time = skill->get_cool_time();
 		cool_time = max_cool_time;
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));

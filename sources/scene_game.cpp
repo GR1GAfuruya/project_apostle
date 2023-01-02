@@ -159,7 +159,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
 	
 	//ステージ描画
-	//stageManager.render(elapsed_time, graphics);
+	stageManager.render(elapsed_time, graphics);
 
 	//プレイヤー描画
 	player->render_d(graphics,elapsed_time,camera.get());
@@ -193,7 +193,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//プレイヤー（フォワード）
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
-//	field_spark_particle->render(graphics.get_dc().Get());
+	field_spark_particle->render(graphics.get_dc().Get());
 
 
 	//テスト用

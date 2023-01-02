@@ -281,8 +281,24 @@ bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_
 	return spear_sea->chant(graphics, launch_pos, target_pos);
 }
 
+//==============================================================
+// 
+//クールタイム短縮
+// 
+//==============================================================
 void SkillManager::cool_time_reduction()
 {
+	//サポートスキルのクールタイム短縮
+	for (auto& s : sup_skill_list)
+	{
+		s->cool_time_reduction();
+	}
+	//攻撃スキルのクールタイム短縮
+	for (auto& s : atk_skill_list)
+	{
+		s->cool_time_reduction();
+	}
+
 }
 
 

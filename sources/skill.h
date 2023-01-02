@@ -50,8 +50,6 @@ public:
 	//デバッグGUI
 	virtual void debug_gui(string str_id) = 0;
 	void set_is_skill_hit(bool h) { is_hit = h; }
-	//クールタイムの取得
-	float get_cool_time() { return cool_time; }
 	float get_power() { return power; }
 	float get_invinsible_time() { return invinsible_time; }
 protected:
@@ -72,8 +70,6 @@ protected:
 	bool skill_end_flag = false;
 	//スキルがヒットしたかどうか
 	bool is_hit = false;
-	//クールタイム
-	float cool_time = 3.0f;
 	//攻撃力
 	float power = 0.0f;
 	//対象に与える無敵時間

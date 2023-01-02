@@ -63,14 +63,13 @@ void SkillLauncher::render(Graphics& graphics)
 //==============================================================
 void SkillLauncher::cool_time_reduction()
 {
-	//クールタイム更新
-	/*if (cool_time > 0)
+	
+	if (cool_time > 0)
 	{
-		cool_time -= elapsed_time;
+		//短縮率は個々で設定
+		cool_time -= reduction_rate;
+		//0以下になったら0に戻しておく
+		if (cool_time < 0) cool_time = 0;
 	}
-	else
-	{
-		cool_time = 0;
-		chantable = true;
-	}*/
+	
 }

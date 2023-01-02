@@ -2,6 +2,7 @@
 #include "skill_regenerate.h"
 RegenerateLauncher::RegenerateLauncher(Graphics& graphics)
 {
+	max_cool_time = 5;
 }
 
 bool RegenerateLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)
@@ -11,7 +12,6 @@ bool RegenerateLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos
 	{
 		//スキルのパラメーター設定
 		unique_ptr<Skill> skill = make_unique<Regenerate>(graphics, launch_pos,health, max_health);
-		max_cool_time = skill->get_cool_time();
 		cool_time = max_cool_time;
 		//リストに追加
 		skills.push_back(std::move(skill));

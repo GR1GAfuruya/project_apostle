@@ -17,4 +17,4 @@ enum class WINCE_TYPE
 	SMALL,//¬‚³‚­‚Ğ‚é‚Ş
 	BIG,//‘å‚«‚­‚«”ò‚Î‚³‚ê‚é
 };
-typedef std::function<void(int, float, WINCE_TYPE)> AddDamageFunc;
+typedef std::function<bool(int, float, WINCE_TYPE)> AddDamageFunc;

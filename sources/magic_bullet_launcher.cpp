@@ -13,7 +13,7 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 	skill_init_param.invisible_time = 0.2f;
 	skill_init_param.acceleration = 50.0f;
 	skill_init_param.collider_radius = 2.0f;
-	skill_init_param.cool_time = 0.5f;
+	max_cool_time = 0.5f;
 
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
@@ -60,7 +60,6 @@ bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, 
 	if (chantable)
 	{
 		unique_ptr<Skill> skill = make_unique<MagicBullet>(graphics, init_pos, dir, skill_init_param);
-		max_cool_time = skill->get_cool_time();
 		cool_time = max_cool_time;
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));
@@ -114,7 +113,7 @@ void MagicBulletLauncher::debug_gui()
 		if (ImGui::CollapsingHeader("MagicBulletLauncher", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::DragFloat("cool_time", &cool_time);
-			ImGui::DragFloat("init_cool_time", &skill_init_param.cool_time);
+			ImGui::DragFloat("max_cool_time", &max_cool_time);
 			ImGui::DragFloat("power", &skill_init_param.power);
 			ImGui::DragFloat("invisible_time", &skill_init_param.invisible_time);
 			ImGui::DragFloat("acceleration", &skill_init_param.acceleration);

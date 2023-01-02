@@ -37,7 +37,6 @@ PhysicalUp::~PhysicalUp()
 //==============================================================
 void PhysicalUp::initialize(Graphics& graphics)
 {
-	cool_time = 10.0f;
 	life_time = 10.0f;
 }
 //==============================================================

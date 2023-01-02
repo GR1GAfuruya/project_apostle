@@ -42,8 +42,6 @@ void Regenerate::initialize(Graphics& graphics)
 	recovery_timer = RECOVERY_SPAN;
 	//回復量
 	recovery_rate = 5;
-	//クールタイム
-	cool_time = 9.0f;
 }
 //==============================================================
 // 

@@ -17,7 +17,7 @@ void Boss::initialize()
 	velocity = { 0.0f, 0.0f, 0.0f };
 	efc_charge_attack->stop();
 	acceleration = 10.0f;
-	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible,type); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible,type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_attack_param.collision.radius = 8.0f;
 	vs_wall_ray_power = 10.0f;
