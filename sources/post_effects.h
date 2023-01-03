@@ -38,7 +38,7 @@ public:
 		//ビネット
 		float falloff = 0.3f;
 		float amount = 0.6f;
-		DirectX::XMFLOAT2 pad;
+		DirectX::XMFLOAT2 radial_power;
 	};
 
 	void begin(ID3D11DeviceContext* dc);

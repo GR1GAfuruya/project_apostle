@@ -18,14 +18,6 @@ void main()
     p.streak_factor = random(id) % 0.2;
     p.position.x += cos(id % 16) * 20 % 20;
     p.position.z += sin(id % 16) * 20 % 20;
-    //p.velocity.x = cos(id % 16) * 5;
-    //p.velocity.z = sin(id % 16) * 5;
-    //p.velocity = CalcVelocity(forceAngle, id);
-    //カールノイズ
-    //p.velocity = curlNoise(id % 16) * (time % 30);
-    //p.velocity.y = min(p.velocity.y, 20);
-    //p.velocity.y += 20.0;
-    //竜巻
     //生存時間m
     p.life_time = 2;
     //生成してからの時間をリセット

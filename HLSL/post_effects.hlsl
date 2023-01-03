@@ -72,10 +72,69 @@ float4 Vignette(float4 c,float2 uv)
 }
 
 
+float weightedColour(float colour, int offset, float mid)
+{
+    
+    return colour * 1.0 * (mid - abs(mid - float(offset))) / mid;
+}
+
+float4 radial_blur(float4 c, float2 uv)
+{
+    const float blurMax = 0.2;
+    const float aberrationMax = 1.2;
+
+    const int numIters = 51;
+
+
+    float blur = -blurMax * radial_power.x;
+    float aberration = 1.0 + (aberrationMax * (1.0 - radial_power.y));
+
+    int channelspread = int(float(numIters) / aberration);
+    float mid = float(channelspread + 1) / 2.0;
+
+    float3 lobound = float3(numIters - channelspread, (numIters - channelspread) / 2, 0.0);
+    float3 hibound = float3(numIters, (numIters + channelspread) / 2, channelspread);
+
+ 
+    
+    const float2 centre = float2(0.5, 0.5);
+    uv -= centre;
+
+    float4 color = float4(0.0, 0.0, 0.0, 0.0);
+
+    float blurPerIter = blur / float(numIters - 1);
+    for (int i = 0; i < numIters; i++)
+    {
+        float scale = 1.0 + (blurPerIter * float(i));
+        float4 txColour = originall_texture.Sample(sampler_states[ANISOTROPIC], centre + (uv * scale));
+       
+        float3 kk = float3(i + 1, i + 1, i + 1) - lobound;
+        
+        if (i >= lobound.x && i < hibound.x)
+        {
+            color.x += weightedColour(txColour.x, kk.x, mid);
+        }
+        if (i >= lobound.y && i < hibound.y)
+        {
+            color.y += weightedColour(txColour.y, kk.y, mid);
+        }
+        if (i >= lobound.z && i < hibound.z)
+        {
+            color.z += weightedColour(txColour.z, kk.z, mid);
+        }
+    }
+    
+    
+    return color / (0.5 * float(channelspread + 1));
+}
+
+
 float4 main(VS_OUT pin) : SV_Target0
 {
     float4 sampled_color = originall_texture.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
     float4 color = sampled_color;
+    //ラジアルブラー
+    color = radial_blur(color, pin.texcoord);
     //カラーフィルター
     color = color_filter(color);
     //コントラスト
