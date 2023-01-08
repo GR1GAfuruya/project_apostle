@@ -21,7 +21,7 @@ void main(point VS_OUT input[1] : SV_POSITION, inout TriangleStream<GS_OUT> outp
     
 
     
-    float4 view_space_pos = mul(float4(input[0].position.xyz, 1.0), view_projection);
+    float4 view_space_pos = mul(float4(input[0].position.xyz, 1.0), view);
 
 	[unroll]
     for (uint vertex_index = 0; vertex_index < 4; ++vertex_index)

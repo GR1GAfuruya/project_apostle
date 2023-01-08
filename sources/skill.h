@@ -66,6 +66,9 @@ protected:
 	Capsule attack_colider{};
 	//スキルの寿命
 	float life_time = 0;
+	//スキルの寿命
+	float skill_duration = 0;
+
 	//スキルが終了したか
 	bool skill_end_flag = false;
 	//スキルがヒットしたかどうか

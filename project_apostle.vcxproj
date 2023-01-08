@@ -220,6 +220,7 @@
     <ClCompile Include="sources\material.cpp" />
     <ClCompile Include="sources\material_manager.cpp" />
     <ClCompile Include="sources\mat_fire_distortion.cpp" />
+    <ClCompile Include="sources\mat_lightning.cpp" />
     <ClCompile Include="sources\mat_meteore.cpp" />
     <ClCompile Include="sources\mesh_effect.cpp" />
     <ClCompile Include="sources\field_spark_particle.cpp" />
@@ -308,6 +309,7 @@
     <ClInclude Include="sources\material.h" />
     <ClInclude Include="sources\material_manager.h" />
     <ClInclude Include="sources\mat_fire_distortion.h" />
+    <ClInclude Include="sources\mat_lightning.h" />
     <ClInclude Include="sources\mat_meteore.h" />
     <ClInclude Include="sources\meteore.h" />
     <ClInclude Include="sources\noise.h" />
@@ -415,6 +417,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\lightning.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

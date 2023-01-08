@@ -238,6 +238,15 @@
     <Filter Include="Shaders\Effect\Particle\sprite_particle">
       <UniqueIdentifier>{0030c2d0-3661-4c76-9b1d-68377a7d5e29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\Particle\SpriteEmitter">
+      <UniqueIdentifier>{16beab85-de27-4408-9f8f-6cb729f88b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Particle\MeshEmitter">
+      <UniqueIdentifier>{26a36b64-a91f-4ccd-bf2b-d4563189dafe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Material\Thunder">
+      <UniqueIdentifier>{6c73317c-836b-45ed-8093-357adf7aab8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -515,6 +524,9 @@
     </ClCompile>
     <ClCompile Include="sources\particle_system.cpp">
       <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mat_lightning.cpp">
+      <Filter>sources\Material\Thunder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -821,6 +833,9 @@
     <ClInclude Include="sources\particle_system.h">
       <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="sources\mat_lightning.h">
+      <Filter>sources\Material\Thunder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
@@ -1053,6 +1068,9 @@
     </FxCompile>
     <FxCompile Include="HLSL\sprite_particle_gs.hlsl">
       <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\lightning.hlsl">
+      <Filter>Shaders\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

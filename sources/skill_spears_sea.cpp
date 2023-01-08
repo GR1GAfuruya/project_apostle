@@ -23,7 +23,7 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::
 	param = initparam;
 	collision_type = CollisionType::SPHERE;
 	//õ–½‚ğİ’è
-	life_span = initparam.life_span;
+	skill_duration = initparam.skill_duration;
 
 	instance_mesh->constants->data.threshold = 0.0f;
 
@@ -52,7 +52,7 @@ SpearsSea::~SpearsSea()
 //==============================================================
 void SpearsSea::initialize(Graphics& graphics)
 {
-	life_span = 0;
+	skill_duration = 0;
 	finish = false;
 	emit_num = 0;
 	target_position = {};
@@ -81,7 +81,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 			follow_timer += elapsed_time;
 			//position = target_position;
 			//­‚µ‰º‚É–„‚ß‚é
-			position.y = target_position.y - 2.0f;
+			position.y = target_position.y - 1.0f;
 		}
 		else
 		{
@@ -127,7 +127,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 	const float dissolve_rate = 2.0f;
 	const float start_threshold_time = 0.5f;
 	//ƒfƒBƒ]ƒ‹ƒuˆ—
-	if(life_time > life_span - start_threshold_time)
+	if(life_time > skill_duration - start_threshold_time)
 	{
 		if (instance_mesh->constants->data.threshold <= 1.0f)
 		{
@@ -136,7 +136,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 	}
 
 
-	if (life_time > life_span) skill_end_flag = true;
+	if (life_time > skill_duration) skill_end_flag = true;
 }
 //==============================================================
 // 

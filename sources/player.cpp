@@ -77,7 +77,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
-	left_hand = model->get_bone_by_name("pelvis");
+	left_hand = model->get_bone_by_name("hand_l");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_emit_cs.cso", attack4_emit_cs.ReleaseAndGetAddressOf());
@@ -135,6 +135,12 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 		attack_sword_param.collision.start = sword->get_collision().start;
 		attack_sword_param.collision.end = sword->get_collision().end;
 		attack_sword_param.collision.radius = sword->get_collision().radius;
+
+		//通常攻撃状態じゃなければ当たり判定を切る
+		if (state != State::NORMAL_ATTACK)
+		{
+			attack_sword_param.is_attack = false;
+		}
 	}
 	/*仮置き*/
 	collider.start = position;
@@ -344,7 +350,7 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 			}
 			break;
 			case SP_SKILLTYPE::REGENERATE:
-				if (skill_manager->chant_regenerate(graphics, &position, &health, GetMaxHealth()))
+				if (skill_manager->chant_regenerate(graphics, &position, &health, get_max_health()))
 				{
 					transition_attack_slash_up_state();
 				}
@@ -366,23 +372,27 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 //==============================================================
 void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 {
-	DirectX::XMFLOAT3 launch_pos;
+	model->fech_by_bone(transform, left_hand, left_hand_pos);
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
-			model->fech_by_bone(transform, left_hand, launch_pos);
+			
 			//スキルを発動できた場合遷移
-			if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, Math::get_posture_forward(orientation)))
 			{
 				transition_attack_bullet_state();//状態遷移
 			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-			if (skill_manager->chant_spear_sea(graphics, position, camera->get_lock_on_target()))
+			if (is_ground)
 			{
-			   transition_attack_ground_state();
+				if (skill_manager->chant_spear_sea(graphics, position, position))
+				{
+					transition_attack_ground_state();
+				}
+
 			}
 			break;
 		default:
@@ -612,7 +622,7 @@ void Player::debug_gui(Graphics& graphics)
 						break;
 					case SP_SKILLTYPE::REGENERATE:
 						transition_magic_buff_state();//状態遷移
-						skill_manager->chant_regenerate(graphics, &position, &health, GetMaxHealth());
+						skill_manager->chant_regenerate(graphics, &position, &health, get_max_health());
 
 						break;
 					case SP_SKILLTYPE::RESTRAINNT:
@@ -631,7 +641,7 @@ void Player::debug_gui(Graphics& graphics)
 					case ATK_SKILLTYPE::MAGICBULLET:
 						model->fech_by_bone(transform, left_hand, launch_pos);
 
-						if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+						if (skill_manager->chant_magic_bullet(graphics, &launch_pos, Math::get_posture_forward(orientation)))
 						{
 							transition_attack_bullet_state();//状態遷移
 						}

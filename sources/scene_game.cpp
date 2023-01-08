@@ -46,11 +46,11 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx");
-	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_lightning.get());
 	 test_mesh_effect->set_scale(0.1f);
 
-	 //test_emitter = std::make_unique<Emitter>(graphics,200);
+	 test_emitter = std::make_unique<Emitter>(graphics,200);
 #endif
 }
 
@@ -100,7 +100,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	player->judge_skill_collision(boss->get_body_collision().capsule, boss->damaged_function, camera.get());
 
 	//**********ボスの更新**********//
-	boss->update(graphics, camera_elapsed_time);
+	boss->update(graphics, camera_elapsed_time, camera.get());
 	
 	//ボスの攻撃対象を設定
 	boss->set_location_of_attack_target(player->get_position());
@@ -117,7 +117,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
 
-	//test_emitter->update(graphics, elapsed_time);
+	test_emitter->update(graphics, elapsed_time);
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
@@ -198,8 +198,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	/*test_emitter->debug_gui(graphics, "emitter_test");
-	test_emitter->render(graphics, *camera);*/
+	test_emitter->debug_gui(graphics, "emitter_test");
+	test_emitter->render(graphics, *camera);
 	static DirectX::XMFLOAT4 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };

@@ -21,6 +21,7 @@ void Boss::initialize()
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_attack_param.collision.radius = 8.0f;
 	vs_wall_ray_power = 10.0f;
+	state_duration = 2.0f;
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.radius = 10;
 	boss_body_collision.height = 25;
@@ -46,7 +47,7 @@ Boss::Boss(Graphics& graphics)
 //çXêVèàóù
 // 
 //==============================================================
-void Boss::update(Graphics& graphics, float elapsed_time)
+void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 #if _DEBUG
 	 if(!is_update) return;
@@ -55,7 +56,7 @@ void Boss::update(Graphics& graphics, float elapsed_time)
 	(this->*act_update)(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
-	efc_charge_attack->update(graphics, elapsed_time);
+	efc_charge_attack->update(graphics, elapsed_time,camera);
 	efc_charge_attack->set_target_pos(target_pos);
 	//bodyÇÃçUåÇópìñÇΩÇËîªíË
 	boss_body_collision.capsule.start = position;
@@ -162,6 +163,7 @@ void Boss::debug_gui()
 			ImGui::DragInt("hp", &health);
 			ImGui::DragFloat("height", &height);
 			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
+			ImGui::DragFloat("RUN_SPEED", &RUN_SPEED);
 			ImGui::DragFloat("turnspeed", &turn_speed,0.1f);
 			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius,0.1f);
 			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height,0.1f);

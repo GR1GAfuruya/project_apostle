@@ -121,6 +121,7 @@ void Player::transition_r_attack_combo1_state()
 	//攻撃パラメーター設定
 	attack_sword_param.power = ATTACK_TYPE1_POWER;
 	attack_sword_param.invinsible_time = 0.5f;
+	state = State::NORMAL_ATTACK;
 	//ルートモーションを使用するか
 	/*is_root_motion = true;
 	root_motion_pos = position;*/
@@ -133,6 +134,7 @@ void Player::transition_r_attack_combo2_state()
 	//攻撃パラメーター設定
 	attack_sword_param.power = ATTACK_TYPE2_POWER;
 	attack_sword_param.invinsible_time = 0.5f;
+	state = State::NORMAL_ATTACK;
 	//ルートモーションを使用するか
 	is_root_motion = true;
 	//ルートモーション用ダミーポジション
@@ -143,6 +145,7 @@ void Player::transition_r_attack_combo3_state()
 {
 	p_update = &Player::update_r_attack_combo3_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
+	state = State::NORMAL_ATTACK;
 	//攻撃パラメーター設定
 	attack_sword_param.power = ATTACK_TYPE3_POWER;
 	attack_sword_param.invinsible_time = 0.2f;

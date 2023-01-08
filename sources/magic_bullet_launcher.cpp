@@ -54,7 +54,7 @@ void MagicBulletLauncher::render(Graphics& graphics)
 // ÉXÉLÉãî≠ìÆ
 // 
 //==============================================================
-bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 init_pos, DirectX::XMFLOAT3 dir)
+bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3 dir)
 {
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)

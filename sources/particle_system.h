@@ -7,6 +7,9 @@ public:
 	ParticleSystem(Graphics& graphics);
 	virtual ~ParticleSystem();
 
+	void Play(DirectX::XMFLOAT3 pos);
+
+
 	void update(Graphics& graphics, float elapsed_time);
 
 	void render(Graphics& graphics, Camera& camera);
@@ -20,4 +23,14 @@ private:
 	float duration;
 
 	float time;
+
+	DirectX::XMFLOAT3	position = { 0, 0, 0 };
+	DirectX::XMFLOAT3	scale = { 1, 1, 1 };
+	DirectX::XMFLOAT4 orientation{ 0,0,0,1 };
+	DirectX::XMFLOAT4X4	transform = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+	};
 };

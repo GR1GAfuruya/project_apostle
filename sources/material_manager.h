@@ -1,6 +1,7 @@
 #pragma once
 #include "mat_fire_distortion.h"
 #include "mat_meteore.h"
+#include "mat_lightning.h"
 class MaterialManager
 {
 private:
@@ -18,4 +19,5 @@ public:
 
 	std::shared_ptr<FireDistortionMat> mat_fire_distortion;
 	std::shared_ptr<MeteoreMat> mat_meteore;
+	std::shared_ptr<LightningMat> mat_lightning;
 };

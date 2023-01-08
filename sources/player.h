@@ -80,6 +80,7 @@ private:
 		FALL,
 		LANDING,
 		FRONT_DAMAGE,
+		NORMAL_ATTACK
 
 	};
 
@@ -208,6 +209,8 @@ private:
 	int jump_limit = 1;
 	float avoidance_speed = 50;
 	bool display_player_imgui = false;
+
+	DirectX::XMFLOAT3 left_hand_pos;
 	/*-------UŒ‚ŠÖ˜A--------------------------*/
 	//UŒ‚ŠÔ
 	float attack_time;

@@ -11,7 +11,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	init_param.invinsible_time = 2.5f;
 	init_param.radius = 15;
 	init_param.collider_radius = 8;
-	init_param.life_span = 2.0f;
+	init_param.skill_duration = 2.0f;
 	//ëÑÇÃí∑Ç≥
 	init_param.spear_length = 1.0f;
 	//í∑Ç≥ÇÃêLÇ—ó¶
@@ -77,7 +77,7 @@ void SpearSeaLauncher::debug_gui()
 		{
 			ImGui::DragFloat("cool_time", &cool_time);
 			ImGui::DragFloat("max_cool_time", &max_cool_time);
-			ImGui::DragFloat("life_span", &init_param.life_span);
+			ImGui::DragFloat("life_span", &init_param.skill_duration);
 			ImGui::DragFloat("power", &init_param.power);
 			ImGui::DragFloat("invinsible_time", &init_param.invinsible_time);
 			ImGui::DragFloat("radius", &init_param.radius);

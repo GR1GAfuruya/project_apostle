@@ -267,7 +267,7 @@ bool SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target
 //MagickBullet”­“®
 // 
 //==============================================================
-bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 dir)
+bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3 dir)
 {
 	return magick_bullet->chant(graphics, launch_pos, dir);
 }

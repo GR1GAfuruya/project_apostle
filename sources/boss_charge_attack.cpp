@@ -126,13 +126,13 @@ void ChargeAttack::stop()
 //更新
 // 
 //==============================================================
-void ChargeAttack::update(Graphics& graphics, float elapsed_time)
+void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
 {
 	if (active)
 	{
 		life_time += elapsed_time;
 		//更新
-		(this->*charge_attack_update)(graphics, elapsed_time);	
+		(this->*charge_attack_update)(graphics, elapsed_time, camera);
 	}
 	meteores->update(graphics, elapsed_time);
 
@@ -203,7 +203,7 @@ void ChargeAttack::calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFL
 //チャージ中のアップデート
 // 
 //==============================================================
-void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
+void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	//更新処理
 	float core_scale = lerp(core->get_scale().x, 0.3f, 0.2f * elapsed_time);
@@ -241,7 +241,7 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time)
 //チャージが完了し、発動したときのアップデート
 // 
 //==============================================================
-void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
+void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	
 	auto fade_out = [=](float alpha) {return (std::max)(alpha - 0.5f * elapsed_time, 0.0f); };
@@ -302,7 +302,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time)
 //消滅時のアップデート
 // 
 //==============================================================
-void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time)
+void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	//徐々に消えていく関数
 	const float fade_out_speed = 7.0f;

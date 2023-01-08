@@ -2,11 +2,17 @@
 
 ParticleSystem::ParticleSystem(Graphics& graphics)
 {
+
 }
 
 ParticleSystem::~ParticleSystem()
 {
 	emitters.clear();
+}
+
+void ParticleSystem::Play(DirectX::XMFLOAT3 pos)
+{
+	position = pos;
 }
 
 void ParticleSystem::update(Graphics& graphics, float elapsed_time)

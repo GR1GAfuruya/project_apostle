@@ -1,5 +1,5 @@
 #include "boss.h"
-
+#include "noise.h"
 ///////////////////////////////////////////////////////
 //
 /*--------------------状態遷移------------------------*/
@@ -180,23 +180,38 @@ void Boss::transition_stun_state()
 void Boss::update_idle_state(Graphics& graphics, float elapsed_time)
 {
 	state_timer += elapsed_time;
-	if (state_timer > 1.0f)
+	if (state_timer > state_duration)
 	{
-		transition_walk_state();
+		if (health < max_health / 2)
+		{
+			//HP半分以下なら走る
+			transition_run_state();
+		}
+		else
+		{
+			transition_walk_state();
+		}
+		
 		state_timer = 0;
 	}
+	//速度更新
+	update_velocity(elapsed_time, position);
 }
 
 void Boss::update_walk_state(Graphics& graphics, float elapsed_time)
 {
+	//プレイヤー方向に歩く
 	DirectX::XMFLOAT3 dir_target_vec = Math::calc_vector_AtoB_normalize(position, target_pos);
-	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
 	Move(dir_target_vec.x, dir_target_vec.z, WALK_SPEED);
 	Turn(elapsed_time, dir_target_vec, turn_speed, orientation);
 
-	if (length_to_target < NORMAL_ATTACK_LENGTH)
+	//プレイヤーとの距離が一定以下になったら攻撃
+	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
+	const float ATTACK_ACTION_ANGLE = 30.0f;
+	if (length_to_target < ATTACK_ACTION_LENGTH && DirectX::XMConvertToDegrees(get_turn_angle()) < ATTACK_ACTION_ANGLE)
 	{
-		transition_attack_state();
+		//攻撃タイプ選択
+		select_attack_type();
 		return;
 	}
 	update_velocity(elapsed_time, position);
@@ -204,6 +219,18 @@ void Boss::update_walk_state(Graphics& graphics, float elapsed_time)
 
 void Boss::update_run_state(Graphics& graphics, float elapsed_time)
 {
+
+	DirectX::XMFLOAT3 dir_target_vec = Math::calc_vector_AtoB_normalize(position, target_pos);
+	Move(dir_target_vec.x, dir_target_vec.z, RUN_SPEED);
+	Turn(elapsed_time, dir_target_vec, turn_speed, orientation);
+
+	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
+	if (length_to_target < ATTACK_ACTION_LENGTH)
+	{
+		//攻撃タイプ選択
+		select_attack_type();
+		return;
+	}
 	update_velocity(elapsed_time, position);
 }
 
@@ -215,13 +242,24 @@ void Boss::update_attack_state(Graphics& graphics, float elapsed_time)
 	sickle_attack_param.is_attack = true;
 	if (model->is_end_animation())
 	{
-		transition_skill_2_start_state();
+		//攻撃タイプ選択
+		select_attack_type();
+		state_duration = NORMAL_ATTACK_COOLTIME;
 		sickle_attack_param.is_attack = false;
 	}
+	//速度更新
+	update_velocity(elapsed_time, position);
 }
 
 void Boss::update_skill_1_state(Graphics& graphics, float elapsed_time)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+		state_duration = SKILL1_COOLTIME;
+	}
+	//速度更新
+	update_velocity(elapsed_time, position);
 }
 
 void Boss::update_skill_2_start_state(Graphics& graphics, float elapsed_time)
@@ -247,12 +285,47 @@ void Boss::update_skill_2_end_state(Graphics& graphics, float elapsed_time)
 	if (model->is_end_animation())
 	{
 		transition_idle_state();
+		state_duration = SKILL2_COOLTIME;
 	}
 }
 
 void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time)
 {
+	if (model->is_end_animation())
+	{
+		transition_idle_state();
+		state_duration = SKILL3_COOLTIME;
+	}
+	//速度更新
+	update_velocity(elapsed_time, position);
+}
 
+//---------------------------//
+//			攻撃タイプ選択		//
+//---------------------------//
+void Boss::select_attack_type()
+{
+	int random = std::abs(static_cast<int>(Noise::instance().get_rnd())) % static_cast<int>(ATTACK_TYPE::MAX_NUM);
+
+	ATTACK_TYPE attack_type = static_cast<ATTACK_TYPE>(random);
+	switch (attack_type)
+	{
+	case ATTACK_TYPE::NORMAL:
+		transition_attack_state();
+		break;
+
+	case ATTACK_TYPE::SKILL1:
+		transition_skill_1_state();
+		break;
+
+	case ATTACK_TYPE::SKILL2:
+		transition_skill_2_start_state();
+		break;
+
+	case ATTACK_TYPE::SKILL3:
+		transition_skill_3_state();
+		break;
+	}
 }
 
 
@@ -271,6 +344,7 @@ void Boss::update_damage_state(Graphics& graphics, float elapsed_time)
 {
 	if (model->is_end_animation())
 	{
+		state_duration = DAMAGE_STUN_DURATION;;
 		transition_idle_state();
 	}
 }

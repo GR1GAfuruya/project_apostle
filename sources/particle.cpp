@@ -58,7 +58,7 @@ void Particles::update(Graphics& graphics,float elapsed_time)
 
 void Particles::position_update(float elapsed_time)
 {
-	position += velocity;
+	position += velocity * elapsed_time;
 }
 
 void Particles::life_update(float elapsed_time)

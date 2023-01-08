@@ -6,21 +6,30 @@
 GaugeUi::GaugeUi(Graphics& graphics, const wchar_t* back_filename, const wchar_t* body_filename, const wchar_t* frame_filename)
 {
     back = std::make_unique<SpriteBatch>(graphics.get_device().Get(), back_filename, 1);
-    body = std::make_unique<SpriteBatch>(graphics.get_device().Get(), body_filename, 1);
+    body = std::make_unique<SpriteBatch>(graphics.get_device().Get(), body_filename, 2);
     if (frame_filename)
     {
-        body = std::make_unique<SpriteBatch>(graphics.get_device().Get(), frame_filename, 1);
+        frame = std::make_unique<SpriteBatch>(graphics.get_device().Get(), frame_filename, 1);
     }
 
-    percent = 1.0f;
+    now_percent = 1.0f;
+    old_percent = 1.0f;
+    diff_color = { 2.0f,2.0f, 1.0f, 1.0f };
+    
     gauge.texsize = { static_cast<float>(back->get_texture2d_desc().Width), static_cast<float>(back->get_texture2d_desc().Height) };
 
 }
 
 void GaugeUi::update(Graphics& graphics, float elapsed_time)
 {
-  
-    //アニメーションなどを行う　＊現在は処理なし
+  //ゲージパーセントが減った場合の差分ゲージの処理
+    if (now_percent < old_percent)
+    {
+        const float min_rate = 0.5f;
+        const float max_rate = 1.0f;
+        const float diff_rate = lerp(min_rate, max_rate, (1 - (now_percent / old_percent))) * elapsed_time;
+        old_percent = lerp(old_percent, now_percent, diff_rate);
+    }
 }
 
 void GaugeUi::render(ID3D11DeviceContext* dc)
@@ -32,8 +41,12 @@ void GaugeUi::render(ID3D11DeviceContext* dc)
     back->end(dc);
     //--body--//
     body->begin(dc);
+    //ゲージ差分
+    body->render(dc, gauge.position, gauge.scale, gauge.pivot, diff_color, gauge.angle, gauge.texpos,
+        { gauge.texsize.x * old_percent, gauge.texsize.y });
+    //ゲージ本体
     body->render(dc, gauge.position, gauge.scale, gauge.pivot, gauge.color, gauge.angle, gauge.texpos,
-        { gauge.texsize.x * percent, gauge.texsize.y });
+        { gauge.texsize.x * now_percent, gauge.texsize.y });
     body->end(dc);
     //--frame--//
     if (frame)

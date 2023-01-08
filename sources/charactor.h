@@ -43,7 +43,9 @@ public:
 	// HP
 	int get_health() const { return health; }
 	// 最大HP
-	int GetMaxHealth() const { return max_health; }
+	int get_max_health() const { return max_health; }
+	//体の正面と進行方面との角度
+	float get_turn_angle() const { return turn_angle; }
 	//HPパーセンテージ
 	float get_hp_percent() const { return health <= 0 ? 0.0f : static_cast<float>(health) / static_cast<float>(max_health); }
 	// 地面判定
@@ -120,6 +122,7 @@ protected:
 	//坂の法線
 	DirectX::XMFLOAT3 slope_normal = {};
 
+	float turn_angle;			//体を向けるときの回転角
 	//-----------プライベート関数--------------//
 private:
 	//垂直速力更新処理

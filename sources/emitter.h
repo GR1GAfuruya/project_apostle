@@ -8,6 +8,8 @@ public:
 	Emitter(Graphics& graphics, int max_particles);
 	~Emitter();
 
+	void play(DirectX::XMFLOAT3 pos);
+
 
 	void emit(Graphics& graphics, float elapsed_time);
 
@@ -58,6 +60,9 @@ public:
 		float emit_span;
 		//一度に放出する数
 		int burst_num = 1;
+		//生成開始時間
+		float emit_start_time = 0;
+
 	};
 
 private:
@@ -90,6 +95,11 @@ private:
 	int emit_count; 
 	//一度に放出する数
 	int burst_num = 1;
+	//時間
+	float timer = 0;
+	//生成開始時間
+	float emit_start_time;
+	
 	//パーティクルを格納するコンテナ
 	std::vector<std::unique_ptr<Particles>> particles;
 	std::vector<std::unique_ptr<Particles>> removes;
@@ -99,8 +109,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> geometry_shader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;
-	//Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
-	ID3D11Buffer* vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	//ID3D11Buffer* vertex_buffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> index_buffer;
 	D3D11_TEXTURE2D_DESC texture2d_desc;
 	
