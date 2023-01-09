@@ -45,7 +45,7 @@ protected:
 	std::unique_ptr<DirectX::XMFLOAT3> launch_pos;
 	std::unique_ptr<MeshEffect> main_effect;
 	std::unique_ptr<MeshEffect> lightning_effect[2];
-	std::unique_ptr<MeshEffect> lightning_disk_effect[2];
+	std::unique_ptr<MeshEffect> lightning_disk_effect;
 	std::shared_ptr<PointLight> spear_light;
 
 	bool launch_bullet = false;

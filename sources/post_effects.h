@@ -25,7 +25,6 @@ public:
 		DirectX::XMFLOAT2 origin; //中心点
 		float ray_power; //ブラーをかけるパワー :方向ベクトルにかけて光線の長さを決める
 		float wipe_threshold;
-	
 		// 色相調整
 		float hueShift = 1;
 		// 彩度調整
@@ -38,13 +37,22 @@ public:
 		//ビネット
 		float falloff = 0.3f;
 		float amount = 0.6f;
-		DirectX::XMFLOAT2 radial_power;
+		//ラジアルブラー
+		float radial_power;
+
+		float pad;
 	};
 
 	void begin(ID3D11DeviceContext* dc);
 	void end(ID3D11DeviceContext* dc);
 	void blit(Graphics& graphics);
 
+	float get_radial_blur_power() { return cb_post_effect.get()->data.radial_power; }
+	void set_radial_blur_power(float p) {  cb_post_effect.get()->data.radial_power = p; }
+
+	std::unique_ptr<Constants<CB_PostEffect>> cb_post_effect;
+
+private:
 	//ガウスブラー
 	std::unique_ptr<Bloom> bloom;
 	//元画像保存用フレームバッファー
@@ -54,7 +62,6 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>  post_effects;
 
-	std::unique_ptr<Constants<CB_PostEffect>> cb_post_effect;
 
 	bool display_post_effects_imgui = false;
 };

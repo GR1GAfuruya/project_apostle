@@ -173,7 +173,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//レンダーターゲットを戻す
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
-	camera->post_effect.begin(graphics.get_dc().Get());
+	camera->get_post_effect()->begin(graphics.get_dc().Get());
 	deferred->render(graphics);
 
 	//***************************************************************//
@@ -241,8 +241,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	///						ポストエフェクト  				        ///
 	//***************************************************************//
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
-	camera->post_effect.end(graphics.get_dc().Get());
-	camera->post_effect.blit(graphics);
+	camera->get_post_effect()->end(graphics.get_dc().Get());
+	camera->get_post_effect()->blit(graphics);
 
 	//***************************************************************//
 	///						        UI  				            ///

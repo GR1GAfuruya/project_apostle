@@ -81,7 +81,7 @@ void PostEffects::blit(Graphics& graphics)
 				ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
 				ImGui::DragFloat("falloff", &cb_post_effect->data.falloff, 0.1f, 0, 1.0f);
 				ImGui::DragFloat("amount", &cb_post_effect->data.amount, 0.1f, 0, 1.0f);
-				ImGui::DragFloat2("amount", &cb_post_effect->data.radial_power.x, 0.1f, 0, 1.0f);
+				ImGui::DragFloat("amount", &cb_post_effect->data.radial_power, 0.1f, 0, 1.0f);
 
 			}
 			if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))

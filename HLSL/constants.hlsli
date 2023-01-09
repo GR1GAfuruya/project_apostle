@@ -51,7 +51,7 @@ cbuffer POST_EFFECTS_CONSTANT : register(b5)
     //ビネット
     float falloff;
     float amount;
-    float2 radial_power;
+    float radial_power;
 
 }
 

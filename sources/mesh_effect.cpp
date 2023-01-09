@@ -180,11 +180,15 @@ void MeshEffect::reset_orientation()
 //==============================================================
 void MeshEffect::dissolve_update(float elapsed_time)
 {
+	//フェードイン
+	
+	//フェードアウト
 	const float dissolve_rate = life_time / life_span;
 	//ディゾルブ処理
 	if (life_time < life_span )
 	{
-		constants->data.threshold = lerp(0.0f, 1.0f, dissolve_rate);
+		constants->data.threshold = lerp(constants->data.threshold, 0.0f, dissolve_rate);
+		constants->data.threshold = lerp(constants->data.threshold, 1.0f, dissolve_rate);
 	}
 
 	//ディゾルブのクランプ

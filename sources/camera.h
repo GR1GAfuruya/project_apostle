@@ -71,10 +71,8 @@ public:
     //カメラストップ
     void set_camera_stop(float stop_time);
 
-    //ポストエフェクト
-    //std::unique_ptr<PostEffects> post_effect;
-    PostEffects post_effect;
-
+    PostEffects* get_post_effect() { return post_effect.get(); }
+    //PostEffects post_effect;
 private:
     void calc_free_target();
     //--------< 関数ポインタ >--------//
@@ -142,4 +140,8 @@ private:
 
     //ロックオンフラグ
     bool lock_on = false;
+
+    //ポストエフェクト
+    std::shared_ptr<PostEffects> post_effect;
+
 };

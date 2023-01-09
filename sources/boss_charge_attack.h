@@ -51,6 +51,7 @@ private:
 	std::unique_ptr<MeshEffect> wave;
 	//トルネード
 	std::unique_ptr<MeshEffect> tornado;
+	std::unique_ptr<MeshEffect> tornado_black;
 	//GPUパーティクルのエミッターCS
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
 	//GPUパーティクルのアップデートCS

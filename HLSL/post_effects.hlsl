@@ -86,8 +86,8 @@ float4 radial_blur(float4 c, float2 uv)
     const int numIters = 51;
 
 
-    float blur = -blurMax * radial_power.x;
-    float aberration = 1.0 + (aberrationMax * (1.0 - radial_power.y));
+    float blur = -blurMax * radial_power;
+    float aberration = 1.0;
 
     int channelspread = int(float(numIters) / aberration);
     float mid = float(channelspread + 1) / 2.0;

@@ -17,7 +17,7 @@ Camera::Camera(Graphics& graphics)
 	, view()
 	, projection()
 	, is_mouse_operation(false)
-	,post_effect(graphics.get_device().Get())
+	
 {
 	HRESULT hr{ S_OK };
 	//----定数バッファ----//
@@ -49,6 +49,7 @@ Camera::Camera(Graphics& graphics)
 		eye.y = trakking_target.y - front.y * range;
 		eye.z = trakking_target.z - front.z * range;
 	}
+	post_effect = std::make_shared<PostEffects>(graphics.get_device().Get());
 }
 
 void Camera::update(float elapsed_time)
