@@ -12,6 +12,7 @@ void Player::transition_idle_state()
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::IDLE;
 }
 
 void Player::transition_move_state()
@@ -20,6 +21,7 @@ void Player::transition_move_state()
 	model->play_animation(PlayerAnimation::PLAYER_RUN, true);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::MOVE;
 }
 
 void Player::transition_avoidance_state()
@@ -28,6 +30,7 @@ void Player::transition_avoidance_state()
 	model->play_animation(PlayerAnimation::PLAYER_ROLL, false, 0.1f);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::ROLL;
 }
 
 void Player::transition_jump_state()
@@ -36,6 +39,7 @@ void Player::transition_jump_state()
 	model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 0.1f);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::JUMP;
 }
 
 void Player::transition_damage_front_state()
@@ -44,6 +48,7 @@ void Player::transition_damage_front_state()
 	model->play_animation(PlayerAnimation::PLAYER_DAMAGE_FRONT, false);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::FRONT_DAMAGE;
 }
 
 void Player::transition_r_attack_spring_slash_state()
@@ -52,6 +57,7 @@ void Player::transition_r_attack_spring_slash_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_SPRING_SLASH, false);
 	//ルートモーション
 	add_impulse(Math::get_posture_forward(orientation) * 50.0f);
+	state = State::SKILL;
 }
 
 void Player::transition_attack_pull_slash_state()
@@ -60,6 +66,7 @@ void Player::transition_attack_pull_slash_state()
 	model->play_animation(PlayerAnimation::PLAYER_PULL_SLASH, false);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::SKILL;
 
 }
 
@@ -69,6 +76,7 @@ void Player::transition_attack_ground_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_GROUND, false);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::SKILL;
 
 }
 
@@ -78,6 +86,7 @@ void Player::transition_magic_buff_state()
 	model->play_animation(PlayerAnimation::PLAYER_MAGIC_BUFF, false);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::SKILL;
 
 }
 
@@ -87,6 +96,7 @@ void Player::transition_attack_bullet_state()
 	model->play_animation(PlayerAnimation::PLAYER_MAGIC_BULLET, false, 0.1f);
 	//ルートモーションを使用するか
 	is_root_motion = false;
+	state = State::SKILL;
 
 }
 
@@ -98,6 +108,7 @@ void Player::transition_attack_slash_up_state()
 	is_root_motion = true;
 	//ルートモーション用ダミーポジション
 	root_motion_pos = position;
+	state = State::SKILL;
 }
 
 void Player::transition_r_attack_forward_state()
@@ -106,12 +117,14 @@ void Player::transition_r_attack_forward_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_FORWARD_SLASH, false);
 	//前進
 	add_impulse(Math::get_posture_forward(orientation) * 50.0f);
+	state = State::SKILL;
 }
 
 void Player::transition_attack_air_state()
 {
 	p_update = &Player::update_attack_air_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_AIR, false);
+	state = State::SKILL;
 }
 
 void Player::transition_r_attack_combo1_state()
@@ -149,6 +162,7 @@ void Player::transition_r_attack_combo3_state()
 	//攻撃パラメーター設定
 	attack_sword_param.power = ATTACK_TYPE3_POWER;
 	attack_sword_param.invinsible_time = 0.2f;
+	state = State::NORMAL_ATTACK;
 
 }
 
@@ -158,6 +172,8 @@ void Player::transition_r_attack_dodge_back_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_DODGE_BACK, false, 0.1f);
 	//後ろに交代
 	add_impulse(Math::get_posture_forward(orientation) * -50.0f);
+
+	state = State::SKILL;
 }
 
 
@@ -273,6 +289,9 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	{
 		transition_r_attack_combo1_state();
 	}
+
+	//回避入力
+	input_avoidance();
 
 	//スキル入力
 	input_chant_support_skill(graphics, camera);

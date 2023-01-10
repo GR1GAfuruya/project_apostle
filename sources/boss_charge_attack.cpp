@@ -251,7 +251,7 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 	//チャージ完了時の処理
 	if (is_charge_max)
 	{
-		core->set_scale(0.7f);
+		core->set_scale(0.1f);
 		charge_attack_update = &ChargeAttack::activities_update;
 		tornado->set_scale({ 0.0f,15.0f,0.0f });
 		tornado_black->set_scale({ 0.0f,15.0f,0.0f });
@@ -269,7 +269,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 
 	//コアエフェクト
 	{
-		const float core_s = lerp(core->get_scale().x, 0.0f, 3.5f * elapsed_time);
+		const float core_s = lerp(core->get_scale().x, 10.0f, 1.5f * elapsed_time);
 		core->set_scale(core_s);
 		core->constants->data.scroll_speed += elapsed_time;
 		core->update(graphics, elapsed_time);

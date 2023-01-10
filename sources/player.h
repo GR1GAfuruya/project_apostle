@@ -77,10 +77,10 @@ private:
 		MOVE,
 		ROLL,
 		JUMP,
-		FALL,
 		LANDING,
 		FRONT_DAMAGE,
-		NORMAL_ATTACK
+		NORMAL_ATTACK,
+		SKILL,
 
 	};
 
@@ -96,11 +96,11 @@ private:
 	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
 
 	//UŒ‚1Œ‚–Ú‚ÌUŒ‚—Í
-	static constexpr int ATTACK_TYPE1_POWER = 2;
+	static constexpr int ATTACK_TYPE1_POWER = 1;
 	//UŒ‚2Œ‚–Ú‚ÌUŒ‚—Í
-	static constexpr int ATTACK_TYPE2_POWER = 3;
+	static constexpr int ATTACK_TYPE2_POWER = 2;
 	//UŒ‚3Œ‚–Ú‚ÌUŒ‚—Í
-	static constexpr int ATTACK_TYPE3_POWER = 5;
+	static constexpr int ATTACK_TYPE3_POWER = 4;
 
 
 private:

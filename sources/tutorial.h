@@ -1,6 +1,9 @@
 #pragma once
 #include "UI.h"
 #include "sprite_batch.h"
+#include "device.h"
+#include "imgui_include.h"
+#include "user.h"
 class Tutorial :public UI
 {
 public:
