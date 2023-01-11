@@ -11,8 +11,8 @@ public:
 	ChargeAttack(Graphics& grapghics);
 	//デストラクタ
 	~ChargeAttack(){}
-	//再生
-	void play(DirectX::XMFLOAT3 pos);
+	//発動
+	void chant(DirectX::XMFLOAT3 pos);
 	//停止
 	void stop();
 	//更新

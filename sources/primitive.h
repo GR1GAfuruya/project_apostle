@@ -25,4 +25,6 @@ struct Capsule
 	DirectX::XMFLOAT3 start;
 	DirectX::XMFLOAT3 end;
 	float radius;
+
+	
 };

@@ -11,7 +11,7 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 {
 	initialize(graphics);
 
-
+	
 	power = init_param.power;
 	invinsible_time = init_param.invisible_time;
 	acceleration = init_param.acceleration;
@@ -32,8 +32,6 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 	lightning_disk_effect->set_scale(1.0f);
 	lightning_disk_effect->set_life_span(1.0f);
 	lightning_disk_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
-	lightning_disk_effect->play(*launch_pos);
-	lightning_disk_effect->rotate_base_axis(MeshEffect::AXIS::UP, Math::Normalize(target_dir));
 
 	for (auto& l : lightning_effect)
 	{
@@ -90,10 +88,15 @@ MagicBullet::~MagicBullet()
 			 main_effect->play(*launch_pos);
 			 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(target_dir));
 
+
 			 position = *launch_pos;
 
 			 launch_bullet = true;
 		 }
+
+		 lightning_disk_effect->play(*launch_pos);
+		 lightning_disk_effect->rotate_base_axis(MeshEffect::AXIS::UP, Math::Normalize(target_dir));
+
 
 		 for (auto& l : lightning_effect)
 		 {

@@ -563,9 +563,9 @@ void Player::debug_gui(Graphics& graphics)
 				DirectX::XMStoreFloat3(&forward, Math::get_posture_forward_vec(orientation));
 				ImGui::DragFloat3("forward", &forward.x);
 				ImGui::DragFloat4("ori", &orientation.x);
-				const char* state_c[] = { "IDLE","MOVE","JUMP","FALL","LANDING"};
-
-				ImGui::Text(state_c[static_cast<int>(state)]);
+				std::string state_name;
+				state_name = magic_enum::enum_name<State>(state);
+				ImGui::Text(state_name.c_str());
 				ImGui::DragFloat3("velocity:", &velocity.x);
 			}
 			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))

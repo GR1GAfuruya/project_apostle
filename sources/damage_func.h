@@ -1,13 +1,22 @@
 #pragma once
 #include <functional>
 #include "primitive.h"
-
+#include <cereal/cereal.hpp>
 struct AttackParam
 {
 	Capsule collision;
 	bool is_attack;//UŒ‚’†‚©‚Ç‚¤‚©
 	int power;//UŒ‚—Í
 	float invinsible_time;//UŒ‚‘ÎÛ‚É‰Û‚·–³“GŠÔ
+
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(
+			cereal::make_nvp("power", power),
+			cereal::make_nvp("invinsible_time", invinsible_time)
+		);
+	}
 };
 
 //ƒ_ƒ[ƒW‚ğó‚¯‚½‚Ì‚Ğ‚é‚İ•û

@@ -42,10 +42,10 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 }
 //==============================================================
 // 
-//コンストラクタ
+//発動
 // 
 //==============================================================
-void ChargeAttack::play(DirectX::XMFLOAT3 pos)
+void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 {
 	//アクティブ状態に
 	active = true;

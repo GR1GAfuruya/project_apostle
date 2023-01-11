@@ -60,7 +60,7 @@ void Boss::transition_skill_2_loop_state()
 	//state = State::SKILL_2_LOOP;
 	state = State::ATTACK;
 	//チャージエフェクト発生
-	efc_charge_attack->play(position);
+	efc_charge_attack->chant(position);
 }
 
 void Boss::transition_skill_2_end_state()

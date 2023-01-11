@@ -9,7 +9,7 @@
 #include "skill_manager.h"
 #include "primitive.h"
 #include "player_ui.h"
-
+#include <cereal/cereal.hpp>
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {

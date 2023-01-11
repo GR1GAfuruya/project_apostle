@@ -677,12 +677,14 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
     XMVECTOR v3_vec;
     XMVECTOR cross3_vec;
     XMVECTOR dot3_vec;
+    XMMATRIX world_trans_mat;
+    XMMATRIX inverse_world_trans_mat;
     bool hit = false;
     for (const ModelResource::mesh& mesh : model->model_resource->get_meshes())
     {
         // メッシュノード取得
         // レイをワールド空間からローカル空間へ変換
-        XMMATRIX world_trans_mat;
+        
         if (&model->anime_param.animation_keyframe && (&model->anime_param.animation_keyframe)->nodes.size() > 0) // アニメーションあり
         {
             const animation::keyframe::node& mesh_node{ (&model->anime_param.animation_keyframe)->nodes.at(mesh.node_index) };
@@ -693,7 +695,7 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
             world_trans_mat = XMLoadFloat4x4(&mesh.default_global_transform) * XMLoadFloat4x4(&model_world_mat);
         }
         // ワールド行列の逆行列
-        XMMATRIX inverse_world_trans_mat = XMMatrixInverse(nullptr, world_trans_mat);
+        inverse_world_trans_mat = XMMatrixInverse(nullptr, world_trans_mat);
 
         start_vec = XMVector3TransformCoord(world_start_vec, inverse_world_trans_mat);
         end_vec = XMVector3TransformCoord(world_end_vec, inverse_world_trans_mat);

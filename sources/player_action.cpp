@@ -258,8 +258,11 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 	}
 
 	//遷移処理
-	if (model->anime_param.frame_index > 44 / 2)
+	if (model->anime_param.frame_index > 35 / 2)
 	{
+		//ジャンプステートへ移行
+		transition_jump_state();
+		// MOVEステートへ移行
 		if (input_move(elapsed_time, camera))
 		{
 			transition_move_state();

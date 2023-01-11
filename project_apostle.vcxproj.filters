@@ -115,9 +115,6 @@
     <Filter Include="sources\Effects\BossEffects">
       <UniqueIdentifier>{df664513-4e97-4cfe-934b-bb9925c96237}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\BossEffects\ChargeAttack">
-      <UniqueIdentifier>{ccafdc37-edf3-4a9e-8b6c-067edae44093}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Effect\BossEffect\ChargeAttack">
       <UniqueIdentifier>{6b63490c-b332-4eee-93b1-6ef957c513a9}</UniqueIdentifier>
     </Filter>
@@ -246,6 +243,18 @@
     </Filter>
     <Filter Include="sources\Material\Thunder">
       <UniqueIdentifier>{6c73317c-836b-45ed-8093-357adf7aab8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack">
+      <UniqueIdentifier>{d9646814-3a95-4b43-a627-560b1a985490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\ChargeAttack">
+      <UniqueIdentifier>{ccafdc37-edf3-4a9e-8b6c-067edae44093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\AttackSkill1">
+      <UniqueIdentifier>{a4f4ab19-74aa-4c94-92fc-d3d7dd3e09ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\AttackSkill3">
+      <UniqueIdentifier>{316cf841-06b0-48c5-af83-73fa3ad91882}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -394,7 +403,7 @@
       <Filter>sources\Effects\Light</Filter>
     </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
-      <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
+      <Filter>sources\Charactor\Boss\Attack\ChargeAttack</Filter>
     </ClCompile>
     <ClCompile Include="sources\debug_figures.cpp">
       <Filter>sources\Debug</Filter>
@@ -527,6 +536,12 @@
     </ClCompile>
     <ClCompile Include="sources\mat_lightning.cpp">
       <Filter>sources\Material\Thunder</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_attack_skill1.cpp">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill1</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_attack_skill3.cpp">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -681,7 +696,7 @@
       <Filter>sources\Effects\Light</Filter>
     </ClInclude>
     <ClInclude Include="sources\boss_charge_attack.h">
-      <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
+      <Filter>sources\Charactor\Boss\Attack\ChargeAttack</Filter>
     </ClInclude>
     <ClInclude Include="sources\debug_figures.h">
       <Filter>sources\Debug</Filter>
@@ -835,6 +850,12 @@
     </ClInclude>
     <ClInclude Include="sources\mat_lightning.h">
       <Filter>sources\Material\Thunder</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_attack_skill1.h">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill1</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_attack_skill3.h">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

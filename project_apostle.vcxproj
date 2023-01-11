@@ -206,6 +206,8 @@
     <ClCompile Include="sources\bloom.cpp" />
     <ClCompile Include="sources\boss.cpp" />
     <ClCompile Include="sources\boss_action.cpp" />
+    <ClCompile Include="sources\boss_attack_skill1.cpp" />
+    <ClCompile Include="sources\boss_attack_skill3.cpp" />
     <ClCompile Include="sources\boss_charge_attack.cpp" />
     <ClCompile Include="sources\boss_ui.cpp" />
     <ClCompile Include="sources\camera.cpp" />
@@ -298,6 +300,8 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\boss_attack_skill1.h" />
+    <ClInclude Include="sources\boss_attack_skill3.h" />
     <ClInclude Include="sources\boss_ui.h" />
     <ClInclude Include="sources\coordinate_convert.h" />
     <ClInclude Include="sources\damage_func.h" />
