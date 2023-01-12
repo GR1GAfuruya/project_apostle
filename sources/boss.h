@@ -66,6 +66,15 @@ private:
 		WALK
 
 	};
+
+	enum class ATTACK_TYPE
+	{
+		NORMAL,
+		SKILL1,
+		SKILL2,
+		SKILL3,
+		MAX_NUM
+	};
 	struct BodyCollision
 	{
 		Capsule capsule;
@@ -87,7 +96,7 @@ public:
 	void initialize();
 
 	//更新
-	void update(Graphics& graphics, float elapsed_time);
+	void update(Graphics& graphics, float elapsed_time, Camera* camera);
 
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
@@ -206,6 +215,9 @@ public:
 	//少し溜め右腕を振り払う攻撃状態更新
 	void update_skill_3_state(Graphics& graphics, float elapsed_time);
 
+	//攻撃方法選択
+	void select_attack_type();
+
 	//---------------------------//
 	//			ダウン系		 //
 	//---------------------------//
@@ -251,6 +263,7 @@ public:
 
 	//鎌腕のボーン
 	skeleton::bone sickle_hand;
+	Capsule sickle_hand_colide;
 
 	float action_time = 0;
 	float move_speed = 30.0f;
@@ -259,11 +272,14 @@ public:
 
 	//ステートのタイマー
 	float state_timer;
+
+	float state_duration;
 	//攻撃対象
 	DirectX::XMFLOAT3 target_pos;
 
 	//
 	State state;
+	
 	AttackParam sickle_attack_param;
 	BodyCollision boss_body_collision;
 
@@ -276,8 +292,22 @@ public:
 	// 定数
 	// 
 	//==============================================================
+	//歩くスピード
 	float WALK_SPEED = 15;
-	float NORMAL_ATTACK_LENGTH = 17;
+	//走るスピード
+	float RUN_SPEED = 30;
+	//通常攻撃のクールタイム
+	float ATTACK_ACTION_LENGTH = 17;
+	//通常攻撃のクールタイム
+	float NORMAL_ATTACK_COOLTIME = 1;
+	//
+	float SKILL1_COOLTIME = 2;
+	//
+	float SKILL2_COOLTIME = 3;
+	//
+	float SKILL3_COOLTIME = 2;
+	//ダメージを受けたときのスタン時間
+	float DAMAGE_STUN_DURATION = 0.7f;
 public:
 
 	AddDamageFunc damaged_function;

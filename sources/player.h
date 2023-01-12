@@ -9,7 +9,7 @@
 #include "skill_manager.h"
 #include "primitive.h"
 #include "player_ui.h"
-
+#include <cereal/cereal.hpp>
 //プレイヤー :final このクラスの継承ができないことを明示する
 class Player final :public Charactor
 {
@@ -77,10 +77,18 @@ private:
 		MOVE,
 		ROLL,
 		JUMP,
-		FALL,
 		LANDING,
 		FRONT_DAMAGE,
+		NORMAL_ATTACK,
+		SKILL,
 
+	};
+
+	struct PlayerParam
+	{
+		AttackParam combo_1;
+		AttackParam combo_2;
+		AttackParam combo_3;
 	};
 
 	//--------------------------------------------------------------
@@ -95,11 +103,11 @@ private:
 	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
 
 	//攻撃1撃目の攻撃力
-	static constexpr int ATTACK_TYPE1_POWER = 2;
+	static constexpr int ATTACK_TYPE1_POWER = 1;
 	//攻撃2撃目の攻撃力
-	static constexpr int ATTACK_TYPE2_POWER = 3;
+	static constexpr int ATTACK_TYPE2_POWER = 2;
 	//攻撃3撃目の攻撃力
-	static constexpr int ATTACK_TYPE3_POWER = 5;
+	static constexpr int ATTACK_TYPE3_POWER = 4;
 
 
 private:
@@ -188,6 +196,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_update_cs;
 
+	PlayerParam param;
 	State state;
 
 	GamePad* game_pad;
@@ -208,6 +217,8 @@ private:
 	int jump_limit = 1;
 	float avoidance_speed = 50;
 	bool display_player_imgui = false;
+
+	DirectX::XMFLOAT3 left_hand_pos;
 	/*-------攻撃関連--------------------------*/
 	//攻撃時間
 	float attack_time;
@@ -215,10 +226,10 @@ private:
 	int add_damage;
 	//浮遊度
 	float floating_value = 10.0f;
-	float sword_swing_speed = 2000.0f;
+	float sword_swing_speed = 1500.0f;
 	//std::unique_ptr<GPU_Particles> attack1;
 	std::unique_ptr <SkillManager> skill_manager;
-	std::unique_ptr<MeshEffect> slash_efect;
+	std::unique_ptr<MeshEffect> slash_efects[3];
 	std::unique_ptr<MeshEffect> test_slash_hit;
 	std::unique_ptr<Sword> sword;
 	std::unique_ptr<PlayerUI> ui;
@@ -236,6 +247,9 @@ private:
 	DirectX::XMFLOAT3 root_motion_pos = {0,0,0};
 	float add_root_speed = 1.1f;
 	bool is_root_motion = false;
+
+	Camera::CameraShakeParam attack_camera_shake_param;
+	
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
 	AddDamageFunc damaged_function;

@@ -25,7 +25,7 @@ void main(point VS_OUT input[1] : SV_POSITION, inout TriangleStream<GS_OUT> outp
 
     float3 view_space_velocity = mul(float4(p.velocity, 0.0f), view).xyz;
    // p.position = snoise(p.position.xyz * frac(time) * 5.0);
-    float4 view_space_pos = mul(float4(p.position, 1.0), view_projection);
+    float4 view_space_pos = mul(float4(p.position, 1.0), view);
 
 	[unroll]
     for (uint vertex_index = 0; vertex_index < 4; ++vertex_index)

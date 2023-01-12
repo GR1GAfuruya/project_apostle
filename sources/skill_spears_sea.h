@@ -16,10 +16,8 @@ public:
 		float power;
 		//無敵時間
 		float invinsible_time;
-		//クールタイム
-		float cool_time;
 		//生存時間
-		float life_span;
+		float skill_duration;
 		//半径
 		float radius;
 		//当たり判定の半径
@@ -70,8 +68,6 @@ private:
 	std::shared_ptr<PointLight> spear_light;
 
 	PublicParam param;
-	//寿命
-	float life_span;
 	//槍を出した数
 	int emit_num;
 	//フィニッシュしたかのフラグ

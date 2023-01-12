@@ -32,8 +32,13 @@ void Player::initialize()
 	friction = 2.0f;
 	acceleration = 15.0f;
 
+	//パラメーターロード
+
+
+	attack_camera_shake_param = param.combo_1.camera_shake;
+
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->void {apply_damage(damage, invincible, type); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible, type); };
 	state = State::IDLE;
 	//attack1->particle_constants->data.particle_color = { 1.0f,0.8f,8.5f,0.7f };
 	sword->initialize();
@@ -55,16 +60,21 @@ Player::Player(Graphics& graphics, Camera* camera)
 	//UI
 	ui = std::make_unique<PlayerUI>(graphics);
 	//攻撃時エフェクト
-	slash_efect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
-	slash_efect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	slash_efect->set_scale(0.15f);
-	slash_efect->constants->data.particle_color = { 1.8f,1.8f,5.2f,0.8f };
+	for (auto& se : slash_efects)
+	{
+		se = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
+		se->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		se->set_init_scale(0.15f);
+		se->set_life_span(0.2f);
+		se->set_color({ 1.8f, 1.8f, 5.2f, 0.8f });
+
+	}
 
 	//ヒットエフェクト
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	test_slash_hit->set_scale(2.0f);
-	test_slash_hit->constants->data.particle_color = { 2.5f,2.5f,5.9f,0.5f };
+	test_slash_hit->set_init_scale(2.0f);
+	test_slash_hit->set_color({ 2.5f,2.5f,5.9f,0.5f });
 
 	
 	//attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
@@ -72,7 +82,7 @@ Player::Player(Graphics& graphics, Camera* camera)
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
-	left_hand = model->get_bone_by_name("pelvis");
+	left_hand = model->get_bone_by_name("hand_l");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_emit_cs.cso", attack4_emit_cs.ReleaseAndGetAddressOf());
@@ -101,7 +111,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//更新処理
 	(this->*p_update)(graphics, elapsed_time, camera);
 	
-	if (game_pad->get_button_down() & GamePad::BTN_Y) //スペースを押したらジャンプ
+	if (game_pad->get_button_down() & GamePad::BTN_Y) 
 	{
 		camera->set_lock_on();
 	}
@@ -109,7 +119,15 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//オブジェクト行列を更新
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
-	slash_efect->update(graphics,elapsed_time);
+	for (auto& se : slash_efects)
+	{
+		se->update(graphics, elapsed_time);
+		if (se->get_active())
+		{
+			se->set_scale(se->get_scale().x + (0.9f * elapsed_time));
+		}
+
+	}
 	test_slash_hit->update(graphics,elapsed_time);
 	//attack1.get()->update(graphics.get_dc().Get(),elapsed_time, attack4_update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
@@ -119,9 +137,11 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	{
 		sword->update(graphics, elapsed_time);
 
-		attack_sword_param.collision.start = sword->get_collision().start;
-		attack_sword_param.collision.end = sword->get_collision().end;
-		attack_sword_param.collision.radius = sword->get_collision().radius;
+		//通常攻撃状態じゃなければ当たり判定を切る
+		if (state != State::NORMAL_ATTACK)
+		{
+			attack_sword_param.is_attack = false;
+		}
 	}
 	/*仮置き*/
 	collider.start = position;
@@ -163,7 +183,10 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 //==============================================================
 void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
-	slash_efect->render(graphics);
+	for (auto& se : slash_efects)
+	{
+		se->render(graphics);
+	}
 	test_slash_hit->render(graphics);
 	//attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	skill_manager.get()->render(graphics);
@@ -317,7 +340,6 @@ void Player::input_avoidance()
 //==============================================================
 void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 {
-	DirectX::XMFLOAT3 launch_pos;
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
 		switch (skill_manager->get_selected_sup_skill_type())
@@ -329,7 +351,7 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 			}
 			break;
 			case SP_SKILLTYPE::REGENERATE:
-				if (skill_manager->chant_regenerate(graphics, &position, &health, GetMaxHealth()))
+				if (skill_manager->chant_regenerate(graphics, &position, &health, get_max_health()))
 				{
 					transition_attack_slash_up_state();
 				}
@@ -351,23 +373,27 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 //==============================================================
 void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 {
-	DirectX::XMFLOAT3 launch_pos;
+	model->fech_by_bone(transform, left_hand, left_hand_pos);
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
 		case ATK_SKILLTYPE::MAGICBULLET :
-			model->fech_by_bone(transform, left_hand, launch_pos);
+			
 			//スキルを発動できた場合遷移
-			if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, Math::get_posture_forward(orientation)))
 			{
 				transition_attack_bullet_state();//状態遷移
 			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
-			if (skill_manager->chant_spear_sea(graphics, position, camera->get_lock_on_target()))
+			if (is_ground)
 			{
-			   transition_attack_ground_state();
+				if (skill_manager->chant_spear_sea(graphics, position, position))
+				{
+					transition_attack_ground_state();
+				}
+
 			}
 			break;
 		default:
@@ -406,15 +432,20 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 	//剣の攻撃中のみ当たり判定
 	if (attack_sword_param.is_attack)
 	{
-		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, sword->get_collision().start, sword->get_collision().end, sword->get_collision().radius))
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
-			damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE);
+			if (damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE))
+			{
+				//攻撃が当たったらスキルのクールタイムを短縮させる
+				skill_manager->cool_time_reduction();
+				camera->set_camera_shake(attack_camera_shake_param);
+			}
 			//ヒットエフェクト再生
 			if (!test_slash_hit->get_active())
 			{
 				//ヒットエフェクト
-				test_slash_hit->play({ attack_sword_param.collision.end });
+				test_slash_hit->play({ sword->get_collision().end });
 				test_slash_hit->set_life_span(0.1f);
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
@@ -534,9 +565,9 @@ void Player::debug_gui(Graphics& graphics)
 				DirectX::XMStoreFloat3(&forward, Math::get_posture_forward_vec(orientation));
 				ImGui::DragFloat3("forward", &forward.x);
 				ImGui::DragFloat4("ori", &orientation.x);
-				const char* state_c[] = { "IDLE","MOVE","JUMP","FALL","LANDING"};
-
-				ImGui::Text(state_c[static_cast<int>(state)]);
+				std::string state_name;
+				state_name = magic_enum::enum_name<State>(state);
+				ImGui::Text(state_name.c_str());
 				ImGui::DragFloat3("velocity:", &velocity.x);
 			}
 			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
@@ -558,6 +589,26 @@ void Player::debug_gui(Graphics& graphics)
 				float control_y = game_pad->get_axis_LY();
 				ImGui::DragFloat("control_x", &control_x);
 				ImGui::DragFloat("control_y", &control_y);
+			}
+			if (ImGui::CollapsingHeader("AttackCameraShake", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("combo1_camera_shake");
+				ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
+				ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
+				ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
+				ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+
+				ImGui::Text("combo2_camera_shake");
+				ImGui::DragFloat("combo2_shake_x", &param.combo_2.camera_shake.max_x_shake, 0.1f);
+				ImGui::DragFloat("combo2_shake_y", &param.combo_2.camera_shake.max_y_shake, 0.1f);
+				ImGui::DragFloat("combo2_time", &param.combo_2.camera_shake.time, 0.1f);
+				ImGui::DragFloat("combo2_smmoth", &param.combo_2.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+
+				ImGui::Text("combo3_camera_shake");
+				ImGui::DragFloat("combo3_shake_x", &param.combo_3.camera_shake.max_x_shake, 0.1f);
+				ImGui::DragFloat("combo3_shake_y", &param.combo_3.camera_shake.max_y_shake, 0.1f);
+				ImGui::DragFloat("combo3_time", &param.combo_3.camera_shake.time, 0.1f);
+				ImGui::DragFloat("combo3_smmoth", &param.combo_3.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
 			}
 			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -593,7 +644,7 @@ void Player::debug_gui(Graphics& graphics)
 						break;
 					case SP_SKILLTYPE::REGENERATE:
 						transition_magic_buff_state();//状態遷移
-						skill_manager->chant_regenerate(graphics, &position, &health, GetMaxHealth());
+						skill_manager->chant_regenerate(graphics, &position, &health, get_max_health());
 
 						break;
 					case SP_SKILLTYPE::RESTRAINNT:
@@ -612,7 +663,7 @@ void Player::debug_gui(Graphics& graphics)
 					case ATK_SKILLTYPE::MAGICBULLET:
 						model->fech_by_bone(transform, left_hand, launch_pos);
 
-						if (skill_manager->chant_magic_bullet(graphics, launch_pos, Math::get_posture_forward(orientation)))
+						if (skill_manager->chant_magic_bullet(graphics, &launch_pos, Math::get_posture_forward(orientation)))
 						{
 							transition_attack_bullet_state();//状態遷移
 						}
@@ -636,7 +687,6 @@ void Player::debug_gui(Graphics& graphics)
 
 
 	skill_manager.get()->debug_gui(graphics);
-	slash_efect->debug_gui("slash_efect");
 	test_slash_hit->debug_gui("test_slash_hit");
 #endif // USE_IMGUI
 

@@ -206,18 +206,23 @@
     <ClCompile Include="sources\bloom.cpp" />
     <ClCompile Include="sources\boss.cpp" />
     <ClCompile Include="sources\boss_action.cpp" />
+    <ClCompile Include="sources\boss_attack_skill1.cpp" />
+    <ClCompile Include="sources\boss_attack_skill3.cpp" />
     <ClCompile Include="sources\boss_charge_attack.cpp" />
     <ClCompile Include="sources\boss_ui.cpp" />
     <ClCompile Include="sources\camera.cpp" />
+    <ClCompile Include="sources\coordinate_convert.cpp" />
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
+    <ClCompile Include="sources\emitter.cpp" />
     <ClCompile Include="sources\gauge_ui.cpp" />
     <ClCompile Include="sources\instance_mesh_effect.cpp" />
     <ClCompile Include="sources\instancing_mesh.cpp" />
     <ClCompile Include="sources\material.cpp" />
     <ClCompile Include="sources\material_manager.cpp" />
     <ClCompile Include="sources\mat_fire_distortion.cpp" />
+    <ClCompile Include="sources\mat_lightning.cpp" />
     <ClCompile Include="sources\mat_meteore.cpp" />
     <ClCompile Include="sources\mesh_effect.cpp" />
     <ClCompile Include="sources\field_spark_particle.cpp" />
@@ -233,6 +238,7 @@
     <ClCompile Include="sources\noise.cpp" />
     <ClCompile Include="sources\object_particle.cpp" />
     <ClCompile Include="sources\particle.cpp" />
+    <ClCompile Include="sources\particle_system.cpp" />
     <ClCompile Include="sources\PBR_shader.cpp" />
     <ClCompile Include="sources\charactor.cpp" />
     <ClCompile Include="sources\collision.cpp" />
@@ -294,8 +300,12 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\boss_attack_skill1.h" />
+    <ClInclude Include="sources\boss_attack_skill3.h" />
     <ClInclude Include="sources\boss_ui.h" />
+    <ClInclude Include="sources\coordinate_convert.h" />
     <ClInclude Include="sources\damage_func.h" />
+    <ClInclude Include="sources\emitter.h" />
     <ClInclude Include="sources\gauge_ui.h" />
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />
@@ -303,10 +313,12 @@
     <ClInclude Include="sources\material.h" />
     <ClInclude Include="sources\material_manager.h" />
     <ClInclude Include="sources\mat_fire_distortion.h" />
+    <ClInclude Include="sources\mat_lightning.h" />
     <ClInclude Include="sources\mat_meteore.h" />
     <ClInclude Include="sources\meteore.h" />
     <ClInclude Include="sources\noise.h" />
     <ClInclude Include="sources\object_particle.h" />
+    <ClInclude Include="sources\particle_system.h" />
     <ClInclude Include="sources\physical_up_launcher.h" />
     <ClInclude Include="sources\player_ui.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />
@@ -409,6 +421,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\lightning.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -883,6 +901,28 @@
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
     </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_gs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shaders\%(Filename).cso</ObjectFileOutput>
       <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AssemblyCode</AssemblerOutput>
@@ -993,6 +1033,7 @@
     <None Include="HLSL\shadow_map.hlsli" />
     <None Include="HLSL\sprite.hlsli" />
     <None Include="HLSL\sprite_dissolve.hlsli" />
+    <None Include="HLSL\sprite_particle.hlsli" />
     <None Include="HLSL\static_mesh.hlsli" />
   </ItemGroup>
   <ItemGroup>

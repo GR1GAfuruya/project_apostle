@@ -18,12 +18,12 @@ class SpriteBatch
 {
 public:
 	//メンバ変数
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;//https://docs.microsoft.com/ja-jp/previous-versions/direct-x/ee420044(v=vs.85) 実行プログラム
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;//https://docs.microsoft.com/ja-jp/previous-versions/direct-x/ee419858(v=vs.85)	実行プログラム
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;//https://docs.microsoft.com/ja-jp/previous-versions/direct-x/ee419857(v=vs.85)	入力アセンブラー ステージの入力データにアクセス
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;		//https://docs.microsoft.com/ja-jp/previous-versions/direct-x/ee419532(v=vs.85)　構造化されていないメモリーであるバッファー リソースにアクセス
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;		//https://docs.microsoft.com/ja-jp/windows/win32/api/d3d11/nn-d3d11-id3d11shaderresourceview 
-													   //シェーダー-リソース-ビューインターフェイスは、シェーダーがレンダリング中にアクセスできるサブリソースを指定
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;	
+													 
 
 	D3D11_TEXTURE2D_DESC texture2d_desc;
 

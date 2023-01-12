@@ -15,6 +15,7 @@
 #include "field_spark_particle.h"
 #include "generic_frequent_entities.h"
 #include "tutorial.h"
+#include "emitter.h"
 class SceneGame :public Scene, public GenericFrequentEntities
 {
 public:
@@ -54,7 +55,8 @@ private:
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect = nullptr;
-	//std::unique_ptr<Meteore> test_meteore;
+	std::unique_ptr<Emitter> test_emitter;
+	//std::vector<std::unique_ptr<Emitter>> test_emitters;
 	
 #endif
 };

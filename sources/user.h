@@ -477,6 +477,20 @@ namespace Math
     }
 
     //--------------------------------------------------------------
+    //  ãtçsóÒ
+    //--------------------------------------------------------------
+    inline DirectX::XMFLOAT4X4 get_inv_mat(DirectX::XMFLOAT4X4 m)
+    {
+        auto M = DirectX::XMLoadFloat4x4(&m);
+
+        auto inv = DirectX::XMMatrixInverse(nullptr, M);
+
+        DirectX::XMFLOAT4X4 ans;
+        DirectX::XMStoreFloat4x4(&ans, inv);
+
+        return ans;
+    }
+    //--------------------------------------------------------------
     //  ì‡êœ
     //--------------------------------------------------------------
     //

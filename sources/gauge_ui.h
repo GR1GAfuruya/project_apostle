@@ -5,7 +5,7 @@ class GaugeUi : public UI
 
 public:
 	//--------<constructor/destructor>--------//
-	GaugeUi() :percent(1)
+	GaugeUi() :now_percent(1)
 	{}
 	GaugeUi(Graphics& graphics, const wchar_t* back_filename, const wchar_t* body_filename, const wchar_t* frame_filename);
 	virtual ~GaugeUi() {}
@@ -14,7 +14,7 @@ public:
 	void update(Graphics& graphics, float elapsed_time) override;
 	void render(ID3D11DeviceContext* dc) override;
 
-	void set_percent(float per) { percent = per; }
+	void set_percent(float per) { now_percent = per; }
 	void set_animation(bool anim) { animation = anim; }
 	void set_angle(float ang) { gauge.angle = ang; }
 	void set_position(DirectX::XMFLOAT2 pos) { gauge.position = pos; }
@@ -26,8 +26,9 @@ protected:
 	std::unique_ptr<SpriteBatch> frame{ nullptr };
 	std::unique_ptr<SpriteBatch> back{ nullptr };
 	std::unique_ptr<SpriteBatch> body{ nullptr };
-
+	DirectX::XMFLOAT4 diff_color = { 1.0f,1.0f,1.0f,1.0f };
 	Element gauge;
-	float percent;
+	float now_percent;
+	float old_percent;
 	bool animation = false;
 };

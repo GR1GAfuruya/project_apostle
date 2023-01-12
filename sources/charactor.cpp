@@ -115,11 +115,11 @@ void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed
 	MoveVec = DirectX::XMVector3Normalize(MoveVec);
 
 	DirectX::XMVECTOR axis;	//回転軸
-	float angle;			//回転角
+	
 	axis = up;
 	DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(forward, MoveVec);
-	DirectX::XMStoreFloat(&angle, Ang);
-	angle = acosf(angle);
+	DirectX::XMStoreFloat(&turn_angle, Ang);
+	turn_angle = acosf(turn_angle);
 
 	DirectX::XMFLOAT3 forw{};//forwardの値をfloat3に
 	DirectX::XMFLOAT3 m_vec{};//dの値をfloat3に
@@ -127,7 +127,7 @@ void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed
 	DirectX::XMStoreFloat3(&forw, forward);
 	DirectX::XMStoreFloat3(&m_vec, MoveVec);
 	//回転角（angle）が微小な場合は、回転を行わない
-	if (fabs(angle) > 1e-8f)
+	if (fabs(turn_angle) > 1e-8f)
 	{
 		//回転軸（axis）と回転角（angle）から回転クオータニオン（q）を求める
 		float cross{ forw.x * m_vec.z - forw.z * m_vec.x };
@@ -138,7 +138,7 @@ void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed
 		{
 			//回転軸と回転角から回転クオータニオンを求める
 			DirectX::XMVECTOR q;
-			q = DirectX::XMQuaternionRotationAxis(axis, angle);//正の方向に動くクオータニオン
+			q = DirectX::XMQuaternionRotationAxis(axis, turn_angle);//正の方向に動くクオータニオン
 
 			DirectX::XMVECTOR End = DirectX::XMQuaternionMultiply(orientationVec, q);
 			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, End, rate * elapsed_time);
@@ -146,7 +146,7 @@ void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed
 		else
 		{
 			DirectX::XMVECTOR q;
-			q = DirectX::XMQuaternionRotationAxis(axis, -angle);//負の方向に動くクオータニオン
+			q = DirectX::XMQuaternionRotationAxis(axis, -turn_angle);//負の方向に動くクオータニオン
 			DirectX::XMVECTOR End = DirectX::XMQuaternionMultiply(orientationVec, q);
 			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, End, rate * elapsed_time);
 		}

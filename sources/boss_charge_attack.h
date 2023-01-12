@@ -3,6 +3,7 @@
 #include "gpu_particle.h"
 #include "meteore.h"
 #include "light.h"
+#include "camera.h"
 class ChargeAttack
 {
 public:
@@ -10,12 +11,12 @@ public:
 	ChargeAttack(Graphics& grapghics);
 	//デストラクタ
 	~ChargeAttack(){}
-	//再生
-	void play(DirectX::XMFLOAT3 pos);
+	//発動
+	void chant(DirectX::XMFLOAT3 pos);
 	//停止
 	void stop();
 	//更新
-	void update(Graphics& graphics, float elapsed_time);
+	void update(Graphics& graphics, float elapsed_time,Camera* camera);
 	//描画
 	void render(Graphics& graphics);
 	//デバッグGUI
@@ -29,13 +30,13 @@ public:
 
 private:
 	//チャージ中の更新
-	void charging_update(Graphics& graphics, float elapsed_time);
+	void charging_update(Graphics& graphics, float elapsed_time, Camera* camera);
 	//発動中の更新
-	void activities_update(Graphics& graphics, float elapsed_time);
+	void activities_update(Graphics& graphics, float elapsed_time, Camera* camera);
 	//消滅時の更新
-	void vanishing_update(Graphics& graphics, float elapsed_time);
+	void vanishing_update(Graphics& graphics, float elapsed_time, Camera* camera);
 
-	typedef void (ChargeAttack::* ChargeAttackUpdate)(Graphics& graphics, float elapsed_time);
+	typedef void (ChargeAttack::* ChargeAttackUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
 	ChargeAttackUpdate charge_attack_update = &ChargeAttack::charging_update;
 	struct ChargeAttackConstants
 	{
@@ -50,6 +51,7 @@ private:
 	std::unique_ptr<MeshEffect> wave;
 	//トルネード
 	std::unique_ptr<MeshEffect> tornado;
+	std::unique_ptr<MeshEffect> tornado_black;
 	//GPUパーティクルのエミッターCS
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
 	//GPUパーティクルのアップデートCS

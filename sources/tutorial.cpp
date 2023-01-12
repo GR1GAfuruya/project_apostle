@@ -1,7 +1,5 @@
 #include "tutorial.h"
-#include "device.h"
-#include "imgui_include.h"
-#include "user.h"
+
 Tutorial::Tutorial(Graphics& graphics)
 {
 	//Šî–{‘€ìà–¾

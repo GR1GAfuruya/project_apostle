@@ -8,14 +8,54 @@
 #include "graphics.h"
 #include "stage.h"
 #include "user.h"
+#include "noise.h"
 
+#include <cereal/cereal.hpp>
 class Camera
 {
+private:
+    //--------< 定数/構造体 >--------//
+    struct SCENE_CONSTANTS
+    {
+        DirectX::XMFLOAT4X4 view;                //ビュー行列
+        DirectX::XMFLOAT4X4 projection;          //プロジェクション行列
+        DirectX::XMFLOAT4X4 view_projection;     //ビュー・プロジェクション変換行列
+        DirectX::XMFLOAT4 light_color;       //ライトの色
+        DirectX::XMFLOAT4 light_direction;       //ライトの向き
+        DirectX::XMFLOAT4 camera_position;
+        DirectX::XMFLOAT4 avatar_position;
+        DirectX::XMFLOAT4 avatar_direction;
+        DirectX::XMFLOAT2 resolution;
+        float time;
+        float delta_time;
+    };
+public:
+    //------カメラシェイク-------//
+    struct CameraShakeParam
+    {
+        float max_x_shake = 0.0f;//横揺れ最大値　※入力はDegree値で
+        float max_y_shake = 0.0f;//縦揺れ最大値　※入力はDegree値で
+        float time = 0.0f;//揺れる時間
+        float shake_smoothness = 1.0f;//揺れ方の滑らかさ
+
+        // シリアライズ
+        template<class Archive>
+        void serialize(Archive& archive)
+        {
+            archive(
+                cereal::make_nvp("max_x_shake", max_x_shake),
+                cereal::make_nvp("max_y_shake", max_y_shake),
+                cereal::make_nvp("time", time),
+                cereal::make_nvp("shake_smoothness", shake_smoothness)
+            );
+        }
+    };
+
 public:
     //--------<constructor/destructor>--------//
     Camera(Graphics& graphics);
     ~Camera() = default;
-public:
+
     //--------< 関数 >--------//
     void update(float elapsed_time);
     //対象を追従する
@@ -71,32 +111,21 @@ public:
     //カメラストップ
     void set_camera_stop(float stop_time);
 
-    //ポストエフェクト
-    //std::unique_ptr<PostEffects> post_effect;
-    PostEffects post_effect;
+    PostEffects* get_post_effect() { return post_effect.get(); }
+    //PostEffects post_effect;
 
+    //カメラシェイク
+    void set_camera_shake(CameraShakeParam param);
 private:
     void calc_free_target();
+
+    void camera_shake_update(float elapsed_time);
     //--------< 関数ポインタ >--------//
     typedef void (Camera::* p_Update)(float elapsed_time);
     p_Update p_update = &Camera::update_with_tracking;
     //--------< 関数 >--------//
     //
-    //--------< 定数/構造体 >--------//
-    struct SCENE_CONSTANTS
-    {
-        DirectX::XMFLOAT4X4 view;                //ビュー行列
-        DirectX::XMFLOAT4X4 projection;          //プロジェクション行列
-        DirectX::XMFLOAT4X4 view_projection;     //ビュー・プロジェクション変換行列
-        DirectX::XMFLOAT4 light_color;       //ライトの色
-        DirectX::XMFLOAT4 light_direction;       //ライトの向き
-        DirectX::XMFLOAT4 camera_position;
-        DirectX::XMFLOAT4 avatar_position;
-        DirectX::XMFLOAT4 avatar_direction;
-        DirectX::XMFLOAT2 resolution;
-        float time;
-        float delta_time;
-    };
+
     //--------< 変数 >--------//
     std::unique_ptr<Constants<SCENE_CONSTANTS>> scene_constant_buffer{};
 
@@ -107,7 +136,7 @@ private:
     DirectX::XMFLOAT3 lock_on_target;//注視点
     DirectX::XMFLOAT3 angle;
     DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
-    DirectX::XMFLOAT4 lock_on_orientation = { 0,0,0,1 };
+    DirectX::XMFLOAT4 standard_orientation = { 0,0,0,1 };
 
     float lock_on_rate = 0.7f;
     bool is_move;
@@ -119,6 +148,7 @@ private:
     float vertical_rotation_degree = 0;
     //平行遅延
     float horizon_rotation_degree = 0;
+
     DirectX::XMFLOAT4 light_color = { 1.0f,1.0f, 1.0f,1.0f };
     DirectX::XMFLOAT4 light_direction{ 1.0f,1.0f, 1.0f,1.0f };
     //上下の向ける角度制限
@@ -142,4 +172,11 @@ private:
 
     //ロックオンフラグ
     bool lock_on = false;
+
+    //------カメラシェイク-------//
+    bool is_camera_shake = false;//カメラシェイク中
+    CameraShakeParam camera_shake_param;
+
+    //------ポストエフェクト-------//
+    std::shared_ptr<PostEffects> post_effect;
 };

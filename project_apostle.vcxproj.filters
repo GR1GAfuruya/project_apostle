@@ -115,9 +115,6 @@
     <Filter Include="sources\Effects\BossEffects">
       <UniqueIdentifier>{df664513-4e97-4cfe-934b-bb9925c96237}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\BossEffects\ChargeAttack">
-      <UniqueIdentifier>{ccafdc37-edf3-4a9e-8b6c-067edae44093}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Effect\BossEffect\ChargeAttack">
       <UniqueIdentifier>{6b63490c-b332-4eee-93b1-6ef957c513a9}</UniqueIdentifier>
     </Filter>
@@ -232,6 +229,33 @@
     <Filter Include="sources\Tutorial">
       <UniqueIdentifier>{01df8133-4bc6-46cb-8048-569d9d55d7f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\Particle\GPUParticle">
+      <UniqueIdentifier>{dd6ac443-3040-4df3-93c5-18f2b6dba0af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\Particle\sprite_particle">
+      <UniqueIdentifier>{0030c2d0-3661-4c76-9b1d-68377a7d5e29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Particle\SpriteEmitter">
+      <UniqueIdentifier>{16beab85-de27-4408-9f8f-6cb729f88b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Particle\MeshEmitter">
+      <UniqueIdentifier>{26a36b64-a91f-4ccd-bf2b-d4563189dafe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Material\Thunder">
+      <UniqueIdentifier>{6c73317c-836b-45ed-8093-357adf7aab8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack">
+      <UniqueIdentifier>{d9646814-3a95-4b43-a627-560b1a985490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\ChargeAttack">
+      <UniqueIdentifier>{ccafdc37-edf3-4a9e-8b6c-067edae44093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\AttackSkill1">
+      <UniqueIdentifier>{a4f4ab19-74aa-4c94-92fc-d3d7dd3e09ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\AttackSkill3">
+      <UniqueIdentifier>{316cf841-06b0-48c5-af83-73fa3ad91882}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -342,9 +366,6 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="sources\field_spark_particle.cpp">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="sources\particle.cpp">
       <Filter>sources\Effects\Particle</Filter>
     </ClCompile>
@@ -382,13 +403,7 @@
       <Filter>sources\Effects\Light</Filter>
     </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
-      <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\skin_particles.cpp">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\gpu_particle.cpp">
-      <Filter>sources\Effects\Particle</Filter>
+      <Filter>sources\Charactor\Boss\Attack\ChargeAttack</Filter>
     </ClCompile>
     <ClCompile Include="sources\debug_figures.cpp">
       <Filter>sources\Debug</Filter>
@@ -468,9 +483,6 @@
     <ClCompile Include="sources\instance_mesh_effect.cpp">
       <Filter>sources\Effects\MeshEffect</Filter>
     </ClCompile>
-    <ClCompile Include="sources\object_particle.cpp">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="sources\boss_ui.cpp">
       <Filter>sources\Charactor\Boss</Filter>
     </ClCompile>
@@ -500,6 +512,36 @@
     </ClCompile>
     <ClCompile Include="sources\tutorial.cpp">
       <Filter>sources\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\emitter.cpp">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\coordinate_convert.cpp">
+      <Filter>sources\User</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\field_spark_particle.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\gpu_particle.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\object_particle.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skin_particles.cpp">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\particle_system.cpp">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\mat_lightning.cpp">
+      <Filter>sources\Material\Thunder</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_attack_skill1.cpp">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill1</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\boss_attack_skill3.cpp">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -623,12 +665,6 @@
     <ClInclude Include="external\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="sources\field_spark_particle.h">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\gpu_particle.h">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="sources\particle.h">
       <Filter>sources\Effects\Particle</Filter>
     </ClInclude>
@@ -660,10 +696,7 @@
       <Filter>sources\Effects\Light</Filter>
     </ClInclude>
     <ClInclude Include="sources\boss_charge_attack.h">
-      <Filter>sources\Effects\BossEffects\ChargeAttack</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\skin_particles.h">
-      <Filter>sources\Effects\Particle</Filter>
+      <Filter>sources\Charactor\Boss\Attack\ChargeAttack</Filter>
     </ClInclude>
     <ClInclude Include="sources\debug_figures.h">
       <Filter>sources\Debug</Filter>
@@ -764,9 +797,6 @@
     <ClInclude Include="sources\instance_mesh_effect.h">
       <Filter>sources\Effects\MeshEffect</Filter>
     </ClInclude>
-    <ClInclude Include="sources\object_particle.h">
-      <Filter>sources\Effects\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="sources\boss_ui.h">
       <Filter>sources\Charactor\Boss</Filter>
     </ClInclude>
@@ -796,6 +826,36 @@
     </ClInclude>
     <ClInclude Include="sources\tutorial.h">
       <Filter>sources\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\emitter.h">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\coordinate_convert.h">
+      <Filter>sources\User</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\field_spark_particle.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\gpu_particle.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\object_particle.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skin_particles.h">
+      <Filter>sources\Effects\Particle\GPUParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\particle_system.h">
+      <Filter>sources\Effects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\mat_lightning.h">
+      <Filter>sources\Material\Thunder</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_attack_skill1.h">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill1</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\boss_attack_skill3.h">
+      <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1021,6 +1081,18 @@
     <FxCompile Include="HLSL\player_attack4_update_cs.hlsl">
       <Filter>Shaders\Effect\Player\Attack4</Filter>
     </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_ps.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_gs.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\lightning.hlsl">
+      <Filter>Shaders\Effect</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HLSL\sprite.hlsli">
@@ -1085,6 +1157,9 @@
     </None>
     <None Include="HLSL\object_particles.hlsli">
       <Filter>Shaders\Effect\Particle\object_particle</Filter>
+    </None>
+    <None Include="HLSL\sprite_particle.hlsli">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

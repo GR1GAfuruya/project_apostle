@@ -7,6 +7,7 @@
 //==============================================================
 PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
 {
+	max_cool_time = 5;
 }
 //==============================================================
 // 
@@ -19,7 +20,6 @@ bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos
 	if (chantable)
 	{
 		unique_ptr<Skill> skill = make_unique<PhysicalUp>(graphics, launch_pos, add_run_speed, add_jump_speed);
-		max_cool_time = skill->get_cool_time();
 		cool_time = max_cool_time;
 		//ƒŠƒXƒg‚É’Ç‰Á
 		skills.push_back(std::move(skill));

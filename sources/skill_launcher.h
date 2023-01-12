@@ -22,7 +22,7 @@ public:
 	SkillLauncher() :
 		cool_time(0.0f),
 		chantable(false),
-		cool_time_attenuation_speed(1.0f) {};
+		reduction_rate(1.0f) {};
 	virtual ~SkillLauncher() {}
 
 	//初期化
@@ -31,7 +31,8 @@ public:
 	virtual void update(Graphics& graphics, float elapsed_time);
 	//描画
 	virtual void render(Graphics& graphics);
-
+	//スキルクールタイム短縮
+	void cool_time_reduction();
 	//DebugGUI表示
 	virtual void debug_gui()= 0;
 	//クールタイム取得
@@ -56,8 +57,8 @@ protected:
 	float max_cool_time = 0;
 	//詠唱可能か
 	bool chantable;
-
-	float cool_time_attenuation_speed;
+	//クールタイム短縮率
+	float reduction_rate;
 	std::vector<std::unique_ptr<Skill>> skills;
 
 	bool display_imgui = false;
