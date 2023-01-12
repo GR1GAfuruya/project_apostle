@@ -19,7 +19,7 @@ void Boss::initialize()
 	acceleration = 10.0f;
 	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible,type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
-	sickle_attack_param.collision.radius = 8.0f;
+	sickle_hand_colide.radius = 8.0f;
 	vs_wall_ray_power = 10.0f;
 	state_duration = 2.0f;
 	boss_body_collision.capsule.start = position;
@@ -64,8 +64,8 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	boss_body_collision.capsule.end.y = boss_body_collision.capsule.start.y + boss_body_collision.height;
 
 	DirectX::XMFLOAT4X4 sickle_bone_mat;
-	model->fech_by_bone(transform, sickle_hand, sickle_attack_param.collision.start, &sickle_bone_mat);
-	sickle_attack_param.collision.end = sickle_attack_param.collision.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
+	model->fech_by_bone(transform, sickle_hand, sickle_hand_colide.start, &sickle_bone_mat);
+	sickle_hand_colide.end = sickle_hand_colide.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
 	update_invicible_timer(elapsed_time);
 
 	ui->update(graphics, elapsed_time);
@@ -167,7 +167,7 @@ void Boss::debug_gui()
 			ImGui::DragFloat("turnspeed", &turn_speed,0.1f);
 			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius,0.1f);
 			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height,0.1f);
-			ImGui::DragFloat("sickle_.radius", &sickle_attack_param.collision.radius,1);
+			ImGui::DragFloat("sickle_.radius", &sickle_hand_colide.radius,1);
 		}
 		ImGui::End();
 	}
@@ -185,7 +185,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 	{
 
 		if (Collision::capsule_vs_capsule(player_cap_start, player_cap_end, colider_radius,
-			sickle_attack_param.collision.start, sickle_attack_param.collision.end, sickle_attack_param.collision.radius))
+			sickle_hand_colide.start, sickle_hand_colide.end, sickle_hand_colide.radius))
 		{
 			sickle_attack_param.power = 5;
 			sickle_attack_param.invinsible_time = 0.55f;

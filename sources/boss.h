@@ -263,6 +263,7 @@ public:
 
 	//Š™˜r‚Ìƒ{[ƒ“
 	skeleton::bone sickle_hand;
+	Capsule sickle_hand_colide;
 
 	float action_time = 0;
 	float move_speed = 30.0f;

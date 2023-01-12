@@ -237,15 +237,15 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
 
 	//隕石を地面から浮き上がらせる
-	int range = 9;
-	float ofset = 1;
+	float min = 1;
+	float max = 9;
 	for (int i = 0; i < meteores->get_max_num(); i++)
 	{
-		float random = fabs(Noise::instance().random_range(ofset, range) / 10.0f);
-		range = 3;
-		ofset = 4;
-		float random_size = fabs(Noise::instance().random_range(ofset, range));
-		meteores->rising(elapsed_time, core->get_position(), random_size, random, i);
+		float random_speed = fabs(Noise::instance().random_range(min, max));
+		min = 2;
+		max = 5;
+		float random_size = fabs(Noise::instance().random_range(min, max));
+		meteores->rising(elapsed_time, core->get_position(), random_size, random_speed, i);
 	}
 
 	//チャージ完了時の処理
@@ -316,9 +316,9 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 		if (meteo_time >= meteo_span )
 		{
 			//power
-			const int range = 50;
-			const int ofset = 50;
-			const int random = Noise::instance().random_range(ofset, range);
+			const float min = 50;
+			const float max = 100;
+			const float random = Noise::instance().random_range(min, max);
 			float power = random;
 			//方向
 			DirectX::XMFLOAT3 direction = Math::circumferential_placement(core->get_position(),

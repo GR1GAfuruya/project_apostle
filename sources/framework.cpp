@@ -42,6 +42,33 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	graphics->set_hwnd(hwnd);
 	SceneManager::instance().update(elapsed_time,*graphics);
 	graphics->debug_gui();
+
+	// ÉtÉåÅ[ÉÄï\é¶
+	{
+		ImGui::Begin("##frame rate");
+
+		static float temp_value = 0;
+		static float values[90] = {};
+		static int values_offset = 0;
+		static float refresh_time = 0.0f;
+		static const float PLOT_SENSE = 0.2f;
+
+		refresh_time += elapsed_time;
+		if (static_cast<int>(refresh_time / PLOT_SENSE) >= 1)
+		{
+			values_offset = values_offset >= IM_ARRAYSIZE(values) ? 0 : values_offset;
+			values[values_offset] = temp_value = elapsed_time * 1000.0f;
+
+			++values_offset;
+			refresh_time = 0;
+		}
+
+		char overlay[32];
+		sprintf_s(overlay, "now: %d fps  %.3f ms", static_cast<int>(1000.0f / temp_value), temp_value);
+		ImGui::PlotLines("##frame", values, IM_ARRAYSIZE(values), values_offset, overlay, 0, 20, ImVec2(ImGui::GetWindowSize().x * 0.95f, ImGui::GetWindowSize().y * 0.7f));
+
+		ImGui::End();
+	}
 }
 
 BOOL framework::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)

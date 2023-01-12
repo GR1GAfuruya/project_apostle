@@ -32,6 +32,11 @@ void Player::initialize()
 	friction = 2.0f;
 	acceleration = 15.0f;
 
+	//パラメーターロード
+
+
+	attack_camera_shake_param = param.combo_1.camera_shake;
+
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible, type); };
 	state = State::IDLE;
@@ -131,10 +136,6 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//ソード更新
 	{
 		sword->update(graphics, elapsed_time);
-
-		attack_sword_param.collision.start = sword->get_collision().start;
-		attack_sword_param.collision.end = sword->get_collision().end;
-		attack_sword_param.collision.radius = sword->get_collision().radius;
 
 		//通常攻撃状態じゃなければ当たり判定を切る
 		if (state != State::NORMAL_ATTACK)
@@ -431,19 +432,20 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 	//剣の攻撃中のみ当たり判定
 	if (attack_sword_param.is_attack)
 	{
-		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, attack_sword_param.collision.start, attack_sword_param.collision.end, attack_sword_param.collision.radius))
+		if (Collision::capsule_vs_capsule(collider.start, collider.end, collider.radius, sword->get_collision().start, sword->get_collision().end, sword->get_collision().radius))
 		{
 			//攻撃対象に与えるダメージ量と無敵時間
 			if (damaged_func(attack_sword_param.power, attack_sword_param.invinsible_time, WINCE_TYPE::NONE))
 			{
 				//攻撃が当たったらスキルのクールタイムを短縮させる
 				skill_manager->cool_time_reduction();
+				camera->set_camera_shake(attack_camera_shake_param);
 			}
 			//ヒットエフェクト再生
 			if (!test_slash_hit->get_active())
 			{
 				//ヒットエフェクト
-				test_slash_hit->play({ attack_sword_param.collision.end });
+				test_slash_hit->play({ sword->get_collision().end });
 				test_slash_hit->set_life_span(0.1f);
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
@@ -587,6 +589,26 @@ void Player::debug_gui(Graphics& graphics)
 				float control_y = game_pad->get_axis_LY();
 				ImGui::DragFloat("control_x", &control_x);
 				ImGui::DragFloat("control_y", &control_y);
+			}
+			if (ImGui::CollapsingHeader("AttackCameraShake", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("combo1_camera_shake");
+				ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
+				ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
+				ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
+				ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+
+				ImGui::Text("combo2_camera_shake");
+				ImGui::DragFloat("combo2_shake_x", &param.combo_2.camera_shake.max_x_shake, 0.1f);
+				ImGui::DragFloat("combo2_shake_y", &param.combo_2.camera_shake.max_y_shake, 0.1f);
+				ImGui::DragFloat("combo2_time", &param.combo_2.camera_shake.time, 0.1f);
+				ImGui::DragFloat("combo2_smmoth", &param.combo_2.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+
+				ImGui::Text("combo3_camera_shake");
+				ImGui::DragFloat("combo3_shake_x", &param.combo_3.camera_shake.max_x_shake, 0.1f);
+				ImGui::DragFloat("combo3_shake_y", &param.combo_3.camera_shake.max_y_shake, 0.1f);
+				ImGui::DragFloat("combo3_time", &param.combo_3.camera_shake.time, 0.1f);
+				ImGui::DragFloat("combo3_smmoth", &param.combo_3.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
 			}
 			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
 			{

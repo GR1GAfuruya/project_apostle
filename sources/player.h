@@ -84,6 +84,13 @@ private:
 
 	};
 
+	struct PlayerParam
+	{
+		AttackParam combo_1;
+		AttackParam combo_2;
+		AttackParam combo_3;
+	};
+
 	//--------------------------------------------------------------
 	//  定数
 	//--------------------------------------------------------------
@@ -189,6 +196,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_update_cs;
 
+	PlayerParam param;
 	State state;
 
 	GamePad* game_pad;
@@ -239,6 +247,9 @@ private:
 	DirectX::XMFLOAT3 root_motion_pos = {0,0,0};
 	float add_root_speed = 1.1f;
 	bool is_root_motion = false;
+
+	Camera::CameraShakeParam attack_camera_shake_param;
+	
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
 	AddDamageFunc damaged_function;
