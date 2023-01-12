@@ -86,28 +86,36 @@ private:
 
 	struct PlayerParam
 	{
+		int max_health;
+		float move_speed = 30;
+		float turn_speed;
+		float jump_speed;
+		float radius;
+		float height;
+		float friction;
+		float acceleration;
 		AttackParam combo_1;
 		AttackParam combo_2;
 		AttackParam combo_3;
+
+
+		template<class Archive>
+		void serialize(Archive& archive)
+		{
+			archive(
+				cereal::make_nvp("max_health", max_health),
+				cereal::make_nvp("turn_speed", turn_speed),
+				cereal::make_nvp("jump_speed", jump_speed),
+				cereal::make_nvp("radius", radius),
+				cereal::make_nvp("height", height),
+				cereal::make_nvp("friction", friction),
+				cereal::make_nvp("acceleration", acceleration),
+				cereal::make_nvp("attack_combo_1", combo_1),
+				cereal::make_nvp("attack_combo_2", combo_2),
+				cereal::make_nvp("attack_combo_3", combo_3)
+			);
+		}
 	};
-
-	//--------------------------------------------------------------
-	//  ’è”
-	//--------------------------------------------------------------
-	
-	 //UŒ‚1Œ‚–Ú‚Ì—P—\ŠÔ
-	static constexpr float ATTACK_TYPE1_MAX_TIME = 0.3f;
-	//UŒ‚2Œ‚–Ú‚Ì—P—\ŠÔ
-	static constexpr float ATTACK_TYPE2_MAX_TIME = 0.2f;
-	//UŒ‚3Œ‚–Ú‚Ì—P—\ŠÔ
-	static constexpr float ATTACK_TYPE3_MAX_TIME = 0.2f;
-
-	//UŒ‚1Œ‚–Ú‚ÌUŒ‚—Í
-	static constexpr int ATTACK_TYPE1_POWER = 1;
-	//UŒ‚2Œ‚–Ú‚ÌUŒ‚—Í
-	static constexpr int ATTACK_TYPE2_POWER = 2;
-	//UŒ‚3Œ‚–Ú‚ÌUŒ‚—Í
-	static constexpr int ATTACK_TYPE3_POWER = 4;
 
 
 private:
@@ -187,6 +195,11 @@ private:
 	void root_motion_manual(DirectX::XMFLOAT3 dir, float speed);
 	//­‚µ•‚—V‚·‚é
 	bool floating();
+
+	void param_initialize();
+	void load();
+	void save();
+	const char* file_path = "./resources/Data/player_param.json";
 	//==============================================================
 	// 
 	// •Ï”

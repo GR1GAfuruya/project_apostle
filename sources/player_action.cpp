@@ -132,8 +132,6 @@ void Player::transition_r_attack_combo1_state()
 	p_update = &Player::update_r_attack_combo1_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = ATTACK_TYPE1_POWER;
-	attack_sword_param.invinsible_time = 0.5f;
 	state = State::NORMAL_ATTACK;
 	
 	attack_camera_shake_param = param.combo_1.camera_shake;
@@ -144,8 +142,6 @@ void Player::transition_r_attack_combo2_state()
 	p_update = &Player::update_r_attack_combo2_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO2, false, 0.1f);
 	//攻撃パラメーター設定
-	attack_sword_param.power = ATTACK_TYPE2_POWER;
-	attack_sword_param.invinsible_time = 0.5f;
 	state = State::NORMAL_ATTACK;
 	//ルートモーションを使用するか
 	is_root_motion = true;
@@ -161,8 +157,6 @@ void Player::transition_r_attack_combo3_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
 	state = State::NORMAL_ATTACK;
 	//攻撃パラメーター設定
-	attack_sword_param.power = ATTACK_TYPE3_POWER;
-	attack_sword_param.invinsible_time = 0.2f;
 
 	attack_camera_shake_param = param.combo_3.camera_shake;
 

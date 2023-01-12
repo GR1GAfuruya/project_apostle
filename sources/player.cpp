@@ -9,6 +9,13 @@
 #include "collision.h"
 #include "noise.h"
 
+#include <filesystem>
+#include <fstream>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+
+
 //==============================================================
 // 
 // 初期化
@@ -16,24 +23,23 @@
 //==============================================================
 void Player::initialize()
 {
+	//パラメーターロード
+	load();
 	//パラメーター初期化
 	position = { 0.0f, -5.0f,-20.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
-	move_speed = 30.0f;
-	turn_speed = DirectX::XMConvertToRadians(360);
-	health = 1000;
-	max_health = 1000;
-	invincible_timer = 0.0f;
+	move_speed = param.move_speed;
+	turn_speed = DirectX::XMConvertToRadians(param.turn_speed);
+	max_health = param.radius;;
+	health = max_health;
+	jump_speed = param.radius;
+	radius = param.radius;
+	height = param.height;
+	friction = param.friction;
+	acceleration = param.acceleration;
+
 	jump_count = 1;
-	jump_speed = 27.0f;
 	scale.x = scale.y = scale.z = 0.05f;
-	radius = 1.0f;
-	height = 7.0f;
-	friction = 2.0f;
-	acceleration = 15.0f;
-
-	//パラメーターロード
-
 
 	attack_camera_shake_param = param.combo_1.camera_shake;
 
@@ -538,6 +544,41 @@ bool Player::floating()
 	return false;
 }
 
+void Player::param_initialize()
+{
+	//param.combo_1.camera_shake.max_x_shake
+}
+
+void Player::load()
+{
+	// Jsonファイルから値を取得
+	std::filesystem::path path = file_path;
+	path.replace_extension(".json");
+	std::ifstream ifs;
+	ifs.open(path);
+	if (ifs)
+	{
+		cereal::JSONInputArchive o_archive(ifs);
+		o_archive(param);
+	}
+
+}
+
+void Player::save()
+{
+	// Jsonファイルから値を取得
+	std::filesystem::path path = file_path;
+	path.replace_extension(".json");
+	std::ofstream ifs;
+	ifs.open(path);
+	if (ifs)
+	{
+		cereal::JSONOutputArchive o_archive(ifs);
+		o_archive(param);
+	}
+
+}
+
 //==============================================================
 // 
 //デバッグGUI表示
@@ -592,6 +633,15 @@ void Player::debug_gui(Graphics& graphics)
 			}
 			if (ImGui::CollapsingHeader("AttackCameraShake", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				if (ImGui::Button("load"))
+				{
+					load();
+				}
+				ImGui::Separator();
+				if (ImGui::Button("save"))
+				{
+					save();
+				}
 				ImGui::Text("combo1_camera_shake");
 				ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
 				ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
