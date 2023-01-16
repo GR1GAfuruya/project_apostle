@@ -2,11 +2,11 @@
 #include "particle.h"
 #include "material.h"
 #include "camera.h"
-class Emitter
+class SpriteEmitter
 {
 public:
-	Emitter(Graphics& graphics, int max_particles);
-	~Emitter();
+	SpriteEmitter(Graphics& graphics, int max_particles);
+	~SpriteEmitter();
 
 	void play(DirectX::XMFLOAT3 pos);
 
@@ -35,6 +35,12 @@ public:
 	bool get_active() { return active; }
 
 	// 頂点フォーマット
+	struct vertex
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT4 color;
+		DirectX::XMFLOAT2 texcoord;
+	};
 
 	struct InitParam
 	{
@@ -82,28 +88,35 @@ private:
 	//生成し続ける時間
 	float duration;
 	// 1秒間に何発発生するか
-	float emit_rate; 
+	float emit_rate;
 	// 発生間隔
 	float emit_span;
 	// 現在の発生カウント
-	int emit_count; 
+	int emit_count;
 	//一度に放出する数
 	int burst_num = 1;
 	//時間
 	float timer = 0;
 	//生成開始時間
 	float emit_start_time;
-	
+
 	//パーティクルを格納するコンテナ
 	std::vector<std::unique_ptr<Particles>> particles;
 	std::vector<std::unique_ptr<Particles>> removes;
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shader_resource_view;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> geometry_shader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	//ID3D11Buffer* vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> index_buffer;
 	D3D11_TEXTURE2D_DESC texture2d_desc;
-	
-	
+
+	const size_t max_vertices;
+	vertex* vertices;
+
 	const int MATERIAL_START_SLOT = 20;
 	//デバッグGUIフラグ
 	bool display_imgui = false;

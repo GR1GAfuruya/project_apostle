@@ -26,14 +26,14 @@ public:
 	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
-
+	//UI描画
 	void render_ui(Graphics& graphics, float elapsed_time);
 	//デバッグ用GUI描画
 	void debug_gui(Graphics& graphics);
 	//プレイヤーの腰当たりの位置
-	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + height / 2, position.z); }
+	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + chara_param.height / 2, position.z); }
 	//カメラがプレイヤーを見るときに注視するポイント
-	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (height + 3), position.z); }
+	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (chara_param.height + 3), position.z); }
 
 	//プレイヤーのコリジョンと敵の当たり判定
 	void calc_collision_vs_enemy(Capsule capsule_collider, float colider_height);
@@ -71,6 +71,7 @@ private:
 		PLAYER_ATK_DODGE_BACK,//後方に回避しながら魔法
 	};
 
+	//ステート
 	enum class State
 	{
 		IDLE,
@@ -86,16 +87,21 @@ private:
 
 	struct PlayerParam
 	{
-		int max_health;
-		float move_speed = 30;
-		float turn_speed;
+		//基底クラスのパラメーター
+		CharactorParam chara_init_param;
+		//ジャンプスピード
 		float jump_speed;
-		float radius;
-		float height;
-		float friction;
-		float acceleration;
+		//回避速度
+		float avoidance_speed = 50;
+		//浮遊度
+		float floating_value = 10.0f;
+		//剣エフェクトの速度
+		float sword_swing_speed = 1500.0f;
+		//コンボ1攻撃のパラメーター
 		AttackParam combo_1;
+		//コンボ2のパラメーター
 		AttackParam combo_2;
+		//コンボ3のパラメーター
 		AttackParam combo_3;
 
 
@@ -103,13 +109,11 @@ private:
 		void serialize(Archive& archive)
 		{
 			archive(
-				cereal::make_nvp("max_health", max_health),
-				cereal::make_nvp("turn_speed", turn_speed),
+				cereal::make_nvp("chara_param", chara_init_param),
 				cereal::make_nvp("jump_speed", jump_speed),
-				cereal::make_nvp("radius", radius),
-				cereal::make_nvp("height", height),
-				cereal::make_nvp("friction", friction),
-				cereal::make_nvp("acceleration", acceleration),
+				cereal::make_nvp("avoidance_speed", avoidance_speed),
+				cereal::make_nvp("floating_value", floating_value),
+				cereal::make_nvp("sword_swing_speed", sword_swing_speed),
 				cereal::make_nvp("attack_combo_1", combo_1),
 				cereal::make_nvp("attack_combo_2", combo_2),
 				cereal::make_nvp("attack_combo_3", combo_3)
@@ -165,9 +169,8 @@ private:
 	void update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-3
 	void update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera);//後方に回避しながら魔法
 
+	//更新関数の関数ポインタの定義
 	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
-	//
-	void attack_combo4_effect(Graphics& graphics, float elapsed_time);
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
@@ -196,18 +199,18 @@ private:
 	//少し浮遊する
 	bool floating();
 
-	void param_initialize();
-	void load();
-	void save();
+	//----------<ファイル>------------//
+	void load_data_file();
+	void save_data_file();
 	const char* file_path = "./resources/Data/player_param.json";
 	//==============================================================
 	// 
 	// 変数
 	// 
 	//==============================================================
+	//関数ポインタの宣言
 	ActUpdate p_update = &Player::update_idle_state;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_emit_cs;
-	Microsoft::WRL::ComPtr<ID3D11ComputeShader> attack4_update_cs;
+
 
 	PlayerParam param;
 	State state;
@@ -217,40 +220,36 @@ private:
 
 	// スケルタルメッシュの実体
 	std::unique_ptr <SkeletalMesh> model;
-	float move_speed = 30.0f;
-	float skill_add_move_speed = 0.0f;
-	float turn_speed = DirectX::XMConvertToRadians(720);
 
-	//ジャンプスピード
-	float jump_speed = 35.0f;
-	float skill_add_jump_speed = 0;
 	//現何回ジャンプしてるか
 	int jump_count = 0;
 	//ジャンプ可能回数
 	int jump_limit = 1;
-	float avoidance_speed = 50;
 	bool display_player_imgui = false;
 
 	DirectX::XMFLOAT3 left_hand_pos;
 	/*-------攻撃関連--------------------------*/
 	//攻撃時間
 	float attack_time;
-	//攻撃力
-	int add_damage;
-	//浮遊度
-	float floating_value = 10.0f;
-	float sword_swing_speed = 1500.0f;
-	//std::unique_ptr<GPU_Particles> attack1;
-	std::unique_ptr <SkillManager> skill_manager;
+
+	//剣攻撃のヒットエフェクト
+	std::unique_ptr<GPU_Particles> slash_hit_particle;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> slash_hit_emit_cs;
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> slash_hit_update_cs;
 	std::unique_ptr<MeshEffect> slash_efects[3];
 	std::unique_ptr<MeshEffect> test_slash_hit;
+	//スキルマネージャー
+	std::unique_ptr <SkillManager> skill_manager;
+	//剣
 	std::unique_ptr<Sword> sword;
+	//UI
 	std::unique_ptr<PlayerUI> ui;
 
-	//std::unique_ptr<EffekseerEffect> test_slash_hit;
-
+	//左手のボーン
 	skeleton::bone left_hand;
+	//右手のボーン
 	skeleton::bone right_hand;
+	//
 	DirectX::XMFLOAT3 root_defference_velocity;
 	//当たり判定用変数
 	DirectX::XMFLOAT3 radius_aabb = { 5, 5, 5 };
@@ -261,7 +260,6 @@ private:
 	float add_root_speed = 1.1f;
 	bool is_root_motion = false;
 
-	Camera::CameraShakeParam attack_camera_shake_param;
 	
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト

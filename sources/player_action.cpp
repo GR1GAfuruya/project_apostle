@@ -133,8 +133,7 @@ void Player::transition_r_attack_combo1_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO1, false, 0.1f);
 	//攻撃パラメーター設定
 	state = State::NORMAL_ATTACK;
-	
-	attack_camera_shake_param = param.combo_1.camera_shake;
+	attack_sword_param = param.combo_1;
 }
 
 void Player::transition_r_attack_combo2_state()
@@ -147,8 +146,7 @@ void Player::transition_r_attack_combo2_state()
 	is_root_motion = true;
 	//ルートモーション用ダミーポジション
 	root_motion_pos = position;
-
-	attack_camera_shake_param = param.combo_2.camera_shake;
+	attack_sword_param = param.combo_2;
 }
 
 void Player::transition_r_attack_combo3_state()
@@ -157,8 +155,7 @@ void Player::transition_r_attack_combo3_state()
 	model->play_animation(PlayerAnimation::PLAYER_ATK_COMBO3, false, 0.1f);
 	state = State::NORMAL_ATTACK;
 	//攻撃パラメーター設定
-
-	attack_camera_shake_param = param.combo_3.camera_shake;
+	attack_sword_param = param.combo_3;
 
 }
 
@@ -248,8 +245,8 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 	else
 	{
 		//向いている方向に速度を足す
-		velocity.x += (Math::get_posture_forward(orientation) * (avoidance_speed)).x;
-		velocity.z += (Math::get_posture_forward(orientation) * (avoidance_speed)).z;
+		velocity.x += (Math::get_posture_forward(orientation) * (param.avoidance_speed)).x;
+		velocity.z += (Math::get_posture_forward(orientation) * (param.avoidance_speed)).z;
 
 	}
 
@@ -396,7 +393,7 @@ void Player::update_attack_air_state(Graphics& graphics, float elapsed_time, Cam
 {
 	if (model->anime_param.frame_index > 43 / 2)
 	{
-		attack_combo4_effect(graphics, elapsed_time);
+	//	attack_combo4_effect(graphics, elapsed_time);
 	}
 	if (model->is_end_animation())
 	{
@@ -421,10 +418,10 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 		slash_efects[0]->play(sword->get_equipped_position());
 		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efects[0]->rot_speed.y = -sword_swing_speed;
+		slash_efects[0]->rot_speed.y = -param.sword_swing_speed;
 		//攻撃判定ON
 		attack_sword_param.is_attack = true;
-		root_motion_manual(Math::get_posture_forward(orientation), floating_value);//ルートモーションじゃない手動入力
+		root_motion_manual(Math::get_posture_forward(orientation), param.floating_value);//ルートモーションじゃない手動入力
 
 	}
 	//*************************************//
@@ -455,7 +452,7 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 		}
 
 	}
-			input_move(elapsed_time, camera, floating_value, floating_value);
+			input_move(elapsed_time, camera, param.floating_value, param.floating_value);
 	//*************************************//
 	//	ルートモーションに関する更新	   //
 	//*************************************//
@@ -477,7 +474,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 		slash_efects[1]->play(sword->get_equipped_position());
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efects[1]->rot_speed.y = sword_swing_speed;
+		slash_efects[1]->rot_speed.y = param.sword_swing_speed;
 
 		//攻撃判定ON
 		attack_sword_param.is_attack = true;
@@ -527,7 +524,7 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[0]->play(sword->get_equipped_position());
 		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[0]->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efects[0]->rot_speed.y = -sword_swing_speed;
+		slash_efects[0]->rot_speed.y = -param.sword_swing_speed;
 		//攻撃判定ON
 		attack_sword_param.is_attack = true;
 		add_impulse(Math::get_posture_forward(orientation) * 3.0f);
@@ -538,7 +535,7 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[1]->play(sword->get_equipped_position());
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efects[1]->rot_speed.y = sword_swing_speed;
+		slash_efects[1]->rot_speed.y = param.sword_swing_speed;
 		add_impulse(Math::get_posture_forward(orientation) * 7.0f);
 	}
 	//三振り目の斬撃
@@ -547,10 +544,19 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[2]->play(sword->get_equipped_position());
 		slash_efects[2]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[2]->rotate_base_axis(MeshEffect::AXIS::UP, up);
-		slash_efects[2]->rot_speed.y = -sword_swing_speed;
+		slash_efects[2]->rot_speed.y = -param.sword_swing_speed;
 		velocity.x /= 5.0f;
 		velocity.z /= 5.0f;
 	}
+
+	//3連撃目までは浮く
+	if (model->anime_param.frame_index < 50 / 2)
+	{
+		//空中にいる場合少し浮遊
+		floating();
+
+	}
+
 
 	if (model->anime_param.frame_index > 66 / 2)
 	{
@@ -561,18 +567,11 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
-
-
 	}
-	//*************************************//
-	//	ルートモーションに関する更新	   //
-	//*************************************//
-	//root_motion_manual(Math::get_posture_forward(orientation), 15.0f);
+	
 	
 	//回避入力
 	input_avoidance();
-	//空中にいる場合少し浮遊
-	floating();
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);

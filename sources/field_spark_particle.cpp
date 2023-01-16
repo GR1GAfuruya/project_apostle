@@ -4,6 +4,7 @@
 #include "user.h"
 #include "shader.h"
 #include "misc.h"
+#include "texture.h"
 //==============================================================
 // 
 // コンストラクタ
@@ -97,6 +98,9 @@ field_spark_particles::field_spark_particles(ID3D11Device* device, DirectX::XMFL
 	create_gs_from_cso(device, "shaders/field_spark_particles_gs.cso", geometry_shader.ReleaseAndGetAddressOf());
 	create_cs_from_cso(device, "shaders/field_spark_particles_cs.cso", compute_shader.ReleaseAndGetAddressOf());
 
+	D3D11_TEXTURE2D_DESC texture2d_desc{};
+	load_texture_from_file(device, L"./resources/Effects/Textures/Particle04.png", texture.ReleaseAndGetAddressOf(), &texture2d_desc);
+
 	particle_constants->data.current_eye_position = initial_position;
 	particle_constants->data.previous_eye_position = initial_position;
 	particle_constants->data.spark_area_height = spark_area_height;
@@ -144,6 +148,7 @@ void field_spark_particles::render(ID3D11DeviceContext* dc)
 	dc->PSSetShader(pixel_shader.Get(), NULL, 0);
 	dc->GSSetShader(geometry_shader.Get(), NULL, 0);
 	dc->GSSetShaderResources(9, 1, spark_particle_buffer_srv.GetAddressOf());
+	dc->PSSetShaderResources(0, 1, texture.GetAddressOf());
 	particle_constants->bind(dc, 9, CB_FLAG::CS_GS);
 
 	dc->IASetInputLayout(NULL);

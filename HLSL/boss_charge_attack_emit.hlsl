@@ -2,10 +2,8 @@
 #include "boss_charge_attack.hlsli"
 #include "constants.hlsli"
 
-
 RWStructuredBuffer<particle> particle_buffer : register(u0);
 ConsumeStructuredBuffer<uint> particle_pool : register(u1);
-
 
 [numthreads(16, 1, 1)]
 void main( uint3 DTid : SV_DispatchThreadID )
@@ -20,7 +18,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     
     p.velocity = sin(id % 16);
     p.velocity = CurlNoise(p);
-    p.life_time = 5;
+    p.life_time = emitter.emit_life_time;
      //生成してからの時間をリセット
     p.time = 0;
     //パーティクルの大きさ
@@ -28,7 +26,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     p.scale.z = 1;
     p.angle = angle;
         
-    p.color = particle_color;
+    p.color = emitter.particle_color;
     if (id % 8 == 0)
     {
         p.color.xyz = particle_sub_color;

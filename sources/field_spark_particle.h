@@ -56,6 +56,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> geometry_shader;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> compute_shader;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constant_buffer;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 
 	bool display_imgui = false;
 };

@@ -24,12 +24,10 @@ struct particle
 struct Emitter
 {
     float3 pos;
-    float emit_life; // エミッターの寿命
+    float emit_life_time; // 寿命
     float3 velocity;
-    float emit_life_time; // エミッターの年齢
-    float emit_time; //生成されてからの時間
     float emit_rate; // 1秒間に何発発生するか
-    int emit_count; // 現在の発生カウント
+    float4 particle_color;
 };
 
 cbuffer PARTICLE_CONSTANTS : register(b9)
@@ -38,7 +36,8 @@ cbuffer PARTICLE_CONSTANTS : register(b9)
     float2 particle_size;
     uint particle_count;
     float3 angle;
-    float4 particle_color;
+    float streak_factor;
+    
 };
 
 #include "noise.hlsli"

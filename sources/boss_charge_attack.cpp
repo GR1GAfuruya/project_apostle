@@ -28,10 +28,16 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particleの初期設定
-	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 100000);
-
-	meteores = std::make_unique<Meteore>(graphics, 10);
+	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 70000);
 	particle.get()->initialize(graphics);
+	particle.get()->set_emitter_rate(6000);
+	particle.get()->set_emitter_life_time(4);
+	particle.get()->set_particle_life_time(5);
+	particle.get()->set_particle_size(DirectX::XMFLOAT2(0.2f, 0.2f));
+	particle.get()->set_color(FIRE_COLOR);
+
+	//メテオ
+	meteores = std::make_unique<Meteore>(graphics, 10);
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 	meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
@@ -95,11 +101,6 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 		emit_pos.x = core_pos.x + (radius * sinf(DirectX::XMConvertToRadians(theta)));
 		emit_pos.z = core_pos.z + (radius * cosf(DirectX::XMConvertToRadians(theta)));
 		particle.get()->set_emitter_pos(emit_pos);
-		particle.get()->set_emitter_rate(16);
-		particle.get()->set_emitter_life_time(4);
-		particle.get()->set_particle_life_time(life_time);
-		particle.get()->set_particle_size(DirectX::XMFLOAT2(0.2f,0.2f));
-		particle.get()->particle_constants->data.particle_color = FIRE_COLOR;
 		particle.get()->launch_emitter(emit_cs);
 	}
 	//サブカラー設定

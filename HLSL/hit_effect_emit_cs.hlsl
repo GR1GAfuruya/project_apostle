@@ -13,16 +13,13 @@ void main()
     p.is_active = true;
 
     p.position = emitter.pos;
-    p.position.x += cos(id % 16);
-    p.position.z += sin(id % 16);
-    p.streak_factor = random(id) % 0.2;
+   // p.position += CurlNoise(p);
+    p.streak_factor = streak_factor;
    
     //カールノイズ
-    p.velocity = CurlNoise(p);
-    p.velocity.y = min(p.velocity.y, 20);
-    p.velocity.y += 5.0;
-    //生存時間m
-    p.life_time = random(id);
+    p.velocity = emitter.velocity;
+    //生存時間
+    p.life_time = emitter.emit_life_time;
     //生成してからの時間をリセット
     p.time = 0;
     //パーティクルの大きさ
@@ -30,6 +27,7 @@ void main()
     p.scale.z = 1;
     p.angle = angle;
         
-    p.color = particle_color;
+    p.color = emitter.particle_color;
+    
     particle_buffer[id] = p;
 }

@@ -282,6 +282,7 @@
     <ClCompile Include="sources\sprite.cpp" />
     <ClCompile Include="sources\sprite_batch.cpp" />
     <ClCompile Include="sources\SpriteDissolve.cpp" />
+    <ClCompile Include="sources\sprite_emitter.cpp" />
     <ClCompile Include="sources\stage_main.cpp" />
     <ClCompile Include="sources\stage_manager.cpp" />
     <ClCompile Include="sources\static_mesh.cpp" />
@@ -383,6 +384,7 @@
     <ClInclude Include="sources\sprite.h" />
     <ClInclude Include="sources\sprite_batch.h" />
     <ClInclude Include="sources\SpriteDissolve.h" />
+    <ClInclude Include="sources\sprite_emitter.h" />
     <ClInclude Include="sources\stage.h" />
     <ClInclude Include="sources\stage_main.h" />
     <ClInclude Include="sources\stage_manager.h" />
@@ -455,7 +457,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\player_attack4_emit_cs.hlsl">
+    <FxCompile Include="HLSL\hit_effect_emit_cs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
@@ -465,7 +467,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="HLSL\player_attack4_update_cs.hlsl">
+    <FxCompile Include="HLSL\hit_effect_update_cs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>

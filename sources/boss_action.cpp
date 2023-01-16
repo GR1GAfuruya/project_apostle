@@ -182,7 +182,7 @@ void Boss::update_idle_state(Graphics& graphics, float elapsed_time)
 	state_timer += elapsed_time;
 	if (state_timer > state_duration)
 	{
-		if (health < max_health / 2)
+		if (health < chara_param.max_health / 2)
 		{
 			//HP半分以下なら走る
 			transition_run_state();
@@ -203,7 +203,7 @@ void Boss::update_walk_state(Graphics& graphics, float elapsed_time)
 	//プレイヤー方向に歩く
 	DirectX::XMFLOAT3 dir_target_vec = Math::calc_vector_AtoB_normalize(position, target_pos);
 	Move(dir_target_vec.x, dir_target_vec.z, WALK_SPEED);
-	Turn(elapsed_time, dir_target_vec, turn_speed, orientation);
+	Turn(elapsed_time, dir_target_vec, chara_param.turn_speed, orientation);
 
 	//プレイヤーとの距離が一定以下になったら攻撃
 	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
@@ -222,7 +222,7 @@ void Boss::update_run_state(Graphics& graphics, float elapsed_time)
 
 	DirectX::XMFLOAT3 dir_target_vec = Math::calc_vector_AtoB_normalize(position, target_pos);
 	Move(dir_target_vec.x, dir_target_vec.z, RUN_SPEED);
-	Turn(elapsed_time, dir_target_vec, turn_speed, orientation);
+	Turn(elapsed_time, dir_target_vec, chara_param.turn_speed, orientation);
 
 	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
 	if (length_to_target < ATTACK_ACTION_LENGTH)

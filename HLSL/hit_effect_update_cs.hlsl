@@ -11,23 +11,13 @@ void main(uint3 DTid : SV_DispatchThreadID)
     if (p.is_active)
     {
 
-        //カールノイズ
-        p.velocity.xz += snoiseVec3(p.velocity.xyz * DTid.x % 16).xz;
-        float grav = p.velocity.y + random((DTid.x % 16 - 12) * 60.0f * delta_time);
-        grav =  min(grav, 20); //-10より小さくなったら強制
-        p.velocity.y = grav;
-        if(p.time > 0.5)
-        {
-            p.velocity.xz += CurlNoise(p).xz;
-        }
+        p.velocity += snoiseVec3(p.velocity.xyz * DTid.x % 16) * 10;
+                
         
-        //速度が上がりすぎないようクランプ
-        //p.velocity.x = clamp(p.velocity.x, -100, 100);
-        //p.velocity.y = clamp(p.velocity.y, -100, 100);
-        //p.velocity.z = clamp(p.velocity.z, -100, 100);
-        
-        p.streak_factor = 0.2;
         p.position += p.velocity * delta_time;
+        
+        //カールノイズ
+        p.position += CurlNoise(p).xyz;
         //生存時間
         p.life_time = max(0, p.life_time - delta_time);
         p.time += delta_time;

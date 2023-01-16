@@ -34,6 +34,6 @@ void main()
     p.scale.z = 1;
     p.angle = angle;
         
-    p.color = particle_color;
+    p.color = emitter.particle_color;
     particle_buffer[id] = p;
 }

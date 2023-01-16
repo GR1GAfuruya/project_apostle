@@ -12,16 +12,25 @@ class GPU_Particles
 {
 public:
 	//構造体
+
+	//GPUで扱うエミッターのデータ
+	struct EmitterData
+	{
+		DirectX::XMFLOAT3 pos = { 0,0,0 };
+		float life_time;
+		DirectX::XMFLOAT3 velocity = { 0,0,0 };	
+		float rate = 0; // 1Dispatchに何発発生するか
+		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
+
+	};
+
+	//CPUで扱うエミッターのデータ
 	struct Emitter
 	{
-		DirectX::XMFLOAT3 pos = { 0,5,0 };
-		float emit_life = 0; // エミッターの寿命
-		DirectX::XMFLOAT3 velocity = { 0,0,0 };
+		EmitterData to_gpu_data;
 		float emit_life_time = 0; // エミッターの年齢
+		float spawn_rate;
 		float emit_time = 0;//生成されてからの時間
-		float emit_rate = 0; // 1秒間に何発発生するか
-		int emit_count = 0;  // 現在の発生カウント
-		float max_particle;//このエミッタが放出するパーティクルの最大数
 	};
 
 	struct ParticleData
@@ -31,7 +40,7 @@ public:
 		DirectX::XMFLOAT3 angle;
 		DirectX::XMFLOAT4 color;
 		DirectX::XMFLOAT3 scale = {1,1,1};
-		float streak_factor;
+		float streak_factor = 0;
 		float time;
 		float life_time;
 		bool is_active;
@@ -39,17 +48,16 @@ public:
 
 	struct ParticleConstants 
 	{
-		Emitter emitter{};
+		EmitterData emitter{};
 		DirectX::XMFLOAT2 particle_size = {0.1f,0.1f};
 		int particle_count;
-		float particle_life_time = 1;
+		float pad;
 		DirectX::XMFLOAT3 angle{};
-		float pad3;
-		DirectX::XMFLOAT4 particle_color = { 0,0,0,1 };
+		float streak_factor;
 	};
-	std::unique_ptr<Constants<ParticleConstants>> particle_constants{};
+	
 
-	GPU_Particles(ID3D11Device* device,const int max_particle = 500000);
+	GPU_Particles(ID3D11Device* device,const int max_particle = 10000);
 	GPU_Particles(const GPU_Particles&) = delete;
 	GPU_Particles& operator=(const GPU_Particles&) = delete;
 	GPU_Particles(GPU_Particles&&) noexcept = delete;
@@ -57,6 +65,9 @@ public:
 	~GPU_Particles();
 	void initialize(Graphics& graphics);
 	void launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
+
+	void play(DirectX::XMFLOAT3 pos);
+
 	void particle_emit(ID3D11DeviceContext* dc);
 	void update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11ComputeShader* replace_update_cs = nullptr);
 	void render(ID3D11DeviceContext * dc, ID3D11Device* device);
@@ -66,15 +77,18 @@ public:
 	UINT get_particle_pool_count(ID3D11DeviceContext* dc) const;
 
 
-	void set_emitter_pos(DirectX::XMFLOAT3 pos) { substitution_emitter.pos = pos; }
-	void set_emitter_velocity(DirectX::XMFLOAT3 velocity) { substitution_emitter.velocity = velocity; }
+	void set_emitter_pos(DirectX::XMFLOAT3 pos) { substitution_emitter.to_gpu_data.pos = pos; }
+	void set_emitter_velocity(DirectX::XMFLOAT3 velocity) { substitution_emitter.to_gpu_data.velocity = velocity; }
+	void set_color(DirectX::XMFLOAT4 color); //{ particle_constants.get()->data.particle_color = color; }
 	void set_emitter_life_time(float life_time);
-	void set_emitter_count(int count);
 	void set_emitter_rate(float rate);
 	void set_particle_life_time(float life_time);
 	void set_particle_size(DirectX::XMFLOAT2 size);
+	void set_particle_streak_factor(float factor);
 
 private:
+
+	std::unique_ptr<Constants<ParticleConstants>> particle_constants{};
 	const int THREAD_NUM_X =16;
 	size_t max_particle_count{ 0 };
 	int emit_num = 0;//発生させる回数

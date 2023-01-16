@@ -55,8 +55,6 @@ private:
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect = nullptr;
-	std::unique_ptr<Emitter> test_emitter;
-	//std::vector<std::unique_ptr<Emitter>> test_emitters;
 	
 #endif
 };

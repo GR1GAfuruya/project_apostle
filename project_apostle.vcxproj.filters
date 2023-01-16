@@ -208,9 +208,6 @@
     <Filter Include="Shaders\Effect\Player">
       <UniqueIdentifier>{3f8c1fda-e96b-4e28-8c0a-ab5c55684d49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Effect\Player\Attack4">
-      <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Material">
       <UniqueIdentifier>{76bcf970-cbd4-4492-a1bd-c5a21c0404bf}</UniqueIdentifier>
     </Filter>
@@ -255,6 +252,9 @@
     </Filter>
     <Filter Include="sources\Charactor\Boss\Attack\AttackSkill3">
       <UniqueIdentifier>{316cf841-06b0-48c5-af83-73fa3ad91882}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Effect\Player\HitEffect">
+      <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -542,6 +542,9 @@
     </ClCompile>
     <ClCompile Include="sources\boss_attack_skill3.cpp">
       <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\sprite_emitter.cpp">
+      <Filter>sources\Effects\Particle\SpriteEmitter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -857,6 +860,9 @@
     <ClInclude Include="sources\boss_attack_skill3.h">
       <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
     </ClInclude>
+    <ClInclude Include="sources\sprite_emitter.h">
+      <Filter>sources\Effects\Particle\SpriteEmitter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
@@ -1075,11 +1081,11 @@
     <FxCompile Include="HLSL\meteore_core.hlsl">
       <Filter>Shaders\Effect\Fire</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\player_attack4_emit_cs.hlsl">
-      <Filter>Shaders\Effect\Player\Attack4</Filter>
+    <FxCompile Include="HLSL\hit_effect_emit_cs.hlsl">
+      <Filter>Shaders\Effect\Player\HitEffect</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\player_attack4_update_cs.hlsl">
-      <Filter>Shaders\Effect\Player\Attack4</Filter>
+    <FxCompile Include="HLSL\hit_effect_update_cs.hlsl">
+      <Filter>Shaders\Effect\Player\HitEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
       <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
