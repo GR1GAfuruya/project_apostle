@@ -3,7 +3,7 @@
 #include "g_buffer.h"
 #include "fullscreen_quad.h"
 #include "framebuffer.h"
-
+#include "light_manager.h"
 class DeferredRenderer
 {
 public:

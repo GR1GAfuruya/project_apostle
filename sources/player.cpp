@@ -179,8 +179,8 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	//自機モデルのトランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
-	graphics.shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
-	//graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+	//graphics.shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 	//剣描画
 	sword->render(graphics);
 }

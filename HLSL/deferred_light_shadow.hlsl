@@ -58,7 +58,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     float2 dist = shadow_map.Sample(BorderSampler, uv).xy;
 /*
-	// チェビシェフの不等式を利用した分散シャドウマップ
+	 //チェビシェフの不等式を利用した分散シャドウマップ
 	float depth_sq = dist.x * dist.x;
 	float variance = dist.y - depth_sq;
 	float md = d2 - dist.x;

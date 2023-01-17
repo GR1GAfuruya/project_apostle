@@ -138,9 +138,9 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 #if CAST_SHADOW
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
 	graphics.shader_activate(SHADER_TYPE::SHADOW, RENDER_TYPE::Deferred);
-	deferred->shadow_active(graphics, *light_manager);
+	deferred->shadow_active(graphics);
 	//ステージ描画
-	stageManager.render(elapsed_time, graphics);
+	stageManager.render(graphics,elapsed_time,camera.get());
 
 	//プレイヤー描画
 	player->render_d(graphics, elapsed_time, camera.get());

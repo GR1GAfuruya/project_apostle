@@ -1,7 +1,5 @@
 #include "shadow_map.hlsli"
 
-SamplerState diffuseMapSamplerState : register(s0);
-
 float4 main(VS_OUT pin) : SV_TARGET0
 {
 	// Œõ‚©‚ç‚Ì‹——£‚ğƒŒƒ“ƒ_ƒŠƒ“ƒO

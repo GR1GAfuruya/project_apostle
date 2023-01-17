@@ -1,6 +1,6 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
-#include "light_manager.h"
+
 #include "texture.h"
 #include "user.h"
 //==============================================================
@@ -219,7 +219,7 @@ void DeferredRenderer::shadow_active(Graphics& graphics)
 
 	// 平行光源からカメラ位置を作成し、そこから原点の位置を見るように視線行列を生成
 	DirectX::XMVECTOR TargetPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	DirectX::XMFLOAT3 shadow_dir_light_dir = light_manager.get_shadow_dir_light_dir();
+	DirectX::XMFLOAT3 shadow_dir_light_dir = LightManager::instance().get_shadow_dir_light_dir();
 	DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&shadow_dir_light_dir);
 	LightPosition = DirectX::XMVectorScale(LightPosition, -50.0f);
 	LightPosition = DirectX::XMVectorAdd(LightPosition, TargetPosition);
