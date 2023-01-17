@@ -89,6 +89,7 @@ private:
 	// 
 	//==============================================================
 	std::unique_ptr<InstanceMeshEffect> main_effect;
+	std::unique_ptr<InstanceMeshEffect> meteo_wave;
 	std::unique_ptr<MeteoreParam[]> params;
 	float ray_power = 5.0f;
 

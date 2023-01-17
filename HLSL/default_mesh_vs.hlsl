@@ -16,9 +16,8 @@ VS_OUT main(VS_IN vin)
          * mul(vin.position, bone_transforms[vin.bone_indices[bone_index]]); //ウェイトにポジションをかける
         blended_normal += vin.bone_weights[bone_index]
          * mul(vin.normal, bone_transforms[vin.bone_indices[bone_index]]);
-        blended_tangent += vin.bone_weights[bone_index] *
-    mul(vin.tangent, bone_transforms[vin.bone_indices[bone_index]]);
-
+        blended_tangent += vin.bone_weights[bone_index] 
+         * mul(vin.tangent, bone_transforms[vin.bone_indices[bone_index]]);
     }
     vin.position = float4(blended_position.xyz, 1.0f);
     vin.normal = float4(blended_normal.xyz, 0.0f);

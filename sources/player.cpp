@@ -160,7 +160,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
 	//UI
 	ui->set_hp_percent(get_hp_percent());
-	//ui->update(graphics, elapsed_time);
+	ui->update(graphics, elapsed_time);
 }
 //==============================================================
 // 
@@ -179,7 +179,8 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	//自機モデルのトランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
-	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+	graphics.shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
+	//graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 	//剣描画
 	sword->render(graphics);
 }
@@ -260,22 +261,6 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 
 	return vec;
 }
-
-//==============================================================
-// 
-//魔法
-// 
-//==============================================================
-//void Player::attack_combo4_effect(Graphics& graphics, float elapsed_time)
-//{
-//	//DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
-//	//emit_pos.y = position.y + 3.0f;
-//	//attack1.get()->set_emitter_pos(emit_pos);
-//	//attack1.get()->set_emitter_rate(150);
-//	//attack1.get()->set_particle_size({0.1f,0.1f});
-//	//attack1.get()->set_emitter_life_time(0.2f);
-//	//attack1.get()->launch_emitter(attack4_emit_cs);
-//}
 
 //==============================================================
 // 
@@ -367,6 +352,9 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 			case SP_SKILLTYPE::RESTRAINNT:
 				transition_attack_pull_slash_state();
 			break;
+			case SP_SKILLTYPE::TEST:
+				transition_attack_pull_slash_state();
+				break;
 		default:
 			break;
 		}
@@ -487,6 +475,7 @@ void Player::on_landing()
 	{
 		// 着地ステートへ遷移
 		transition_idle_state();
+		velocity = { 0,0,0 };
 	}
 
 }
@@ -617,7 +606,17 @@ void Player::debug_gui(Graphics& graphics)
 		
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
+			static int num = 0;
+			ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size() - 1);
+			int mesh_size = model.get()->model_resource.get()->get_meshes().size();
+			ImGui::DragInt("mesh_size", &mesh_size);
+			DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0] * scale;
+			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1] * scale;
+			ImGui::DragFloat3("bounding_min", &min.x);
+			ImGui::DragFloat3("bounding_max", &max.x);
 			ImGui::DragFloat("add_root_speed", &add_root_speed);
+
+			debug_figure->create_cuboid(position, max - min,{1,1,1,1});
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{

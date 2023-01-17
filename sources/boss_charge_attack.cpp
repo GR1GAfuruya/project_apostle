@@ -37,13 +37,14 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	particle.get()->set_color(FIRE_COLOR);
 
 	//メテオ
-	meteores = std::make_unique<Meteore>(graphics, 10);
+	meteores = std::make_unique<Meteore>(graphics, 12);
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 	meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
 	meteo_launch_radius = 5;
 
-	boss_light = make_shared<PointLight>(graphics, position, 20.0f, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
+	const float range = 20.0f;
+	boss_light = make_shared<PointLight>(graphics, position, range, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
 
 }
 //==============================================================
@@ -62,7 +63,8 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 	life_time = 0.0f;
 	//コア位置設定
 		position = pos;
-		DirectX::XMFLOAT3 core_pos = { position.x,position.y + 70,position.z };
+		const float offset = 70;
+		DirectX::XMFLOAT3 core_pos = { position.x,position.y + offset,position.z };
 	{
 		core->set_init_scale(0);
 		core->play(core_pos);
@@ -71,7 +73,7 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 	}
 	//wave初期設定
 	{
-		DirectX::XMFLOAT3 wave_pos = { position.x,position.y + 70,position.z };
+		DirectX::XMFLOAT3 wave_pos = { position.x,position.y + offset,position.z };
 		wave->set_init_scale(0.0f);
 		wave->play(wave_pos);
 		wave->constants->data.threshold = 0;

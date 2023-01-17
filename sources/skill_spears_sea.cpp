@@ -168,7 +168,7 @@ void SpearsSea::spear_emit(int index_offset, int emit_max_num, float size)
 		DirectX::XMFLOAT3 spear_dir = Math::Normalize(DirectX::XMFLOAT3(cosf(emit_num), 1.01f, sinf(emit_num)));
 		instance_mesh->set_position(appearance_pos, emit_num);
 		instance_mesh->set_scale({ size,size,0 }, emit_num);
-		instance_mesh->set_orientation(instance_mesh->rotate_base_axis(InstanceMeshEffect::AXIS::FORWARD, spear_dir, emit_num), emit_num);
+		instance_mesh->rotate_base_axis(InstanceMeshEffect::AXIS::FORWARD, spear_dir, emit_num);
 		instance_mesh->set_is_loop(true);
 		emit_num++;
 

@@ -145,7 +145,7 @@ StaticMesh::StaticMesh(ID3D11Device* device, const wchar_t* obj_filename, bool f
 			std::filesystem::path path(obj_filename);
 			path.replace_filename(std::filesystem::path(map_Kd).filename());
 			//materials.rbegin()->texture_filename = path;
-			materials.rbegin()->texture_filenames[0] = path; //UNIT16
+			materials.rbegin()->texture_filenames[0] = path;
 			fin.ignore(1024, L'\n');
 		}
 		else if (0 == wcscmp(command, L"map_bump") || 0 == wcscmp(command, L"bump"))

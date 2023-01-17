@@ -481,7 +481,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 
 	}
 
-	if (model->anime_param.frame_index > 45 / 2)
+	if (model->anime_param.frame_index > 40 / 2)
 	{
 		if (model->is_end_animation())
 		{
@@ -527,7 +527,8 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[0]->rot_speed.y = -param.sword_swing_speed;
 		//UŒ‚”»’èON
 		attack_sword_param.is_attack = true;
-		add_impulse(Math::get_posture_forward(orientation) * 3.0f);
+		const float impulse_power = 3.0f;
+		add_impulse(Math::get_posture_forward(orientation) * impulse_power);
 	}
 	//“ñU‚è–Ú‚ÌaŒ‚
 	if (model->anime_param.frame_index == 30 / 2)
@@ -536,7 +537,8 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::UP, up);
 		slash_efects[1]->rot_speed.y = param.sword_swing_speed;
-		add_impulse(Math::get_posture_forward(orientation) * 7.0f);
+		const float impulse_power = 7.0f;
+		add_impulse(Math::get_posture_forward(orientation) * impulse_power);
 	}
 	//OU‚è–Ú‚ÌaŒ‚
 	if (model->anime_param.frame_index == 50 / 2)
@@ -579,8 +581,6 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 
 void Player::update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
-
-
 	//*************************************//
 	//	ƒ‹[ƒgƒ‚[ƒVƒ‡ƒ“‚ÉŠÖ‚·‚éXV	   //
 	//*************************************//

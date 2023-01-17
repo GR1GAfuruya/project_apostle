@@ -9,11 +9,11 @@ void StageManager::update(float elapsedTime)
 	}
 }
 
-void StageManager::render(float elapsed_time, Graphics& graphics)
+void StageManager::render(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	for (auto s : stages)
 	{
-		s->render(elapsed_time, graphics);
+		s->render(graphics, elapsed_time, camera);
 	}}
 
 void StageManager::Clear()

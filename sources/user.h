@@ -142,6 +142,25 @@ namespace Math
 
         return world;
     }
+
+    inline auto calc_world_matrix(const DirectX::XMFLOAT4X4 parent_world_matrix,
+        const DirectX::XMFLOAT3& child_scale, const DirectX::XMFLOAT3& child_rotate,
+        const DirectX::XMFLOAT3& child_trans)
+    {
+        DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&conversion_coordinate_system(COORDINATE_SYSTEM::RHS_YUP, 1.0f)) };
+
+        DirectX::XMMATRIX C_S{ DirectX::XMMatrixScaling(child_scale.x, child_scale.y, child_scale.z) };
+        DirectX::XMMATRIX C_R{ DirectX::XMMatrixRotationRollPitchYaw(child_rotate.x, child_rotate.y, child_rotate.z) };
+        DirectX::XMMATRIX C_T{ DirectX::XMMatrixTranslation(child_trans.x, child_trans.y, child_trans.z) };
+
+        DirectX::XMMATRIX P_W = XMLoadFloat4x4(&parent_world_matrix);
+        DirectX::XMMATRIX C_W = C_S * C_R * C_T;
+        DirectX::XMFLOAT4X4 world;
+        DirectX::XMStoreFloat4x4(&world, C * C_W * P_W);
+
+        return world;
+    }
+
     //--------------------------------------------------------------
     //  ワールド行列を計算する(クォータニオン)
     //--------------------------------------------------------------

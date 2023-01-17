@@ -12,6 +12,7 @@ public:
 
 	void active(ID3D11DeviceContext* immediate_context, RenderType rt) override;
 	void render(ID3D11DeviceContext* immediate_context, SkeletalMesh* model, const DirectX::XMFLOAT4X4& world);
+	void render(ID3D11DeviceContext* immediate_context, SkeletalMesh* model, DirectX::XMFLOAT4X4 camera_view, DirectX::XMFLOAT4X4 camara_proj, const DirectX::XMFLOAT4X4& world = {});
 
 	protected:
 

@@ -159,7 +159,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
 	
 	//ステージ描画
-	stageManager.render(elapsed_time, graphics);
+	stageManager.render(graphics,elapsed_time, camera.get());
 
 	//プレイヤー描画
 	player->render_d(graphics,elapsed_time,camera.get());
@@ -263,7 +263,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::WIREFRAME_CULL_BACK);
 	debug_figure->render_all_figures(graphics.get_dc().Get());
 	
 

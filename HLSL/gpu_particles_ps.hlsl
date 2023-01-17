@@ -11,6 +11,8 @@ float4 main(GS_OUT pin) : SV_TARGET
     float3 color = sample_color.rgb * pin.color.rgb;
     float alpha = sample_color.a * pin.color.a;
     
-  //  clip(alpha - 0.01);
+   // clip(lerp(-1, 1, step(0.4, alpha)));
+    clip(alpha - 0.1);
+    
     return float4(color, alpha);
 }

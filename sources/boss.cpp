@@ -185,8 +185,17 @@ void Boss::debug_gui()
 	imgui_menu_bar("Charactor", "boss", display_imgui);
 	if (display_imgui)
 	{
+
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
 		{
+			static int num = 0;
+			ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size() - 1);
+			int mesh_size = model.get()->model_resource.get()->get_meshes().size();
+			ImGui::DragInt("mesh_size", &mesh_size);
+			DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0];
+			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
+			ImGui::DragFloat3("bounding_min", &min.x);
+			ImGui::DragFloat3("bounding_max", &max.x);
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
 #if _DEBUG
 			ImGui::Checkbox("is_update", &is_update);
