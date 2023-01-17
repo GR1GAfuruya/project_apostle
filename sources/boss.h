@@ -7,6 +7,7 @@
 #include "light.h"
 #include "primitive.h"
 #include "boss_ui.h"
+#include <cereal/cereal.hpp>
 class Boss :public Charactor
 {
 private:
@@ -82,6 +83,24 @@ private:
 	};
 
 
+	struct BossParam
+	{
+		//基底クラスのパラメーター
+		CharactorParam chara_init_param;
+		float run_speed;
+
+		template<class Archive>
+		void serialize(Archive& archive)
+		{
+			archive(
+				cereal::make_nvp("chara_param", chara_init_param),
+				cereal::make_nvp("run_speed", run_speed)
+			);
+		}
+	};
+
+
+
 public:
 	//==============================================================
 	// 
@@ -116,8 +135,10 @@ public:
 
 	BodyCollision get_body_collision() { return boss_body_collision; }
 
-	//カメラがプレイヤーを見るときに注視するポイント
-	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (height + 3), position.z); }
+	//カメラがボスを見るときに注視するポイント
+	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (chara_param.height + 3), position.z); }
+
+	private:
 	//==============================================================
 	// 
 	// private関数
@@ -250,6 +271,12 @@ public:
 	void on_dead() override;
 	void on_damaged(WINCE_TYPE type) override;
 
+	//データファイル
+	void load_data_file();
+	void save_data_file();
+	const char* file_path = "./resources/Data/boss_param.json";
+
+
 	//==============================================================
 	// 
 	// 変数
@@ -266,8 +293,6 @@ public:
 	Capsule sickle_hand_colide;
 
 	float action_time = 0;
-	float move_speed = 30.0f;
-	float turn_speed = 5.0f;
 	bool display_imgui = false;
 
 	//ステートのタイマー
@@ -279,7 +304,7 @@ public:
 
 	//
 	State state;
-	
+	BossParam param;
 	AttackParam sickle_attack_param;
 	BodyCollision boss_body_collision;
 

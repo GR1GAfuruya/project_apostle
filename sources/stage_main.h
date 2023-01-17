@@ -15,7 +15,7 @@ public:
 	void update(float elapsedTime)override;
 
 	//描画処理
-	void render(float elapsed_time, Graphics& graphics)override;
+	void render(Graphics& graphics, float elapsed_time, Camera* camera)override;
 
 	// レイキャスト
 	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) override;
@@ -26,4 +26,5 @@ private:
 	DirectX::XMFLOAT3 scale;
 	DirectX::XMFLOAT3 angle{};
 	DirectX::XMFLOAT3 position{};
+	bool flustm_flag = false;
 };

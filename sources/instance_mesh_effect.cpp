@@ -121,22 +121,22 @@ DirectX::XMFLOAT4 InstanceMeshEffect::set_rotate_quaternion(DirectX::XMFLOAT3 ax
 // Ž²‚ðŽw’è‚ÌŒü‚«‚É‡‚í‚¹‚é
 // 
 //==============================================================
-DirectX::XMFLOAT4 InstanceMeshEffect::rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec, int index)
+void InstanceMeshEffect::rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec, int index)
 {
 	DirectX::XMFLOAT3 Axis;
 	switch (axis)
 	{
 	case AXIS::RIGHT:
 		Axis = Math::get_posture_right(model->get_orientation(index));
-		return Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec);
+		model->set_orientation(Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec), index) ;
 		break;
 	case AXIS::UP:
 		Axis = Math::get_posture_up(model->get_orientation(index));
-		return Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec);
+		model->set_orientation(Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec), index);
 		break;
 	case AXIS::FORWARD:
 		Axis = Math::get_posture_forward(model->get_orientation(index));
-		return Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec);
+		model->set_orientation(Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec), index);
 		break;
 	}
 }

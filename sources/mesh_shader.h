@@ -22,6 +22,7 @@ public:
 	virtual void active(ID3D11DeviceContext* immediate_context, RenderType rt);
 	virtual void active(ID3D11DeviceContext* immediate_context,ID3D11VertexShader* vertex_shader,ID3D11PixelShader* pixcel_shader);
 	virtual void render(ID3D11DeviceContext* immediate_context, SkeletalMesh* model, const DirectX::XMFLOAT4X4& world = {}) ;
+	virtual void render(ID3D11DeviceContext* immediate_context, SkeletalMesh* model, DirectX::XMFLOAT4X4 camera_view, DirectX::XMFLOAT4X4 camara_proj, const DirectX::XMFLOAT4X4& world = {}) ;
 
 
 	

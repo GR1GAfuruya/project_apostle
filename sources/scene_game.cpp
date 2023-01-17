@@ -50,7 +50,7 @@ void SceneGame::initialize(Graphics& graphics)
 	 test_mesh_effect->set_material(MaterialManager::instance().mat_lightning.get());
 	 test_mesh_effect->set_scale(0.1f);
 
-	 test_emitter = std::make_unique<Emitter>(graphics,200);
+	// test_emitter = std::make_unique<Emitter>(graphics,200);
 #endif
 }
 
@@ -117,7 +117,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
 
-	test_emitter->update(graphics, elapsed_time);
+	//test_emitter->update(graphics, elapsed_time);
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
@@ -159,7 +159,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.shader_activate(SHADER_TYPE::PBR,RENDER_TYPE::Deferred);
 	
 	//ステージ描画
-	stageManager.render(elapsed_time, graphics);
+	stageManager.render(graphics,elapsed_time, camera.get());
 
 	//プレイヤー描画
 	player->render_d(graphics,elapsed_time,camera.get());
@@ -198,8 +198,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	test_emitter->debug_gui(graphics, "emitter_test");
-	test_emitter->render(graphics, *camera);
+	//test_emitter->debug_gui(graphics, "emitter_test");
+	//test_emitter->render(graphics, *camera);
 	static DirectX::XMFLOAT4 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };
@@ -263,7 +263,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//デバッグレンダー
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views, deferred->get_dsv());
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::WIREFRAME_CULL_BACK);
 	debug_figure->render_all_figures(graphics.get_dc().Get());
 	
 

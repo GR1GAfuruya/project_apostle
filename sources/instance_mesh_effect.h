@@ -27,7 +27,6 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	//MeshEffect(){}
 	InstanceMeshEffect(Graphics& graphics, const char* fbx_filename, const int max_instance);
 	~InstanceMeshEffect() {};
 	//çƒê∂
@@ -61,9 +60,10 @@ public:
 	void set_velocity(DirectX::XMFLOAT3 v) { velosity = v; }
 	void set_life_span(float l) { life_span = l; }
 	void set_is_loop(bool loop) { is_loop = loop; }
+
+	void rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec, int index);
 	DirectX::XMFLOAT4 set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang, int index);
 	DirectX::XMFLOAT4 set_rotate_quaternion(AXIS axis, float ang, int index);
-	DirectX::XMFLOAT4 rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec, int index);
 	void set_material(Material* m) { material = m; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return position; }

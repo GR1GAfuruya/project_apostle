@@ -9,6 +9,13 @@
 #include "collision.h"
 #include "noise.h"
 
+#include <filesystem>
+#include <fstream>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
+
+
 //==============================================================
 // 
 // 初期化
@@ -16,26 +23,19 @@
 //==============================================================
 void Player::initialize()
 {
+	//パラメーターロード
+	load_data_file();
 	//パラメーター初期化
 	position = { 0.0f, -5.0f,-20.0f };
 	velocity = { 0.0f, 0.0f, 0.0f };
-	move_speed = 30.0f;
-	turn_speed = DirectX::XMConvertToRadians(360);
-	health = 1000;
-	max_health = 1000;
-	invincible_timer = 0.0f;
+	//Charactorクラスのパラメーター初期化
+	chara_param = param.chara_init_param;
+
+	//体力初期化
+	health = chara_param.max_health;
+
 	jump_count = 1;
-	jump_speed = 27.0f;
 	scale.x = scale.y = scale.z = 0.05f;
-	radius = 1.0f;
-	height = 7.0f;
-	friction = 2.0f;
-	acceleration = 15.0f;
-
-	//パラメーターロード
-
-
-	attack_camera_shake_param = param.combo_1.camera_shake;
 
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
 	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible, type); };
@@ -77,16 +77,23 @@ Player::Player(Graphics& graphics, Camera* camera)
 	test_slash_hit->set_color({ 2.5f,2.5f,5.9f,0.5f });
 
 	
-	//attack1 = std::make_unique<GPU_Particles>(graphics.get_device().Get(),200000);
-	//attack1.get()->initialize(graphics);
+	slash_hit_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),3000);
+	slash_hit_particle.get()->initialize(graphics);
+	slash_hit_particle.get()->set_emitter_rate(5500);
+	slash_hit_particle.get()->set_particle_size({0.1f,0.1f});
+	slash_hit_particle.get()->set_emitter_life_time(0.15f);
+	slash_hit_particle.get()->set_particle_streak_factor(0.03f);
+	slash_hit_particle.get()->set_particle_life_time(0.4f);
+	slash_hit_particle.get()->set_color({ 1.0f,2.2f,5.0f,1.0f});
+
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
 
 	left_hand = model->get_bone_by_name("hand_l");
 	right_hand = model->get_bone_by_name("hand_r");
 	root = model->get_bone_by_name("pelvis");
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_emit_cs.cso", attack4_emit_cs.ReleaseAndGetAddressOf());
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/player_attack4_update_cs.cso", attack4_update_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/hit_effect_emit_cs.cso", slash_hit_emit_cs.ReleaseAndGetAddressOf());
+	create_cs_from_cso(graphics.get_device().Get(), "shaders/hit_effect_update_cs.cso", slash_hit_update_cs.ReleaseAndGetAddressOf());
 
 	initialize();
 }
@@ -129,7 +136,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	}
 	test_slash_hit->update(graphics,elapsed_time);
-	//attack1.get()->update(graphics.get_dc().Get(),elapsed_time, attack4_update_cs.Get());
+	slash_hit_particle.get()->update(graphics.get_dc().Get(),elapsed_time, slash_hit_update_cs.Get());
 	skill_manager.get()->update(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
@@ -145,7 +152,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	}
 	/*仮置き*/
 	collider.start = position;
-	collider.end = { position.x,position.y + height, position.z };
+	collider.end = { position.x,position.y + chara_param.height, position.z };
 	collider.radius = 1.0f;
 	//skill系仮置き
 	
@@ -153,7 +160,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
 	//UI
 	ui->set_hp_percent(get_hp_percent());
-	//ui->update(graphics, elapsed_time);
+	ui->update(graphics, elapsed_time);
 }
 //==============================================================
 // 
@@ -172,7 +179,8 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	//自機モデルのトランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
-	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+	graphics.shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
+	//graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 	//剣描画
 	sword->render(graphics);
 }
@@ -188,9 +196,9 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 		se->render(graphics);
 	}
 	test_slash_hit->render(graphics);
-	//attack1->render(graphics.get_dc().Get(),graphics.get_device().Get());
+	slash_hit_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
 	skill_manager.get()->render(graphics);
-	//attack1->debug_gui("player_attack1");
+	slash_hit_particle->debug_gui("slash_hit");
 	//デバッグGUI描画
 	debug_gui(graphics);
 
@@ -256,22 +264,6 @@ const DirectX::XMFLOAT3 Player::get_move_vec(Camera* camera) const
 
 //==============================================================
 // 
-//魔法
-// 
-//==============================================================
-void Player::attack_combo4_effect(Graphics& graphics, float elapsed_time)
-{
-	//DirectX::XMFLOAT3 emit_pos = position + Math::vector_scale(Math::get_posture_forward_vec(orientation),14);
-	//emit_pos.y = position.y + 3.0f;
-	//attack1.get()->set_emitter_pos(emit_pos);
-	//attack1.get()->set_emitter_rate(150);
-	//attack1.get()->set_particle_size({0.1f,0.1f});
-	//attack1.get()->set_emitter_life_time(0.2f);
-	//attack1.get()->launch_emitter(attack4_emit_cs);
-}
-
-//==============================================================
-// 
 //移動入力処理
 // 
 //==============================================================
@@ -281,8 +273,8 @@ bool Player::input_move(float elapsedTime, Camera* camera)
 	const DirectX::XMFLOAT3 move_vec = get_move_vec(camera);
 
 	//移動処理
-	Move(move_vec.x, move_vec.z, this->move_speed);
-	Turn(elapsedTime, move_vec, this->turn_speed, orientation);
+	Move(move_vec.x, move_vec.z, chara_param.move_speed);
+	Turn(elapsedTime, move_vec, chara_param.turn_speed, orientation);
 
 	return move_vec.x != 0.0f || move_vec.y != 0.0f || move_vec.z != 0.0f;
 }
@@ -294,8 +286,8 @@ bool Player::input_move(float elapsedTime, Camera* camera, float restriction_mov
 	const DirectX::XMFLOAT3 move_vec = get_move_vec(camera);
 
 	//移動処理
-	Move(move_vec.x, move_vec.z, this->move_speed / restriction_move);
-	Turn(elapsedTime, move_vec, this->turn_speed / restriction_turn, orientation);
+	Move(move_vec.x, move_vec.z, chara_param.move_speed / restriction_move);
+	Turn(elapsedTime, move_vec, chara_param.turn_speed / restriction_turn, orientation);
 
 	return move_vec.x != 0.0f || move_vec.y != 0.0f || move_vec.z != 0.0f;
 	return false;
@@ -313,7 +305,7 @@ void Player::input_jump()
 		if (jump_count < jump_limit)
 		{
 			transition_jump_state();
-			Jump(jump_speed);
+			Jump(param.jump_speed);
 			is_ground = false;//ジャンプしても地面についているというありえない状況を回避するため
 			
 			++jump_count;
@@ -345,7 +337,7 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
 		case SP_SKILLTYPE::PHYSICAL_UP:
-			if (skill_manager->chant_physical_up(graphics, &position, &move_speed, &jump_speed))
+			if (skill_manager->chant_physical_up(graphics, &position, &chara_param.move_speed, &param.jump_speed))
 			{
 				transition_magic_buff_state();//状態遷移
 			}
@@ -360,6 +352,9 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 			case SP_SKILLTYPE::RESTRAINNT:
 				transition_attack_pull_slash_state();
 			break;
+			case SP_SKILLTYPE::TEST:
+				transition_attack_pull_slash_state();
+				break;
 		default:
 			break;
 		}
@@ -420,7 +415,7 @@ void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged
 //==============================================================
 void Player::calc_collision_vs_enemy(Capsule collider, float collider_height)
 {
-	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, radius, height, &position);
+	Collision::cylinder_vs_cylinder(collider.start, collider.radius, collider_height, position, chara_param.radius, chara_param.height, &position);
 }
 //==============================================================
 // 
@@ -439,20 +434,31 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 			{
 				//攻撃が当たったらスキルのクールタイムを短縮させる
 				skill_manager->cool_time_reduction();
-				camera->set_camera_shake(attack_camera_shake_param);
+				camera->set_camera_shake(attack_sword_param.camera_shake);
+
+				//ヒットエフェクト再生
+				if (!test_slash_hit->get_active())
+				{
+					//ヒットエフェクト
+					test_slash_hit->play({ sword->get_collision().end });
+					test_slash_hit->set_life_span(0.2f);
+					test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
+					test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
+
+					slash_hit_particle->set_emitter_pos({ sword->get_collision().end });
+
+					DirectX::XMFLOAT4X4 sword_hand_mat = {};
+					//剣のトランスフォーム更新
+					model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
+					DirectX::XMFLOAT3 vec = Math::get_posture_forward(test_slash_hit->get_orientation());
+					const float slash_power = 70;
+					//slash_hit_particle->set_emitter_velocity(Math::vector_scale(vec, slash_power));
+					slash_hit_particle->launch_emitter(slash_hit_emit_cs.Get());
+					//ヒットストップ
+					camera->set_camera_stop(0.1f);
+				}
+				//test_slash_hit->play(attack_sword_param.collision.end,100.0f);
 			}
-			//ヒットエフェクト再生
-			if (!test_slash_hit->get_active())
-			{
-				//ヒットエフェクト
-				test_slash_hit->play({ sword->get_collision().end });
-				test_slash_hit->set_life_span(0.1f);
-				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
-				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
-				//ヒットストップ
-				camera->set_camera_stop(0.1f);
-			}
-			//test_slash_hit->play(attack_sword_param.collision.end,100.0f);
 		}
 	}
 }
@@ -469,6 +475,7 @@ void Player::on_landing()
 	{
 		// 着地ステートへ遷移
 		transition_idle_state();
+		velocity = { 0,0,0 };
 	}
 
 }
@@ -531,11 +538,46 @@ bool Player::floating()
 	if (velocity.y < 0)
 	{
 		//落下速度を弱める
-		velocity.y /= floating_value;
+		velocity.y /= param.floating_value;
 		return true;
 	}
 	//浮遊中でない
 	return false;
+}
+
+
+void Player::load_data_file()
+{
+	// Jsonファイルから値を取得
+	std::filesystem::path path = file_path;
+	path.replace_extension(".json");
+	if (std::filesystem::exists(path.c_str()))
+	{
+		std::ifstream ifs;
+		ifs.open(path);
+		if (ifs)
+		{
+			cereal::JSONInputArchive o_archive(ifs);
+			o_archive(param);
+		}
+	}
+}
+
+void Player::save_data_file()
+{
+	//ベースクラスの初期化パラメーター情報を更新
+	param.chara_init_param = chara_param;
+	// Jsonファイルから値を取得
+	std::filesystem::path path = file_path;
+	path.replace_extension(".json");
+	std::ofstream ifs;
+	ifs.open(path);
+	if (ifs)
+	{
+		cereal::JSONOutputArchive o_archive(ifs);
+		o_archive(param);
+	}
+
 }
 
 //==============================================================
@@ -549,11 +591,32 @@ void Player::debug_gui(Graphics& graphics)
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
 	imgui_menu_bar("Charactor", "player", display_player_imgui);
+
+	ImGui::Begin("slash_hit");
+	if (ImGui::Button("slash_emit"))
+	{
+		
+		slash_hit_particle.get()->launch_emitter(slash_hit_emit_cs.Get());
+	}
+
+	ImGui::End();
+
 	if (display_player_imgui)
 	{
+		
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
+			static int num = 0;
+			ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size() - 1);
+			int mesh_size = model.get()->model_resource.get()->get_meshes().size();
+			ImGui::DragInt("mesh_size", &mesh_size);
+			DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0] * scale;
+			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1] * scale;
+			ImGui::DragFloat3("bounding_min", &min.x);
+			ImGui::DragFloat3("bounding_max", &max.x);
 			ImGui::DragFloat("add_root_speed", &add_root_speed);
+
+			debug_figure->create_cuboid(position, max - min,{1,1,1,1});
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -572,18 +635,19 @@ void Player::debug_gui(Graphics& graphics)
 			}
 			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::DragFloat("height", &height);
+				ImGui::DragFloat("height", &chara_param.height);
+				ImGui::DragInt("max_health", &chara_param.max_health);
 				ImGui::DragInt("health", &health);
-				ImGui::DragFloat("radius", &radius);
+				ImGui::DragFloat("radius", &chara_param.radius);
 				ImGui::DragFloat("gravity", &gravity);
-				ImGui::DragFloat("floating_value", &floating_value);
+				ImGui::DragFloat("floating_value", &param.floating_value);
 				ImGui::DragFloat("invinsible_timer", &invincible_timer);
-				ImGui::DragFloat("MoveSpeed", &move_speed);
-				ImGui::DragFloat("avoidance_speed", &avoidance_speed);
-				ImGui::DragFloat("friction", &friction);
-				ImGui::DragFloat("acceleration", &acceleration);
-				ImGui::DragFloat("jump_speed", &jump_speed);
-				ImGui::DragFloat("air_control", &air_control);
+				ImGui::DragFloat("MoveSpeed", &chara_param.move_speed);
+				ImGui::DragFloat("avoidance_speed", &param.avoidance_speed);
+				ImGui::DragFloat("friction", &chara_param.friction);
+				ImGui::DragFloat("acceleration", &chara_param.acceleration);
+				ImGui::DragFloat("jump_speed", &param.jump_speed);
+				ImGui::DragFloat("air_control", &chara_param.air_control);
 				ImGui::Checkbox("is_ground", &is_ground);
 				float control_x = game_pad->get_axis_LX();
 				float control_y = game_pad->get_axis_LY();
@@ -592,6 +656,19 @@ void Player::debug_gui(Graphics& graphics)
 			}
 			if (ImGui::CollapsingHeader("AttackCameraShake", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				if (ImGui::Button("load"))
+				{
+					load_data_file();
+				}
+				ImGui::Separator();
+				if (ImGui::Button("save"))
+				{
+					save_data_file();
+				}
+				ImGui::Text("attack_pparam");
+				ImGui::DragInt("power", &attack_sword_param.power, 0.1f);
+				ImGui::DragFloat("sword_invinsible_time", &attack_sword_param.invinsible_time, 0.1f);
+
 				ImGui::Text("combo1_camera_shake");
 				ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
 				ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
@@ -640,7 +717,7 @@ void Player::debug_gui(Graphics& graphics)
 					switch (skill_manager->get_selected_sup_skill_type())
 					{
 					case SP_SKILLTYPE::PHYSICAL_UP:
-						skill_manager->chant_physical_up(graphics, &position, &skill_add_move_speed, &skill_add_jump_speed);
+						skill_manager->chant_physical_up(graphics, &position, &chara_param.move_speed, &param.jump_speed);
 						break;
 					case SP_SKILLTYPE::REGENERATE:
 						transition_magic_buff_state();//状態遷移

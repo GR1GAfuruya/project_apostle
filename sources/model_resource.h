@@ -288,6 +288,8 @@ public:
 		};
 
 
+
+
 		//シリアライズ
 		template<class T>
 		void serialize(T& archive)

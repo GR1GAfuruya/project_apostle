@@ -499,16 +499,6 @@ void ModelResource::fetch_meshes(FbxScene* fbx_scene, std::vector<mesh>& meshes,
 		fetch_skeleton(fbx_mesh, mesh.bind_pose);
 
 
-		//バウンディングボックス
-		for (const vertex& v : mesh.vertices)
-		{
-			mesh.bounding_box[0].x = std::min<float>(mesh.bounding_box[0].x, v.position.x);
-			mesh.bounding_box[0].y = std::min<float>(mesh.bounding_box[0].y, v.position.y);
-			mesh.bounding_box[0].z = std::min<float>(mesh.bounding_box[0].z, v.position.z);
-			mesh.bounding_box[1].x = std::max<float>(mesh.bounding_box[1].x, v.position.x);
-			mesh.bounding_box[1].y = std::max<float>(mesh.bounding_box[1].y, v.position.y);
-			mesh.bounding_box[1].z = std::max<float>(mesh.bounding_box[1].z, v.position.z);
-		}
 
 
 		std::vector<mesh::subset>& subsets{ mesh.subsets };
@@ -562,8 +552,7 @@ void ModelResource::fetch_meshes(FbxScene* fbx_scene, std::vector<mesh>& meshes,
 				vertex.position.x = static_cast<float>(control_points[polygon_vertex][0]);
 				vertex.position.y = static_cast<float>(control_points[polygon_vertex][1]);
 				vertex.position.z = static_cast<float>(control_points[polygon_vertex][2]);
-
-				//UNIT22
+				
 				const bone_influences_per_control_point& influences_per_control_point
 				{ bone_influences.at(polygon_vertex) };
 				for (size_t influence_index = 0; influence_index < influences_per_control_point.size();
@@ -596,7 +585,7 @@ void ModelResource::fetch_meshes(FbxScene* fbx_scene, std::vector<mesh>& meshes,
 					vertex.texcoord.x = static_cast<float>(uv[0]);
 					vertex.texcoord.y = 1.0f - static_cast<float>(uv[1]);
 				}
-				//UNIT29
+
 				if (fbx_mesh->GenerateTangentsData(0, false))
 				{
 					const FbxGeometryElementTangent* tangent = fbx_mesh->GetElementTangent(0);
@@ -611,6 +600,18 @@ void ModelResource::fetch_meshes(FbxScene* fbx_scene, std::vector<mesh>& meshes,
 				subset.index_count++;
 			}
 		}
+
+		//バウンディングボックス
+		for (const vertex& v : mesh.vertices)
+		{
+			mesh.bounding_box[0].x = std::min<float>(mesh.bounding_box[0].x, v.position.x);
+			mesh.bounding_box[0].y = std::min<float>(mesh.bounding_box[0].y, v.position.y);
+			mesh.bounding_box[0].z = std::min<float>(mesh.bounding_box[0].z, v.position.z);
+			mesh.bounding_box[1].x = std::max<float>(mesh.bounding_box[1].x, v.position.x);
+			mesh.bounding_box[1].y = std::max<float>(mesh.bounding_box[1].y, v.position.y);
+			mesh.bounding_box[1].z = std::max<float>(mesh.bounding_box[1].z, v.position.z);
+		}
+
 	}
 }
 
@@ -711,7 +712,6 @@ void ModelResource::fetch_animations(FbxScene* fbx_scene, std::vector<animation>
 					/// アニメーション時間からアニメーション行列を取得
 					node.global_transform = to_xmfloat4x4(fbx_node->EvaluateGlobalTransform(time));
 
-					//UNIT27
 					const FbxAMatrix& local_transform{ fbx_node->EvaluateLocalTransform(time) };
 					node.scaling = to_xmfloat3(local_transform.GetS()); //スケール取り出し
 					node.rotation = to_xmfloat4(local_transform.GetQ());//rotation取り出し（クォータニオン）

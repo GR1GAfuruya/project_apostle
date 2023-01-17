@@ -89,12 +89,6 @@ GPU_Particles::GPU_Particles(ID3D11Device* device,const int max_particle)
 
 	D3D11_TEXTURE2D_DESC texture2d_desc{};
 	load_texture_from_file(device, L"./resources/Effects/Textures/Particle04.png", texture.ReleaseAndGetAddressOf(), &texture2d_desc);
-	substitution_emitter.emit_life = 0;
-	substitution_emitter.emit_life_time = 0;
-	substitution_emitter.emit_rate = 1600;
-	substitution_emitter.emit_count = 0;
-	particle_constants->data.particle_size = { 0.2f,0.2f };
-	particle_constants->data.particle_count = static_cast<uint32_t>(max_particle_count);
 }
 
 
@@ -148,7 +142,7 @@ void GPU_Particles::particle_emit(ID3D11DeviceContext* dc)
 	dc->CSSetUnorderedAccessViews(1, 1, particle_pool_buffer_uav.GetAddressOf(), 0);
 	
 	//発生させるパーティクルの数をスレッドの倍数に
-	UINT num_threads = (static_cast<UINT>(particle_constants->data.emitter.emit_rate) / THREAD_NUM_X) * THREAD_NUM_X;
+	UINT num_threads = (static_cast<UINT>(particle_constants->data.emitter.rate) / THREAD_NUM_X) * THREAD_NUM_X;
 
 	//生成しようとしている数が使用可能なパーティクルの数を超えていたら発生させない
 	if (get_particle_pool_count(dc) < num_threads)
@@ -178,6 +172,10 @@ void GPU_Particles::launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader>  
 	emitters.push_back(std::move(emitter));
 }
 
+void GPU_Particles::play(DirectX::XMFLOAT3 pos)
+{
+}
+
 //==============================================================
 // 
 //エミッターの更新
@@ -189,7 +187,10 @@ void GPU_Particles::emitter_update(ID3D11DeviceContext* dc, float elapsed_time)
 	for (auto& emitter : emitters)
 	{
 		emitter->emit_life_time -= elapsed_time;
-		particle_constants->data.emitter = *emitter;
+		emitter->to_gpu_data.rate = emitter->spawn_rate * elapsed_time;
+		EmitterData emit_data = emitter.get()->to_gpu_data;
+		particle_constants->data.emitter = emit_data;
+
 		if (emitter->emit_life_time > 0)
 		{
 			particle_emit(dc);
@@ -209,6 +210,11 @@ void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11Co
 {
 	//エミッターの更新
 	emitter_update(dc, elapsed_time);
+
+	//現在のアクティブパーティクル数をカウント
+	int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
+	//アクティブ数０ならスルー
+	if (active_particle <= 0) return;
 
 	//定数バッファをセット
 	particle_constants->bind(dc, 9, CB_FLAG::CS_GS);
@@ -238,13 +244,17 @@ void GPU_Particles::update(ID3D11DeviceContext* dc, float elapsed_time, ID3D11Co
 //==============================================================
 void GPU_Particles::render(ID3D11DeviceContext* dc, ID3D11Device* device)
 {
+	//現在のアクティブパーティクル数をカウント
+	int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
+	//アクティブ数０ならスルー
+	if (active_particle <= 0) return;
 
 	//シェーダーのセット
 	dc->VSSetShader(vertex_shader.Get(), NULL, 0);
 	dc->PSSetShader(pixel_shader.Get(), NULL, 0);
 	dc->GSSetShader(geometry_shader.Get(), NULL, 0);
 	dc->GSSetShaderResources(9, 1, particle_buffer_srv.GetAddressOf());
-	dc->PSSetShaderResources(5, 1, texture.GetAddressOf());
+	dc->PSSetShaderResources(0, 1, texture.GetAddressOf());
 	
 	//Draw関数の実行
 	dc->IASetInputLayout(NULL);
@@ -297,10 +307,14 @@ void GPU_Particles::debug_gui(string str_id)
 		ImGui::Begin(str_id.c_str());
 		ImGui::PushID(str_id.c_str());
 		ImGui::DragFloat3("angle", &ang.x);
-		ImGui::DragFloat3("pos", &substitution_emitter.pos.x);
+		ImGui::DragFloat3("pos", &substitution_emitter.to_gpu_data.pos.x);
+		ImGui::DragFloat3("pos", &substitution_emitter.to_gpu_data.velocity.x);
 		ImGui::DragFloat2("scale", &particle_constants->data.particle_size.x, 0.1f);
-		ImGui::DragFloat("rate", &substitution_emitter.emit_rate, THREAD_NUM_X, THREAD_NUM_X);
-		ImGui::DragFloat4("particle_color", &particle_constants->data.particle_color.x);
+		ImGui::DragFloat("rate", &substitution_emitter.spawn_rate);
+		ImGui::DragFloat("streak_factor", &particle_constants->data.streak_factor,0.1f);
+		ImGui::DragFloat("emit_life_time", &substitution_emitter.emit_life_time,0.1f);
+		ImGui::DragFloat("particlelife_time", &substitution_emitter.to_gpu_data.life_time,0.1f);
+		ImGui::DragFloat4("particle_color", &substitution_emitter.to_gpu_data.particle_color.x);
 		int active_particle = static_cast<int>(max_particle_count) - particle_constants->data.particle_count;
 		ImGui::DragInt("active_count", &active_particle);
 		ImGui::DragInt("count", &particle_constants->data.particle_count);
@@ -354,6 +368,7 @@ void GPU_Particles::release_buffer()
 
 }
 
+
 //==============================================================
 // 
 //エミッターの寿命設定
@@ -366,23 +381,13 @@ void GPU_Particles::set_emitter_life_time(float life_time)
 }
 //==============================================================
 // 
-//エミッターの数設定
-// 
-//==============================================================
-void GPU_Particles::set_emitter_count(int count)
-{
-	_ASSERT_EXPR(count >= 0, L"GPUParticleのcountに不正な値が入力されました");
-	substitution_emitter.emit_count = count;
-}
-//==============================================================
-// 
 //エミッターのレート設定
 // 
 //==============================================================
 void GPU_Particles::set_emitter_rate(float rate)
 {
 	_ASSERT_EXPR(rate >= 0, L"GPUParticleのrateに不正な値が入力されました");
-	substitution_emitter.emit_rate = rate;
+	substitution_emitter.spawn_rate = rate;
 }
 
 //==============================================================
@@ -393,7 +398,7 @@ void GPU_Particles::set_emitter_rate(float rate)
 void GPU_Particles::set_particle_life_time(float life_time)
 {
 	_ASSERT_EXPR(life_time >= 0, L"GPUParticleのlife_timeに不正な値が入力されました");
-	particle_constants->data.particle_life_time = life_time;
+	substitution_emitter.to_gpu_data.life_time = life_time;
 }
 //==============================================================
 // 
@@ -402,6 +407,21 @@ void GPU_Particles::set_particle_life_time(float life_time)
 //==============================================================
 void GPU_Particles::set_particle_size(DirectX::XMFLOAT2 size )
 {
-	_ASSERT_EXPR(size.x > 0 || size.y > 0, L"GPUParticleのsizeに不正な値が入力されました");
+	_ASSERT_EXPR(size.x >= 0 || size.y >= 0, L"GPUParticleのsizeに不正な値が入力されました");
 	particle_constants->data.particle_size = size;
+}
+
+void GPU_Particles::set_color(DirectX::XMFLOAT4 color)
+{
+	_ASSERT_EXPR(color.x >= 0 || color.y >= 0 || color.z >= 0 || color.w >= 0, L"GPUParticleのcolorに不正な値が入力されました");
+	substitution_emitter.to_gpu_data.particle_color = color;
+
+}
+
+
+void GPU_Particles::set_particle_streak_factor(float factor)
+{
+	_ASSERT_EXPR(factor >= 0, L"GPUParticleのstreak_factorに不正な値が入力されました");
+	particle_constants->data.streak_factor = factor;
+
 }

@@ -1,6 +1,7 @@
 #include "meteore.h"
 #include "stage_manager.h"
 #include "material_manager.h"
+#include "Operators.h"
 //==============================================================
 // 
 // コンストラクタ
@@ -11,7 +12,10 @@ Meteore::Meteore(Graphics& graphics, int max_num)
 	main_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", max_num);
 	main_effect->set_material(MaterialManager::instance().mat_meteore.get());
 	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
-	
+	meteo_wave = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/eff_aura.fbx", max_num);
+	meteo_wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	meteo_wave->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
+
 	MAX_NUM = max_num;
 	colider_sphere.resize(MAX_NUM);
 	//パラメーター初期化
@@ -31,6 +35,10 @@ void Meteore::initialize()
 	main_effect->stop();
 	main_effect->play({ 0,0,0 });
 	main_effect->set_is_loop(true);
+
+	meteo_wave->stop();
+	meteo_wave->play({ 0,0,0 });
+	meteo_wave->set_is_loop(true);
 	//攻撃力設定
 	power = 60;
 	invinsible_time = 2.0f;
@@ -45,6 +53,9 @@ void Meteore::initialize()
 		params[i].is_hit = false;
 		main_effect->set_scale(0, i);
 		main_effect->set_position({ 0,0,0 }, i);
+
+		meteo_wave->set_position({ 0,0,0 }, i);
+		meteo_wave->set_scale(0, i);
 		colider_sphere.at(i).radius = params[i].scale.x;
 	}
 }
@@ -53,9 +64,12 @@ void Meteore::initialize()
 //更新処理
 // 
 //==============================================================
+static float add = 5;
+
 void Meteore::update(Graphics& graphics, float elapsed_time)
 {
 	main_effect->update(graphics,elapsed_time);
+	meteo_wave->update(graphics,elapsed_time);
 	//半径
 	radius = 3.5f;
 	for (int i = 0; i < MAX_NUM; i++)
@@ -66,6 +80,14 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 		if (params[i].is_calc_velocity)
 		{
 			update_velocity(elapsed_time,i);
+			DirectX::XMFLOAT3 aura_dir = { -params[i].velocity.x,-params[i].velocity.y ,-params[i].velocity.z };
+			DirectX::XMFLOAT3 add_pos = Math::vector_scale(Math::Normalize(params[i].velocity), add);
+			meteo_wave->set_position(params[i].position + add_pos, i);
+			meteo_wave->set_scale({9,9,30}, i);
+			if (Math::Length(aura_dir) > 0)
+			{
+				meteo_wave->rotate_base_axis(InstanceMeshEffect::AXIS::FORWARD, aura_dir, i);
+			}
 		};
 
 		//ヒットした場合はサイズを０にする
@@ -73,6 +95,11 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 		{
 			params[i].scale = { 0,0,0 };
 			main_effect->set_scale(params[i].scale, i);
+
+			meteo_wave->rotate_base_axis(InstanceMeshEffect::AXIS::FORWARD, {0,-1,0}, i);
+			DirectX::XMFLOAT3 add_scale = { meteo_wave->get_scale(i).x, meteo_wave->get_scale(i).y, meteo_wave->get_scale(i).z + 3 };
+			meteo_wave->set_scale(add_scale,i);
+
 		}
 		//当たり判定の位置と大きさ更新
 		colider_sphere.at(i).center = params[i].position;
@@ -88,6 +115,9 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 void Meteore::render(Graphics& graphics)
 {
 	main_effect->render(graphics);
+	meteo_wave->render(graphics);
+
+	ImGui::DragFloat("add", &add,0.1f);
 }
 
 //==============================================================

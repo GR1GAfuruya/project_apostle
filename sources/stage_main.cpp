@@ -46,7 +46,7 @@ void StageMain::update(float elapsedTime)
 //描画
 // 
 //==============================================================
-void StageMain::render(float elapsed_time, Graphics& graphics)
+void StageMain::render(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	static DirectX::XMFLOAT4 material_color = { 1,1,1,1 };
 	
@@ -55,7 +55,14 @@ void StageMain::render(float elapsed_time, Graphics& graphics)
 	const DirectX::XMFLOAT4X4 terrain_world_transform{ -0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 
 	//ステージ
-	graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
+	if (flustm_flag)
+	{
+		graphics.shader->render(graphics.get_dc().Get(), model.get(), camera->get_view(), camera->get_projection(), world);
+	}
+	else
+	{
+		graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
+	}
 #if USE_IMGUI
 	imgui_menu_bar("Stage", "stage_main", display_imgui);
 	if (display_imgui)
@@ -63,6 +70,15 @@ void StageMain::render(float elapsed_time, Graphics& graphics)
 
 		ImGui::Begin("stage_main");
 		ImGui::DragFloat3("scale", &scale.x, 0.1f);
+		ImGui::Checkbox("flustm_flag", &flustm_flag);
+		static int num = 0;
+		ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size());
+		int mesh_size = model.get()->model_resource.get()->get_meshes().size();
+		ImGui::DragInt("mesh_size", &mesh_size);
+		DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0];
+		DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
+		ImGui::DragFloat3("bounding_min", &min.x);
+		ImGui::DragFloat3("bounding_max", &max.x);
 		ImGui::End();
 	}
 #endif

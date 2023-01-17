@@ -54,7 +54,7 @@ void Charactor::Move(float vx, float vz, float speed)
 	move_vec_z = vz;
 
 	//最大速度設定
-	max_move_speed = speed;
+	chara_param.max_move_speed = speed;
 }
 
 void Charactor::Turn(float elapsedTime, float vx, float vz, float speed)
@@ -278,7 +278,7 @@ void Charactor::update_hrizontal_velocity(float elapsed_frame)
 	float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
 	if (length > 0.0f)
 	{
-		float friction = this->friction * elapsed_frame;
+		float friction = chara_param.friction * elapsed_frame;
 
 		//if (IsGround()) friction += airControl;
 		//摩擦による横方向の減速処理
@@ -295,7 +295,7 @@ void Charactor::update_hrizontal_velocity(float elapsed_frame)
 
 	}
 	//XZ平面の速力を加速する
-	if (length <= max_move_speed)
+	if (length <= chara_param.max_move_speed)
 	{
 		//移動ベクトルがゼロベクトルでないなら加速する
 		float moveVecLength = sqrtf(move_vec_x * move_vec_x + move_vec_z * move_vec_z);
@@ -304,21 +304,21 @@ void Charactor::update_hrizontal_velocity(float elapsed_frame)
 		if (moveVecLength > 0.0f)
 		{
 			//加速力
-			float acceleration = this->acceleration * elapsed_frame;
+			float acceleration = chara_param.acceleration * elapsed_frame;
 			//空中にいるときは加速力を減らす
-			if (get_is_ground()) acceleration += air_control;
+			if (get_is_ground()) acceleration += chara_param.air_control;
 			//移動ベクトルによる加速処理
 			velocity.x += move_vec_x * acceleration;
 			velocity.z += move_vec_z * acceleration;
 
 			//最大速度制限
 			float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
-			if (length > max_move_speed)
+			if (length > chara_param.max_move_speed)
 			{
 				float vx = velocity.x / length;
 				float vz = velocity.z / length;
-				velocity.x = vx * max_move_speed;
-				velocity.z = vz * max_move_speed;
+				velocity.x = vx * chara_param.max_move_speed;
+				velocity.z = vz * chara_param.max_move_speed;
 			}
 		}
 	}

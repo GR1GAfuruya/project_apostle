@@ -23,13 +23,16 @@ public:
 		PHYSICAL_UP,
 		REGENERATE,
 		RESTRAINNT,
-		SUP_SKILL_MAX
+		SUP_SKILL_MAX,
+		TEST,
 	};
 	enum class AttackSkillType
 	{
 		MAGICBULLET,
 		SPEARS_SEA,
-		ATK_SKILL_MAX
+		ATK_SKILL_MAX,
+		SLASH_WAVE,
+		TEST,
 	};
 
 	//==============================================================
