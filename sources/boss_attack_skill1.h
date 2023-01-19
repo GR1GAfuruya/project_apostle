@@ -26,20 +26,19 @@ public:
 
 	};
 	BossAttackSkill1(Graphics& graphics);
-	~BossAttackSkill1() {}
+	~BossAttackSkill1();
 
 	//発動
 	void chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir);
 	//停止
 	void stop();
 	//更新
-	void update(Graphics& graphics, float elapsed_time, Camera* camera);
+	void update(Graphics& graphics, float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir);
 	//描画
 	void render(Graphics& graphics);
 	//デバッグGUI
 	void debug_gui(const char* str_id);
 
-	//void set_hand_pos(DirectX::XMFLOAT3* pos) { hand_pos.reset(pos); }
 
 
 	//当たり判定
@@ -70,7 +69,8 @@ private:
 
 	StateUpdate state_update;
 	float ray_power = 5.0f;
-	std::unique_ptr<InstanceMeshEffect> main_effect;
+	std::unique_ptr<InstanceMeshEffect> meteore_effect;
+	std::unique_ptr<MeshEffect> arm_effect;
 	std::unique_ptr<MeshEffect> meteo_wave[3];
 	std::unique_ptr<MeteoreParam[]> params;
 
@@ -82,9 +82,11 @@ private:
 
 	DirectX::XMFLOAT3 skill_dir[3];
 
-
+	DirectX::XMFLOAT3 arm_pos;
+	DirectX::XMFLOAT3 arm_dir;
 	float range;
+	float charge_timer;
+	float charge_time;
 	static const int MAX_NUM = 3;
-	//std::unique_ptr<DirectX::XMFLOAT3> hand_pos;
 	AttackParam at_param;
 };

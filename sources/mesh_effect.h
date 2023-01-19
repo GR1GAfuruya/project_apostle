@@ -94,6 +94,7 @@ public:
 	DirectX::XMFLOAT3 get_scale() { return effect_param.scale; }
 	DirectX::XMFLOAT3 get_velosity() { return effect_param.velosity; }
 	DirectX::XMFLOAT4 get_color() { return constants.get()->data.particle_color; }
+	float get_life_rate() { return life_time/ effect_param.life_duration; }
 	float get_life_time() { return life_time; }
 	bool get_active() { return active; }
 

@@ -15,10 +15,16 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 	at_param.invinsible_time = 2.0f;
 
 	range = 10;
-	
-	main_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
-	main_effect->set_material(MaterialManager::instance().mat_meteore.get());
-	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
+	const DirectX::XMFLOAT4 FIRE_COLOR = { 4.0f, 1.0f, 0.7f, 0.8f };
+	meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
+	meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
+	meteore_effect->constants->data.particle_color = FIRE_COLOR;
+
+	arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+	arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	arm_effect->set_init_color(FIRE_COLOR);
+	arm_effect->set_init_scale(0);
+	arm_effect->set_init_life_duration(0.5f);
 
 	for (auto& m : meteo_wave)
 	{
@@ -32,8 +38,8 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
 		->void {return attack_state_update(graphics, elapsed_time, camera); };
 
-	main_effect->play({ 0,0,0 });
-	main_effect->set_is_loop(true);
+	meteore_effect->play({ 0,0,0 });
+	meteore_effect->set_is_loop(true);
 	params.reset(new MeteoreParam[MAX_NUM]);
 	for (int i = 0; i < MAX_NUM; i++)
 	{
@@ -42,10 +48,17 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 		params[i].scale = { 0,0,0 };
 		params[i].is_calc_velocity = false;
 		params[i].is_hit = false;
-		main_effect->set_scale(0, i);
-		main_effect->set_position({ 0,0,0 }, i);
+		meteore_effect->set_scale(0, i);
+		meteore_effect->set_position({ 0,0,0 }, i);
 		params[i].colider_sphere.radius = params[i].scale.x;
 	}
+
+	const float CHARGE_TIME = 2.0f;
+	charge_time = CHARGE_TIME;
+}
+
+BossAttackSkill1::~BossAttackSkill1()
+{
 }
 
 //==============================================================
@@ -57,6 +70,9 @@ void BossAttackSkill1::chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir)
 {
 	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
 		->void {return charge_state_update(graphics, elapsed_time, camera); };
+
+	arm_effect->play(arm_pos);
+	arm_effect->rotate_base_axis(MeshEffect::AXIS::UP, arm_dir);
 
 	for (int i = 0; i < MAX_NUM; i++)
 	{
@@ -71,7 +87,7 @@ void BossAttackSkill1::chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir)
 		params[i].position = pos;
 		params[i].is_calc_velocity = true;
 		params[i].is_hit = false;
-		main_effect->set_scale(0, i);
+		meteore_effect->set_scale(0, i);
 		meteo_wave[i]->set_scale(0);
 		params[i].scale = { 2,2,2 };
 	}
@@ -90,11 +106,15 @@ void BossAttackSkill1::stop()
 //更新
 // 
 //==============================================================
-void BossAttackSkill1::update(Graphics& graphics, float elapsed_time, Camera* camera)
+void BossAttackSkill1::update(Graphics& graphics, float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir)
 {
+	this->arm_pos = arm_pos;
+	this->arm_dir = arm_dir;
+
 	state_update(graphics, elapsed_time, camera);
 
-	main_effect->update(graphics, elapsed_time);
+	arm_effect->update(graphics, elapsed_time);
+	meteore_effect->update(graphics, elapsed_time);
 
 	for (auto& m : meteo_wave)
 	{
@@ -114,9 +134,30 @@ void BossAttackSkill1::update(Graphics& graphics, float elapsed_time, Camera* ca
 //==============================================================
 void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_time, Camera* camera)
 {
-	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-		->void {return attack_state_update(graphics, elapsed_time, camera); };
+	charge_timer += elapsed_time;
+	if (charge_timer > charge_time)
+	{
+		state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
+			->void {return attack_state_update(graphics, elapsed_time, camera); };
+		arm_effect->stop();
+		charge_timer = 0;
+	}
 
+	//エフェクトの更新
+	{
+		arm_effect->set_position(arm_pos);
+		arm_effect->set_position(arm_pos);
+		arm_effect->rot_speed.y = 180.0f * elapsed_time;
+		arm_effect->rotate_base_axis(MeshEffect::AXIS::UP, arm_dir);
+
+		const float scale_speed = 10.0f;
+		arm_effect->set_scale(arm_effect->get_scale().x + scale_speed * elapsed_time );
+
+		if (!arm_effect->get_active())
+		{
+			arm_effect->play(arm_pos);
+		}
+	}
 }
 
 //==============================================================
@@ -128,8 +169,8 @@ void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_tim
 {
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		main_effect->set_position(params[i].position, i);
-		main_effect->set_scale(params[i].scale, i);
+		meteore_effect->set_position(params[i].position, i);
+		meteore_effect->set_scale(params[i].scale, i);
 		//速度計算をするかどうか
 		if (params[i].is_calc_velocity)
 		{
@@ -141,19 +182,19 @@ void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_tim
 		if (params[i].is_hit)
 		{
 			params[i].scale = { 0,0,0 };
-			main_effect->set_scale(params[i].scale, i);
+			meteore_effect->set_scale(params[i].scale, i);
 
 			//隕石の破裂演出
 			{
 				params[i].scale = { 0,0,0 };
-				main_effect->set_scale(params[i].scale, i);
+				meteore_effect->set_scale(params[i].scale, i);
 
 				float add_scale = lerp(meteo_wave[i]->get_scale().x, 0.2f, 1.0f * elapsed_time);
 				add_scale = (std::min)(add_scale, 0.2f);
 				meteo_wave[i]->set_scale(add_scale);
 				DirectX::XMFLOAT3 wave_target_color = { 0,0,0 };
 				DirectX::XMFLOAT3 wave_now_color = { meteo_wave[i]->get_color().x,meteo_wave[i]->get_color().y,meteo_wave[i]->get_color().z };
-				DirectX::XMFLOAT3 wave_color = Math::lerp(wave_now_color, wave_target_color, 0.1f * elapsed_time);
+				DirectX::XMFLOAT3 wave_color = Math::lerp(wave_now_color, wave_target_color, 1.0f * elapsed_time);
 				meteo_wave[i]->set_color(DirectX::XMFLOAT4(wave_color.x, wave_color.y, wave_color.z, 0.5f));
 			}
 		}
@@ -171,7 +212,8 @@ void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_tim
 //==============================================================
 void BossAttackSkill1::render(Graphics& graphics)
 {
-	main_effect->render(graphics);
+	meteore_effect->render(graphics);
+	arm_effect->render(graphics);
 	for (int i = 0; i < MAX_NUM; i++)
 	{
 		meteo_wave[i]->render(graphics);
@@ -190,6 +232,7 @@ void BossAttackSkill1::debug_gui(const char* str_id)
 	{
 		meteo_wave[i]->debug_gui("skill1_wave" + to_string(i));
 	}
+	ImGui::DragFloat("charge_timer", &charge_time);
 #endif //  USE_IMGUI
 
 }

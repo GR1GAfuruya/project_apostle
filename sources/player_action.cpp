@@ -236,6 +236,7 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 	velocity.z /= 2.0f;
 	//速力処理更新
 	update_velocity(elapsed_time, position);
+
 	if (model->anime_param.frame_index > 33 / 2)
 	{
 		//地面に足がついたフレームからはさらに速度落とす

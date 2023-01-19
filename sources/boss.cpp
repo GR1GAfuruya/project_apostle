@@ -69,8 +69,11 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	(this->*act_update)(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
+	DirectX::XMFLOAT4X4 sickle_bone_mat;
+	model->fech_by_bone(transform, sickle_hand, sickle_hand_colide.start, &sickle_bone_mat);
 	
-	attack_skill_1->update(graphics, elapsed_time,camera);
+	//スキル１のアップデート
+	attack_skill_1->update(graphics, elapsed_time,camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
 	attack_skill_2->update(graphics, elapsed_time,camera);
 	attack_skill_2->set_target_pos(target_pos);
 	//bodyの攻撃用当たり判定
@@ -78,11 +81,13 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
 	boss_body_collision.capsule.end.y = boss_body_collision.capsule.start.y + boss_body_collision.height;
 
-	DirectX::XMFLOAT4X4 sickle_bone_mat;
-	model->fech_by_bone(transform, sickle_hand, sickle_hand_colide.start, &sickle_bone_mat);
-	sickle_hand_colide.end = sickle_hand_colide.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
-	update_invicible_timer(elapsed_time);
 
+	//腕の当たり判定設定
+	sickle_hand_colide.end = sickle_hand_colide.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
+
+	//無敵時間更新
+	update_invicible_timer(elapsed_time);
+	//UI更新
 	ui->update(graphics, elapsed_time);
 }
 //==============================================================
