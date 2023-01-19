@@ -23,22 +23,26 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 	velocity = acceleration * Math::Normalize(target_dir);
 	launch_bullet = false;
 	//エフェクト
-	main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
-	main_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	main_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
+	{
+		main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
+		main_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		main_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
+	}
 
-	lightning_disk_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/disk.fbx");
-	lightning_disk_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	lightning_disk_effect->set_scale(1.0f);
-	lightning_disk_effect->set_life_span(1.0f);
-	lightning_disk_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
+	{
+		lightning_disk_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/disk.fbx");
+		lightning_disk_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		lightning_disk_effect->set_scale(1.0f);
+		lightning_disk_effect->set_init_life_duration(1.0f);
+		lightning_disk_effect->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
+	}
 
 	for (auto& l : lightning_effect)
 	{
 		l = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
 		l->set_material(MaterialManager::instance().mat_lightning.get());
 		l->set_scale(1.5f);
-		l->set_life_span(0.5f);
+		l->set_init_life_duration(0.5f);
 		l->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	}
 
@@ -84,7 +88,6 @@ MagicBullet::~MagicBullet()
 		 if (life_time > 0.8f)
 		 {
 			 main_effect->set_scale(0.5f);
-			 main_effect->set_life_span(2);
 			 main_effect->play(*launch_pos);
 			 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(target_dir));
 

@@ -41,13 +41,15 @@ void Boss::transition_skill_1_state()
 	model->play_animation(BossAnimation::SKILL_1, false);
 	//state = State::SKILL_1;
 	state = State::ATTACK;
+
+	attack_skill_1->chant(position,Math::get_posture_forward(orientation));
 	
 }
 
 void Boss::transition_skill_2_start_state()
 {
 	act_update = &Boss::update_skill_2_start_state;
-	model->play_animation(BossAnimation::SKILL_2_START, false);
+	model->play_animation(BossAnimation::SKILL_2_START, false, 0.5f);
 	//state = State::SKILL_2_START;
 	state = State::ATTACK;
 
@@ -56,11 +58,11 @@ void Boss::transition_skill_2_start_state()
 void Boss::transition_skill_2_loop_state()
 {
 	act_update = &Boss::update_skill_2_loop_state;
-	model->play_animation(BossAnimation::SKILL_2_LOOP, true);
+	model->play_animation(BossAnimation::SKILL_2_LOOP, true, 0.5f);
 	//state = State::SKILL_2_LOOP;
 	state = State::ATTACK;
 	//チャージエフェクト発生
-	efc_charge_attack->chant(position);
+	attack_skill_2->chant(position);
 }
 
 void Boss::transition_skill_2_end_state()
@@ -70,7 +72,7 @@ void Boss::transition_skill_2_end_state()
 	//state = State::SKILL_2_END;
 	state = State::ATTACK;
 	//チャージエフェクトのチャージ状態をマックスに
-	efc_charge_attack->set_charge_max_state();
+	attack_skill_2->set_charge_max_state();
 }
 
 void Boss::transition_skill_3_state()
@@ -79,6 +81,7 @@ void Boss::transition_skill_3_state()
 	model->play_animation(BossAnimation::SKILL_3, false);
 	//state = State::SKILL_3;
 	state = State::ATTACK;
+	attack_skill_1->chant(position, Math::get_posture_forward(orientation));
 }
 
 

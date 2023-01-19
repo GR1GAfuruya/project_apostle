@@ -10,38 +10,50 @@
 ChargeAttack::ChargeAttack(Graphics& graphics)
 {
 	//coreの初期設定
-	core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
-	core->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	core->constants->data.particle_color = FIRE_COLOR;
-	
+	{
+		core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+		core->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		core->set_init_color(FIRE_COLOR);
+	}
 	//waveの初期設定
-	wave = std::make_unique<MeshEffect>(graphics,"./resources/Effects/Meshes/torus.fbx");
-	wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	{
+		wave = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/torus.fbx");
+		wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		wave->set_init_color(FIRE_COLOR);
+	}
 	//tornadoの初期設定
-	tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
-	tornado->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	tornado->constants->data.particle_color = FIRE_COLOR;
-
-	tornado_black = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
-	tornado_black->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	tornado_black->constants->data.particle_color = { 0.3f,0.2f,0.0f,0.8f };
+	{
+		tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		tornado->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		tornado->set_init_color(FIRE_COLOR);
+	}
+	//黒tornadoの初期設定
+	{
+		tornado_black = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		tornado_black->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		tornado_black->set_init_color({ 0.3f,0.2f,0.0f,0.8f });
+	}
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particleの初期設定
-	particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 70000);
-	particle.get()->initialize(graphics);
-	particle.get()->set_emitter_rate(6000);
-	particle.get()->set_emitter_life_time(4);
-	particle.get()->set_particle_life_time(5);
-	particle.get()->set_particle_size(DirectX::XMFLOAT2(0.2f, 0.2f));
-	particle.get()->set_color(FIRE_COLOR);
+	{
+		particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 70000);
+		particle.get()->initialize(graphics);
+		particle.get()->set_emitter_rate(6000);
+		particle.get()->set_emitter_life_time(4);
+		particle.get()->set_particle_life_time(5);
+		particle.get()->set_particle_size(DirectX::XMFLOAT2(0.2f, 0.2f));
+		particle.get()->set_color(FIRE_COLOR);
 
+	}
 	//メテオ
-	meteores = std::make_unique<Meteore>(graphics, 12);
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
-	create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
-	meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
-	meteo_launch_radius = 5;
+	{
+		meteores = std::make_unique<Meteore>(graphics, 12);
+		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
+		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
+		meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
+		meteo_launch_radius = 5;
+	}
 
 	const float range = 20.0f;
 	boss_light = make_shared<PointLight>(graphics, position, range, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
@@ -69,7 +81,6 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 		core->set_init_scale(0);
 		core->play(core_pos);
 		core->set_is_loop(true);
-		core->constants->data.particle_color = FIRE_COLOR;
 	}
 	//wave初期設定
 	{
@@ -77,7 +88,6 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 		wave->set_init_scale(0.0f);
 		wave->play(wave_pos);
 		wave->constants->data.threshold = 0;
-		wave->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f };
 	}
 	//トルネード初期化
 	{
@@ -85,7 +95,6 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 		tornado->play(pos);
 		tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 		tornado->constants->data.threshold = 0;
-		tornado->constants->data.particle_color = { FIRE_COLOR.x,FIRE_COLOR.y,FIRE_COLOR.z, 1.0f };
 	}
 	//トルネード黒初期化
 	{
@@ -154,6 +163,10 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
 		life_time += elapsed_time;
 		//更新
 		(this->*charge_attack_update)(graphics, elapsed_time, camera);
+		core->update(graphics, elapsed_time);
+		wave->update(graphics, elapsed_time);
+		tornado->update(graphics, elapsed_time);
+		tornado_black->update(graphics, elapsed_time);
 	}
 	meteores->update(graphics, elapsed_time);
 
@@ -244,9 +257,11 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 	float max = 9;
 	for (int i = 0; i < meteores->get_max_num(); i++)
 	{
+		//ランダムな速度
 		float random_speed = fabs(Noise::instance().random_range(min, max));
 		min = 2;
 		max = 5;
+		//ランダムなサイズ
 		float random_size = fabs(Noise::instance().random_range(min, max));
 		meteores->rising(elapsed_time, core->get_position(), random_size, random_speed, i);
 	}

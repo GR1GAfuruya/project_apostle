@@ -65,16 +65,16 @@ Player::Player(Graphics& graphics, Camera* camera)
 		se = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
 		se->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		se->set_init_scale(0.15f);
-		se->set_life_span(0.2f);
-		se->set_color({ 1.8f, 1.8f, 5.2f, 0.8f });
-
+		se->set_init_life_duration(0.2f);
+		se->set_init_color({ 1.8f, 1.8f, 5.2f, 0.8f });
 	}
 
 	//ヒットエフェクト
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	test_slash_hit->set_init_scale(2.0f);
-	test_slash_hit->set_color({ 2.5f,2.5f,5.9f,0.5f });
+	test_slash_hit->set_init_life_duration(0.5f);
+	test_slash_hit->set_init_color({ 2.5f,2.5f,5.9f,0.5f });
 
 	
 	slash_hit_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),3000);
@@ -169,9 +169,6 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 //==============================================================
 void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
-	// 拡大縮小（S）・回転（R）・平行移動（T）行列を計算する
-	// スタティックメッシュ
-	//ルートモーションをしている最中は
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	//剣のトランスフォーム更新
 	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
@@ -441,7 +438,6 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 				{
 					//ヒットエフェクト
 					test_slash_hit->play({ sword->get_collision().end });
-					test_slash_hit->set_life_span(0.2f);
 					test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
 					test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
 

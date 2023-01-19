@@ -28,7 +28,7 @@ void Boss::initialize()
 	//速度初期化
 	velocity = { 0.0f, 0.0f, 0.0f };
 	//エフェクト初期化
-	efc_charge_attack->stop();
+	attack_skill_2->stop();
 
 	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible,type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
@@ -49,7 +49,8 @@ void Boss::initialize()
 Boss::Boss(Graphics& graphics)
 {
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
-	efc_charge_attack = make_unique<ChargeAttack>(graphics);
+	attack_skill_1 = make_unique<BossAttackSkill1>(graphics);
+	attack_skill_2 = make_unique<ChargeAttack>(graphics);
 	ui = make_unique<BossUi>(graphics);
 
 	initialize();
@@ -69,8 +70,9 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	(this->*act_update)(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
 	
-	efc_charge_attack->update(graphics, elapsed_time,camera);
-	efc_charge_attack->set_target_pos(target_pos);
+	attack_skill_1->update(graphics, elapsed_time,camera);
+	attack_skill_2->update(graphics, elapsed_time,camera);
+	attack_skill_2->set_target_pos(target_pos);
 	//bodyの攻撃用当たり判定
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
@@ -104,7 +106,8 @@ void Boss::render_d(Graphics& graphics, float elapsed_time)
 //==============================================================
 void Boss::render_f(Graphics& graphics, float elapsed_time)
 {
-	efc_charge_attack->render(graphics);
+	attack_skill_1->render(graphics);
+	attack_skill_2->render(graphics);
 	debug_gui();
 	
 }
@@ -232,7 +235,8 @@ void Boss::debug_gui()
 		}
 		ImGui::End();
 	}
-	efc_charge_attack->debug_gui("");
+	attack_skill_1->debug_gui("");
+	attack_skill_2->debug_gui("");
 #endif
 }
 //==============================================================
@@ -254,6 +258,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 		}
 	}
 
-	efc_charge_attack->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
+	attack_skill_1->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
+	attack_skill_2->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
 }
 

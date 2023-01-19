@@ -3,7 +3,7 @@
 #include "move_behavior.h"
 #include "primitive.h"
 #include "damage_func.h"
-#include "damage_func.h"
+#include"mesh_effect.h"
 class Meteore :public MoveBehavior
 {
 public:
@@ -20,7 +20,7 @@ public:
 		DirectX::XMFLOAT3 scale;
 		bool is_calc_velocity = false;
 		bool is_hit = false;
-
+		Sphere colider_sphere;
 	};
 
 	//==============================================================
@@ -35,6 +35,7 @@ public:
 	void initialize();
 	void update(Graphics& graphics, float elapsed_time);
 	void render(Graphics& graphics);
+	void debug_gui();
 	//ê∂ê¨
 	void create(DirectX::XMFLOAT3 position, int index) { params[index].position = position; }
 	void create_on_circle(DirectX::XMFLOAT3 center, float radius, int index);
@@ -89,16 +90,17 @@ private:
 	// 
 	//==============================================================
 	std::unique_ptr<InstanceMeshEffect> main_effect;
-	std::unique_ptr<InstanceMeshEffect> meteo_wave;
+	std::vector<std::unique_ptr<MeshEffect>> meteo_wave;
 	std::unique_ptr<MeteoreParam[]> params;
 	float ray_power = 5.0f;
 
 	int MAX_NUM;
-	std::vector<Sphere> colider_sphere;
 	float radius;
 	//çUåÇóÕ
 	int power;
 	//ïtó^ñ≥ìGéûä‘
 	float invinsible_time;
+
+	bool show_imgui;
 
 };

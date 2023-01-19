@@ -113,7 +113,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 
 	//エフェクト更新
 #if _DEBUG
-	test_mesh_effect->set_life_span(5);
+	test_mesh_effect->set_init_life_duration(5);
 	test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
 
@@ -138,15 +138,15 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 #if CAST_SHADOW
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_COUNTERCLOCKWISE);
 	graphics.shader_activate(SHADER_TYPE::SHADOW, RENDER_TYPE::Deferred);
-	deferred->shadow_active(graphics);
+	deferred->shadow_active(graphics,player->get_position());
 	//ステージ描画
-	stageManager.render(graphics,elapsed_time,camera.get());
+//	stageManager.shadow_render(graphics,elapsed_time);
 
 	//プレイヤー描画
 	player->render_d(graphics, elapsed_time, camera.get());
 
 	//ボス描画
-	boss->render_d(graphics, elapsed_time);
+	//boss->render_d(graphics, elapsed_time);
 
 	deferred->shadow_deactive(graphics);
 #endif

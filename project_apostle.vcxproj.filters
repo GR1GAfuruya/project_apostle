@@ -91,9 +91,6 @@
     <Filter Include="sources\Effects\Thunder">
       <UniqueIdentifier>{3c4f444e-db8b-4c74-b586-10cb6d6638a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\Light">
-      <UniqueIdentifier>{cf080af7-6f4f-4e28-b163-2c0a7a2adec9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\Effects\Particle">
       <UniqueIdentifier>{9cec6113-21e9-4ad4-a227-2f0bc708ced9}</UniqueIdentifier>
     </Filter>
@@ -202,9 +199,6 @@
     <Filter Include="sources\UI">
       <UniqueIdentifier>{2c760045-fcf6-47ae-be77-58e7e7bf73d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="sources\Effects\BossEffects\Meteorite">
-      <UniqueIdentifier>{836e2453-5a26-443e-b6a1-1f6d2d898d41}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Effect\Player">
       <UniqueIdentifier>{3f8c1fda-e96b-4e28-8c0a-ab5c55684d49}</UniqueIdentifier>
     </Filter>
@@ -255,6 +249,12 @@
     </Filter>
     <Filter Include="Shaders\Effect\Player\HitEffect">
       <UniqueIdentifier>{bb4507da-05bd-41c5-ac90-c99e4e112b0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Light">
+      <UniqueIdentifier>{cf080af7-6f4f-4e28-b163-2c0a7a2adec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Charactor\Boss\Attack\Meteorite">
+      <UniqueIdentifier>{836e2453-5a26-443e-b6a1-1f6d2d898d41}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -397,10 +397,10 @@
       <Filter>sources\Effects\PostEffects</Filter>
     </ClCompile>
     <ClCompile Include="sources\light.cpp">
-      <Filter>sources\Effects\Light</Filter>
+      <Filter>sources\Light</Filter>
     </ClCompile>
     <ClCompile Include="sources\light_manager.cpp">
-      <Filter>sources\Effects\Light</Filter>
+      <Filter>sources\Light</Filter>
     </ClCompile>
     <ClCompile Include="sources\boss_charge_attack.cpp">
       <Filter>sources\Charactor\Boss\Attack\ChargeAttack</Filter>
@@ -493,7 +493,7 @@
       <Filter>sources\Charactor\Player</Filter>
     </ClCompile>
     <ClCompile Include="sources\meteore.cpp">
-      <Filter>sources\Effects\BossEffects\Meteorite</Filter>
+      <Filter>sources\Charactor\Boss\Attack\Meteorite</Filter>
     </ClCompile>
     <ClCompile Include="sources\noise.cpp">
       <Filter>sources\User</Filter>
@@ -693,10 +693,10 @@
       <Filter>sources\Effects\PostEffects</Filter>
     </ClInclude>
     <ClInclude Include="sources\light.h">
-      <Filter>sources\Effects\Light</Filter>
+      <Filter>sources\Light</Filter>
     </ClInclude>
     <ClInclude Include="sources\light_manager.h">
-      <Filter>sources\Effects\Light</Filter>
+      <Filter>sources\Light</Filter>
     </ClInclude>
     <ClInclude Include="sources\boss_charge_attack.h">
       <Filter>sources\Charactor\Boss\Attack\ChargeAttack</Filter>
@@ -813,7 +813,7 @@
       <Filter>sources\Charactor\Player</Filter>
     </ClInclude>
     <ClInclude Include="sources\meteore.h">
-      <Filter>sources\Effects\BossEffects\Meteorite</Filter>
+      <Filter>sources\Charactor\Boss\Attack\Meteorite</Filter>
     </ClInclude>
     <ClInclude Include="sources\material_manager.h">
       <Filter>sources\Material\Manager</Filter>

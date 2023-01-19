@@ -15,6 +15,7 @@ StageMain::StageMain(Graphics& graphics)
 	//model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\Stage\\Cave.fbx", 1);
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\Stage\\stage_hall.fbx", 1);
 	model_collision = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\Stage\\stage_hall_collision.fbx", 1);
+	model_shadow = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), ".\\resources\\Model\\Stage\\stage_hall_shadow.fbx", 1);
 	scale = { 0.2f, 0.2f, 0.2f };
 }
 //==============================================================
@@ -39,7 +40,7 @@ StageMain& StageMain::Instance()
 //==============================================================
 void StageMain::update(float elapsedTime)
 {
-
+	transform = Math::calc_world_matrix(scale, angle, position);
 }
 //==============================================================
 // 
@@ -51,17 +52,16 @@ void StageMain::render(Graphics& graphics, float elapsed_time, Camera* camera)
 	static DirectX::XMFLOAT4 material_color = { 1,1,1,1 };
 	
 	
-	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, angle, position);
-	const DirectX::XMFLOAT4X4 terrain_world_transform{ -0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 0.01f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+	
 
 	//ステージ
 	if (flustm_flag)
 	{
-		graphics.shader->render(graphics.get_dc().Get(), model.get(), camera->get_view(), camera->get_projection(), world);
+		graphics.shader->render(graphics.get_dc().Get(), model.get(), camera->get_view(), camera->get_projection(), transform);
 	}
 	else
 	{
-		graphics.shader->render(graphics.get_dc().Get(), model.get(), world);
+		graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 	}
 #if USE_IMGUI
 	imgui_menu_bar("Stage", "stage_main", display_imgui);
@@ -83,6 +83,10 @@ void StageMain::render(Graphics& graphics, float elapsed_time, Camera* camera)
 	}
 #endif
 }
+void StageMain::shadow_render(Graphics& graphics, float elapsed_time)
+{
+	graphics.shader->render(graphics.get_dc().Get(), model_shadow.get(), transform);
+}
 //==============================================================
 // 
 //レイキャスト
@@ -91,6 +95,5 @@ void StageMain::render(Graphics& graphics, float elapsed_time, Camera* camera)
 bool StageMain::ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)
 {
 	
-	DirectX::XMFLOAT4X4 world = Math::calc_world_matrix(scale, angle, position);
-	return Collision::ray_vs_model(start, end, model_collision.get(), world,hit);
+	return Collision::ray_vs_model(start, end, model_collision.get(), transform, hit);
 }

@@ -25,9 +25,9 @@ void MeshEffect::play(DirectX::XMFLOAT3 pos)
 	//初期化情報適応
 	constants->data.threshold = 0.0f;
 	rot_speed = { 0,0,0 };
-	init_translation_param.position = pos;
-	init_translation_param.orientation = Math::orientation_reset();
-	translation_param = init_translation_param;
+	init_effect_param.position = pos;
+	init_effect_param.orientation = Math::orientation_reset();
+	effect_param = init_effect_param;
 	active = true;
 }
 //==============================================================
@@ -59,9 +59,12 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 		set_rotate_quaternion(AXIS::FORWARD, rot_speed.z * elapsed_time);
 
 		dissolve_update(elapsed_time);
+
+		constants->data.particle_color = effect_param.color;
+
 		//寿命処理
 		life_time += elapsed_time;
-		if (life_time > life_span)
+		if (life_time > effect_param.life_duration)
 		{
 			if (is_loop)
 			{
@@ -93,7 +96,7 @@ void MeshEffect::render(Graphics& graphics)
 	//シェーダーリソース送信
 	material->transfer_shader_resource_view(graphics);
 	//トランスフォーム更新
-	transform = Math::calc_world_matrix(translation_param.scale, translation_param.orientation, translation_param.position);
+	transform = Math::calc_world_matrix(effect_param.scale, effect_param.orientation, effect_param.position);
 	//レンダー
 	shader->render(graphics.get_dc().Get(), model.get(), transform);
 
@@ -107,7 +110,7 @@ void MeshEffect::render(Graphics& graphics)
 void MeshEffect::set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang)
 {
 	float angle = DirectX::XMConvertToRadians(ang);
-	translation_param.orientation = Math::rot_quaternion(translation_param.orientation, axis, angle);
+	effect_param.orientation = Math::rot_quaternion(effect_param.orientation, axis, angle);
 }
 //==============================================================
 // 
@@ -120,16 +123,16 @@ void MeshEffect::rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec)
 	switch (axis)
 	{
 	case AXIS::RIGHT:
-		Axis = Math::get_posture_right(translation_param.orientation);
-		translation_param.orientation = Math::rot_quaternion_dir(translation_param.orientation, Axis, dir_vec);
+		Axis = Math::get_posture_right(effect_param.orientation);
+		effect_param.orientation = Math::rot_quaternion_dir(effect_param.orientation, Axis, dir_vec);
 		break;
 	case AXIS::UP:
-		Axis = Math::get_posture_up(translation_param.orientation);
-		translation_param.orientation = Math::rot_quaternion_dir(translation_param.orientation, Axis, dir_vec);
+		Axis = Math::get_posture_up(effect_param.orientation);
+		effect_param.orientation = Math::rot_quaternion_dir(effect_param.orientation, Axis, dir_vec);
 		break;
 	case AXIS::FORWARD:
-		Axis = Math::get_posture_forward(translation_param.orientation);
-		translation_param.orientation = Math::rot_quaternion_dir(translation_param.orientation, Axis, dir_vec);
+		Axis = Math::get_posture_forward(effect_param.orientation);
+		effect_param.orientation = Math::rot_quaternion_dir(effect_param.orientation, Axis, dir_vec);
 		break;
 	default:
 		break;
@@ -147,16 +150,16 @@ void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 	switch (axis)
 	{
 	case AXIS::RIGHT:
-		Axis = Math::get_posture_right(translation_param.orientation);
-		translation_param.orientation = Math::rot_quaternion(translation_param.orientation, Axis, angle);
+		Axis = Math::get_posture_right(effect_param.orientation);
+		effect_param.orientation = Math::rot_quaternion(effect_param.orientation, Axis, angle);
 		break;
 	case AXIS::UP:
-		Axis = Math::get_posture_up(translation_param.orientation);
-		translation_param.orientation = Math::rot_quaternion(translation_param.orientation, Axis, angle);
+		Axis = Math::get_posture_up(effect_param.orientation);
+		effect_param.orientation = Math::rot_quaternion(effect_param.orientation, Axis, angle);
 		break;
 	case AXIS::FORWARD:
-		Axis = Math::get_posture_forward(translation_param.orientation);
-		translation_param.orientation = Math::rot_quaternion(translation_param.orientation, Axis, angle);
+		Axis = Math::get_posture_forward(effect_param.orientation);
+		effect_param.orientation = Math::rot_quaternion(effect_param.orientation, Axis, angle);
 		break;
 	default:
 		break;
@@ -170,7 +173,7 @@ void MeshEffect::set_rotate_quaternion(AXIS axis, float ang)
 //==============================================================
 void MeshEffect::reset_orientation()
 {
-	translation_param.orientation = Math::orientation_reset();
+	effect_param.orientation = Math::orientation_reset();
 }
 
 //==============================================================
@@ -183,9 +186,9 @@ void MeshEffect::dissolve_update(float elapsed_time)
 	//フェードイン
 	
 	//フェードアウト
-	const float dissolve_rate = life_time / life_span;
+	const float dissolve_rate = life_time / effect_param.life_duration;
 	//ディゾルブ処理
-	if (life_time < life_span )
+	if (life_time < effect_param.life_duration)
 	{
 		constants->data.threshold = lerp(constants->data.threshold, 0.0f, dissolve_rate);
 		constants->data.threshold = lerp(constants->data.threshold, 1.0f, dissolve_rate);
@@ -222,8 +225,8 @@ void MeshEffect::debug_gui(string str_id)
 			ImGui::DragFloat4("particle_color", &constants->data.particle_color.x, 0.1f);
 			ImGui::DragFloat("threshold", &constants->data.threshold, 0.1f);
 			ImGui::DragFloat("lifetime", &life_time, 0.1f);
-			ImGui::DragFloat3("position", &translation_param.position.x, 0.1f);
-			ImGui::DragFloat3("scale", &translation_param.scale.x, 0.1f);
+			ImGui::DragFloat3("position", &effect_param.position.x, 0.1f);
+			ImGui::DragFloat3("scale", &effect_param.scale.x, 0.1f);
 			ImGui::Checkbox("play", &active);
 
 		}

@@ -16,6 +16,15 @@ void StageManager::render(Graphics& graphics, float elapsed_time, Camera* camera
 		s->render(graphics, elapsed_time, camera);
 	}}
 
+void StageManager::shadow_render(Graphics& graphics, float elapsed_time)
+{
+	for (auto s : stages)
+	{
+		s->shadow_render(graphics, elapsed_time);
+	}
+}
+
+
 void StageManager::Clear()
 {
 	for (auto s : stages)

@@ -78,12 +78,6 @@ void Camera::update(float elapsed_time)
 		XMMATRIX view_mat = XMMatrixLookAtLH(eye_vec, focus_vec, up_vec);
 		XMStoreFloat4x4(&view, view_mat);
 
-		// ビューを逆行列化
-		DirectX::XMMATRIX World = DirectX::XMMatrixInverse(nullptr, view_mat);
-		DirectX::XMFLOAT4X4 world;
-		DirectX::XMStoreFloat4x4(&world, World);
-
-
 		// プロジェクション行列を作成
 		float width = static_cast<float>(SCREEN_WIDTH);
 		float height = static_cast<float>(SCREEN_HEIGHT);

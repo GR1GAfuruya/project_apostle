@@ -21,7 +21,7 @@ class MeshEffect
 		float threshold = 0;
 	};
 
-	struct TranslationParam
+	struct EffectParam
 	{
 		//位置
 		DirectX::XMFLOAT3 position = { 0,0,0 };
@@ -31,12 +31,12 @@ class MeshEffect
 		DirectX::XMFLOAT3 scale = { 1,1,1 };
 		//速度
 		DirectX::XMFLOAT3 velosity = { 0,0,0 };
+		//カラー
+		DirectX::XMFLOAT4 color = { 0,0,0,1 };
+		//生存期間
+		float life_duration = FLT_MAX;
 	};
 
-	struct LifeParam
-	{
-
-	};
 
 	//オブジェクトの軸
 	enum class AXIS
@@ -69,30 +69,31 @@ public:
 
 
 	//初期化関数
-	void set_init_position(DirectX::XMFLOAT3 p) { init_translation_param.position = p; }
-	void set_init_orientation(DirectX::XMFLOAT4 o) { init_translation_param.orientation = o; }
-	void set_init_scale(DirectX::XMFLOAT3 s) { init_translation_param.scale = s; }
-	void set_init_scale(float s) { init_translation_param.scale = { s,s,s }; }
-	void set_init_color(DirectX::XMFLOAT4 c) { constants.get()->data.particle_color = c; }
-	void set_init_velocity(DirectX::XMFLOAT3 v) { init_translation_param.velosity = v; }
+	void set_init_position(DirectX::XMFLOAT3 p) { init_effect_param.position = p; }
+	void set_init_orientation(DirectX::XMFLOAT4 o) { init_effect_param.orientation = o; }
+	void set_init_scale(DirectX::XMFLOAT3 s) { init_effect_param.scale = s; }
+	void set_init_scale(float s) { init_effect_param.scale = { s,s,s }; }
+	void set_init_color(DirectX::XMFLOAT4 c) { init_effect_param.color = c; }
+	void set_init_velocity(DirectX::XMFLOAT3 v) { init_effect_param.velosity = v; }
+	void set_init_life_duration(float d) { init_effect_param.life_duration = d; }
 	//Setter
-	void set_position(DirectX::XMFLOAT3 p) { translation_param.position = p; }
-	void set_orientation(DirectX::XMFLOAT4 o) { translation_param.orientation = o; }
-	void set_scale(DirectX::XMFLOAT3 s) { translation_param.scale = s; }
-	void set_scale(float s) { translation_param.scale = { s,s,s }; }
+	void set_position(DirectX::XMFLOAT3 p) { effect_param.position = p; }
+	void set_orientation(DirectX::XMFLOAT4 o) { effect_param.orientation = o; }
+	void set_scale(DirectX::XMFLOAT3 s) { effect_param.scale = s; }
+	void set_scale(float s) { effect_param.scale = { s,s,s }; }
 	void set_color(DirectX::XMFLOAT4 c) { constants.get()->data.particle_color = c; }
-	void set_velocity(DirectX::XMFLOAT3 v) { translation_param.velosity = v; }
-	void set_life_span(float l) { life_span = l; }
+	void set_velocity(DirectX::XMFLOAT3 v) { effect_param.velosity = v; }
 	void set_is_loop(bool loop) { is_loop = loop; }
 	void set_rotate_quaternion(DirectX::XMFLOAT3 axis, float ang);
 	void set_rotate_quaternion(AXIS axis, float ang);
 	void rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec);
 	void set_material(Material* m) { material = m; };
 	//Getter
-	DirectX::XMFLOAT3 get_position() { return translation_param.position; }
-	DirectX::XMFLOAT4 get_orientation() { return translation_param.orientation; }
-	DirectX::XMFLOAT3 get_scale() { return translation_param.scale; }
-	DirectX::XMFLOAT3 get_velosity() { return translation_param.velosity; }
+	DirectX::XMFLOAT3 get_position() { return effect_param.position; }
+	DirectX::XMFLOAT4 get_orientation() { return effect_param.orientation; }
+	DirectX::XMFLOAT3 get_scale() { return effect_param.scale; }
+	DirectX::XMFLOAT3 get_velosity() { return effect_param.velosity; }
+	DirectX::XMFLOAT4 get_color() { return constants.get()->data.particle_color; }
 	float get_life_time() { return life_time; }
 	bool get_active() { return active; }
 
@@ -119,8 +120,8 @@ protected:
 	std::unique_ptr <SkeletalMesh> model;
 
 	Material* material;
-	TranslationParam init_translation_param;
-	TranslationParam translation_param;
+	EffectParam init_effect_param;
+	EffectParam effect_param;
 	
 	//トランスフォーム
 	DirectX::XMFLOAT4X4	transform = {
@@ -133,8 +134,6 @@ protected:
 	
 	//生存時間
 	float life_time = 0;
-	//寿命
-	float life_span = FLT_MAX;
 	//アクティブ状態か
 	bool active = false;
 	//ループ再生するかどうか

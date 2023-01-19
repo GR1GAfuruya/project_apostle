@@ -17,7 +17,9 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	test_slash_hit->set_scale(2.0f);
+	test_slash_hit->set_init_scale(2.0f);
+	test_slash_hit->set_init_life_duration(0.1f);
+
 	test_slash_hit->constants->data.particle_color = { 2.5f,2.5f,5.9f,0.5f };
 
 }
@@ -90,7 +92,6 @@ void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddD
 				const float middle = (s->get_colider().end.y - s->get_colider().start.y) / 2.0f;
 				const DirectX::XMFLOAT3 hit_effect_pos = { s->get_colider().start.x,middle, s->get_colider().start.z };
 				test_slash_hit->play(hit_effect_pos);
-				test_slash_hit->set_life_span(0.1f);
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
 				test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
 			}

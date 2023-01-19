@@ -15,7 +15,7 @@ public:
 	void deactive(Graphics& graphics);
 	void render(Graphics& graphics);
 #if CAST_SHADOW
-	void shadow_active(Graphics& graphics);
+	void shadow_active(Graphics& graphics, DirectX::XMFLOAT3 target_pos);
 	void shadow_deactive(Graphics& graphics);
 #endif
 	void lighting(Graphics& graphics) const;
@@ -42,6 +42,10 @@ private:
 
 	//シャドウマップ
 #if CAST_SHADOW
+	float scale = -90;
+	float vie = 25;
+	float FarZ = 200;
+
 	struct SHADOW_CONSTANTS
 	{
 		DirectX::XMFLOAT4X4	shadowVP;

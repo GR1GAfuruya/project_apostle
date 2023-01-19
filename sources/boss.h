@@ -3,7 +3,9 @@
 #include "skeletal_mesh.h"
 #include "gpu_particle.h"
 
+#include "boss_attack_skill1.h"
 #include "boss_charge_attack.h"
+#include "boss_attack_skill3.h"
 #include "light.h"
 #include "primitive.h"
 #include "boss_ui.h"
@@ -285,7 +287,8 @@ public:
 	typedef void (Boss::* ActUpdate)(Graphics& graphics, float elapsed_time);
 	ActUpdate act_update = &Boss::update_idle_state;
 	std::unique_ptr<SkeletalMesh> model;
-	std::unique_ptr<ChargeAttack> efc_charge_attack;
+	std::unique_ptr<BossAttackSkill1> attack_skill_1;
+	std::unique_ptr<ChargeAttack> attack_skill_2;
 	std::unique_ptr<BossUi> ui;
 
 	//Š™˜r‚Ìƒ{[ƒ“
