@@ -204,7 +204,9 @@ void Boss::debug_gui()
 			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
 			ImGui::DragFloat3("bounding_min", &min.x);
 			ImGui::DragFloat3("bounding_max", &max.x);
+			if (ImGui::Button("skill_1")) transition_skill_1_state();
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
+			if (ImGui::Button("skill_3")) transition_skill_3_state();
 #if _DEBUG
 			ImGui::Checkbox("is_update", &is_update);
 			ImGui::Separator();

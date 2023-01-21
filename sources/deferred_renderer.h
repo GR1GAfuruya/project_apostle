@@ -43,7 +43,7 @@ private:
 	//シャドウマップ
 #if CAST_SHADOW
 	float scale = -90;
-	float vie = 25;
+	float vie = 140;
 	float FarZ = 200;
 
 	struct SHADOW_CONSTANTS

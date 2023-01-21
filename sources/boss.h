@@ -165,7 +165,7 @@ public:
 	//---------------------------//
 	
 	//右腕横振り攻撃状態に移行
-	void transition_attack_state();
+	void transition_normal_attack_state();
 	//手を振り上げ地面に打ち付ける攻撃状態に移行
 	void transition_skill_1_state();
 	//チャージ終了状態に移行
@@ -226,7 +226,7 @@ public:
 	//---------------------------//
 	
 	//右腕横振り攻撃状態更新
-	void update_attack_state(Graphics& graphics, float elapsed_time);
+	void update_normal_attack_state(Graphics& graphics, float elapsed_time);
 	//手を振り上げ地面に打ち付ける攻撃状態更新
 	void update_skill_1_state(Graphics& graphics, float elapsed_time);
 	//チャージ終了状態更新
@@ -239,7 +239,10 @@ public:
 	void update_skill_3_state(Graphics& graphics, float elapsed_time);
 
 	//攻撃方法選択
-	void select_attack_type();
+	void attack_routine(float elapsed_time);
+	void select_attack_type_short();
+
+	void select_attack_type_long();
 
 	//---------------------------//
 	//			ダウン系		 //
@@ -300,8 +303,10 @@ public:
 
 	//ステートのタイマー
 	float state_timer;
-
+	//アイドル状態のままでいる時間
 	float state_duration;
+	//攻撃までの猶予時間
+	float attack_responder_timer;
 	//攻撃対象
 	DirectX::XMFLOAT3 target_pos;
 
@@ -334,6 +339,8 @@ public:
 	float SKILL2_COOLTIME = 3;
 	//
 	float SKILL3_COOLTIME = 2;
+
+	float ATTACK_RESPONDER_TIME = 3.0f;
 	//ダメージを受けたときのスタン時間
 	float DAMAGE_STUN_DURATION = 0.7f;
 public:

@@ -123,7 +123,8 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 		camera->set_lock_on();
 	}
 
-	//オブジェクト行列を更新
+	//プレイヤーの正面情報を更新
+	forward = Math::get_posture_forward(orientation);
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
 	for (auto& se : slash_efects)
@@ -137,7 +138,10 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	}
 	test_slash_hit->update(graphics,elapsed_time);
 	slash_hit_particle.get()->update(graphics.get_dc().Get(),elapsed_time, slash_hit_update_cs.Get());
+	//スキルの更新
 	skill_manager.get()->update(graphics, elapsed_time);
+
+	//モデルのアニメーション更新
 	model->update_animation(elapsed_time);
 	
 	//ソード更新
@@ -150,7 +154,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 			attack_sword_param.is_attack = false;
 		}
 	}
-	/*仮置き*/
+	
 	collider.start = position;
 	collider.end = { position.x,position.y + chara_param.height, position.z };
 	collider.radius = 1.0f;
@@ -373,7 +377,7 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 		case ATK_SKILLTYPE::MAGICBULLET :
 			
 			//スキルを発動できた場合遷移
-			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, Math::get_posture_forward(orientation)))
+			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, &forward))
 			{
 				transition_attack_bullet_state();//状態遷移
 			}
@@ -402,8 +406,8 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 //==============================================================
 void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
-	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func);
-	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func);
+	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func, camera);
+	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func, camera);
 }
 //==============================================================
 // 
@@ -638,7 +642,8 @@ void Player::debug_gui(Graphics& graphics)
 				ImGui::DragFloat("gravity", &gravity);
 				ImGui::DragFloat("floating_value", &param.floating_value);
 				ImGui::DragFloat("invinsible_timer", &invincible_timer);
-				ImGui::DragFloat("MoveSpeed", &chara_param.move_speed);
+				ImGui::DragFloat("TurnSpeed", &chara_param.turn_speed,0.1f);
+				ImGui::DragFloat("MoveSpeed", &chara_param.move_speed, 0.1f);
 				ImGui::DragFloat("avoidance_speed", &param.avoidance_speed);
 				ImGui::DragFloat("friction", &chara_param.friction);
 				ImGui::DragFloat("acceleration", &chara_param.acceleration);
@@ -705,53 +710,7 @@ void Player::debug_gui(Graphics& graphics)
 			}
 			
 
-			ImGui::Begin("Skill");
-			
-				//--------スキルのデバッグGUI--------//
-				if (ImGui::Button("sup_skill_chant"))
-				{
-					switch (skill_manager->get_selected_sup_skill_type())
-					{
-					case SP_SKILLTYPE::PHYSICAL_UP:
-						skill_manager->chant_physical_up(graphics, &position, &chara_param.move_speed, &param.jump_speed);
-						break;
-					case SP_SKILLTYPE::REGENERATE:
-						transition_magic_buff_state();//状態遷移
-						skill_manager->chant_regenerate(graphics, &position, &health, get_max_health());
 
-						break;
-					case SP_SKILLTYPE::RESTRAINNT:
-						transition_attack_pull_slash_state();
-						break;
-					default:
-						break;
-					}
-				}
-				ImGui::SameLine();
-				DirectX::XMFLOAT3 launch_pos;
-				if (ImGui::Button("atk_skill_chant"))
-				{
-					switch (skill_manager->get_selected_atk_skill_type())
-					{
-					case ATK_SKILLTYPE::MAGICBULLET:
-						model->fech_by_bone(transform, left_hand, launch_pos);
-
-						if (skill_manager->chant_magic_bullet(graphics, &launch_pos, Math::get_posture_forward(orientation)))
-						{
-							transition_attack_bullet_state();//状態遷移
-						}
-						break;
-					case ATK_SKILLTYPE::SPEARS_SEA:
-						if (skill_manager->chant_spear_sea(graphics, position, position))
-						{
-							transition_attack_ground_state();
-						}
-						break;
-					default:
-						break;
-					}
-				}
-				ImGui::End();
 		}
 		ImGui::End();
 

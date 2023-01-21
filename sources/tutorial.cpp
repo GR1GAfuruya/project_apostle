@@ -98,13 +98,6 @@ void Tutorial::render(ID3D11DeviceContext* dc)
 		tex_press_button->end(dc);
 
 	}
-	else
-	{
-		//チュートリアル画像展開
-		tex_open_tutorial->begin(dc);
-		tex_open_tutorial->render(dc, open_tutorial_param.position, open_tutorial_param.scale);
-		tex_open_tutorial->end(dc);
-	}
 
 	debug_gui();
 }

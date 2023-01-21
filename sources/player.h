@@ -260,7 +260,7 @@ private:
 	float add_root_speed = 1.1f;
 	bool is_root_motion = false;
 
-	
+	DirectX::XMFLOAT3 forward;
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト
 	AddDamageFunc damaged_function;

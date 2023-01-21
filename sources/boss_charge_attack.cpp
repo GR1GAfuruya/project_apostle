@@ -33,6 +33,14 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 		tornado_black->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		tornado_black->set_init_color({ 0.3f,0.2f,0.0f,0.8f });
 	}
+	//予兆エフェクト
+	{
+		omen_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_aura.fbx");
+		omen_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		omen_effect->set_init_life_duration(0.5f);
+		omen_effect->set_init_scale({0.0f, 0.0f, 11.0f});
+		omen_effect->set_init_color({ FIRE_COLOR });
+	}
 	//定数バッファ初期設定
 	constants = std::make_unique<Constants<ChargeAttackConstants>>(graphics.get_device().Get());
 	//particleの初期設定
@@ -53,6 +61,11 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 		meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
 		meteo_launch_radius = 5;
+	}
+	//トルネードの部分のダメージ設定
+	{
+		attack_param.power = 10;
+		attack_param.invinsible_time = 0.5f;
 	}
 
 	const float range = 20.0f;
@@ -76,7 +89,7 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 	//コア位置設定
 		position = pos;
 		const float offset = 70;
-		DirectX::XMFLOAT3 core_pos = { position.x,position.y + offset,position.z };
+		DirectX::XMFLOAT3 core_pos = { position.x, position.y + offset, position.z };
 	{
 		core->set_init_scale(0);
 		core->play(core_pos);
@@ -84,7 +97,7 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 	}
 	//wave初期設定
 	{
-		DirectX::XMFLOAT3 wave_pos = { position.x,position.y + offset,position.z };
+		DirectX::XMFLOAT3 wave_pos = { position.x, position.y + offset, position.z };
 		wave->set_init_scale(0.0f);
 		wave->play(wave_pos);
 		wave->constants->data.threshold = 0;
@@ -93,15 +106,19 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 	{
 		tornado->set_init_scale(0);
 		tornado->play(pos);
-		tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
+		//tornado->constants->data.scroll_direction = { 0.0f,-0.2f };
 		tornado->constants->data.threshold = 0;
 	}
 	//トルネード黒初期化
 	{
 		tornado_black->set_init_scale(0);
 		tornado_black->play(pos);
-		tornado_black->constants->data.scroll_direction = { 0.0f,-0.2f };
+		//tornado_black->constants->data.scroll_direction = { 0.0f,-0.2f };
 		tornado_black->constants->data.threshold = 0;
+	}
+	//予兆エフェクト初期化
+	{
+		omen_effect->play(pos);
 	}
 	//GPUパーティクル
 	DirectX::XMFLOAT3 emit_pos{};
@@ -130,6 +147,11 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 			const float random = fabs(Noise::instance().random_range(ofset, range));
 			meteores->create_on_circle(position, random, i);
 		}
+	}
+	//コリジョン初期化
+	{
+		tornado_colider.center = pos;
+		tornado_colider.radius = 0;
 	}
 	//コンスタントバッファのコアポジション登録
 	constants->data.core_pos = core_pos;
@@ -167,6 +189,7 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
 		wave->update(graphics, elapsed_time);
 		tornado->update(graphics, elapsed_time);
 		tornado_black->update(graphics, elapsed_time);
+		omen_effect->update(graphics, elapsed_time);
 	}
 	meteores->update(graphics, elapsed_time);
 
@@ -187,6 +210,7 @@ void ChargeAttack::render(Graphics& graphics)
 		tornado->render(graphics);
 		tornado_black->render(graphics);
 		wave->render(graphics);
+		omen_effect->render(graphics);
 	}
 
 	//隕石描画
@@ -213,6 +237,7 @@ void ChargeAttack::debug_gui(const char* str_id)
 		ImGui::DragFloat("meteo_span", &meteo_span, 0.1f, 0);
 		ImGui::DragFloat("core_radius", &constants->data.core_radius, 1, 0);
 		ImGui::DragFloat("launch_radius", &meteo_launch_radius, 1, 0);
+		ImGui::DragFloat("radius", &tornado_colider.radius, 1, 0);
 		ImGui::End();
 	}
 #endif
@@ -233,6 +258,13 @@ void ChargeAttack::calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFL
 {
 	//メテオの当たり判定
 	meteores->calc_meteore_vs_player(capsule_start, capsule_end, colider_radius, damaged_func);
+
+	if (Collision::sphere_vs_capsule(tornado_colider.center, tornado_colider.radius,
+		capsule_start, capsule_end, colider_radius))
+	{
+		//当たり判定の位置と大きさ更新
+		damaged_func(attack_param.power, attack_param.invinsible_time, WINCE_TYPE::NONE);
+	}
 }
 //==============================================================
 // 
@@ -266,6 +298,15 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 		meteores->rising(elapsed_time, core->get_position(), random_size, random_speed, i);
 	}
 
+	//予兆エフェクト
+	{
+		if (!omen_effect->get_active()) omen_effect->play(position);
+		//拡大を繰り返して波形っぽく
+		const float scale_speed = 108.0f;
+		const float omen_add_scale = omen_effect->get_scale().x + scale_speed * elapsed_time;
+		omen_effect->set_scale({ omen_add_scale, omen_add_scale, omen_effect->get_scale().z });
+		omen_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, { 0,1,0 });
+	}
 	//チャージ完了時の処理
 	if (is_charge_max)
 	{
@@ -324,6 +365,10 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 		float tornado_black_scale_xz = lerp(tornado_black->get_scale().x, 17.0f, 7.0f * elapsed_time);
 		tornado_black->set_scale({ tornado_black_scale_xz, tornado_black->get_scale().y, tornado_black_scale_xz });
 		tornado_black->set_rotate_quaternion(MeshEffect::AXIS::UP, 240 * elapsed_time);
+	}
+	//コライダーの半径設定
+	{
+		tornado_colider.radius = 50.0f;
 	}
 
 	//メテオ発生
@@ -411,7 +456,10 @@ void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time, Came
 			tornado_black->constants->data.threshold += dissolve_rate * elapsed_time;
 		}
 	}
-
+	//コライダーの半径設定
+	{
+		tornado_colider.radius = 0.0f;
+	}
 
 	//ポストエフェクトのラジアルブラー実行
 	{

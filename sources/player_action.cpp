@@ -358,6 +358,10 @@ void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Cam
 //–‚–@’eŽËos“®
 void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
+	//“G‚Ì•ûŒü‚ðŒü‚­
+	DirectX::XMFLOAT3 target_vec = camera->get_lock_on_target() - position;
+	target_vec.y = 0;
+	Turn(elapsed_time, target_vec, chara_param.turn_speed * 2,orientation);
 	if (model->is_end_animation())
 	{
 		transition_idle_state();

@@ -663,7 +663,7 @@ namespace Math
         DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(ori_axis, Normal);
         DirectX::XMStoreFloat(&angle, Ang);
         angle = acosf(angle);
-        if (fabs(angle) > 1e-8f)
+        if (fabs(angle) > 0.001f)
         {
             // •ÏŠ·
             auto oriV = DirectX::XMLoadFloat4(&Orientation_);

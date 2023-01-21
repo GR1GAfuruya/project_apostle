@@ -7,32 +7,29 @@
 //コンストラクタ
 // 
 //==============================================================
-MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3 dir, InitializeParam init_param)
+MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, InitializeParam init_param)
 {
 	initialize(graphics);
 
-	
-	power = init_param.power;
-	invinsible_time = init_param.invisible_time;
+	//各初期化パラメーター設定
+	atk_param = init_param.atk_param;
 	acceleration = init_param.acceleration;
 	attack_colider.radius = init_param.collider_radius;
 	skill_duration = 3;
 	launch_pos.reset(init_pos);
-
-	target_dir = dir;
-	velocity = acceleration * Math::Normalize(target_dir);
+	target_dir.reset(dir);
 	launch_bullet = false;
 	//エフェクト
 	{
 		main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
 		main_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-		main_effect->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
+		main_effect->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
 	}
 
 	{
 		lightning_disk_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/disk.fbx");
 		lightning_disk_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-		lightning_disk_effect->set_scale(1.0f);
+		lightning_disk_effect->set_init_scale(1.0f);
 		lightning_disk_effect->set_init_life_duration(1.0f);
 		lightning_disk_effect->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
 	}
@@ -41,9 +38,9 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 	{
 		l = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
 		l->set_material(MaterialManager::instance().mat_lightning.get());
-		l->set_scale(1.5f);
+		l->set_init_scale(1.5f);
 		l->set_init_life_duration(0.5f);
-		l->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
+		l->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
 	}
 
 	//ライト生成
@@ -60,6 +57,7 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 MagicBullet::~MagicBullet()
  {
 	launch_pos.release();
+	target_dir.release();
 	//ライト消去
 	 LightManager::instance().delete_light(spear_light->name);
  }
@@ -89,29 +87,34 @@ MagicBullet::~MagicBullet()
 		 {
 			 main_effect->set_scale(0.5f);
 			 main_effect->play(*launch_pos);
-			 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(target_dir));
+			 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(*target_dir));
+
+			 lightning_disk_effect->play(*launch_pos);
+			 lightning_disk_effect->rotate_base_axis(MeshEffect::AXIS::UP, Math::Normalize(*target_dir));
+			 velocity = acceleration * Math::Normalize(*target_dir);
 
 
 			 position = *launch_pos;
 
 			 launch_bullet = true;
 		 }
-
-		 lightning_disk_effect->play(*launch_pos);
-		 lightning_disk_effect->rotate_base_axis(MeshEffect::AXIS::UP, Math::Normalize(target_dir));
-
-
-		 for (auto& l : lightning_effect)
+		 else if(life_time > 0.7f)
 		 {
-			 if (!l->get_active())
-			 {
-				 l->play(*launch_pos);
-				 l->rotate_base_axis(MeshEffect::AXIS::UP, Math::Normalize(target_dir));
-			 }
-			 float random = Noise::instance().random_range(0, 360);
-			 l->set_rotate_quaternion(MeshEffect::AXIS::UP, random);
 
+			 for (auto& l : lightning_effect)
+			 {
+				 if (!l->get_active())
+				 {
+					 l->play(*launch_pos);
+					 l->rotate_base_axis(MeshEffect::AXIS::UP, Math::Normalize(*target_dir));
+				 }
+				 float random = Noise::instance().random_range(0, 360);
+				 l->set_rotate_quaternion(MeshEffect::AXIS::UP, random);
+
+			 }
 		 }
+
+
 	 }
 	 else
 	 {
@@ -143,7 +146,6 @@ MagicBullet::~MagicBullet()
 
 	 //消滅処理
 	 life_time += elapsed_time;
-	 if (is_hit) skill_end_flag = true;
 	 if (life_time > skill_duration) skill_end_flag = true;
  };
 //==============================================================
@@ -153,7 +155,10 @@ MagicBullet::~MagicBullet()
 //==============================================================
  void MagicBullet::render(Graphics& graphics)
  {
-	 main_effect->render(graphics);
+	 if (is_hit)
+	 {
+		 main_effect->render(graphics);
+	 }
 
 	 for (auto& l : lightning_effect)
 	 {

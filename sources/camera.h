@@ -61,9 +61,9 @@ public:
     //対象を追従する
     void update_with_tracking(float elapsed_time);
     //ロックオン対象にカメラを向ける
-    void update_with_lock_on(float elapsed_time, DirectX::XMFLOAT4& orientation);
+    void update_with_lock_on(float elapsed_time);
     //コントローラーのスティックで操作
-    void control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& orientation);
+    void control_by_game_pad_stick(float elapsed_time);
     //void move_viewing_angle(bool is_move, float elapsed_time){};
     void calc_view_projection(Graphics& graphics, float elapsed_time);
     void debug_gui();
@@ -138,7 +138,8 @@ private:
     DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
     DirectX::XMFLOAT4 standard_orientation = { 0,0,0,1 };
 
-    float lock_on_rate = 0.7f;
+    float lock_on_rate = 6.0f;
+    float sensitivity_rate = 0.7f;
     bool is_move;
     float attend_rate; // 減衰比率
     float cape_vision = 60.0f;//視野角

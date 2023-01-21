@@ -9,8 +9,8 @@
 //==============================================================
 MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 {
-	skill_init_param.power = 5;
-	skill_init_param.invisible_time = 0.2f;
+	skill_init_param.atk_param.power = 5;
+	skill_init_param.atk_param.invinsible_time = 0.2f;
 	skill_init_param.acceleration = 50.0f;
 	skill_init_param.collider_radius = 2.0f;
 	max_cool_time = 0.5f;
@@ -56,7 +56,7 @@ void MagicBulletLauncher::render(Graphics& graphics)
 // スキル発動
 // 
 //==============================================================
-bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3 dir)
+bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir)
 {
 	//詠唱可能な状態なら
 	if (chantable)
@@ -75,16 +75,20 @@ bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos,
 //スキルの当たり判定
 // 
 //==============================================================
-void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
+void MagicBulletLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
 	for (auto& s : skills)
 	{
 		if (Collision::sphere_vs_capsule(s->get_colider().start, s->get_colider().radius,
 			object_colider.start, object_colider.end, object_colider.radius))
 		{
+			//スキルがヒット
 			s->skill_hit();
 			s->set_is_skill_hit(true);
-			damaged_func(s->get_power(), s->get_invinsible_time(),WINCE_TYPE::NONE);
+			//カメラシェイク
+			camera->set_camera_shake(s->get_atk_param().camera_shake);
+			//ダメージを与える
+			damaged_func(s->get_atk_param().power, s->get_atk_param().invinsible_time, WINCE_TYPE::NONE);
 			//ヒットエフェクト
 			if (!test_slash_hit->get_active())
 			{
@@ -115,8 +119,8 @@ void MagicBulletLauncher::debug_gui()
 		{
 			ImGui::DragFloat("cool_time", &cool_time);
 			ImGui::DragFloat("max_cool_time", &max_cool_time);
-			ImGui::DragFloat("power", &skill_init_param.power);
-			ImGui::DragFloat("invisible_time", &skill_init_param.invisible_time);
+			ImGui::DragInt("power", &skill_init_param.atk_param.power);
+			ImGui::DragFloat("invisible_time", &skill_init_param.atk_param.invinsible_time);
 			ImGui::DragFloat("acceleration", &skill_init_param.acceleration);
 			ImGui::DragFloat("collider_radius", &skill_init_param.collider_radius);
 			int count = 0;

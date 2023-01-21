@@ -12,8 +12,7 @@ public:
 	//==============================================================
 	struct InitializeParam
 	{
-		float power;
-		float invisible_time;
+		AttackParam atk_param;
 		float acceleration;
 		float collider_radius;
 	};
@@ -22,7 +21,7 @@ public:
 	// publicä÷êî
 	// 
 	//=============================================================
-	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3 dir, InitializeParam initparam);
+	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, InitializeParam initparam);
 	~MagicBullet();
 
 	void initialize(Graphics& graphics) ;
@@ -43,6 +42,7 @@ protected:
 	DirectX::XMFLOAT3 velocity{};
 	float acceleration;
 	std::unique_ptr<DirectX::XMFLOAT3> launch_pos;
+	std::unique_ptr<DirectX::XMFLOAT3> target_dir;
 	std::unique_ptr<MeshEffect> main_effect;
 	std::unique_ptr<MeshEffect> lightning_effect[2];
 	std::unique_ptr<MeshEffect> lightning_disk_effect;
@@ -50,7 +50,6 @@ protected:
 
 	bool launch_bullet = false;
 
-	DirectX::XMFLOAT3 target_dir;
 	//==============================================================
 	// 
 	// íËêî

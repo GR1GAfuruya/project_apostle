@@ -28,9 +28,9 @@ void Boss::transition_walk_state()
 }
 
 
-void Boss::transition_attack_state()
+void Boss::transition_normal_attack_state()
 {
-	act_update = &Boss::update_attack_state;
+	act_update = &Boss::update_normal_attack_state;
 	model->play_animation(BossAnimation::ATTACK, false);
 	state = State::ATTACK;
 }
@@ -208,15 +208,10 @@ void Boss::update_walk_state(Graphics& graphics, float elapsed_time)
 	Move(dir_target_vec.x, dir_target_vec.z, WALK_SPEED);
 	Turn(elapsed_time, dir_target_vec, chara_param.turn_speed, orientation);
 
-	//プレイヤーとの距離が一定以下になったら攻撃
-	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
-	const float ATTACK_ACTION_ANGLE = 30.0f;
-	if (length_to_target < ATTACK_ACTION_LENGTH && DirectX::XMConvertToDegrees(get_turn_angle()) < ATTACK_ACTION_ANGLE)
-	{
-		//攻撃タイプ選択
-		select_attack_type();
-		return;
-	}
+	//攻撃のルーチン
+	attack_routine(elapsed_time);
+
+	//速度更新
 	update_velocity(elapsed_time, position);
 }
 
@@ -227,26 +222,22 @@ void Boss::update_run_state(Graphics& graphics, float elapsed_time)
 	Move(dir_target_vec.x, dir_target_vec.z, RUN_SPEED);
 	Turn(elapsed_time, dir_target_vec, chara_param.turn_speed, orientation);
 
-	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
-	if (length_to_target < ATTACK_ACTION_LENGTH)
-	{
-		//攻撃タイプ選択
-		select_attack_type();
-		return;
-	}
+	//攻撃のルーチン
+	attack_routine(elapsed_time);
+
+	//速度更新
 	update_velocity(elapsed_time, position);
 }
 
 //---------------------------//
 //			攻撃系			 //
 //---------------------------//
-void Boss::update_attack_state(Graphics& graphics, float elapsed_time)
+void Boss::update_normal_attack_state(Graphics& graphics, float elapsed_time)
 {
 	sickle_attack_param.is_attack = true;
 	if (model->is_end_animation())
 	{
-		//攻撃タイプ選択
-		select_attack_type();
+		transition_idle_state();
 		state_duration = NORMAL_ATTACK_COOLTIME;
 		sickle_attack_param.is_attack = false;
 	}
@@ -303,18 +294,37 @@ void Boss::update_skill_3_state(Graphics& graphics, float elapsed_time)
 	update_velocity(elapsed_time, position);
 }
 
+void Boss::attack_routine(float elapsed_time)
+{
+	float length_to_target = Math::calc_vector_AtoB_length(position, target_pos);
+	if (length_to_target < ATTACK_ACTION_LENGTH)
+	{
+		//攻撃タイプ選択
+		select_attack_type_short();
+		return;
+	}
+
+	//プレイヤーが一定時間自分に近づかなかったら遠距離攻撃
+	attack_responder_timer += elapsed_time;
+	if (attack_responder_timer > ATTACK_RESPONDER_TIME)
+	{
+		select_attack_type_long();
+		attack_responder_timer = 0;
+	}
+}
+
 //---------------------------//
 //			攻撃タイプ選択		//
 //---------------------------//
-void Boss::select_attack_type()
+void Boss::select_attack_type_short()
 {
 	int random = std::abs(static_cast<int>(Noise::instance().get_rnd())) % static_cast<int>(ATTACK_TYPE::MAX_NUM);
-
+	//ランダムで攻撃方法を選択
 	ATTACK_TYPE attack_type = static_cast<ATTACK_TYPE>(random);
 	switch (attack_type)
 	{
 	case ATTACK_TYPE::NORMAL:
-		transition_attack_state();
+		transition_normal_attack_state();
 		break;
 
 	case ATTACK_TYPE::SKILL1:
@@ -330,6 +340,29 @@ void Boss::select_attack_type()
 		break;
 	}
 }
+
+void Boss::select_attack_type_long()
+{
+	int random = std::abs(static_cast<int>(Noise::instance().get_rnd())) % static_cast<int>(ATTACK_TYPE::MAX_NUM);
+	//ランダムで攻撃方法を選択
+	ATTACK_TYPE attack_type = static_cast<ATTACK_TYPE>(random);
+	//通常攻撃は除外し、遠距離攻撃のみ選択
+	switch (attack_type)
+	{
+	case ATTACK_TYPE::SKILL1:
+		transition_skill_1_state();
+		break;
+
+	case ATTACK_TYPE::SKILL2:
+		transition_skill_2_start_state();
+		break;
+
+	case ATTACK_TYPE::SKILL3:
+		transition_skill_3_state();
+		break;
+	}
+}
+
 
 
 //---------------------------//

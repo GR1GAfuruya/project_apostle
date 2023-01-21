@@ -65,7 +65,7 @@ public:
 	bool chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed);
 
 	//攻撃スキル詠唱
-	bool chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3 dir);
+	bool chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
 	
 	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
@@ -74,9 +74,9 @@ public:
 
 	//----スキル当たり判定----//
 	//MagickBullet
-	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);
+	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//SpearSea
-	void judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func);
+	void judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//スキルセレクト中かどうか
 	bool is_selecting_skill() {
 		if (is_selecting_support_skill) return true;

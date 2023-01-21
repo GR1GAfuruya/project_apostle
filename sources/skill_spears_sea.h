@@ -12,10 +12,7 @@ public:
 	//==============================================================
 	struct PublicParam
 	{
-		//UŒ‚—Í
-		float power;
-		//–³“GŠÔ
-		float invinsible_time;
+		AttackParam atk_param;
 		//¶‘¶ŠÔ
 		float skill_duration;
 		//”¼Œa

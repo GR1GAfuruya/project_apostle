@@ -12,8 +12,8 @@ void SkillLauncher::initialize(Graphics& graphics)
 	 cool_time = 0;
 	//詠唱可能か
 	 chantable = true;
-	 
-	 reduction_rate = 1.0f;
+	 //クールタイム短縮率の設定　初期はクールタイムの最大値の1割
+	 reduction_rate = 0.1f;
 	// skill.clear();
 }
 //==============================================================
@@ -67,7 +67,7 @@ void SkillLauncher::cool_time_reduction()
 	if (cool_time > 0)
 	{
 		//短縮率は個々で設定
-		cool_time -= reduction_rate;
+		cool_time -= max_cool_time * reduction_rate;
 		//0以下になったら0に戻しておく
 		if (cool_time < 0) cool_time = 0;
 	}
