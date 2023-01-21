@@ -8,7 +8,7 @@ struct AttackParam
 	bool is_attack;//UŒ‚’†‚©‚Ç‚¤‚©
 	int power;//UŒ‚—Í
 	float invinsible_time;//UŒ‚‘ÎÛ‚É‰Û‚·–³“GŠÔ
-	Camera::CameraShakeParam camera_shake;
+	Camera::CameraShakeParam camera_shake;//ƒJƒƒ‰ƒVƒFƒCƒN
 
 	template<class Archive>
 	void serialize(Archive& archive)

@@ -236,6 +236,7 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 	velocity.z /= 2.0f;
 	//速力処理更新
 	update_velocity(elapsed_time, position);
+
 	if (model->anime_param.frame_index > 33 / 2)
 	{
 		//地面に足がついたフレームからはさらに速度落とす
@@ -357,6 +358,10 @@ void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Cam
 //魔法弾射出行動
 void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera)
 {
+	//敵の方向を向く
+	DirectX::XMFLOAT3 target_vec = camera->get_lock_on_target() - position;
+	target_vec.y = 0;
+	Turn(elapsed_time, target_vec, chara_param.turn_speed * 2,orientation);
 	if (model->is_end_animation())
 	{
 		transition_idle_state();

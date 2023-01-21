@@ -78,12 +78,6 @@ void Camera::update(float elapsed_time)
 		XMMATRIX view_mat = XMMatrixLookAtLH(eye_vec, focus_vec, up_vec);
 		XMStoreFloat4x4(&view, view_mat);
 
-		// ビューを逆行列化
-		DirectX::XMMATRIX World = DirectX::XMMatrixInverse(nullptr, view_mat);
-		DirectX::XMFLOAT4X4 world;
-		DirectX::XMStoreFloat4x4(&world, World);
-
-
 		// プロジェクション行列を作成
 		float width = static_cast<float>(SCREEN_WIDTH);
 		float height = static_cast<float>(SCREEN_HEIGHT);
@@ -101,7 +95,19 @@ void Camera::update(float elapsed_time)
 		XMMATRIX projection_mat = XMMatrixPerspectiveFovLH(XMConvertToRadians(cape_vision), aspect_ratio, near_far.x, near_far.y); // P
 		XMStoreFloat4x4(&projection, projection_mat);
 	}
-
+	if (lock_on)
+	{
+		//ロックオン時のカメラの挙動
+		update_with_lock_on(elapsed_time);
+	}
+	else
+	{
+		//ロックオンしていないときのカメラの挙動
+		if (!camera_operate_stop)
+		{
+			control_by_game_pad_stick(elapsed_time);
+		}
+	}
 	//カメラストップのタイマーの更新
 	{
 		if (camera_stop_timer > 0.0f)
@@ -120,19 +126,7 @@ void Camera::update(float elapsed_time)
 
 void Camera::update_with_tracking(float elapsed_time)
 {
-	if (lock_on)
-	{
-		//ロックオン時のカメラの挙動
-		update_with_lock_on(elapsed_time, orientation);	
-	}
-	else
-	{
-		//ロックオンしていないときのカメラの挙動
-		if (!camera_operate_stop)
-		{
-			control_by_game_pad_stick(elapsed_time, orientation);
-		}
-	}
+	
 	//Y軸の回転値を-3.14~3.14に収まるようにする
 	if (angle.y < -DirectX::XM_PI) { angle.y += DirectX::XM_2PI; }
 	if (angle.y > DirectX::XM_PI) { angle.y -= DirectX::XM_2PI; }
@@ -163,72 +157,63 @@ void Camera::update_with_tracking(float elapsed_time)
 	eye = Math::lerp(eye, pos, attend_rate * elapsed_time);
 }
 
-void Camera::update_with_lock_on(float elapsed_time, DirectX::XMFLOAT4& ori)
+void Camera::update_with_lock_on(float elapsed_time)
 {
 	// XMVECTORクラスへ変換
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&ori);
-
 	// カメラの現在位置から、目標座標への方向を求める
-	DirectX::XMFLOAT3 d = lock_on_target - eye;
-	DirectX::XMVECTOR d_vec_norm = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&d));
-	DirectX::XMVECTOR forward = Math::get_posture_forward_vec(ori);
-	DirectX::XMVECTOR up = { 0.0f,1.0f,1.0f };
-	DirectX::XMVECTOR right = Math::get_posture_right_vec(ori);
-	// 矢印の現在姿勢（orientation）における前方（forward）をホーム方向とし、
-	// 方向への回転軸（axis）と回転角（angle）を求める
+	DirectX::XMFLOAT3 dir = lock_on_target - eye;
+	DirectX::XMVECTOR TargeVecNorm = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&dir));
+	DirectX::XMVECTOR Forward = Math::get_posture_forward_vec(orientation);
+	DirectX::XMVECTOR Up = { 0.0f,1.0f,0.0f };
+	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 	// 回転角
 	float ang;
-	DirectX::XMVECTOR dot = DirectX::XMVector3Dot(DirectX::XMVector3Normalize(forward), d_vec_norm); // cos
+	DirectX::XMVECTOR dot = DirectX::XMVector3Dot(Forward, TargeVecNorm);
 	DirectX::XMStoreFloat(&ang, dot);
 	ang = acosf(ang);
-	//回転軸
-	DirectX::XMVECTOR axis = DirectX::XMVector3Cross(forward, d_vec_norm);
-	//縦回転
+
+	DirectX::XMFLOAT3 forward{};//forwardの値をfloat3に
+	DirectX::XMFLOAT3 up{};//forwardの値をfloat3に
+	DirectX::XMFLOAT3 d_vec{};//dの値をfloat3に
+	DirectX::XMStoreFloat3(&forward, Forward);
+	DirectX::XMStoreFloat3(&up, Up);
+	DirectX::XMStoreFloat3(&d_vec, TargeVecNorm);
+
+	//回転
 	{
 		//回転軸
-		DirectX::XMVECTOR axis = right;
-
-		if (fabs(ang) > DirectX::XMConvertToRadians(0.1f))
+		DirectX::XMVECTOR axis = Up;
+		//回転角度がこの値を超えたときのみ計算
+		const float extrapolated_angle = 5.0f;
+		if (fabs(ang) > DirectX::XMConvertToRadians(extrapolated_angle))
 		{
-			//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
-			DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, ang);
-			//矢印を徐々に目標座標に向ける
-			DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
-			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate);
+			float cross{ forward.x * d_vec.z - forward.z * d_vec.x };
+			//クオータニオンは回転の仕方(どの向きに)
+			if (cross < 0.0f)
+			{
+				//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
+				DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, ang);
+				//矢印を徐々に目標座標に向ける
+				DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
+				orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate * elapsed_time);
+			}
+			else
+			{
+				//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
+				DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, -ang);
+				//矢印を徐々に目標座標に向ける
+				DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
+				orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate * elapsed_time);
+			}
 		}
+		
 
 	}
-
-	//横回転
-	{
-		//回転軸
-		DirectX::XMVECTOR axis = up;
-
-		if (fabs(ang) > DirectX::XMConvertToRadians(0.1f))
-		{
-			//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
-			DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, ang);
-			//矢印を徐々に目標座標に向ける
-			DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
-			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate);
-		}
-
-	}
-	
-
-	if (Math::get_posture_up(ori).y < 0.4f)
-	{
-		DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(-25.0f));
-		orientationVec = DirectX::XMQuaternionMultiply(orientationVec, correct_angles_axis);
-	}
-
-
 	// orientationVecからorientationを更新
-	XMStoreFloat4(&ori, orientationVec);
-
+	XMStoreFloat4(&orientation, orientationVec);
 }
 
-void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& ori)
+void Camera::control_by_game_pad_stick(float elapsed_time)
 {
 	GamePad& game_pad = Device::instance().get_game_pad();
 	float ax = game_pad.get_axis_RX();
@@ -244,11 +229,11 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 		angle.y = ax * DirectX::XMConvertToRadians(roll_speed) * elapsed_time;
 	}
 	// XMVECTORクラスへ変換
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&ori);
+	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
 
-	DirectX::XMVECTOR forward = Math::get_posture_forward_vec(ori);
+	DirectX::XMVECTOR forward = Math::get_posture_forward_vec(orientation);
 	DirectX::XMVECTOR up = { 0,1,0 };//カメラのY軸は常に（0,1,0）とする
-	DirectX::XMVECTOR right = Math::get_posture_right_vec(ori);
+	DirectX::XMVECTOR right = Math::get_posture_right_vec(orientation);
 
 	//縦回転
 	{
@@ -261,7 +246,7 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 			DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, angle.x);
 			//矢印を徐々に目標座標に向ける
 			DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
-			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate);
+			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, sensitivity_rate);
 		}
 
 	}
@@ -277,7 +262,7 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 			DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, angle.y);
 			//矢印を徐々に目標座標に向ける
 			DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
-			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate);
+			orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, sensitivity_rate);
 		}
 
 	}
@@ -287,9 +272,9 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 	
 	//向きすぎと判断する値
 	const float overdirection = 0.4f;
-	if (Math::get_posture_up(ori).y < overdirection)
+	if (Math::get_posture_up(orientation).y < overdirection)
 	{
-		if (Math::get_posture_forward(ori).y < 0.0f)
+		if (Math::get_posture_forward(orientation).y < 0.0f)
 		{
 			float correction_rate = -5.0f;
 			DirectX::XMVECTOR correct_angles_axis = DirectX::XMQuaternionRotationAxis(right, DirectX::XMConvertToRadians(correction_rate));
@@ -303,10 +288,8 @@ void Camera::control_by_game_pad_stick(float elapsed_time, DirectX::XMFLOAT4& or
 		}
 	}
 
-
 	// orientationVecからorientationを更新
-	XMStoreFloat4(&ori, orientationVec);
-
+	XMStoreFloat4(&orientation, orientationVec);
 }
 
 
@@ -376,8 +359,8 @@ void Camera::debug_gui()
 			ImGui::DragFloat3("right", &right.x, 0.1f);
 			ImGui::DragFloat("cape_vision", &cape_vision, 0.1f);
 			ImGui::DragFloat("attend_rate", &attend_rate, 0.1f);
-			ImGui::DragFloat("roll_speed", &roll_speed);
-			ImGui::DragFloat("lock_on_rate", &lock_on_rate);
+			ImGui::DragFloat("roll_speed", &roll_speed, 0.1f);
+			ImGui::DragFloat("lock_on_rate", &lock_on_rate, 0.1f);
 			angle = { DirectX::XMConvertToRadians(a.x),DirectX::XMConvertToRadians(a.y),DirectX::XMConvertToRadians(a.z) };
 			ImGui::DragFloat3("target", &trakking_target.x, 0.1f);
 			ImGui::DragFloat4("LightDirection", &light_direction.x, 0.01f, -1, 1);
@@ -494,8 +477,6 @@ void Camera::camera_shake_update(float elapsed_time)
 
 							standard_orientationVec = DirectX::XMQuaternionMultiply(standard_orientationVec, q);
 						}
-
-
 					}
 				}
 		}

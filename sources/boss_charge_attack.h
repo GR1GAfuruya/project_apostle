@@ -52,6 +52,9 @@ private:
 	//トルネード
 	std::unique_ptr<MeshEffect> tornado;
 	std::unique_ptr<MeshEffect> tornado_black;
+
+	//予兆エフェクト
+	std::unique_ptr<MeshEffect> omen_effect;
 	//GPUパーティクルのエミッターCS
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> emit_cs;
 	//GPUパーティクルのアップデートCS
@@ -67,7 +70,6 @@ private:
 	//---<PointLight>-----//
 	//
 	shared_ptr<PointLight> boss_light;
-
 
 	//定数バッファ
 	std::unique_ptr<Constants<ChargeAttackConstants>> constants;
@@ -91,4 +93,6 @@ private:
 
 	//攻撃対象の座標
 	DirectX::XMFLOAT3 target_pos;
+	AttackParam attack_param;
+	Sphere tornado_colider;
 };

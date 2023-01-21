@@ -24,27 +24,28 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
 	// カラーの取得
 	float4 tex = sceneTexture.Sample(sceneSampler, pin.texcoord);
+
 	// 点光源方向
     float4 P = position_map.Sample(sceneSampler, pin.texcoord);
-    float3 PLightPos = defferd_light_dir.xyz;
-	float3 PLightDir = P.xyz - PLightPos;
-	// ライト種別
-    float type = step(0.001, defferd_light_dir.w);
-	// 減衰の設定
-    float attenuation = type < 0.1 ? 1.0 : 1.0 - (length(PLightDir) / defferd_light_dir.w);
-	attenuation = saturate(attenuation);
-	// 平行光
-    float3 L = lerp(defferd_light_dir.xyz, PLightDir, type);
+ //   float3 PLightPos = defferd_light_dir.xyz;
+	//float3 PLightDir = P.xyz - PLightPos;
+	//// ライト種別
+ //   float type = step(0.001, defferd_light_dir.w);
+	//// 減衰の設定
+ //   float attenuation = type < 0.1 ? 1.0 : 1.0 - (length(PLightDir) / defferd_light_dir.w);
+	//attenuation = saturate(attenuation);
+	//// 平行光
+ //   float3 L = lerp(defferd_light_dir.xyz, PLightDir, type);
 
-	float3 N = tex.xyz * 2.0 - 1.0;
-    float3 C = defferd_light_color.rgb;
-	C *= attenuation; //減衰
+	//float3 N = tex.xyz * 2.0 - 1.0;
+ //   float3 C = defferd_light_color.rgb;
+	//C *= attenuation; //減衰
 
-	L = normalize(L);
-	N = normalize(N);
-	float d = -dot(N, L); //= -cos
-	d = saturate(d); // 0～1にクリッピング
-	tex.rgb = C * d; //ライト決定
+	//L = normalize(L);
+	//N = normalize(N);
+	//float d = -dot(N, L); //= -cos
+	//d = saturate(d); // 0～1にクリッピング
+	//tex.rgb = C * d; //ライト決定
 
 	// Deferred Shadow
 	// 光から見たXYZ W
@@ -58,7 +59,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 
     float2 dist = shadow_map.Sample(BorderSampler, uv).xy;
 /*
-	// チェビシェフの不等式を利用した分散シャドウマップ
+	 //チェビシェフの不等式を利用した分散シャドウマップ
 	float depth_sq = dist.x * dist.x;
 	float variance = dist.y - depth_sq;
 	float md = d2 - dist.x;
@@ -66,9 +67,10 @@ float4 main(VS_OUT pin) : SV_TARGET
 	float shadow = p;// saturate(max(p, dist.x >= d2 - 0.001));
 */
 	float shadow = dist.x > d2 - 0.003;
+   
     tex.rgb *= shadow;
 	tex.a = 1;
-
+    return float4(0, 0, 0, 1);
 	return tex;
 }
 

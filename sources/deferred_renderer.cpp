@@ -1,6 +1,6 @@
 #include "deferred_renderer.h"
 #include "imgui_include.h"
-#include "light_manager.h"
+
 #include "texture.h"
 #include "user.h"
 //==============================================================
@@ -149,6 +149,7 @@ void DeferredRenderer::lighting(Graphics& graphics) const
 
 	//平行光、点光源ライトを描き込む
 #if CAST_SHADOW
+	shadow_constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::PS_VS);
 	graphics.get_dc().Get()->PSSetShaderResources(16, 1, shadow_frame_buffer->get_color_map().GetAddressOf());
 #endif
 	LightManager::instance().draw(graphics, g_buffers, G_BUFFERS_NUM);
@@ -196,9 +197,12 @@ void DeferredRenderer::render(Graphics& graphics)
 		ImGui::Image(g_metal_smooth->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("light");
 		ImGui::Image(l_light->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+		ImGui::DragFloat("scale", &scale,0.1f);
+		ImGui::DragFloat("vie", &vie, 0.1f);
+		ImGui::DragFloat("FarZ", &FarZ, 0.1f);
 #if CAST_SHADOW
 		ImGui::Text("shadow");
-		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
+		ImGui::Image(shadow_frame_buffer->get_color_map().Get(), { 1080 * (ImGui::GetWindowSize().x / 1080),  1080 * (ImGui::GetWindowSize().y / 1080) });
 #endif
 
 		ImGui::End();
@@ -212,21 +216,32 @@ void DeferredRenderer::render(Graphics& graphics)
 // 
 //==============================================================
 #if CAST_SHADOW
-void DeferredRenderer::shadow_active(Graphics& graphics)
+void DeferredRenderer::shadow_active(Graphics& graphics,DirectX::XMFLOAT3 target_pos)
 {
-	shadow_frame_buffer->clear(graphics.get_dc().Get());
+	DirectX::XMFLOAT4 clearColor = { FLT_MAX, FLT_MAX, FLT_MAX, 1.0f };
+	shadow_frame_buffer->clear(graphics.get_dc().Get(),FB_FLAG::COLOR_DEPTH_STENCIL, clearColor);
 	shadow_frame_buffer->activate(graphics.get_dc().Get());
 
+	// ビューポートの設定
+	D3D11_VIEWPORT	vp = {};
+	vp.Width = static_cast<float>(shadow_frame_buffer->get_tex_width());
+	vp.Height = static_cast<float>(shadow_frame_buffer->get_tex_height());
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	graphics.get_dc().Get()->RSSetViewports(1, &vp);
+
+
 	// 平行光源からカメラ位置を作成し、そこから原点の位置を見るように視線行列を生成
-	DirectX::XMVECTOR TargetPosition = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	DirectX::XMFLOAT3 shadow_dir_light_dir = light_manager.get_shadow_dir_light_dir();
+	DirectX::XMVECTOR TargetPosition = DirectX::XMVectorSet(target_pos.x, target_pos.y, target_pos.z, 0.0f);
+	DirectX::XMFLOAT3 shadow_dir_light_dir = LightManager::instance().get_shadow_dir_light_dir();
+	shadow_dir_light_dir = Math::Normalize(shadow_dir_light_dir);
 	DirectX::XMVECTOR LightPosition = DirectX::XMLoadFloat3(&shadow_dir_light_dir);
-	LightPosition = DirectX::XMVectorScale(LightPosition, -50.0f);
+	LightPosition = DirectX::XMVectorScale(LightPosition, scale);
 	LightPosition = DirectX::XMVectorAdd(LightPosition, TargetPosition);
 	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(LightPosition,
 		TargetPosition,
 		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(30, 30, 10, 100);
+	DirectX::XMMATRIX P = DirectX::XMMatrixOrthographicLH(vie, vie, 10, FarZ);
 	DirectX::XMMATRIX VP = V * P;
 	DirectX::XMFLOAT4X4	shadowVP;
 	DirectX::XMStoreFloat4x4(&shadow_constants->data.shadowVP, VP);

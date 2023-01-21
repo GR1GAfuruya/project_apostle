@@ -1,5 +1,5 @@
 #pragma once
-#define CAST_SHADOW 0
+#define CAST_SHADOW 1
 #include "graphics.h"
 #include "light.h"
 #include "fullscreen_quad.h"
@@ -33,7 +33,7 @@ private:
 	std::map<std::string, std::weak_ptr<Light>>lights;
 	std::unique_ptr<FullscreenQuad> light_screen;
 #if CAST_SHADOW
-	std::unique_ptr<DirectionalLight> shadow_dir_light;//シャドウマップ用ライト
+	std::shared_ptr<DirectionalLight> shadow_dir_light;//シャドウマップ用ライト
 #endif
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> shadow_map_light;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> deferred_light;

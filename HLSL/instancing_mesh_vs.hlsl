@@ -6,7 +6,7 @@ VS_OUT main(InstancedVertex In)
 {
     VS_OUT Out;
     
-    float4x4 world, C, transform, scalling, quaternion;                     
+    float4x4 world, C, transform;                     
     
     //RHS-Y-UP
     C = float4x4(

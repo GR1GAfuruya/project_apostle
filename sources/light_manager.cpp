@@ -14,9 +14,10 @@ void LightManager::initialize(Graphics& graphics)
 	light_screen = std::make_unique<FullscreenQuad>(graphics.get_device().Get());
 	lights.clear();
 #if CAST_SHADOW
-	DirectX::XMFLOAT3 shadow_light_dir = { 1.0f, 1.0f, -1.0 };
+	DirectX::XMFLOAT3 shadow_light_dir = { 1.0f, -1.0f, -1.0 };
 	DirectX::XMFLOAT3 shadow_color = { 0.2f, 0.2f, 0.2f };
-	shadow_dir_light = std::make_unique<DirectionalLight>(graphics, shadow_light_dir, shadow_color.x, shadow_color.y, shadow_color.z);
+	shadow_dir_light = std::make_shared<DirectionalLight>(graphics, shadow_light_dir, shadow_color);
+	LightManager::instance().register_light("shadow_dir_light", shadow_dir_light);
 #endif
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
@@ -66,8 +67,8 @@ void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int r
 	
 	//‰e—pƒ‰ƒCƒg•`‰æ
 #if CAST_SHADOW
-	shadow_dir_light->light_constants->bind(graphics.get_dc().Get(), 7);
-	light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, shadow_map_light.Get());
+	//shadow_dir_light->light_constants->bind(graphics.get_dc().Get(), 7);
+	//light_screen->blit(graphics.get_dc().Get(), rtv, 0, rtv_num, shadow_map_light.Get());
 #endif
 	//’Êíƒ‰ƒCƒg•`‰æ
 	for (auto& light : lights)
@@ -94,7 +95,7 @@ void LightManager::debug_gui()
 	if (display_imgui)
 	{
 #if CAST_SHADOW
-		shadow_dir_light->debug_gui(-1);
+		shadow_dir_light->debug_gui("shadow");
 #endif
 		for (auto& l : lights)
 		{

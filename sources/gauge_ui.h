@@ -21,6 +21,7 @@ public:
 	void set_scale(DirectX::XMFLOAT2 scale) { gauge.scale = scale; }
 	void set_tex_size(DirectX::XMFLOAT2 texsize) { gauge.texsize = texsize; }
 	void set_color(DirectX::XMFLOAT4 color) { gauge.color = color; }
+	void set_diff_color(DirectX::XMFLOAT4 color) { diff_color = color; }
 protected:
 	//--------< •Ï” >--------//
 	std::unique_ptr<SpriteBatch> frame{ nullptr };

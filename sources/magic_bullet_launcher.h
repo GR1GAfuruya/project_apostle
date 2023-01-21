@@ -21,9 +21,9 @@ public:
 	//•`‰æ
 	void render(Graphics& graphics) override;
 	//”­“®
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3 dir);
+	bool chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir);
 	//ƒXƒLƒ‹‚Ì“–‚½‚è”»’è
-	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
+	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//DebugGUI•\Ž¦
 	void debug_gui() override;
 

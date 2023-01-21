@@ -13,6 +13,7 @@ public:
 	virtual void  update(float elapsedTime) = 0;
 
 	virtual void  render(Graphics& graphics, float elapsed_time,Camera* camera ) = 0;
+	virtual void  shadow_render(Graphics& graphics, float elapsed_time) = 0;
 
 	virtual bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) = 0;
 

@@ -26,7 +26,8 @@ VS_OUT main(VS_IN vin)
     
     VS_OUT vout;
 	// ŒõƒJƒƒ‰‚ÅÀ•W•ÏŠ·
-    vout.position = mul(vin.position, ShadowVP);
+    vout.position = mul(vin.position, mul(world, ShadowVP));
+   // vout.position = mul(vin.position, ShadowVP);
     vout.texcoord = vin.texcoord;
     vout.ShadowParam = vout.position;
  

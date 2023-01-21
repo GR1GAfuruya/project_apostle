@@ -72,7 +72,6 @@ void PostEffects::blit(Graphics& graphics)
 			{
 				ImGui::DragFloat2("origin", &cb_post_effect->data.origin.x, 1.0f, 0.0f, 20.0f);
 				ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
-				ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
 				ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
 				ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 1.0f, 10.0f);
 				ImGui::DragFloat("contrast", &cb_post_effect->data.contrast, 0.1f, 0.0f, 50.0f);
@@ -81,7 +80,8 @@ void PostEffects::blit(Graphics& graphics)
 				ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
 				ImGui::DragFloat("falloff", &cb_post_effect->data.falloff, 0.1f, 0, 1.0f);
 				ImGui::DragFloat("amount", &cb_post_effect->data.amount, 0.1f, 0, 1.0f);
-				ImGui::DragFloat("amount", &cb_post_effect->data.radial_power, 0.1f, 0, 1.0f);
+				ImGui::DragFloat3("vignette_color", &cb_post_effect->data.vignette_color.x, 0.1f, 0, 1.0f);
+				ImGui::DragFloat("radial_power", &cb_post_effect->data.radial_power, 0.1f, 0, 1.0f);
 
 			}
 			if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))

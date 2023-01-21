@@ -267,7 +267,7 @@ bool SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target
 //MagickBullet”­“®
 // 
 //==============================================================
-bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3 dir)
+bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
 {
 	return magick_bullet->chant(graphics, launch_pos, dir);
 }
@@ -307,14 +307,14 @@ void SkillManager::cool_time_reduction()
 //–‚–@’e‚Æ“G‚Ì“–‚½‚è”»’è
 // 
 //==============================================================
-void SkillManager::judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func)
+void SkillManager::judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
-	magick_bullet->skill_object_hit_judgment(object_colider, damaged_func);
+	magick_bullet->skill_object_hit_judgment(object_colider, damaged_func, camera);
 }
 
-void SkillManager::judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func)
+void SkillManager::judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
-	spear_sea->skill_object_hit_judgment(object_colider, damaged_func);
+	spear_sea->skill_object_hit_judgment(object_colider, damaged_func, camera);
 }
 
 //==============================================================

@@ -354,7 +354,7 @@ void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& pos
 			DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
 			DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
 
-		DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
+			DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
 
 			//入射ベクトルを法線に射影
 			DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(DirectX::XMVectorNegate(Vec), Normal); //この時点では正負が逆なことに注意
@@ -371,14 +371,16 @@ void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& pos
 			if (!StageManager::Instance().ray_cast(start, correct, hit2))//何か壁があれば
 			{
 				position.x = correct.x;
-				velocity.x = 0;
 				position.z = correct.z;
+				velocity.x = 0;
 				velocity.z = 0;
 			}
 			else
 			{
 				position.x = hit2.position.x;
 				position.z = hit2.position.z;
+				velocity.x = 0;
+				velocity.z = 0;
 			}
 		}
 		else

@@ -155,10 +155,10 @@ void Graphics::initialize(HWND hwnd)
 	sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 	sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 	sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	sampler_desc.BorderColor[0] = 1000;
-	sampler_desc.BorderColor[1] = 1000;
-	sampler_desc.BorderColor[2] = 1000;
-	sampler_desc.BorderColor[3] = 1000;
+	sampler_desc.BorderColor[0] = 1;
+	sampler_desc.BorderColor[1] = 1;
+	sampler_desc.BorderColor[2] = 1;
+	sampler_desc.BorderColor[3] = 1;
 	hr = device->CreateSamplerState(&sampler_desc, sampler_states[static_cast<size_t>(SAMPLER_STATE::SHADOW_MAP)].GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 	//-----------------------------------------------//

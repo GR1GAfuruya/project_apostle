@@ -18,9 +18,8 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::
 	instance_mesh->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	position = launch_pos;
 	target_position = target_pos;
-	power = initparam.power;
-	invinsible_time = initparam.invinsible_time;
 	param = initparam;
+	atk_param = initparam.atk_param;
 	collision_type = CollisionType::SPHERE;
 	//éıñΩÇê›íË
 	skill_duration = initparam.skill_duration;
@@ -122,7 +121,6 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 		}
 
 	}
-
 	//
 	const float dissolve_rate = 2.0f;
 	const float start_threshold_time = 0.5f;

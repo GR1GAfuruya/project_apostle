@@ -261,6 +261,7 @@
     <ClCompile Include="sources\regenerate_launcher.cpp" />
     <ClCompile Include="sources\resource_manager.cpp" />
     <ClCompile Include="sources\restraint_launcher.cpp" />
+    <ClCompile Include="sources\scene_tutorial.cpp" />
     <ClCompile Include="sources\scene_game.cpp" />
     <ClCompile Include="sources\scene_loading.cpp" />
     <ClCompile Include="sources\scene_manager.cpp" />
@@ -324,6 +325,7 @@
     <ClInclude Include="sources\player_ui.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />
     <ClInclude Include="sources\restraint_launcher.h" />
+    <ClInclude Include="sources\scene_tutorial.h" />
     <ClInclude Include="sources\shadow_map_shader.h" />
     <ClInclude Include="sources\skill.h" />
     <ClInclude Include="sources\skill_magic_bullet.h" />

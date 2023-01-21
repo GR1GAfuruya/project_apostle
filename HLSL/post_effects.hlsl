@@ -66,7 +66,9 @@ float4 Vignette(float4 c,float2 uv)
     float3 color = c.rgb;
     float2 center = float2(0.5, 0.5);
     float len = length(uv - center);
-    color *= smoothstep(1., falloff, len * (amount + falloff));
+    float vignette = smoothstep(1., falloff, len * (amount + falloff));
+    color *= vignette;
+    color += vignette_color * (1 - vignette);
     return float4(color, 1.0);
 
 }

@@ -37,10 +37,11 @@ public:
 		//ビネット
 		float falloff = 0.3f;
 		float amount = 0.6f;
+		DirectX::XMFLOAT2 pad;
+		DirectX::XMFLOAT3 vignette_color;
 		//ラジアルブラー
 		float radial_power;
 
-		float pad;
 	};
 
 	void begin(ID3D11DeviceContext* dc);

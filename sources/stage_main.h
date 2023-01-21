@@ -16,15 +16,17 @@ public:
 
 	//描画処理
 	void render(Graphics& graphics, float elapsed_time, Camera* camera)override;
-
+	void  shadow_render(Graphics& graphics, float elapsed_time)override;
 	// レイキャスト
 	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) override;
 
 private:
 	std::unique_ptr<SkeletalMesh>  model = nullptr;
 	std::unique_ptr<SkeletalMesh>  model_collision = nullptr;
+	std::unique_ptr<SkeletalMesh>  model_shadow = nullptr;
 	DirectX::XMFLOAT3 scale;
 	DirectX::XMFLOAT3 angle{};
 	DirectX::XMFLOAT3 position{};
+	DirectX::XMFLOAT4X4 transform{};
 	bool flustm_flag = false;
 };

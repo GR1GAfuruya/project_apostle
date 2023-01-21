@@ -28,7 +28,7 @@ void Boss::initialize()
 	//速度初期化
 	velocity = { 0.0f, 0.0f, 0.0f };
 	//エフェクト初期化
-	efc_charge_attack->stop();
+	attack_skill_2->stop();
 
 	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible,type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
@@ -49,7 +49,8 @@ void Boss::initialize()
 Boss::Boss(Graphics& graphics)
 {
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
-	efc_charge_attack = make_unique<ChargeAttack>(graphics);
+	attack_skill_1 = make_unique<BossAttackSkill1>(graphics);
+	attack_skill_2 = make_unique<ChargeAttack>(graphics);
 	ui = make_unique<BossUi>(graphics);
 
 	initialize();
@@ -68,19 +69,25 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	(this->*act_update)(graphics, elapsed_time);
 	model->update_animation(elapsed_time);
+	DirectX::XMFLOAT4X4 sickle_bone_mat;
+	model->fech_by_bone(transform, sickle_hand, sickle_hand_colide.start, &sickle_bone_mat);
 	
-	efc_charge_attack->update(graphics, elapsed_time,camera);
-	efc_charge_attack->set_target_pos(target_pos);
+	//スキル１のアップデート
+	attack_skill_1->update(graphics, elapsed_time,camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
+	attack_skill_2->update(graphics, elapsed_time,camera);
+	attack_skill_2->set_target_pos(target_pos);
 	//bodyの攻撃用当たり判定
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
 	boss_body_collision.capsule.end.y = boss_body_collision.capsule.start.y + boss_body_collision.height;
 
-	DirectX::XMFLOAT4X4 sickle_bone_mat;
-	model->fech_by_bone(transform, sickle_hand, sickle_hand_colide.start, &sickle_bone_mat);
-	sickle_hand_colide.end = sickle_hand_colide.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
-	update_invicible_timer(elapsed_time);
 
+	//腕の当たり判定設定
+	sickle_hand_colide.end = sickle_hand_colide.start + Math::vector_scale(Math::get_posture_right(sickle_bone_mat), 5.0f);
+
+	//無敵時間更新
+	update_invicible_timer(elapsed_time);
+	//UI更新
 	ui->update(graphics, elapsed_time);
 }
 //==============================================================
@@ -104,7 +111,8 @@ void Boss::render_d(Graphics& graphics, float elapsed_time)
 //==============================================================
 void Boss::render_f(Graphics& graphics, float elapsed_time)
 {
-	efc_charge_attack->render(graphics);
+	attack_skill_1->render(graphics);
+	attack_skill_2->render(graphics);
 	debug_gui();
 	
 }
@@ -196,7 +204,9 @@ void Boss::debug_gui()
 			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
 			ImGui::DragFloat3("bounding_min", &min.x);
 			ImGui::DragFloat3("bounding_max", &max.x);
+			if (ImGui::Button("skill_1")) transition_skill_1_state();
 			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
+			if (ImGui::Button("skill_3")) transition_skill_3_state();
 #if _DEBUG
 			ImGui::Checkbox("is_update", &is_update);
 			ImGui::Separator();
@@ -232,7 +242,8 @@ void Boss::debug_gui()
 		}
 		ImGui::End();
 	}
-	efc_charge_attack->debug_gui("");
+	attack_skill_1->debug_gui("");
+	attack_skill_2->debug_gui("");
 #endif
 }
 //==============================================================
@@ -254,6 +265,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 		}
 	}
 
-	efc_charge_attack->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
+	attack_skill_1->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
+	attack_skill_2->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
 }
 

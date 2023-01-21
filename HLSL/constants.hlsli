@@ -51,6 +51,8 @@ cbuffer POST_EFFECTS_CONSTANT : register(b5)
     //ビネット
     float falloff;
     float amount;
+    float3 vignette_color;
+    //ラジアルブラー
     float radial_power;
 
 }

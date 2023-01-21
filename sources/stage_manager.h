@@ -20,6 +20,7 @@ public:
 	void update(float elapsedTime);
 	//描画処理
 	void render(Graphics& graphics, float elapsed_time, Camera* camera);
+	void shadow_render(Graphics& graphics, float elapsed_time);
 	//ステージ登録
 	void Register(Stage* stage);
 	//ステージ全削除

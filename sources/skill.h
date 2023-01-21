@@ -5,6 +5,7 @@
 #include "mesh_effect.h"
 #include "light.h"
 #include "user.h"
+#include "damage_func.h"
 class Skill
 {
 public:
@@ -50,8 +51,7 @@ public:
 	//デバッグGUI
 	virtual void debug_gui(string str_id) = 0;
 	void set_is_skill_hit(bool h) { is_hit = h; }
-	float get_power() { return power; }
-	float get_invinsible_time() { return invinsible_time; }
+	AttackParam get_atk_param() { return atk_param; }
 protected:
 
 
@@ -73,10 +73,8 @@ protected:
 	bool skill_end_flag = false;
 	//スキルがヒットしたかどうか
 	bool is_hit = false;
-	//攻撃力
-	float power = 0.0f;
-	//対象に与える無敵時間
-	float invinsible_time = 0.0f;
+	//攻撃パラメーター
+	AttackParam atk_param;
 	//位置
 	DirectX::XMFLOAT3 position{};
 	//速力

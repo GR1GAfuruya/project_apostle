@@ -7,11 +7,11 @@
 //==============================================================
 SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 {
-	init_param.power = 10;
-	init_param.invinsible_time = 2.5f;
+	init_param.atk_param.power = 20;
+	init_param.atk_param.invinsible_time = 1.0f;
 	init_param.radius = 15;
 	init_param.collider_radius = 8;
-	init_param.skill_duration = 2.0f;
+	init_param.skill_duration = 1.5f;
 	//槍の長さ
 	init_param.spear_length = 1.0f;
 	//長さの伸び率
@@ -22,7 +22,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	init_param.follow_time = 0.2f;
 
 	//クールタイム
-	max_cool_time = 5;
+	max_cool_time = 7.0f;
 
 }
 //==============================================================
@@ -49,15 +49,20 @@ bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, D
 // 当たり判定
 // 
 //==============================================================
-void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func)
+void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
 	for (auto& s : skills)
 	{
 		if (Collision::sphere_vs_capsule(s->get_colider().start, s->get_colider().radius,
 			object_colider.start, object_colider.end, object_colider.radius))
 		{
+			//スキルがヒット
 			s->skill_hit();
-			damaged_func(s->get_power(), s->get_invinsible_time(),WINCE_TYPE::SMALL);
+			s->set_is_skill_hit(true);
+			//カメラシェイク
+			camera->set_camera_shake(s->get_atk_param().camera_shake);
+			//ダメージを与える
+			damaged_func(s->get_atk_param().power, s->get_atk_param().invinsible_time, WINCE_TYPE::NONE);
 		}
 	}
 }
@@ -78,8 +83,8 @@ void SpearSeaLauncher::debug_gui()
 			ImGui::DragFloat("cool_time", &cool_time);
 			ImGui::DragFloat("max_cool_time", &max_cool_time);
 			ImGui::DragFloat("life_span", &init_param.skill_duration);
-			ImGui::DragFloat("power", &init_param.power);
-			ImGui::DragFloat("invinsible_time", &init_param.invinsible_time);
+			ImGui::DragInt("power", &init_param.atk_param.power);
+			ImGui::DragFloat("invinsible_time", &init_param.atk_param.invinsible_time);
 			ImGui::DragFloat("radius", &init_param.radius);
 			ImGui::DragFloat("collider_radius", &init_param.collider_radius);
 			ImGui::DragFloat("spear_length", &init_param.spear_length, 0.1f);
