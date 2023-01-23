@@ -8,6 +8,8 @@
 #include "skill_spears_sea.h"
 #include "magic_bullet_launcher.h"
 #include "spears_sea_launcher.h"
+#include "slash_wave_launcher.h"
+#include "lightning_rain_launcher.h"
 #define SP_SKILLTYPE SkillManager::SupportSkillType
 #define ATK_SKILLTYPE SkillManager::AttackSkillType
 class SkillManager
@@ -30,9 +32,9 @@ public:
 	{
 		MAGICBULLET,
 		SPEARS_SEA,
-		ATK_SKILL_MAX,
 		SLASH_WAVE,
-		TEST,
+		LIGHTNING_RAIN,
+		ATK_SKILL_MAX,
 	};
 
 	//==============================================================
@@ -68,6 +70,10 @@ public:
 	bool chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
 	
 	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
+
+	bool chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* dir);
+
+	bool chant_lightning_rain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
 	//スキルクールタイム短縮
 	void cool_time_reduction();
@@ -106,6 +112,8 @@ private:
 	 
 	std::shared_ptr<MagicBulletLauncher> magick_bullet;
 	std::shared_ptr<SpearSeaLauncher> spear_sea;
+	std::shared_ptr<SlashWaveLauncher> slash_wave;
+	std::shared_ptr<LightningRainLauncher> lightning_rain;
 
 	std::array< std::shared_ptr<SkillLauncher>, static_cast<int>(SupportSkillType::SUP_SKILL_MAX)> sup_skill_list;
 	std::array< std::shared_ptr<SkillLauncher>, static_cast<int>(AttackSkillType::ATK_SKILL_MAX)> atk_skill_list;

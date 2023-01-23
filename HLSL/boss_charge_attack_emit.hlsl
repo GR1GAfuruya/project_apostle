@@ -12,9 +12,10 @@ void main( uint3 DTid : SV_DispatchThreadID )
     particle p = particle_buffer[id];
     p.is_active = true;
 
-    p.position.x = emitter.pos.x + sin(id % 36)*3 ;
+    //â~èÛÇ…ï¿Ç◊ÇÈ
+    p.position.x = emitter.pos.x + sin(id)*3 ;
     p.position.y = emitter.pos.y;
-    p.position.z = emitter.pos.z + cos(id % 36)*3 ;
+    p.position.z = emitter.pos.z + cos(id)*3 ;
     
     p.velocity = sin(id % 16);
     p.velocity = CurlNoise(p);

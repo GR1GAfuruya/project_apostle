@@ -10,7 +10,7 @@ public:
 	// ç\ë¢ëÃÅAóÒãìå^
 	// 
 	//==============================================================
-	struct InitializeParam
+	struct PublicParam
 	{
 		AttackParam atk_param;
 		float acceleration;
@@ -21,7 +21,7 @@ public:
 	// publicä÷êî
 	// 
 	//=============================================================
-	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, InitializeParam initparam);
+	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, PublicParam initparam);
 	~MagicBullet();
 
 	void initialize(Graphics& graphics) ;

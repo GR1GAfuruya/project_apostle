@@ -29,7 +29,7 @@ public:
 
 private:
 	//スキルの初期パラメーター
-	MagicBullet::InitializeParam skill_init_param;
+	MagicBullet::PublicParam skill_init_param;
 	std::unique_ptr<MeshEffect> test_slash_hit;
 
 };

@@ -232,7 +232,6 @@ void BossAttackSkill1::debug_gui(const char* str_id)
 	{
 		meteo_wave[i]->debug_gui("skill1_wave" + to_string(i));
 	}
-	ImGui::DragFloat("charge_timer", &charge_time);
 #endif //  USE_IMGUI
 
 }

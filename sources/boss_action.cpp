@@ -81,7 +81,7 @@ void Boss::transition_skill_3_state()
 	model->play_animation(BossAnimation::SKILL_3, false);
 	//state = State::SKILL_3;
 	state = State::ATTACK;
-	attack_skill_1->chant(position, Math::get_posture_forward(orientation));
+	attack_skill_3->chant(position, Math::get_posture_forward(orientation));
 }
 
 
@@ -343,6 +343,7 @@ void Boss::select_attack_type_short()
 
 void Boss::select_attack_type_long()
 {
+
 	int random = std::abs(static_cast<int>(Noise::instance().get_rnd())) % static_cast<int>(ATTACK_TYPE::MAX_NUM);
 	//ƒ‰ƒ“ƒ_ƒ€‚ÅUŒ‚•û–@‚ğ‘I‘ğ
 	ATTACK_TYPE attack_type = static_cast<ATTACK_TYPE>(random);

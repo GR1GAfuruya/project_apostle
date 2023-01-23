@@ -379,7 +379,7 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 			//スキルを発動できた場合遷移
 			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, &forward))
 			{
-				transition_attack_bullet_state();//状態遷移
+				transition_attack_pull_slash_state();
 			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
@@ -389,8 +389,20 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 				{
 					transition_attack_ground_state();
 				}
-
 			}
+			break;
+		case ATK_SKILLTYPE::SLASH_WAVE:
+			if (skill_manager->chant_slash_wave(graphics, position, &forward))
+			{
+				transition_r_attack_spring_slash_state();
+			}
+			break;
+		case ATK_SKILLTYPE::LIGHTNING_RAIN:
+			if (skill_manager->chant_lightning_rain(graphics, position, camera->get_lock_on_target()))
+			{
+				transition_attack_bullet_state();//状態遷移
+			}
+
 			break;
 		default:
 			break;

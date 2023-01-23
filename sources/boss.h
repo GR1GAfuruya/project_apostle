@@ -292,6 +292,7 @@ public:
 	std::unique_ptr<SkeletalMesh> model;
 	std::unique_ptr<BossAttackSkill1> attack_skill_1;
 	std::unique_ptr<ChargeAttack> attack_skill_2;
+	std::unique_ptr<BossAttackSkill3> attack_skill_3;
 	std::unique_ptr<BossUi> ui;
 
 	//Š™˜r‚Ìƒ{[ƒ“

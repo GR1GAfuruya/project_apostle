@@ -28,13 +28,18 @@ SkillManager::SkillManager(Graphics& graphics)
 	//槍スキル
 	spear_sea = make_unique<SpearSeaLauncher>(graphics);
 
+	//斬撃波スキル
+	slash_wave = make_unique<SlashWaveLauncher>(graphics);
+	
+	//雷雨スキル
+	lightning_rain = make_unique<LightningRainLauncher>(graphics);
 	//初期スキル設定
 	selected_sup_skill = physical_up.get();
 	selected_atk_skill = magick_bullet.get();
 
 	//リストに追加
 	sup_skill_list = { physical_up, regenerate,restraint };
-	atk_skill_list = { magick_bullet, spear_sea };
+	atk_skill_list = { magick_bullet, spear_sea, slash_wave, lightning_rain };
 	//パラメーター初期化
 	initialize(graphics);
 	
@@ -279,6 +284,16 @@ bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* lau
 bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
 	return spear_sea->chant(graphics, launch_pos, target_pos);
+}
+
+bool SkillManager::chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* dir)
+{
+	return slash_wave->chant(graphics, launch_pos, dir);
+}
+
+bool SkillManager::chant_lightning_rain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
+{
+	return lightning_rain->chant(graphics, launch_pos, target_pos);
 }
 
 //==============================================================

@@ -44,8 +44,8 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_aura.fbx");
-	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_lightning.get());
 	 test_mesh_effect->set_init_scale(0.1f);
 	 test_mesh_effect->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 
@@ -65,12 +65,7 @@ void SceneGame::finalize()
 //==============================================================
 void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
-	static bool slow = false;
-	ImGui::Checkbox("slow", &slow);
-	if (slow)
-	{
-		elapsed_time *= 0.5f;
-	}
+	
 	//ゲームパッド
 	GamePad& gamepad = Device::instance().get_game_pad();
 	if (gamepad.get_button_down() & GamePad::BTN_BACK)

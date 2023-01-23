@@ -7,7 +7,7 @@
 //コンストラクタ
 // 
 //==============================================================
-MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, InitializeParam init_param)
+MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, PublicParam init_param)
 {
 	initialize(graphics);
 

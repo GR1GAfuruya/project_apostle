@@ -256,6 +256,12 @@
     <Filter Include="sources\Charactor\Boss\Attack\Meteorite">
       <UniqueIdentifier>{836e2453-5a26-443e-b6a1-1f6d2d898d41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Skill\LightningRain">
+      <UniqueIdentifier>{9c7982a9-ade6-4235-8bf6-3000ba86b5ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Skill\SlashWave">
+      <UniqueIdentifier>{4a040ebd-eccb-4756-b6dd-3d50768b2685}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -548,6 +554,18 @@
     </ClCompile>
     <ClCompile Include="sources\boss_attack_skill3.cpp">
       <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_lightning_rain.cpp">
+      <Filter>sources\Skill\LightningRain</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\lightning_rain_launcher.cpp">
+      <Filter>sources\Skill\LightningRain</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\slash_wave_launcher.cpp">
+      <Filter>sources\Skill\SlashWave</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\skill_slash_wave.cpp">
+      <Filter>sources\Skill\SlashWave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -868,6 +886,18 @@
     </ClInclude>
     <ClInclude Include="sources\scene_tutorial.h">
       <Filter>sources\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_lightning_rain.h">
+      <Filter>sources\Skill\LightningRain</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\lightning_rain_launcher.h">
+      <Filter>sources\Skill\LightningRain</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\skill_slash_wave.h">
+      <Filter>sources\Skill\SlashWave</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\slash_wave_launcher.h">
+      <Filter>sources\Skill\SlashWave</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

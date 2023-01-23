@@ -316,8 +316,6 @@ void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapse
 	{
 		transition_idle_state();
 	}
-	//速力処理更新
-	update_velocity(elapsed_time, position);
 
 }
 
@@ -328,8 +326,6 @@ void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_ti
 	{
 		transition_idle_state();
 	}
-	//速力処理更新
-	update_velocity(elapsed_time, position);
 
 }
 
@@ -486,7 +482,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 
 	}
 
-	if (model->anime_param.frame_index > 40 / 2)
+	if (model->anime_param.frame_index > 30 / 2)
 	{
 		if (model->is_end_animation())
 		{

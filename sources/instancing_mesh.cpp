@@ -7,7 +7,7 @@
 //==============================================================
 InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const int max_instance)
 {
-	model = ResourceManager::instance().load_model_resource(graphics.get_device().Get(), fbx_filename, true, 60.0f);
+	model = ResourceManager::instance().load_model_resource(graphics.get_device().Get(), fbx_filename);
 
 	used_instance_count = max_instance;
 	HRESULT hr = S_OK;

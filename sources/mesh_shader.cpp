@@ -110,10 +110,13 @@ void MeshShader::render(ID3D11DeviceContext* immediate_context, SkeletalMesh* mo
 
 void MeshShader::render(ID3D11DeviceContext* immediate_context, SkeletalMesh* model, DirectX::XMFLOAT4X4 camera_view, DirectX::XMFLOAT4X4 camara_proj, const DirectX::XMFLOAT4X4& world)
 {
+
+	DirectX::XMFLOAT3 world_bounding_box_min;
+	DirectX::XMFLOAT3 world_bounding_box_max;
+
 	for (ModelResource::mesh& mesh : model->get_resource()->get_meshes())
 	{
 
-		if (!Collision::frustum_vs_cuboid(camera_view, camara_proj, mesh.bounding_box[0], mesh.bounding_box[1])) continue;
 		uint32_t stride{ sizeof(ModelResource::vertex) };
 		uint32_t offset{ 0 };
 		immediate_context->IASetVertexBuffers(0, 1, mesh.vertex_buffer.GetAddressOf(), &stride, &offset);
@@ -129,6 +132,8 @@ void MeshShader::render(ID3D11DeviceContext* immediate_context, SkeletalMesh* mo
 			const size_t bone_count{ mesh.bind_pose.bones.size() };
 			_ASSERT_EXPR(bone_count < MAX_BONES, L"The value of the 'bone_count' has exceeded MAX_BONES.");
 
+			DirectX::XMVECTOR blended_min = {}, blended_max = {};
+
 			for (size_t bone_index = 0; bone_index < bone_count; ++bone_index)
 			{
 				const skeleton::bone& bone{ mesh.bind_pose.bones.at(bone_index) };
@@ -138,9 +143,25 @@ void MeshShader::render(ID3D11DeviceContext* immediate_context, SkeletalMesh* mo
 					XMLoadFloat4x4(&bone.offset_transform) *
 					XMLoadFloat4x4(&bone_node.global_transform) *
 					XMMatrixInverse(nullptr, XMLoadFloat4x4(&mesh.default_global_transform))
+
 				);
+				using namespace DirectX;
+				blended_min += (1.0f / bone_count)/*重み付け*/ * DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&mesh.bounding_box[0]),
+					XMLoadFloat4x4(&bone_constants->data.bone_transforms[bone_index]));
+
+				blended_max += (1.0f / bone_count)/*重み付け*/ * DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&mesh.bounding_box[1]),
+					XMLoadFloat4x4(&bone_constants->data.bone_transforms[bone_index]));
+
 			}
 			bone_constants->bind(immediate_context, 1, CB_FLAG::VS);
+
+			DirectX::XMVECTOR world_min = DirectX::XMVector3TransformCoord(blended_min, XMLoadFloat4x4(&object_constants->data.world));
+			DirectX::XMStoreFloat3(&world_bounding_box_min, world_min);
+
+			DirectX::XMVECTOR world_max = DirectX::XMVector3TransformCoord(blended_max, XMLoadFloat4x4(&object_constants->data.world));
+			DirectX::XMStoreFloat3(&world_bounding_box_max, world_max);
+
+
 		}
 		else
 		{
@@ -153,7 +174,22 @@ void MeshShader::render(ID3D11DeviceContext* immediate_context, SkeletalMesh* mo
 			}
 			bone_constants->bind(immediate_context, 1, CB_FLAG::VS);
 
+
+			DirectX::XMVECTOR world_min = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&mesh.bounding_box[0]),
+				XMLoadFloat4x4(&object_constants->data.world));
+			DirectX::XMStoreFloat3(&world_bounding_box_min, world_min);
+
+			DirectX::XMVECTOR world_max = DirectX::XMVector3TransformCoord(DirectX::XMLoadFloat3(&mesh.bounding_box[1]),
+				XMLoadFloat4x4(&object_constants->data.world));
+			DirectX::XMStoreFloat3(&world_bounding_box_max, world_max);
+
 		}
+
+		if (!Collision::frustum_vs_cuboid(camera_view, camara_proj, world_bounding_box_min, world_bounding_box_max))
+		{
+			continue;
+		}
+
 		object_constants->data.material_color = { 1.0f,1.0f, 1.0f, 1.0f };
 		object_constants->bind(immediate_context, 0, CB_FLAG::VS);
 		for (const ModelResource::mesh::subset& subset : mesh.subsets)
