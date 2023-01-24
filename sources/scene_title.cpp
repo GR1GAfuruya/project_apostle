@@ -27,11 +27,6 @@ void SceneTitle::update(float elapsedTime, Graphics& graphics)
 		SceneManager::instance().change_scene(graphics,new SceneLoading(new SceneGame(graphics)));
 	}
 
-	if (mouse.get_button() & mouse.BTN_M || game_pad.get_button() & game_pad.BTN_B)
-	{
-		SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTutorial(graphics)));
-	}
-
 }
 
 void SceneTitle::render(float elapsedTime,Graphics& graphics)

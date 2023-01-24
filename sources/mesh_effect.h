@@ -5,6 +5,7 @@
 #include "imgui_include.h"
 #include "user.h"
 #include "material_manager.h"
+#include "camera.h"
 class MeshEffect
 {
 	public:
@@ -62,7 +63,7 @@ public:
 	//XV
 	void update(Graphics& graphics, float elapsed_time);
 	//•`‰æ
-	void render(Graphics& graphics);
+	void render(Graphics& graphics,Camera* camera);
 
 	void debug_gui(string str_id);
 

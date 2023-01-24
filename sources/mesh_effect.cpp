@@ -82,7 +82,7 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 // 描画
 // 
 //==============================================================
-void MeshEffect::render(Graphics& graphics)
+void MeshEffect::render(Graphics& graphics,Camera* camera)
 {
 	//エフェクトがアクティブ状態の場合のみ描画
 	if (!active) return;
@@ -98,7 +98,7 @@ void MeshEffect::render(Graphics& graphics)
 	//トランスフォーム更新
 	transform = Math::calc_world_matrix(effect_param.scale, effect_param.orientation, effect_param.position);
 	//レンダー
-	shader->render(graphics.get_dc().Get(), model.get(), transform);
+	shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
 
 	
 }

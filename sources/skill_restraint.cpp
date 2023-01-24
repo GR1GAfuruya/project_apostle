@@ -23,7 +23,7 @@ void Restrain::update(Graphics& graphics, float elapsed_time)
 //•`‰æ
 // 
 //==============================================================
-void Restrain::render(Graphics& graphics)
+void Restrain::render(Graphics& graphics, Camera* camera)
 {
 }
 //==============================================================

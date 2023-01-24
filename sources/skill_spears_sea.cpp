@@ -19,7 +19,6 @@ SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::
 	position = launch_pos;
 	target_position = target_pos;
 	param = initparam;
-	atk_param = initparam.atk_param;
 	collision_type = CollisionType::SPHERE;
 	//õ–½‚ğİ’è
 	skill_duration = initparam.skill_duration;
@@ -141,7 +140,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 //•`‰æ
 // 
 //==============================================================
-void SpearsSea::render(Graphics& graphics)
+void SpearsSea::render(Graphics& graphics, Camera* camera)
 {
 	instance_mesh->render(graphics);
 }

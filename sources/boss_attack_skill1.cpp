@@ -210,13 +210,13 @@ void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_tim
 //•`‰æ
 // 
 //==============================================================
-void BossAttackSkill1::render(Graphics& graphics)
+void BossAttackSkill1::render(Graphics& graphics,Camera* camera)
 {
 	meteore_effect->render(graphics);
-	arm_effect->render(graphics);
+	arm_effect->render(graphics,camera);
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		meteo_wave[i]->render(graphics);
+		meteo_wave[i]->render(graphics, camera);
 	}
 }
 

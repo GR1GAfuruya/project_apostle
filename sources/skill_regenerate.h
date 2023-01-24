@@ -14,7 +14,7 @@ public:
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics)override;
+	void render(Graphics& graphics, Camera* camera)override;
 
 	bool is_skill_end() { return skill_end_flag; };
 

@@ -12,10 +12,9 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 	initialize(graphics);
 
 	//各初期化パラメーター設定
-	atk_param = init_param.atk_param;
 	acceleration = init_param.acceleration;
 	attack_colider.radius = init_param.collider_radius;
-	skill_duration = 3;
+	skill_duration = 1;
 	launch_pos.reset(init_pos);
 	target_dir.reset(dir);
 	launch_bullet = false;
@@ -23,6 +22,7 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 	{
 		main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
 		main_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		main_effect->set_init_scale(0.5f);
 		main_effect->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
 	}
 
@@ -85,7 +85,6 @@ MagicBullet::~MagicBullet()
 		 //アニメーションフレームが特定の値に達したら弾射出
 		 if (life_time > 0.8f)
 		 {
-			 main_effect->set_scale(0.5f);
 			 main_effect->play(*launch_pos);
 			 main_effect->rotate_base_axis(MeshEffect::AXIS::FORWARD, Math::Normalize(*target_dir));
 
@@ -153,18 +152,18 @@ MagicBullet::~MagicBullet()
 //描画
 // 
 //==============================================================
- void MagicBullet::render(Graphics& graphics)
+ void MagicBullet::render(Graphics& graphics, Camera* camera)
  {
 	 if (is_hit)
 	 {
-		 main_effect->render(graphics);
+		 main_effect->render(graphics, camera);
 	 }
 
 	 for (auto& l : lightning_effect)
 	 {
-		 l->render(graphics);
+		 l->render(graphics, camera);
 	 }
-	 lightning_disk_effect->render(graphics);
+	 lightning_disk_effect->render(graphics, camera);
 
 
  }

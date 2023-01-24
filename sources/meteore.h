@@ -34,7 +34,7 @@ public:
 
 	void initialize();
 	void update(Graphics& graphics, float elapsed_time);
-	void render(Graphics& graphics);
+	void render(Graphics& graphics, Camera* camera);
 	void debug_gui();
 	//ê∂ê¨
 	void create(DirectX::XMFLOAT3 position, int index) { params[index].position = position; }

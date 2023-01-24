@@ -12,7 +12,6 @@ public:
 	//==============================================================
 	struct PublicParam
 	{
-		AttackParam atk_param;
 		float acceleration;
 		float collider_radius;
 	};
@@ -26,7 +25,7 @@ public:
 
 	void initialize(Graphics& graphics) ;
 	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics)override;
+	void render(Graphics& graphics, Camera* camera)override;
 
 
 	void debug_gui(string str_id);

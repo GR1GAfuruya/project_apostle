@@ -200,21 +200,21 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
 //•`‰æ
 // 
 //==============================================================
-void ChargeAttack::render(Graphics& graphics)
+void ChargeAttack::render(Graphics& graphics, Camera* camera)
 {
 
 	if (active)
 	{
-		core->render(graphics);
+		core->render(graphics, camera);
 
-		tornado->render(graphics);
-		tornado_black->render(graphics);
-		wave->render(graphics);
-		omen_effect->render(graphics);
+		tornado->render(graphics, camera);
+		tornado_black->render(graphics, camera);
+		wave->render(graphics, camera);
+		omen_effect->render(graphics, camera);
 	}
 
 	//è¦Î•`‰æ
-	meteores->render(graphics);
+	meteores->render(graphics, camera);
 
 	particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
 

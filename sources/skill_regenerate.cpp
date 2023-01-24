@@ -76,7 +76,7 @@ void Regenerate::update(Graphics& graphics, float elapsed_time)
 //•`‰æ
 // 
 //==============================================================
-void Regenerate::render(Graphics& graphics)
+void Regenerate::render(Graphics& graphics, Camera* camera)
 {
 }
 //==============================================================

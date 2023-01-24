@@ -49,11 +49,11 @@ void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 //•`‰æ
 // 
 //==============================================================
-void SkillLauncher::render(Graphics& graphics)
+void SkillLauncher::render(Graphics& graphics, Camera* camera)
 {
 	for (auto& s : skills)
 	{
-		s->render(graphics);
+		s->render(graphics,camera);
 	}
 }
 //==============================================================

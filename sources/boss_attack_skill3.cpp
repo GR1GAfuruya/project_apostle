@@ -35,11 +35,11 @@ BossAttackSkill3::BossAttackSkill3(Graphics& graphics)
 
 	for (auto& m : meteo_wave)
 	{
-		m = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+		m = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
 		m->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		m->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 		m->set_init_life_duration(2.0f);
-		m->set_init_scale(0);
+		m->set_init_scale(2.0f);
 	}
 
 	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
@@ -193,16 +193,18 @@ void BossAttackSkill3::attack_state_update(Graphics& graphics, float elapsed_tim
 
 			//è¦Î‚Ì”j—ô‰‰o
 			{
-				params[i].scale = { 0,0,0 };
-				meteore_effect->set_scale(params[i].scale, i);
-
-				float add_scale = lerp(meteo_wave[i]->get_scale().x, 0.2f, 1.0f * elapsed_time);
-				add_scale = (std::min)(add_scale, 0.2f);
-				meteo_wave[i]->set_scale(add_scale);
-				DirectX::XMFLOAT3 wave_target_color = { 0,0,0 };
-				DirectX::XMFLOAT3 wave_now_color = { meteo_wave[i]->get_color().x,meteo_wave[i]->get_color().y,meteo_wave[i]->get_color().z };
-				DirectX::XMFLOAT3 wave_color = Math::lerp(wave_now_color, wave_target_color, 1.0f * elapsed_time);
-				meteo_wave[i]->set_color(DirectX::XMFLOAT4(wave_color.x, wave_color.y, wave_color.z, 0.5f));
+				{
+					const float add_scale_rate = 10.0f;
+					const float target_scale = 4.0f;
+					float add_scale = lerp(meteo_wave[i]->get_scale().x, target_scale, add_scale_rate * elapsed_time);
+					meteo_wave[i]->set_scale(add_scale);
+				}
+				{
+					DirectX::XMFLOAT3 wave_target_color = { 0,0,0 };
+					DirectX::XMFLOAT3 wave_now_color = { meteo_wave[i]->get_color().x,meteo_wave[i]->get_color().y,meteo_wave[i]->get_color().z };
+					DirectX::XMFLOAT3 wave_color = Math::lerp(wave_now_color, wave_target_color, 1.0f * elapsed_time);
+					meteo_wave[i]->set_color(DirectX::XMFLOAT4(wave_color.x, wave_color.y, wave_color.z, 0.5f));
+				}
 			}
 		}
 		meteo_wave[i]->update(graphics, elapsed_time);
@@ -217,13 +219,13 @@ void BossAttackSkill3::attack_state_update(Graphics& graphics, float elapsed_tim
 //•`‰æ
 // 
 //==============================================================
-void BossAttackSkill3::render(Graphics& graphics)
+void BossAttackSkill3::render(Graphics& graphics, Camera* camera)
 {
 	meteore_effect->render(graphics);
-	arm_effect->render(graphics);
+	arm_effect->render(graphics, camera);
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		meteo_wave[i]->render(graphics);
+		meteo_wave[i]->render(graphics, camera);
 	}
 }
 
@@ -249,6 +251,7 @@ void BossAttackSkill3::calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::
 	{
 		if (!params[i].is_hit)
 		{
+
 			if (Collision::sphere_vs_capsule(params[i].colider_sphere.center, params[i].colider_sphere.radius,
 				capsule_start, capsule_end, colider_radius))
 			{

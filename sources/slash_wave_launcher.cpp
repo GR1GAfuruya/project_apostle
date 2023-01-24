@@ -23,16 +23,16 @@ void SlashWaveLauncher::skill_object_hit_judgment(Capsule object_colider, AddDam
 {
 	for (auto& s : skills)
 	{
-		if (Collision::sphere_vs_capsule(s->get_colider().start, s->get_colider().radius,
+		if (Collision::sphere_vs_capsule(s->get_colider().start ,s->get_colider().radius,
 			object_colider.start, object_colider.end, object_colider.radius))
 		{
 			//スキルがヒット
 			s->skill_hit();
 			s->set_is_skill_hit(true);
 			//カメラシェイク
-			camera->set_camera_shake(s->get_atk_param().camera_shake);
+			camera->set_camera_shake(atk_param.camera_shake);
 			//ダメージを与える
-			damaged_func(s->get_atk_param().power, s->get_atk_param().invinsible_time, WINCE_TYPE::NONE);
+			damaged_func(atk_param.power, atk_param.invinsible_time, WINCE_TYPE::NONE);
 		}
 	}
 }

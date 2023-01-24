@@ -17,7 +17,7 @@ void SlashWave::update(Graphics& graphics, float elapsed_time)
 {
 }
 
-void SlashWave::render(Graphics& graphics)
+void SlashWave::render(Graphics& graphics, Camera* camera)
 {
 }
 

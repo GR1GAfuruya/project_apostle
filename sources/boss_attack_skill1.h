@@ -35,7 +35,7 @@ public:
 	//更新
 	void update(Graphics& graphics, float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir);
 	//描画
-	void render(Graphics& graphics);
+	void render(Graphics& graphics, Camera* camera);
 	//デバッグGUI
 	void debug_gui(const char* str_id);
 

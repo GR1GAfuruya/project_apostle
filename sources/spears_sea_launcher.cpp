@@ -60,9 +60,9 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 			s->skill_hit();
 			s->set_is_skill_hit(true);
 			//カメラシェイク
-			camera->set_camera_shake(s->get_atk_param().camera_shake);
+			camera->set_camera_shake(atk_param.camera_shake);
 			//ダメージを与える
-			damaged_func(s->get_atk_param().power, s->get_atk_param().invinsible_time, WINCE_TYPE::NONE);
+			damaged_func(atk_param.power, atk_param.invinsible_time, WINCE_TYPE::NONE);
 		}
 	}
 }

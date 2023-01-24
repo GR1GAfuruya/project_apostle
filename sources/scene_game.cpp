@@ -145,10 +145,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 //	stageManager.shadow_render(graphics,elapsed_time);
 
 	//プレイヤー描画
-	player->render_d(graphics, elapsed_time, camera.get());
+	player->render_s(graphics, elapsed_time, camera.get());
 
 	//ボス描画
-	boss->render_d(graphics, elapsed_time);
+	boss->render_s(graphics, elapsed_time, camera.get());
 
 	deferred->shadow_deactive(graphics);
 #endif
@@ -167,7 +167,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_d(graphics,elapsed_time,camera.get());
 
 	//ボス描画
-	boss->render_d(graphics,elapsed_time);
+	boss->render_d(graphics,elapsed_time, camera.get());
 
 
 	//ここで各種ライティング（環境光、平行光、点光源）
@@ -191,7 +191,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	//スカイボックス
 	//skybox->render(graphics);
 	//ボス（フォワード）
-	boss->render_f(graphics, elapsed_time);
+	boss->render_f(graphics, elapsed_time, camera.get());
 	//プレイヤー（フォワード）
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
@@ -205,7 +205,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	static DirectX::XMFLOAT4 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };
-	test_mesh_effect->render(graphics);
+	test_mesh_effect->render(graphics,camera.get());
 	test_mesh_effect->debug_gui("test_effect");
 	test_mesh_effect->set_position(test_effect_pos);
 	test_mesh_effect->set_scale(test_effect_scale);

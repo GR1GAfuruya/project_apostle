@@ -35,11 +35,9 @@ public:
 	//更新
 	void update(Graphics& graphics, float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir);
 	//描画
-	void render(Graphics& graphics);
+	void render(Graphics& graphics, Camera* camera);
 	//デバッグGUI
 	void debug_gui(const char* str_id);
-
-
 
 	//当たり判定
 	void calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFLOAT3 capsule_end, float colider_radius, AddDamageFunc damaged_func);

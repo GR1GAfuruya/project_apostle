@@ -12,7 +12,6 @@ public:
 	//==============================================================
 	struct PublicParam
 	{
-		AttackParam atk_param;
 		//ê∂ë∂éûä‘
 		float skill_duration;
 		//îºåa
@@ -39,7 +38,7 @@ public:
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics)override;
+	void render(Graphics& graphics, Camera* camera)override;
 
 	void debug_gui(string str_id);
 private:

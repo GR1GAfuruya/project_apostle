@@ -100,7 +100,7 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 //描画処理（ディファード）
 // 
 //==============================================================
-void Boss::render_d(Graphics& graphics, float elapsed_time)
+void Boss::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 #if _DEBUG
 	if (!is_render) return;
@@ -114,13 +114,23 @@ void Boss::render_d(Graphics& graphics, float elapsed_time)
 //描画処理（フォワード）
 // 
 //==============================================================
-void Boss::render_f(Graphics& graphics, float elapsed_time)
+void Boss::render_f(Graphics& graphics, float elapsed_time,Camera* camera)
 {
-	attack_skill_1->render(graphics);
-	attack_skill_2->render(graphics);
-	attack_skill_3->render(graphics);
+	attack_skill_1->render(graphics, camera);
+	attack_skill_2->render(graphics, camera);
+	attack_skill_3->render(graphics, camera);
 	debug_gui();
 	
+}
+//==============================================================
+// 
+//描画処理（シャドウ）
+// 
+//==============================================================
+void Boss::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
+{
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+
 }
 //==============================================================
 // 
@@ -202,21 +212,6 @@ void Boss::debug_gui()
 
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
 		{
-			static int num = 0;
-			ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size() - 1);
-			int mesh_size = model.get()->model_resource.get()->get_meshes().size();
-			ImGui::DragInt("mesh_size", &mesh_size);
-			DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0];
-			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
-			ImGui::DragFloat3("bounding_min", &min.x);
-			ImGui::DragFloat3("bounding_max", &max.x);
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				if (ImGui::Button("normal")) transition_normal_attack_state();
-				if (ImGui::Button("skill_1")) transition_skill_1_state();
-				if (ImGui::Button("skill_2")) transition_skill_2_start_state();
-				if (ImGui::Button("skill_3")) transition_skill_3_state();
-			}
 #if _DEBUG
 			ImGui::Checkbox("is_update", &is_update);
 			ImGui::Separator();

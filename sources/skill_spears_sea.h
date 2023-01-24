@@ -39,7 +39,7 @@ public:
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics)override;
+	void render(Graphics& graphics, Camera* camera)override;
 
 	void spear_emit(int index_offset,int emit_max_num, float size);
 	void debug_gui(string str_id);

@@ -50,7 +50,7 @@ public:
 	//更新
 	void update(Graphics& graphics, float elapsed_time);
 	//描画
-	void render(Graphics& graphics);
+	void render(Graphics& graphics, Camera* camera);
 
 	//UI描画
 	void ui_render(Graphics& graphics, float elapsed_time);
@@ -83,6 +83,8 @@ public:
 	void judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//SpearSea
 	void judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
+	void judge_slash_wave_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
+	void judge_lightning_rain_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//スキルセレクト中かどうか
 	bool is_selecting_skill() {
 		if (is_selecting_support_skill) return true;

@@ -30,7 +30,7 @@ public:
 	//更新
 	virtual void update(Graphics& graphics, float elapsed_time);
 	//描画
-	virtual void render(Graphics& graphics);
+	virtual void render(Graphics& graphics, Camera* camera);
 	//スキルクールタイム短縮
 	void cool_time_reduction();
 	//DebugGUI表示

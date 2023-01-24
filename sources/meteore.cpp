@@ -119,14 +119,14 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 //描画処理（ディファード）
 // 
 //==============================================================
-void Meteore::render(Graphics& graphics)
+void Meteore::render(Graphics& graphics, Camera* camera)
 {
 	main_effect->render(graphics);
 	for (auto& m : meteo_wave)
 	{
 		if (m->get_active())
 		{
-			m-> render(graphics);
+			m-> render(graphics,camera);
 		}
 	}
 }

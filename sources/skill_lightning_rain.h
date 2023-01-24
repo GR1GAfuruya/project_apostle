@@ -12,21 +12,14 @@ public:
 	//==============================================================
 	struct PublicParam
 	{
-		AttackParam atk_param;
 		//¶‘¶ŠÔ
 		float skill_duration;
 		//”¼Œa
 		float radius;
 		//“–‚½‚è”»’è‚Ì”¼Œa
 		float collider_radius;
-		//‘„‚Ì’·‚³
-		float spear_length;
-		//’·‚³‚ÌL‚Ñ—¦
-		float spear_length_rate;
-		//ƒ^[ƒQƒbƒg‚ÉŒü‚©‚¤ƒXƒs[ƒh
-		float speed;
-		//’Ç]‚·‚éŠÔ
-		float follow_time;
+		//—‹‚Ì’·‚³
+		float lightning_length;
 
 	};
 	//==============================================================
@@ -39,7 +32,7 @@ public:
 
 	void initialize(Graphics& graphics) override;
 	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics)override;
+	void render(Graphics& graphics, Camera* camera)override;
 
 	void lightning_emit(int index_offset, int emit_max_num, float size);
 	void debug_gui(string str_id);

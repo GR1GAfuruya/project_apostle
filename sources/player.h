@@ -26,6 +26,8 @@ public:
 	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
+	//シャドウレンダリングするオブジェクト
+	void render_s(Graphics& graphics, float elapsed_time, Camera* camera);
 	//UI描画
 	void render_ui(Graphics& graphics, float elapsed_time);
 	//デバッグ用GUI描画
@@ -237,7 +239,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> slash_hit_emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> slash_hit_update_cs;
 	std::unique_ptr<MeshEffect> slash_efects[3];
-	std::unique_ptr<MeshEffect> test_slash_hit;
+	std::unique_ptr<MeshEffect> slash_hit_line;
 	//スキルマネージャー
 	std::unique_ptr <SkillManager> skill_manager;
 	//剣

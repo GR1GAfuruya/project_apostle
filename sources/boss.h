@@ -121,9 +121,12 @@ public:
 
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
-	void render_d(Graphics& graphics, float elapsed_time);
+	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
-	void render_f(Graphics& graphics, float elapsed_time);
+	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
+	//シャドウレンダリングするオブジェクト
+	void render_s(Graphics& graphics, float elapsed_time, Camera* camera);
+	//UIの描画
 	void render_ui(Graphics& graphics, float elapsed_time);
 
 	//デバッグ用GUI描画

@@ -189,17 +189,17 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 //描画処理
 // 
 //==============================================================
-void SkillManager::render(Graphics& graphics)
+void SkillManager::render(Graphics& graphics, Camera* camera)
 {
 	//スキルの描画
 	{
 		for (auto& s : sup_skill_list)
 		{
-			s->render(graphics);
+			s->render(graphics, camera);
 		}
 		for (auto& s : atk_skill_list)
 		{
-			s->render(graphics);
+			s->render(graphics, camera);
 		}
 	}
 }
@@ -332,6 +332,16 @@ void SkillManager::judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFun
 	spear_sea->skill_object_hit_judgment(object_colider, damaged_func, camera);
 }
 
+void SkillManager::judge_slash_wave_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
+{
+	slash_wave->skill_object_hit_judgment(object_colider, damaged_func, camera);
+}
+
+void SkillManager::judge_lightning_rain_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
+{
+	lightning_rain->skill_object_hit_judgment(object_colider, damaged_func, camera);
+}
+
 //==============================================================
 // 
 //サポートスキルを使用枠にセット
@@ -459,6 +469,8 @@ void SkillManager::debug_gui(Graphics& graphics)
 	magick_bullet->debug_gui();
 	//槍スキル
 	spear_sea->debug_gui();
+	slash_wave->debug_gui();
+	lightning_rain->debug_gui();
 	
 
 	//UIdebugGUI
