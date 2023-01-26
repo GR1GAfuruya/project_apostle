@@ -31,7 +31,7 @@ public:
 	//UI描画
 	void render_ui(Graphics& graphics, float elapsed_time);
 	//デバッグ用GUI描画
-	void debug_gui(Graphics& graphics);
+	void debug_gui(Graphics& graphics, Camera* camera);
 	//プレイヤーの腰当たりの位置
 	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + chara_param.height / 2, position.z); }
 	//カメラがプレイヤーを見るときに注視するポイント

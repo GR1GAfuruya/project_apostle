@@ -200,7 +200,7 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 	skill_manager.get()->render(graphics,camera);
 	slash_hit_particle->debug_gui("slash_hit");
 	//デバッグGUI描画
-	debug_gui(graphics);
+	debug_gui(graphics,camera);
 
 }
 //==============================================================
@@ -606,27 +606,30 @@ void Player::save_data_file()
 //デバッグGUI表示
 // 
 //==============================================================
-void Player::debug_gui(Graphics& graphics)
+void Player::debug_gui(Graphics& graphics, Camera* camera)
 {
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
 	imgui_menu_bar("Charactor", "player", display_player_imgui);
 
-	ImGui::Begin("slash_hit");
-	if (ImGui::Button("slash_emit"))
-	{
-		
-		slash_hit_particle.get()->launch_emitter(slash_hit_emit_cs.Get());
-	}
-
-	ImGui::End();
 
 	if (display_player_imgui)
 	{
 		
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
+			//ヒットエフェクト
+			ImGui::Begin("slash_hit");
+			if (ImGui::Button("slash_emit"))
+			{
+
+				slash_hit_particle.get()->launch_emitter(slash_hit_emit_cs.Get());
+			}
+			ImGui::End();
+
+
+			//カメラ
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{

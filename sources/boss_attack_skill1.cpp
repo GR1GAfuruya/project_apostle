@@ -7,14 +7,6 @@
 //==============================================================
 BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 {
-	acceleration = 15.0f;
-	friction = 0.0f;
-	max_move_speed = 40.0f;
-
-	at_param.power = 100;
-	at_param.invinsible_time = 2.0f;
-
-	range = 10;
 	const DirectX::XMFLOAT4 FIRE_COLOR = { 4.0f, 1.0f, 0.7f, 0.8f };
 	meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
 	meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
@@ -52,6 +44,14 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 		meteore_effect->set_position({ 0,0,0 }, i);
 		params[i].colider_sphere.radius = params[i].scale.x;
 	}
+	//TODO:メテオの速度などのパラメーター　※のちにJSON化！！！
+	acceleration = 15.0f;
+	friction = 0.0f;
+	max_move_speed = 40.0f;
+	at_param.power = 100;
+	at_param.invinsible_time = 2.0f;
+	range = 10;
+
 
 	const float CHARGE_TIME = 2.0f;
 	charge_time = CHARGE_TIME;
@@ -84,7 +84,6 @@ void BossAttackSkill1::chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir)
 
 		move(skill_dir[i].x, skill_dir[i].z, 50, i);
 		
-		params[i].position = pos;
 		params[i].is_calc_velocity = true;
 		params[i].is_hit = false;
 		meteore_effect->set_scale(0, i);
@@ -137,9 +136,17 @@ void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_tim
 	charge_timer += elapsed_time;
 	if (charge_timer > charge_time)
 	{
+		//更新関数を攻撃に
 		state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
 			->void {return attack_state_update(graphics, elapsed_time, camera); };
+		//メテオの位置設定
+		for (int i = 0; i < MAX_NUM; i++)
+		{
+			params[i].position = arm_pos;
+		}
+		//腕エフェクトストップ
 		arm_effect->stop();
+		//タイマーリセット
 		charge_timer = 0;
 	}
 

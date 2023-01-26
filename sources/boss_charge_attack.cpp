@@ -56,7 +56,8 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	}
 	//メテオ
 	{
-		meteores = std::make_unique<Meteore>(graphics, 12);
+		const int METEORE_MAX_NUM = 12;
+		meteores = std::make_unique<Meteore>(graphics, METEORE_MAX_NUM);
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 		meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
@@ -145,7 +146,7 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 			const int range = 20;
 			const float ofset = meteo_launch_radius;
 			const float random = fabs(Noise::instance().random_range(ofset, range));
-			meteores->create_on_circle(position, random, i);
+			meteores->create_on_circle(core->get_position(), random, i);
 		}
 	}
 	//コリジョン初期化

@@ -217,6 +217,22 @@ void Boss::debug_gui()
 			ImGui::Separator();
 			ImGui::Checkbox("is_render", &is_render);
 #endif
+			if (ImGui::CollapsingHeader("Skill", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				if (ImGui::Button("skill_1"))
+				{
+					transition_skill_1_state();
+				}
+				if (ImGui::Button("skill_2"))
+				{
+					transition_skill_2_start_state();
+				}
+				if (ImGui::Button("skill_3"))
+				{
+					transition_skill_3_state();
+				}
+
+			}
 			if (ImGui::Button("load"))
 			{
 				load_data_file();
@@ -238,8 +254,6 @@ void Boss::debug_gui()
 			}
 			ImGui::DragInt("hp", &health);
 			ImGui::DragFloat("height", &chara_param.height);
-			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
-			ImGui::DragFloat("RUN_SPEED", &RUN_SPEED);
 			ImGui::DragFloat("turnspeed", &chara_param.turn_speed,0.1f);
 			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius,0.1f);
 			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height,0.1f);

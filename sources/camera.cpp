@@ -95,6 +95,8 @@ void Camera::update(float elapsed_time)
 		XMMATRIX projection_mat = XMMatrixPerspectiveFovLH(XMConvertToRadians(cape_vision), aspect_ratio, near_far.x, near_far.y); // P
 		XMStoreFloat4x4(&projection, projection_mat);
 	}
+
+	//ロックオン時の挙動
 	if (lock_on)
 	{
 		//ロックオン時のカメラの挙動
@@ -339,6 +341,12 @@ void Camera::debug_gui()
 				set_camera_shake(debug_param);
 			}
 		}
+		if (ImGui::CollapsingHeader("LockOn"))
+		{
+			ImGui::Checkbox("lock_on", &lock_on);
+			ImGui::DragFloat3("lockon_target", &lock_on_target.x);
+		}
+
 
 		if (ImGui::CollapsingHeader("Update"))
 		{

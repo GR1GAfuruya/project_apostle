@@ -15,11 +15,11 @@ Texture2D<float4> albedo_map : register(t0);
 // 法線マップ
 Texture2D<float4> normal_map : register(t1);
 
-// メタリックスムースマップ。rにメタリック、aにスムース
+// メタリックマップ
 Texture2D<float4> metallic_map : register(t2);
-
+//スムースマップ
 Texture2D<float4> smooth_map : register(t3);
-
+//AOマップ
 Texture2D<float4> ambient_oclusion_map : register(t4);
 
 Texture2D<float4> emissives_map : register(t5);

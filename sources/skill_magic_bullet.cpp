@@ -30,7 +30,7 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 		lightning_disk_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/disk.fbx");
 		lightning_disk_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		lightning_disk_effect->set_init_scale(1.0f);
-		lightning_disk_effect->set_init_life_duration(1.0f);
+		lightning_disk_effect->set_init_life_duration(0.5f);
 		lightning_disk_effect->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
 	}
 
