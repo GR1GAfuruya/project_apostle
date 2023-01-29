@@ -245,11 +245,11 @@ void Boss::debug_gui()
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-
 				//位置
 				ImGui::DragFloat3("Position", &position.x);
 				//回転				
 				ImGui::DragFloat3("scale:", &scale.x);
+				//速度
 				ImGui::DragFloat3("velocity:", &velocity.x);
 			}
 			ImGui::DragInt("hp", &health);

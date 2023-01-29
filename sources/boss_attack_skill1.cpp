@@ -8,16 +8,22 @@
 BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 {
 	const DirectX::XMFLOAT4 FIRE_COLOR = { 4.0f, 1.0f, 0.7f, 0.8f };
-	meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
-	meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
-	meteore_effect->constants->data.particle_color = FIRE_COLOR;
 
-	arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
-	arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	arm_effect->set_init_color(FIRE_COLOR);
-	arm_effect->set_init_scale(0);
-	arm_effect->set_init_life_duration(0.5f);
-
+	//メインの射出する隕石の初期化
+	{
+		meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
+		meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
+		meteore_effect->constants->data.particle_color = FIRE_COLOR;
+	}
+	//腕のエフェクト
+	{
+		arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		arm_effect->set_init_color(FIRE_COLOR);
+		arm_effect->set_init_scale(0);
+		arm_effect->set_init_life_duration(0.5f);
+	}
+	//爆発後の余韻エフェクト
 	for (auto& m : meteo_wave)
 	{
 		m = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
@@ -27,6 +33,7 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 		m->set_init_scale(0);
 	}
 
+	//更新関数初期化
 	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
 		->void {return attack_state_update(graphics, elapsed_time, camera); };
 
@@ -44,6 +51,14 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 		meteore_effect->set_position({ 0,0,0 }, i);
 		params[i].colider_sphere.radius = params[i].scale.x;
 	}
+	//カメラシェイク
+	{
+		camera_shake.max_x_shake = 5.0f;
+		camera_shake.max_y_shake = 10.0f;
+		camera_shake.time = 0.5f;
+
+	}
+
 	//TODO:メテオの速度などのパラメーター　※のちにJSON化！！！
 	acceleration = 15.0f;
 	friction = 0.0f;
@@ -144,6 +159,8 @@ void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_tim
 		{
 			params[i].position = arm_pos;
 		}
+		//カメラシェイク
+		camera->set_camera_shake(camera_shake);
 		//腕エフェクトストップ
 		arm_effect->stop();
 		//タイマーリセット

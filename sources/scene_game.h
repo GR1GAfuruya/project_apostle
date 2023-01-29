@@ -21,12 +21,19 @@ class SceneGame :public Scene, public GenericFrequentEntities
 public:
 	SceneGame(Graphics& graphics);
 	~SceneGame()override {}
-
+	//シーン初期化
 	void initialize(Graphics& graphics) override;
+	//シーン終了処理
 	void finalize() override;
+	//シーンアップデート
 	void update(float elapsedTime, Graphics& graphics) override;
+	//シーン描画
 	void render(float elapsedTime, Graphics& graphics) override;
+	//クリ時の更新
+	void clear_update(float elapsedTime, Graphics& graphics);
+	//デバッグ描画
 	void debug_gui();
+	//シーンリセット
 	void scene_reset();
 private:
 	//カメラ

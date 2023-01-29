@@ -41,7 +41,7 @@ public:
 	void create_on_circle(DirectX::XMFLOAT3 center, float radius, int index);
 
 	//�㏸
-	void rising(float elapsed_time,DirectX::XMFLOAT3 target_position, float target_scale, float rise_speed,int index);
+	void gradual_expansion(float elapsed_time, float target_scale, float scale_speed,int index);
 
 	//�ʂɎˏo
 	void launch(DirectX::XMFLOAT3 init_vec, float speed,int index);

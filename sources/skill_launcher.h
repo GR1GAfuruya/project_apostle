@@ -22,7 +22,7 @@ public:
 	SkillLauncher() :
 		cool_time(0.0f),
 		chantable(false),
-		reduction_rate(1.0f) {};
+		reduction_rate(0.1f) {};
 	virtual ~SkillLauncher() {}
 
 	//‰Šú‰»

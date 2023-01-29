@@ -89,4 +89,8 @@ private:
 	float charge_time;
 	static const int MAX_NUM = 3;
 	AttackParam at_param;
+
+	//チャージ時のカメラシェイク
+	Camera::CameraShakeParam camera_shake = {};
+
 };

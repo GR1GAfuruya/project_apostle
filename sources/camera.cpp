@@ -3,6 +3,11 @@
 #include "imgui_include.h"
 #include "Operators.h"
 #include "stage_manager.h"
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
 Camera::Camera(Graphics& graphics)
 	: range(20.0f)
 	, eye(5, 5, 5)
@@ -58,12 +63,34 @@ Camera::Camera(Graphics& graphics)
 	}
 	post_effect = std::make_shared<PostEffects>(graphics.get_device().Get());
 }
-
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
 void Camera::update(float elapsed_time)
 {
 	using namespace DirectX;
 	// 任意のアップデートを実行
 	(this->*p_update)(elapsed_time);
+
+	//ロックオン時の挙動
+	if (lock_on)
+	{
+		//ロックオン時のカメラの挙動
+		update_with_lock_on(elapsed_time);
+	}
+	else
+	{
+		//ロックオンじゃないときは０に（前の値が残ってカメラシェイクの挙動バグる）
+		lock_on_angle = 0;
+		//ロックオンしていないときのカメラの挙動
+		if (!camera_operate_stop)
+		{
+			control_by_game_pad_stick(elapsed_time);
+		}
+	}
+
 
 	//カメラのパラメータ設定(全アップデート共通)
 	{
@@ -96,36 +123,14 @@ void Camera::update(float elapsed_time)
 		XMStoreFloat4x4(&projection, projection_mat);
 	}
 
-	//ロックオン時の挙動
-	if (lock_on)
-	{
-		//ロックオン時のカメラの挙動
-		update_with_lock_on(elapsed_time);
-	}
-	else
-	{
-		//ロックオンしていないときのカメラの挙動
-		if (!camera_operate_stop)
-		{
-			control_by_game_pad_stick(elapsed_time);
-		}
-	}
-	//カメラストップのタイマーの更新
-	{
-		if (camera_stop_timer > 0.0f)
-		{
-			camera_stop_timer -= elapsed_time;
-		}
-		else
-		{
-			//タイマーが切れたらcamera_stopをオフに
-			camera_stop = false;
-		}
-	}
 }
 
 
-
+//==============================================================
+// 
+//追従更新
+// 
+//==============================================================
 void Camera::update_with_tracking(float elapsed_time)
 {
 	
@@ -158,7 +163,11 @@ void Camera::update_with_tracking(float elapsed_time)
 	pos.z = trakking_target.z - forward.z * hit.distance;
 	eye = Math::lerp(eye, pos, attend_rate * elapsed_time);
 }
-
+//==============================================================
+// 
+//ロックオン更新
+// 
+//==============================================================
 void Camera::update_with_lock_on(float elapsed_time)
 {
 	// XMVECTORクラスへ変換
@@ -168,11 +177,10 @@ void Camera::update_with_lock_on(float elapsed_time)
 	DirectX::XMVECTOR Forward = Math::get_posture_forward_vec(orientation);
 	DirectX::XMVECTOR Up = { 0.0f,1.0f,0.0f };
 	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-	// 回転角
-	float ang;
+
 	DirectX::XMVECTOR dot = DirectX::XMVector3Dot(Forward, TargeVecNorm);
-	DirectX::XMStoreFloat(&ang, dot);
-	ang = acosf(ang);
+	DirectX::XMStoreFloat(&lock_on_angle, dot);
+	lock_on_angle = acosf(lock_on_angle);
 
 	DirectX::XMFLOAT3 forward{};//forwardの値をfloat3に
 	DirectX::XMFLOAT3 up{};//forwardの値をfloat3に
@@ -187,14 +195,14 @@ void Camera::update_with_lock_on(float elapsed_time)
 		DirectX::XMVECTOR axis = Up;
 		//回転角度がこの値を超えたときのみ計算
 		const float extrapolated_angle = 5.0f;
-		if (fabs(ang) > DirectX::XMConvertToRadians(extrapolated_angle))
+		if (fabs(lock_on_angle) > DirectX::XMConvertToRadians(extrapolated_angle))
 		{
 			float cross{ forward.x * d_vec.z - forward.z * d_vec.x };
 			//クオータニオンは回転の仕方(どの向きに)
 			if (cross < 0.0f)
 			{
 				//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
-				DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, ang);
+				DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, lock_on_angle);
 				//矢印を徐々に目標座標に向ける
 				DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
 				orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate * elapsed_time);
@@ -202,7 +210,7 @@ void Camera::update_with_lock_on(float elapsed_time)
 			else
 			{
 				//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
-				DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, -ang);
+				DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, -lock_on_angle);
 				//矢印を徐々に目標座標に向ける
 				DirectX::XMVECTOR  q2 = DirectX::XMQuaternionMultiply(orientationVec, q);
 				orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate * elapsed_time);
@@ -214,7 +222,11 @@ void Camera::update_with_lock_on(float elapsed_time)
 	// orientationVecからorientationを更新
 	XMStoreFloat4(&orientation, orientationVec);
 }
-
+//==============================================================
+// 
+//パッドによるカメラ操作
+// 
+//==============================================================
 void Camera::control_by_game_pad_stick(float elapsed_time)
 {
 	GamePad& game_pad = Device::instance().get_game_pad();
@@ -294,7 +306,97 @@ void Camera::control_by_game_pad_stick(float elapsed_time)
 	XMStoreFloat4(&orientation, orientationVec);
 }
 
+//==============================================================
+// 
+//カメラシェイク
+// 
+//==============================================================
+void Camera::camera_shake_update(float elapsed_time)
+{
+	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
+	DirectX::XMVECTOR standard_orientationVec = DirectX::XMLoadFloat4(&standard_orientation);
 
+
+	//カメラシェイク効果中でありプレイヤーやロックオンなどのによるカメラへの力が加わっていない場合のみ揺らす
+	if (is_camera_shake && fabs(angle.x) <= 0 && fabs(angle.y) <= 0 && fabs(lock_on_angle) <= 0 )
+	{
+		//時間更新
+		camera_shake_param.time -= elapsed_time;
+
+		if (camera_shake_param.time < 0.0f)
+		{
+			is_camera_shake = false;
+			camera_shake_param.time = 0.0f;
+			XMStoreFloat4(&orientation, standard_orientationVec);
+			return;
+		}
+
+		//揺らす処理
+		{
+			DirectX::XMVECTOR forward = Math::get_posture_forward_vec(standard_orientation);
+			DirectX::XMVECTOR up = { 0,1,0 };
+			DirectX::XMVECTOR right = Math::get_posture_right_vec(standard_orientation);
+
+			//縦回転
+			if (camera_shake_param.max_y_shake > 0)
+			{
+				//任意の揺れ幅の最大値最小値の間でのランダム生成
+				float shake = Noise::instance().random_range(-camera_shake_param.max_y_shake, camera_shake_param.max_y_shake);
+				shake = DirectX::XMConvertToRadians(shake);
+				{
+					//回転軸
+					DirectX::XMVECTOR axis = right;
+
+					if (fabs(shake) > DirectX::XMConvertToRadians(0.01f))
+					{
+						//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
+						DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, shake);
+
+						standard_orientationVec = DirectX::XMQuaternionMultiply(standard_orientationVec, q);
+					}
+
+				}
+			}
+
+			//横揺れ
+			if (camera_shake_param.max_x_shake > 0)
+			{
+				//任意の揺れ幅の最大値最小値の間でのランダム生成
+				float shake = Noise::instance().random_range(-camera_shake_param.max_x_shake, camera_shake_param.max_x_shake);
+				shake = DirectX::XMConvertToRadians(shake);
+				{
+					//回転軸
+					DirectX::XMVECTOR axis = up;
+
+					if (fabs(shake) > DirectX::XMConvertToRadians(0.01f))
+					{
+						//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
+						DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, shake);
+
+						standard_orientationVec = DirectX::XMQuaternionMultiply(standard_orientationVec, q);
+					}
+				}
+			}
+		}
+		orientationVec = DirectX::XMQuaternionSlerp(orientationVec, standard_orientationVec, camera_shake_param.shake_smoothness);
+		// orientationVecからorientationを更新
+		XMStoreFloat4(&orientation, orientationVec);
+
+		//XMStoreFloat4(&standard_orientation, orientationVec);
+
+	}
+	else
+	{
+		//揺れがない間は基準値
+		XMStoreFloat4(&standard_orientation, orientationVec);
+	}
+
+}
+//==============================================================
+// 
+//ビュープロジェクションの計算
+// 
+//==============================================================
 void Camera::calc_view_projection(Graphics& graphics, float elapsed_time)
 {
 	// ビュー行列/プロジェクション行列を作成
@@ -315,7 +417,11 @@ void Camera::calc_view_projection(Graphics& graphics, float elapsed_time)
 	scene_constant_buffer->bind(graphics.get_dc().Get(), 3,CB_FLAG::ALL);
 	
 }
-
+//==============================================================
+// 
+//デバッグGUI
+// 
+//==============================================================
 void Camera::debug_gui()
 {
 
@@ -328,7 +434,6 @@ void Camera::debug_gui()
 		if (ImGui::CollapsingHeader("CameraShake"))
 		{
 			static CameraShakeParam debug_param;
-			debug_param.shake_smoothness = 0.1f;
 
 			ImGui::DragFloat("shake_x", &debug_param.max_x_shake, 0.1f);
 			ImGui::DragFloat("shake_y", &debug_param.max_y_shake, 0.1f);
@@ -341,6 +446,18 @@ void Camera::debug_gui()
 				set_camera_shake(debug_param);
 			}
 		}
+		//カメラシェイク
+		if (ImGui::CollapsingHeader("HitStop"))
+		{
+			static HitStopParam debug_param;
+
+			ImGui::DragFloat("time", &debug_param.time, 0.1f);
+			ImGui::DragFloat("stopping_strength", &debug_param.stopping_strength, 0.1f);
+			if (ImGui::Button("hit_stop"))
+			{
+				set_hit_stop(debug_param);
+			}
+		}
 		if (ImGui::CollapsingHeader("LockOn"))
 		{
 			ImGui::Checkbox("lock_on", &lock_on);
@@ -350,7 +467,6 @@ void Camera::debug_gui()
 
 		if (ImGui::CollapsingHeader("Update"))
 		{
-
 			if (ImGui::Button("tracking")) p_update = &Camera::update_with_tracking;
 		}
 		if (ImGui::CollapsingHeader("Param"))
@@ -385,17 +501,30 @@ void Camera::debug_gui()
 
 #endif
 }
-
-void Camera::set_camera_stop(float stop_time)
+//==============================================================
+// 
+//ヒットストップ
+// 
+//==============================================================
+float Camera::hit_stop_update(float elapsed_time)
 {
-	//カメラストップ状態でないなら
-	if (!camera_stop)
+	float result_elapsed_tie = elapsed_time;
+	if (is_hit_stop)
 	{
-		//カメラを止め、タイマー設定
-		camera_stop = true;
-		camera_stop_timer = stop_time;
+		//ヒットストップ時の経過時間処理(0だとバグるので処理はスロー)
+		result_elapsed_tie /= hit_stop_param.stopping_strength;
+
+		//タイマー処理
+		hit_stop_param.time -= elapsed_time;
+		if (hit_stop_param.time < 0.0f)
+		{
+			is_hit_stop = false;
+		}
 	}
+
+	return result_elapsed_tie;
 }
+
 
 void Camera::set_camera_shake(CameraShakeParam param)
 {
@@ -403,6 +532,12 @@ void Camera::set_camera_shake(CameraShakeParam param)
 	is_camera_shake = true;
 	//パラメーター設定
 	camera_shake_param = param;
+}
+
+void Camera::set_hit_stop(HitStopParam param)
+{
+	is_hit_stop = true;
+	hit_stop_param = param;
 }
 
 void Camera::calc_free_target()
@@ -419,88 +554,5 @@ void Camera::calc_free_target()
 	}
 }
 
-void Camera::camera_shake_update(float elapsed_time)
-{
-	DirectX::XMVECTOR orientationVec = DirectX::XMLoadFloat4(&orientation);
-	DirectX::XMVECTOR standard_orientationVec = DirectX::XMLoadFloat4(&standard_orientation);
-
-	
-	//カメラシェイク
-	if (is_camera_shake)
-	{
-
-		//時間更新
-		camera_shake_param.time -= elapsed_time;
-
-		if (camera_shake_param.time < 0.0f)
-		{
-			is_camera_shake = false;
-			camera_shake_param.time = 0.0f;
-			XMStoreFloat4(&orientation, standard_orientationVec);
-			return;
-		}
-		//seed += elapsed_time;
-		//const float shake = 2.0f * static_cast<float>(p_noise.noise(seed * seed_shifting_factor, seed * seed_shifting_factor, 0)) - 1.0f;
-		
-		//揺らす処理
-		{
-			DirectX::XMVECTOR forward = Math::get_posture_forward_vec(standard_orientation);
-			DirectX::XMVECTOR up = { 0,1,0 };
-			DirectX::XMVECTOR right = Math::get_posture_right_vec(standard_orientation);
-
-			//縦回転
-			if (camera_shake_param.max_y_shake > 0)
-			{
-				
-				float shake = Noise::instance().random_range(-camera_shake_param.max_y_shake, camera_shake_param.max_y_shake);
-				shake = DirectX::XMConvertToRadians(shake);
-				{
-					//回転軸
-					DirectX::XMVECTOR axis = right;
-
-					if (fabs(shake) > DirectX::XMConvertToRadians(0.01f))
-					{
-						//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
-						DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, shake);
-
-						standard_orientationVec = DirectX::XMQuaternionMultiply(standard_orientationVec, q);
-					}
-
-				}
-			}
-
-			//横揺れ
-				if (camera_shake_param.max_x_shake > 0)
-				{
-					float shake = Noise::instance().random_range(-camera_shake_param.max_x_shake, camera_shake_param.max_x_shake);
-					shake = DirectX::XMConvertToRadians(shake);
-					{
-						//回転軸
-						DirectX::XMVECTOR axis = up;
-
-						if (fabs(shake) > DirectX::XMConvertToRadians(0.01f))
-						{
-							//回転軸（axis）と回転角（axis）から回転クオータニオン（q）を求める
-							DirectX::XMVECTOR q = DirectX::XMQuaternionRotationAxis(axis, shake);
-
-							standard_orientationVec = DirectX::XMQuaternionMultiply(standard_orientationVec, q);
-						}
-					}
-				}
-		}
-		orientationVec = DirectX::XMQuaternionSlerp(orientationVec, standard_orientationVec, camera_shake_param.shake_smoothness);
-		// orientationVecからorientationを更新
-		XMStoreFloat4(&orientation, orientationVec);
-
-
-
-	}
-	else
-	{
-		//揺れがない間は基準値
-		XMStoreFloat4(&standard_orientation, orientationVec);
-	}
-
-}
 
 

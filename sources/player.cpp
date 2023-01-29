@@ -457,6 +457,8 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 				//攻撃が当たったらスキルのクールタイムを短縮させる
 				skill_manager->cool_time_reduction();
 				camera->set_camera_shake(attack_sword_param.camera_shake);
+				//ヒットストップ
+				camera->set_hit_stop(attack_sword_param.hit_stop);
 
 				//ヒットエフェクト再生
 				if (!slash_hit_line->get_active())
@@ -475,8 +477,6 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 					const float slash_power = 70;
 					//slash_hit_particle->set_emitter_velocity(Math::vector_scale(vec, slash_power));
 					slash_hit_particle->launch_emitter(slash_hit_emit_cs.Get());
-					//ヒットストップ
-					camera->set_camera_stop(0.1f);
 				}
 				//test_slash_hit->play(attack_sword_param.collision.end,100.0f);
 			}
@@ -613,7 +613,6 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
 	imgui_menu_bar("Charactor", "player", display_player_imgui);
 
-
 	if (display_player_imgui)
 	{
 		
@@ -680,26 +679,50 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 					save_data_file();
 				}
 				ImGui::Text("attack_pparam");
-				ImGui::DragInt("power", &attack_sword_param.power, 0.1f);
-				ImGui::DragFloat("sword_invinsible_time", &attack_sword_param.invinsible_time, 0.1f);
+				if (ImGui::CollapsingHeader("combo1"))
+				{
+					ImGui::DragInt("combo1_power", &param.combo_1.power, 0.1f);
+					ImGui::DragFloat("combo1_invinsible_time", &param.combo_1.invinsible_time, 0.1f);
 
-				ImGui::Text("combo1_camera_shake");
-				ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
-				ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
-				ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
-				ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("combo1_camera_shake");
+					ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
+					ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
+					ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
+					ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("hit_stop");
+					ImGui::DragFloat("combo1_stop_time", &param.combo_1.hit_stop.time, 0.1f);
+					ImGui::DragFloat("combo1_stopping_strength", &param.combo_1.hit_stop.stopping_strength, 0.1f);
+				}
+				if (ImGui::CollapsingHeader("combo2"))
+				{
+					ImGui::DragInt("combo2_power", &param.combo_2.power, 0.1f);
+					ImGui::DragFloat("combo2_invinsible_time", &param.combo_2.invinsible_time, 0.1f);
 
-				ImGui::Text("combo2_camera_shake");
-				ImGui::DragFloat("combo2_shake_x", &param.combo_2.camera_shake.max_x_shake, 0.1f);
-				ImGui::DragFloat("combo2_shake_y", &param.combo_2.camera_shake.max_y_shake, 0.1f);
-				ImGui::DragFloat("combo2_time", &param.combo_2.camera_shake.time, 0.1f);
-				ImGui::DragFloat("combo2_smmoth", &param.combo_2.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("combo2_camera_shake");
+					ImGui::DragFloat("combo2_shake_x", &param.combo_2.camera_shake.max_x_shake, 0.1f);
+					ImGui::DragFloat("combo2_shake_y", &param.combo_2.camera_shake.max_y_shake, 0.1f);
+					ImGui::DragFloat("combo2_time", &param.combo_2.camera_shake.time, 0.1f);
+					ImGui::DragFloat("combo2_smmoth", &param.combo_2.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("hit_stop");
+					ImGui::DragFloat("combo2_stop_time", &param.combo_2.hit_stop.time, 0.1f);
+					ImGui::DragFloat("combo2_stopping_strengthy", &param.combo_2.hit_stop.stopping_strength, 0.1f);
 
-				ImGui::Text("combo3_camera_shake");
-				ImGui::DragFloat("combo3_shake_x", &param.combo_3.camera_shake.max_x_shake, 0.1f);
-				ImGui::DragFloat("combo3_shake_y", &param.combo_3.camera_shake.max_y_shake, 0.1f);
-				ImGui::DragFloat("combo3_time", &param.combo_3.camera_shake.time, 0.1f);
-				ImGui::DragFloat("combo3_smmoth", &param.combo_3.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+				}
+				if (ImGui::CollapsingHeader("combo3"))
+				{
+					ImGui::DragInt("combo3_power", &param.combo_3.power, 0.1f);
+					ImGui::DragFloat("combo3_invinsible_time", &param.combo_3.invinsible_time, 0.1f);
+
+					ImGui::Text("combo3_camera_shake");
+					ImGui::DragFloat("combo3_shake_x", &param.combo_3.camera_shake.max_x_shake, 0.1f);
+					ImGui::DragFloat("combo3_shake_y", &param.combo_3.camera_shake.max_y_shake, 0.1f);
+					ImGui::DragFloat("combo3_time", &param.combo_3.camera_shake.time, 0.1f);
+					ImGui::DragFloat("combo3_smmoth", &param.combo_3.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("hit_stop");
+					ImGui::DragFloat("combo3_stop_time", &param.combo_3.hit_stop.time, 0.1f);
+					ImGui::DragFloat("combo3_stopping_strength", &param.combo_3.hit_stop.stopping_strength, 0.1f);
+
+				}
 			}
 			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
 			{

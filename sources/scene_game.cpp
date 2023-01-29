@@ -85,13 +85,8 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->set_lock_on_target(boss.get()->get_position());
 
 	//カメラの経過時間
-	float camera_elapsed_time = elapsed_time;
-	//ヒットストップ時の経過時間処理
-	//if (camera->get_camera_stop())
-	//{
-	//	//経過時間を0に
-	//	camera_elapsed_time = 0;
-	//}
+	float camera_elapsed_time = camera->hit_stop_update(elapsed_time);
+	
 	//**********プレイヤーの更新**********//
 	player->update(graphics, camera_elapsed_time, camera.get());
 
@@ -111,8 +106,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//**********ステージの更新**********//
 	StageManager::Instance().update(elapsed_time);
 
-	//particles->update(graphics,elapsed_time);
-
 	//エフェクト更新
 #if _DEBUG
 	test_mesh_effect->set_init_life_duration(5);
@@ -123,6 +116,8 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
+
+	//ゲームクリア
 }
 
 //==============================================================
@@ -189,7 +184,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,	deferred->get_dsv());
 	//スカイボックス
-	//skybox->render(graphics);
+	skybox->render(graphics);
 	//ボス（フォワード）
 	boss->render_f(graphics, elapsed_time, camera.get());
 	//プレイヤー（フォワード）
@@ -230,7 +225,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	static DirectX::XMFLOAT3 test_meteore_dir = { 0.0f,10.0f,0.0f };
 	static float test_meteore_speed = 0.0f;
 
-	//test_meteore->render(graphics);
 
 	#endif
 
@@ -281,6 +275,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	}
 #endif
 
+}
+
+void SceneGame::clear_update(float elapsedTime, Graphics& graphics)
+{
 }
 
 void SceneGame::debug_gui()

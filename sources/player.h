@@ -262,6 +262,9 @@ private:
 	float add_root_speed = 1.1f;
 	bool is_root_motion = false;
 
+	float combo3_impulse1 = 1500;
+	float combo3_impulse2 = 2000;
+
 	DirectX::XMFLOAT3 forward;
 public:
 	//ダメージを受けたときに呼ばれる *関数を呼ぶのはダメージを与えたオブジェクト

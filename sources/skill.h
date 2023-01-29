@@ -39,6 +39,8 @@ public:
 
 	//スキルが終了したかどうか
 	bool is_skill_end() { return skill_end_flag; };
+	//スキルがヒットしているか
+	bool is_skill_hit() { return is_hit; };
 
 	CollisionType get_collision_type() { return collision_type; }
 	//当たり判定情報の取得

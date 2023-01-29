@@ -12,7 +12,6 @@ public:
 	//==============================================================
 	struct PublicParam
 	{
-		AttackParam atk_param;
 		//生存時間
 		float skill_duration;
 		//半径
@@ -41,16 +40,21 @@ public:
 	void update(Graphics& graphics, float elapsed_time)override;
 	void render(Graphics& graphics, Camera* camera)override;
 
-	void spear_emit(int index_offset,int emit_max_num, float size);
 	void debug_gui(string str_id);
 private:
+	//==============================================================
+	// 
+	// private関数
+	// 
+	//==============================================================
+	void spear_emit(int index_offset, int emit_max_num);
+
 	//==============================================================
 	// 
 	// 定数
 	// 
 	//==============================================================
 	static constexpr int MAX_NUM = 60;
-	static constexpr float SPEAR_SIZE = 0.6f;
 	static constexpr float FOLLOW_TIME = 0.7f;
 	//static constexpr DirectX::XMFLOAT3 SPEAR_SIZE = { 0.5f,0.5f,1.0f };
 
@@ -71,7 +75,8 @@ private:
 	bool finish;
 	//追従する時間
 	float follow_timer;
-
+	//槍の伸びる長さ
+	float spear_maximum_extension = 0.6f;
 	//ターゲットの位置
 	DirectX::XMFLOAT3 target_position;
 	//槍出現時最初のフレームのみ行う処理に使う変数

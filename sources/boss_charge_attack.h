@@ -95,4 +95,7 @@ private:
 	DirectX::XMFLOAT3 target_pos;
 	AttackParam attack_param;
 	Sphere tornado_colider;
+
+	//チャージ時のカメラシェイク
+	Camera::CameraShakeParam camera_shake = {};
 };

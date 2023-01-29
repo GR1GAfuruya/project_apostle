@@ -87,15 +87,15 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 			//攻撃の当たり判定パラメーター設定
 			attack_colider.start = { position.x,position.y,position.z };
 			//槍が一定の長さになったら当たり判定設定
-			if (param.spear_length > 0.4f)
+			if (param.spear_length > spear_maximum_extension - 0.1f)
 			{
 				attack_colider.radius = param.radius;
 			}
 
-			//フィニッシュ時は槍を一気にすべて出す
+			//槍を一気にすべて出す
 			if (!finish)
 			{
-				spear_emit(0, MAX_NUM, SPEAR_SIZE);
+				spear_emit(0, MAX_NUM);
 				finish = true;
 				//ライト設置
 				DirectX::XMFLOAT3 point_light_pos = { position.x,position.y + 10.0f,position.z };//槍の位置より少し上に配置
@@ -112,8 +112,8 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 				//割合
 				float rate = param.spear_length_rate * elapsed_time;
 				//伸ばす
-				param.spear_length = lerp(instance_mesh->get_scale(i).z, SPEAR_SIZE, rate);
-				instance_mesh->set_scale({ SPEAR_SIZE,SPEAR_SIZE,param.spear_length }, i);
+				param.spear_length = lerp(instance_mesh->get_scale(i).z, spear_maximum_extension, rate);
+				instance_mesh->set_scale({ spear_maximum_extension, spear_maximum_extension, param.spear_length }, i);
 			}
 
 
@@ -151,7 +151,7 @@ void SpearsSea::render(Graphics& graphics, Camera* camera)
 //槍出現
 // 
 //==============================================================
-void SpearsSea::spear_emit(int index_offset, int emit_max_num, float size)
+void SpearsSea::spear_emit(int index_offset, int emit_max_num)
 {
 	DirectX::XMFLOAT3 appearance_pos{};
 	for (int i = 0; i < emit_max_num; i++)
@@ -164,7 +164,7 @@ void SpearsSea::spear_emit(int index_offset, int emit_max_num, float size)
 		//ばらばらに生やす
 		DirectX::XMFLOAT3 spear_dir = Math::Normalize(DirectX::XMFLOAT3(cosf(emit_num), 1.01f, sinf(emit_num)));
 		instance_mesh->set_position(appearance_pos, emit_num);
-		instance_mesh->set_scale({ size,size,0 }, emit_num);
+		instance_mesh->set_scale(0, emit_num);
 		instance_mesh->rotate_base_axis(InstanceMeshEffect::AXIS::FORWARD, spear_dir, emit_num);
 		instance_mesh->set_is_loop(true);
 		emit_num++;

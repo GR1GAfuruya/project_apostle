@@ -8,7 +8,7 @@
 void SceneLoading::initialize(Graphics& graphics)
 {
 	//スプライト初期化
-	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".\\resources\\Sprite\\loading.png",1);
+	sprite = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".//resources//Sprite//Title//loading2.png",1);
 
 	//スレッド開始
 	std::thread thread(LoadingThread, this, &graphics);
@@ -38,7 +38,7 @@ void SceneLoading::update(float elapsedTime, Graphics& graphics)
 
 void SceneLoading::render(float elapsedTime, Graphics& graphics)
 {
-	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ADD, ST_RASTERIZER::CULL_NONE);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	sprite->begin(graphics.get_dc().Get());
 	sprite->render(graphics.get_dc().Get(), { 0, 0 }, { 1, 1 });
 	sprite->end(graphics.get_dc().Get());

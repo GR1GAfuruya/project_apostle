@@ -51,6 +51,21 @@ public:
         }
     };
 
+    struct HitStopParam
+    {
+        float time = 0.0f;//止める時間
+        float stopping_strength = 5.0f;//止める強度（完全に0にしてしまうとバグるため）
+        // シリアライズ
+        template<class Archive>
+        void serialize(Archive& archive)
+        {
+            archive(
+                cereal::make_nvp("time", time),
+                cereal::make_nvp("stopping_strength", stopping_strength)
+            );
+        }
+    };
+
 public:
     //--------<constructor/destructor>--------//
     Camera(Graphics& graphics);
@@ -67,6 +82,8 @@ public:
     //void move_viewing_angle(bool is_move, float elapsed_time){};
     void calc_view_projection(Graphics& graphics, float elapsed_time);
     void debug_gui();
+    //ヒットストップ関数
+    float hit_stop_update(float elapsed_time);
     //--------<getter/setter>--------//
     // 対象との距離
     void set_range(float r) { range = r; }
@@ -101,21 +118,19 @@ public:
     void set_is_move(bool m) { this->is_move = m; }
     //視野角取得
     const float& get_cape_vision()const { return cape_vision; }
-    //カメラがストップ状態か
-    const bool get_camera_stop() const { return camera_stop; }
     //ロックオン
     const bool get_lock_on() const { return lock_on; }
     void set_lock_on()  {  lock_on = !lock_on; }
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
-    //カメラストップ
-    void set_camera_stop(float stop_time);
 
     PostEffects* get_post_effect() { return post_effect.get(); }
     //PostEffects post_effect;
 
     //カメラシェイク
     void set_camera_shake(CameraShakeParam param);
+
+    void set_hit_stop(HitStopParam param);
 private:
     void calc_free_target();
 
@@ -167,16 +182,16 @@ private:
     bool display_camera_imgui = false;
     bool camera_operate_stop;
 
-    //カメラストップ用の変数（ヒットストップなど）
-    bool camera_stop = false;
-    float camera_stop_timer = 0.0f;
 
     //ロックオンフラグ
     bool lock_on = false;
-
+    float lock_on_angle;//ロックオン対象とカメラ正面ベクトルとの角度（カメラシェイクの仕様をカバーするため）
     //------カメラシェイク-------//
     bool is_camera_shake = false;//カメラシェイク中
     CameraShakeParam camera_shake_param;
+    //------ヒットストップ-------//
+    bool is_hit_stop = false;//ヒットストップ中
+    HitStopParam hit_stop_param;
 
     //------ポストエフェクト-------//
     std::shared_ptr<PostEffects> post_effect;

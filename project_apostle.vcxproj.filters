@@ -262,6 +262,9 @@
     <Filter Include="sources\Skill\SlashWave">
       <UniqueIdentifier>{4a040ebd-eccb-4756-b6dd-3d50768b2685}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Title">
+      <UniqueIdentifier>{6845bda5-282a-4947-bf28-da9ded5cb05a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -1134,6 +1137,9 @@
     </FxCompile>
     <FxCompile Include="HLSL\lightning.hlsl">
       <Filter>Shaders\Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\title_logo.hlsl">
+      <Filter>Shaders\Title</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
