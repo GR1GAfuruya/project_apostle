@@ -33,9 +33,8 @@ float4 main(VS_OUT pin) : SV_TARGET
     float2 distortion_tile = float2(1.5, 1.5);
     float2 tile = float2(1.0, 1.0);
     float2 uv = pin.texcoord + distortion(pin.texcoord, distortion_tile, scroll_speed);
-    float4 main_color = texture_map.Sample(sampler_texture, tilling(uv, tile));
+    float4 main_color = texture_map.Sample(sampler_texture, pin.texcoord);
     main_color *= float4(1.0f, 0.8f, 5.5f, 1.0f);
-    
     //黒い部分
     scroll_speed = float2(0.1, 0.5);
     distortion_tile = float2(2.0, 2.0);
@@ -44,12 +43,12 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 result_color = main_color * mask;
     
     //Alphaマスク
-    scroll_speed = float2(0.0, 0.0);
-    distortion_tile = float2(1.0, 1.0);
+    scroll_speed = float2(0.0, 1.0);
+    distortion_tile = float2(2.0, 1.0);
     tile = float2(1.0,1.0);
     uv = pin.texcoord + distortion(pin.texcoord, distortion_tile, scroll_speed);
-    float alpha = main_texture.Sample(sampler_texture, pin.texcoord).r;
-    alpha *= mask.r;
+    float alpha = main_texture.Sample(sampler_texture, pin.texcoord).a;
+    //alpha *= mask.r;
     //ディゾルブ
     //float4 dissolve = texture_map.Sample(sampler_texture, pin.texcoord);
     //alpha = alpha * step(threshold, dissolve.r);

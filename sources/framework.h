@@ -25,7 +25,7 @@ extern ImWchar glyphRangesJapanese[];
 
 
 CONST BOOL FULLSCREEN{ FALSE };
-CONST LPWSTR APPLICATION_NAME{ LPWSTR(L"PROJECT_APOSTLE") };
+CONST LPWSTR APPLICATION_NAME{ LPWSTR(L"VANQUISH_DREAD") };
 
 class framework :public GenericFrequentEntities
 {

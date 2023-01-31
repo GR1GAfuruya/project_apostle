@@ -16,11 +16,15 @@ public:
 
 private:
 	//タイトル背景
-	std::unique_ptr<SpriteBatch> title_back = nullptr;
+	std::unique_ptr<SpriteBatch> sprite_title_back = nullptr;
 	//タイトルロゴ
-	std::unique_ptr<SpriteBatch> title_logo = nullptr;
+	std::unique_ptr<SpriteBatch> sprite_title_logo = nullptr;
 	//タイトルロゴ背景
-	std::unique_ptr<SpriteBatch> title_logo_back = nullptr;
+	std::unique_ptr<SpriteBatch> sprite_title_logo_back = nullptr;
+	//スタート文字
+	std::unique_ptr<SpriteBatch> sprite_start = nullptr;
+	//EXIT文字
+	std::unique_ptr<SpriteBatch> sprite_exit = nullptr;
 	//カメラ
 	std::unique_ptr<Camera> camera;
 

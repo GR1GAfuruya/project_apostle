@@ -9,9 +9,9 @@ BossUi::BossUi(Graphics& graphics) :
 {
 	gauge.position = { 100.0f,40.0f };
 	gauge.scale = { 1.0f, 0.1f };
-	gauge.color = { 1.5f,0.3f,0,1 };
+	gauge.color = { 0.7f,0.1f,0,1 };
 	gauge.texsize = { static_cast<float>(back->get_texture2d_desc().Width), static_cast<float>(back->get_texture2d_desc().Height) };
-	diff_color = { 2.0f,2.0f, 1.0f, 1.0f };
+	diff_color = { 1.0f,1.0f, 0.5f, 1.0f };
 }
 
 void BossUi::initialize(Graphics& graphics)

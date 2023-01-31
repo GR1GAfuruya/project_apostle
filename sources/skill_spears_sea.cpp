@@ -87,7 +87,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 			//UŒ‚‚Ì“–‚½‚è”»’èƒpƒ‰ƒ[ƒ^[Ý’è
 			attack_colider.start = { position.x,position.y,position.z };
 			//‘„‚ªˆê’è‚Ì’·‚³‚É‚È‚Á‚½‚ç“–‚½‚è”»’èÝ’è
-			if (param.spear_length > spear_maximum_extension - 0.1f)
+			if (param.spear_length > spear_maximum_extension - 0.1f )
 			{
 				attack_colider.radius = param.radius;
 			}
@@ -106,13 +106,13 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 
 			//‘„‚ÌXVˆ—
 			const float deley_rate = 0.1f;
+			//---‘„‚ð™X‚ÉL‚Î‚·---//
+			//Š„‡
+			float rate = param.spear_length_rate * elapsed_time;
+			//L‚Î‚·
+			param.spear_length = lerp(instance_mesh->get_scale(0).z, spear_maximum_extension, rate);
 			for (int i = 0; i < MAX_NUM; i++)
 			{
-				//---‘„‚ð™X‚ÉL‚Î‚·---//
-				//Š„‡
-				float rate = param.spear_length_rate * elapsed_time;
-				//L‚Î‚·
-				param.spear_length = lerp(instance_mesh->get_scale(i).z, spear_maximum_extension, rate);
 				instance_mesh->set_scale({ spear_maximum_extension, spear_maximum_extension, param.spear_length }, i);
 			}
 

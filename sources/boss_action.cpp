@@ -332,7 +332,7 @@ void Boss::select_attack_type_short()
 		break;
 
 	case ATTACK_TYPE::SKILL2:
-		//transition_skill_2_start_state();
+		transition_skill_2_start_state();
 		break;
 
 	case ATTACK_TYPE::SKILL3:
@@ -355,7 +355,7 @@ void Boss::select_attack_type_long()
 		break;
 
 	case ATTACK_TYPE::SKILL2:
-		//transition_skill_2_start_state();
+		transition_skill_2_start_state();
 		break;
 
 	case ATTACK_TYPE::SKILL3:

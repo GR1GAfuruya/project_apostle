@@ -22,10 +22,10 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	atk_param.power = 20;
 	atk_param.invinsible_time = 0.1f;
 	atk_param.camera_shake.max_x_shake = 4.0f;
-	atk_param.camera_shake.max_y_shake = 8.0f;
-	atk_param.camera_shake.time = 0.2f;
-	atk_param.hit_stop.time = 0.2f;
-	atk_param.hit_stop.stopping_strength = 2.0f;
+	atk_param.camera_shake.max_y_shake = 12.0f;
+	atk_param.camera_shake.time = 0.4f;
+	atk_param.hit_stop.time = 0.4f;
+	atk_param.hit_stop.stopping_strength = 5.0f;
 	//クールタイム
 	max_cool_time = 12.0f;
 
@@ -68,7 +68,7 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 				s->set_is_skill_hit(true);
 				//カメラシェイク
 				camera->set_camera_shake(atk_param.camera_shake);
-				camera->set_hit_stop(atk_param.hit_stop);
+				//camera->set_hit_stop(atk_param.hit_stop);
 				//ダメージを与える
 				damaged_func(atk_param.power, atk_param.invinsible_time, WINCE_TYPE::NONE);
 			}
