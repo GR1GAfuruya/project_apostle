@@ -11,7 +11,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
     float4 color = color_map.Sample(clamp_sampler_state, pin.texcoord);
     float alpha = color.a;
-#if 1
+#if 0
     // Inverse gamma process
     const float GAMMA = 2.2;
     color.rgb = pow(color.rgb, GAMMA);

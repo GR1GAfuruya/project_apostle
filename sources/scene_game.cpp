@@ -44,8 +44,8 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_aura.fbx");
-	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_lightning.get());
 	 test_mesh_effect->set_init_scale(0.1f);
 	 test_mesh_effect->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 
@@ -65,12 +65,7 @@ void SceneGame::finalize()
 //==============================================================
 void SceneGame::update(float elapsed_time, Graphics& graphics)
 {
-	static bool slow = false;
-	ImGui::Checkbox("slow", &slow);
-	if (slow)
-	{
-		elapsed_time *= 0.5f;
-	}
+	
 	//ゲームパッド
 	GamePad& gamepad = Device::instance().get_game_pad();
 	if (gamepad.get_button_down() & GamePad::BTN_BACK)
@@ -90,13 +85,8 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	camera->set_lock_on_target(boss.get()->get_position());
 
 	//カメラの経過時間
-	float camera_elapsed_time = elapsed_time;
-	//ヒットストップ時の経過時間処理
-	//if (camera->get_camera_stop())
-	//{
-	//	//経過時間を0に
-	//	camera_elapsed_time = 0;
-	//}
+	float camera_elapsed_time = camera->hit_stop_update(elapsed_time);
+	
 	//**********プレイヤーの更新**********//
 	player->update(graphics, camera_elapsed_time, camera.get());
 
@@ -116,8 +106,6 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//**********ステージの更新**********//
 	StageManager::Instance().update(elapsed_time);
 
-	//particles->update(graphics,elapsed_time);
-
 	//エフェクト更新
 #if _DEBUG
 	test_mesh_effect->set_init_life_duration(5);
@@ -128,6 +116,8 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
+
+	//ゲームクリア
 }
 
 //==============================================================
@@ -150,10 +140,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 //	stageManager.shadow_render(graphics,elapsed_time);
 
 	//プレイヤー描画
-	player->render_d(graphics, elapsed_time, camera.get());
+	player->render_s(graphics, elapsed_time, camera.get());
 
 	//ボス描画
-	boss->render_d(graphics, elapsed_time);
+	boss->render_s(graphics, elapsed_time, camera.get());
 
 	deferred->shadow_deactive(graphics);
 #endif
@@ -172,7 +162,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_d(graphics,elapsed_time,camera.get());
 
 	//ボス描画
-	boss->render_d(graphics,elapsed_time);
+	boss->render_d(graphics,elapsed_time, camera.get());
 
 
 	//ここで各種ライティング（環境光、平行光、点光源）
@@ -194,9 +184,9 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,	deferred->get_dsv());
 	//スカイボックス
-	//skybox->render(graphics);
+	skybox->render(graphics);
 	//ボス（フォワード）
-	boss->render_f(graphics, elapsed_time);
+	boss->render_f(graphics, elapsed_time, camera.get());
 	//プレイヤー（フォワード）
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
@@ -210,7 +200,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	static DirectX::XMFLOAT4 test_effect_color = { 4.3f,1.0f,0.2f,1.0f };
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };
-	test_mesh_effect->render(graphics);
+	test_mesh_effect->render(graphics,camera.get());
 	test_mesh_effect->debug_gui("test_effect");
 	test_mesh_effect->set_position(test_effect_pos);
 	test_mesh_effect->set_scale(test_effect_scale);
@@ -235,7 +225,6 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	static DirectX::XMFLOAT3 test_meteore_dir = { 0.0f,10.0f,0.0f };
 	static float test_meteore_speed = 0.0f;
 
-	//test_meteore->render(graphics);
 
 	#endif
 
@@ -286,6 +275,10 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	}
 #endif
 
+}
+
+void SceneGame::clear_update(float elapsedTime, Graphics& graphics)
+{
 }
 
 void SceneGame::debug_gui()

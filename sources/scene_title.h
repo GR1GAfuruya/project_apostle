@@ -1,8 +1,8 @@
 #pragma once
 #include "scene.h"
 #include "sprite_batch.h"
+#include "camera.h"
 #include <memory>
-
 class SceneTitle :public Scene
 {
 public:
@@ -15,5 +15,22 @@ public:
 	void render(float elapsedTime,Graphics& graphics) override;
 
 private:
-	std::unique_ptr<SpriteBatch> sprite = nullptr;
+	//タイトル背景
+	std::unique_ptr<SpriteBatch> sprite_title_back = nullptr;
+	//タイトルロゴ
+	std::unique_ptr<SpriteBatch> sprite_title_logo = nullptr;
+	//タイトルロゴ背景
+	std::unique_ptr<SpriteBatch> sprite_title_logo_back = nullptr;
+	//スタート文字
+	std::unique_ptr<SpriteBatch> sprite_start = nullptr;
+	//EXIT文字
+	std::unique_ptr<SpriteBatch> sprite_exit = nullptr;
+	//カメラ
+	std::unique_ptr<Camera> camera;
+
+	//ロゴ背景に適応するピクセルシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> logo_ps;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv_main_color;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv_mask;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv_distortion;
 };

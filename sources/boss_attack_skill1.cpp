@@ -7,25 +7,23 @@
 //==============================================================
 BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 {
-	acceleration = 15.0f;
-	friction = 0.0f;
-	max_move_speed = 40.0f;
-
-	at_param.power = 100;
-	at_param.invinsible_time = 2.0f;
-
-	range = 10;
 	const DirectX::XMFLOAT4 FIRE_COLOR = { 4.0f, 1.0f, 0.7f, 0.8f };
-	meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
-	meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
-	meteore_effect->constants->data.particle_color = FIRE_COLOR;
 
-	arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
-	arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	arm_effect->set_init_color(FIRE_COLOR);
-	arm_effect->set_init_scale(0);
-	arm_effect->set_init_life_duration(0.5f);
-
+	//メインの射出する隕石の初期化
+	{
+		meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", MAX_NUM);
+		meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
+		meteore_effect->constants->data.particle_color = FIRE_COLOR;
+	}
+	//腕のエフェクト
+	{
+		arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
+		arm_effect->set_init_color(FIRE_COLOR);
+		arm_effect->set_init_scale(0);
+		arm_effect->set_init_life_duration(0.5f);
+	}
+	//爆発後の余韻エフェクト
 	for (auto& m : meteo_wave)
 	{
 		m = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
@@ -35,6 +33,7 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 		m->set_init_scale(0);
 	}
 
+	//更新関数初期化
 	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
 		->void {return attack_state_update(graphics, elapsed_time, camera); };
 
@@ -52,6 +51,22 @@ BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
 		meteore_effect->set_position({ 0,0,0 }, i);
 		params[i].colider_sphere.radius = params[i].scale.x;
 	}
+	//カメラシェイク
+	{
+		camera_shake.max_x_shake = 5.0f;
+		camera_shake.max_y_shake = 10.0f;
+		camera_shake.time = 0.5f;
+
+	}
+
+	//TODO:メテオの速度などのパラメーター　※のちにJSON化！！！
+	acceleration = 15.0f;
+	friction = 0.0f;
+	max_move_speed = 40.0f;
+	at_param.power = 100;
+	at_param.invinsible_time = 2.0f;
+	range = 10;
+
 
 	const float CHARGE_TIME = 2.0f;
 	charge_time = CHARGE_TIME;
@@ -84,7 +99,6 @@ void BossAttackSkill1::chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir)
 
 		move(skill_dir[i].x, skill_dir[i].z, 50, i);
 		
-		params[i].position = pos;
 		params[i].is_calc_velocity = true;
 		params[i].is_hit = false;
 		meteore_effect->set_scale(0, i);
@@ -137,9 +151,19 @@ void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_tim
 	charge_timer += elapsed_time;
 	if (charge_timer > charge_time)
 	{
+		//更新関数を攻撃に
 		state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
 			->void {return attack_state_update(graphics, elapsed_time, camera); };
+		//メテオの位置設定
+		for (int i = 0; i < MAX_NUM; i++)
+		{
+			params[i].position = arm_pos;
+		}
+		//カメラシェイク
+		camera->set_camera_shake(camera_shake);
+		//腕エフェクトストップ
 		arm_effect->stop();
+		//タイマーリセット
 		charge_timer = 0;
 	}
 
@@ -210,13 +234,13 @@ void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_tim
 //描画
 // 
 //==============================================================
-void BossAttackSkill1::render(Graphics& graphics)
+void BossAttackSkill1::render(Graphics& graphics,Camera* camera)
 {
 	meteore_effect->render(graphics);
-	arm_effect->render(graphics);
+	arm_effect->render(graphics,camera);
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		meteo_wave[i]->render(graphics);
+		meteo_wave[i]->render(graphics, camera);
 	}
 }
 
@@ -232,7 +256,6 @@ void BossAttackSkill1::debug_gui(const char* str_id)
 	{
 		meteo_wave[i]->debug_gui("skill1_wave" + to_string(i));
 	}
-	ImGui::DragFloat("charge_timer", &charge_time);
 #endif //  USE_IMGUI
 
 }

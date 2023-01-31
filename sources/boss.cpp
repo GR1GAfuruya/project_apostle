@@ -51,6 +51,7 @@ Boss::Boss(Graphics& graphics)
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
 	attack_skill_1 = make_unique<BossAttackSkill1>(graphics);
 	attack_skill_2 = make_unique<ChargeAttack>(graphics);
+	attack_skill_3 = make_unique<BossAttackSkill3>(graphics);
 	ui = make_unique<BossUi>(graphics);
 
 	initialize();
@@ -74,8 +75,12 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	
 	//スキル１のアップデート
 	attack_skill_1->update(graphics, elapsed_time,camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
+	//スキル2のアップデート
 	attack_skill_2->update(graphics, elapsed_time,camera);
 	attack_skill_2->set_target_pos(target_pos);
+	//スキル3のアップデート
+	attack_skill_3->update(graphics, elapsed_time,camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
+
 	//bodyの攻撃用当たり判定
 	boss_body_collision.capsule.start = position;
 	boss_body_collision.capsule.end = boss_body_collision.capsule.start;
@@ -95,7 +100,7 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 //描画処理（ディファード）
 // 
 //==============================================================
-void Boss::render_d(Graphics& graphics, float elapsed_time)
+void Boss::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 #if _DEBUG
 	if (!is_render) return;
@@ -109,12 +114,23 @@ void Boss::render_d(Graphics& graphics, float elapsed_time)
 //描画処理（フォワード）
 // 
 //==============================================================
-void Boss::render_f(Graphics& graphics, float elapsed_time)
+void Boss::render_f(Graphics& graphics, float elapsed_time,Camera* camera)
 {
-	attack_skill_1->render(graphics);
-	attack_skill_2->render(graphics);
+	attack_skill_1->render(graphics, camera);
+	attack_skill_2->render(graphics, camera);
+	attack_skill_3->render(graphics, camera);
 	debug_gui();
 	
+}
+//==============================================================
+// 
+//描画処理（シャドウ）
+// 
+//==============================================================
+void Boss::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
+{
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+
 }
 //==============================================================
 // 
@@ -196,22 +212,27 @@ void Boss::debug_gui()
 
 		if (ImGui::Begin("Boss", nullptr, ImGuiWindowFlags_None))
 		{
-			static int num = 0;
-			ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size() - 1);
-			int mesh_size = model.get()->model_resource.get()->get_meshes().size();
-			ImGui::DragInt("mesh_size", &mesh_size);
-			DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0];
-			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
-			ImGui::DragFloat3("bounding_min", &min.x);
-			ImGui::DragFloat3("bounding_max", &max.x);
-			if (ImGui::Button("skill_1")) transition_skill_1_state();
-			if (ImGui::Button("charge_attack")) transition_skill_2_start_state();
-			if (ImGui::Button("skill_3")) transition_skill_3_state();
 #if _DEBUG
 			ImGui::Checkbox("is_update", &is_update);
 			ImGui::Separator();
 			ImGui::Checkbox("is_render", &is_render);
 #endif
+			if (ImGui::CollapsingHeader("Skill", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				if (ImGui::Button("skill_1"))
+				{
+					transition_skill_1_state();
+				}
+				if (ImGui::Button("skill_2"))
+				{
+					transition_skill_2_start_state();
+				}
+				if (ImGui::Button("skill_3"))
+				{
+					transition_skill_3_state();
+				}
+
+			}
 			if (ImGui::Button("load"))
 			{
 				load_data_file();
@@ -224,17 +245,15 @@ void Boss::debug_gui()
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-
 				//位置
 				ImGui::DragFloat3("Position", &position.x);
 				//回転				
 				ImGui::DragFloat3("scale:", &scale.x);
+				//速度
 				ImGui::DragFloat3("velocity:", &velocity.x);
 			}
 			ImGui::DragInt("hp", &health);
 			ImGui::DragFloat("height", &chara_param.height);
-			ImGui::DragFloat("WALK_SPEED", &WALK_SPEED);
-			ImGui::DragFloat("RUN_SPEED", &RUN_SPEED);
 			ImGui::DragFloat("turnspeed", &chara_param.turn_speed,0.1f);
 			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius,0.1f);
 			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height,0.1f);
@@ -267,5 +286,6 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 
 	attack_skill_1->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
 	attack_skill_2->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
+	attack_skill_3->calc_vs_player(player_cap_start, player_cap_end, colider_radius, damaged_func);
 }
 

@@ -22,7 +22,7 @@ public:
 	SkillLauncher() :
 		cool_time(0.0f),
 		chantable(false),
-		reduction_rate(1.0f) {};
+		reduction_rate(0.1f) {};
 	virtual ~SkillLauncher() {}
 
 	//初期化
@@ -30,7 +30,7 @@ public:
 	//更新
 	virtual void update(Graphics& graphics, float elapsed_time);
 	//描画
-	virtual void render(Graphics& graphics);
+	virtual void render(Graphics& graphics, Camera* camera);
 	//スキルクールタイム短縮
 	void cool_time_reduction();
 	//DebugGUI表示

@@ -316,8 +316,6 @@ void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapse
 	{
 		transition_idle_state();
 	}
-	//速力処理更新
-	update_velocity(elapsed_time, position);
 
 }
 
@@ -328,8 +326,6 @@ void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_ti
 	{
 		transition_idle_state();
 	}
-	//速力処理更新
-	update_velocity(elapsed_time, position);
 
 }
 
@@ -386,7 +382,7 @@ void Player::update_r_attack_forward_state(Graphics& graphics, float elapsed_tim
 	//*************************************//
 	//	ルートモーションに関する更新	   //
 	//*************************************//
-	root_motion_manual(Math::get_posture_forward(orientation), 1.5f);
+	root_motion_manual(Math::get_posture_forward(orientation), 1.5f * elapsed_time);
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }
@@ -486,7 +482,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 
 	}
 
-	if (model->anime_param.frame_index > 40 / 2)
+	if (model->anime_param.frame_index > 30 / 2)
 	{
 		if (model->is_end_animation())
 		{
@@ -506,7 +502,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 	//*************************************//
 	//	ルートモーションに関する更新	   //
 	//*************************************//
-	root_motion_manual(Math::get_posture_forward(orientation), -1.0f);
+	root_motion_manual(Math::get_posture_forward(orientation), -10.0f * elapsed_time);
 	//回避入力
 	input_avoidance();
 	//空中にいる場合少し浮遊
@@ -532,7 +528,7 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[0]->rot_speed.y = -param.sword_swing_speed;
 		//攻撃判定ON
 		attack_sword_param.is_attack = true;
-		const float impulse_power = 3.0f;
+		const float impulse_power = combo3_impulse1 * elapsed_time;
 		add_impulse(Math::get_posture_forward(orientation) * impulse_power);
 	}
 	//二振り目の斬撃
@@ -542,7 +538,7 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::FORWARD, slash_dir);
 		slash_efects[1]->rotate_base_axis(MeshEffect::AXIS::UP, up);
 		slash_efects[1]->rot_speed.y = param.sword_swing_speed;
-		const float impulse_power = 7.0f;
+		const float impulse_power = combo3_impulse2 * elapsed_time;
 		add_impulse(Math::get_posture_forward(orientation) * impulse_power);
 	}
 	//三振り目の斬撃

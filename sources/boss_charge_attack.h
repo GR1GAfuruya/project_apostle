@@ -18,7 +18,7 @@ public:
 	//更新
 	void update(Graphics& graphics, float elapsed_time,Camera* camera);
 	//描画
-	void render(Graphics& graphics);
+	void render(Graphics& graphics, Camera* camera);
 	//デバッグGUI
 	void debug_gui(const char* str_id);
 	//チャージ完了したかどうか
@@ -95,4 +95,7 @@ private:
 	DirectX::XMFLOAT3 target_pos;
 	AttackParam attack_param;
 	Sphere tornado_colider;
+
+	//チャージ時のカメラシェイク
+	Camera::CameraShakeParam camera_shake = {};
 };

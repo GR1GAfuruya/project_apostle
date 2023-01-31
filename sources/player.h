@@ -26,10 +26,12 @@ public:
 	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
 	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
+	//シャドウレンダリングするオブジェクト
+	void render_s(Graphics& graphics, float elapsed_time, Camera* camera);
 	//UI描画
 	void render_ui(Graphics& graphics, float elapsed_time);
 	//デバッグ用GUI描画
-	void debug_gui(Graphics& graphics);
+	void debug_gui(Graphics& graphics, Camera* camera);
 	//プレイヤーの腰当たりの位置
 	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + chara_param.height / 2, position.z); }
 	//カメラがプレイヤーを見るときに注視するポイント
@@ -237,7 +239,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> slash_hit_emit_cs;
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> slash_hit_update_cs;
 	std::unique_ptr<MeshEffect> slash_efects[3];
-	std::unique_ptr<MeshEffect> test_slash_hit;
+	std::unique_ptr<MeshEffect> slash_hit_line;
 	//スキルマネージャー
 	std::unique_ptr <SkillManager> skill_manager;
 	//剣
@@ -259,6 +261,9 @@ private:
 	DirectX::XMFLOAT3 root_motion_pos = {0,0,0};
 	float add_root_speed = 1.1f;
 	bool is_root_motion = false;
+
+	float combo3_impulse1 = 1500;
+	float combo3_impulse2 = 2000;
 
 	DirectX::XMFLOAT3 forward;
 public:

@@ -12,7 +12,7 @@ void Sword::initialize()
 	scale = { 0.17f,-0.17f,0.17f };
 	position = { -7.850f,-3.88f, 15.6f };
 	//Œ•‚Ì’·‚³
-	length = 5.5f;
+	length = 7.5f;
 	//Œ•‚Ì‘¾‚³
 	radius = 0.6f;
 }

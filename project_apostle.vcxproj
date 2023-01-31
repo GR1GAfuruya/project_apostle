@@ -219,6 +219,8 @@
     <ClCompile Include="sources\gauge_ui.cpp" />
     <ClCompile Include="sources\instance_mesh_effect.cpp" />
     <ClCompile Include="sources\instancing_mesh.cpp" />
+    <ClCompile Include="sources\lightning_rain_launcher.cpp" />
+    <ClCompile Include="sources\skill_lightning_rain.cpp" />
     <ClCompile Include="sources\material.cpp" />
     <ClCompile Include="sources\material_manager.cpp" />
     <ClCompile Include="sources\mat_fire_distortion.cpp" />
@@ -275,10 +277,12 @@
     <ClCompile Include="sources\skill_regenerate.cpp" />
     <ClCompile Include="sources\skill_restraint.cpp" />
     <ClCompile Include="sources\skill_launcher.cpp" />
+    <ClCompile Include="sources\skill_slash_wave.cpp" />
     <ClCompile Include="sources\skill_spears_sea.cpp" />
     <ClCompile Include="sources\skill_ui.cpp" />
     <ClCompile Include="sources\skin_particles.cpp" />
     <ClCompile Include="sources\sky_box.cpp" />
+    <ClCompile Include="sources\slash_wave_launcher.cpp" />
     <ClCompile Include="sources\spears_sea_launcher.cpp" />
     <ClCompile Include="sources\sprite.cpp" />
     <ClCompile Include="sources\sprite_batch.cpp" />
@@ -311,6 +315,8 @@
     <ClInclude Include="sources\gauge_ui.h" />
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />
+    <ClInclude Include="sources\lightning_rain_launcher.h" />
+    <ClInclude Include="sources\skill_lightning_rain.h" />
     <ClInclude Include="sources\magic_bullet_launcher.h" />
     <ClInclude Include="sources\material.h" />
     <ClInclude Include="sources\material_manager.h" />
@@ -378,10 +384,12 @@
     <ClInclude Include="sources\shader.h" />
     <ClInclude Include="sources\skeletal_mesh.h" />
     <ClInclude Include="sources\skill_manager.h" />
+    <ClInclude Include="sources\skill_slash_wave.h" />
     <ClInclude Include="sources\skill_ui.h" />
     <ClInclude Include="sources\skin_particles.h" />
     <ClInclude Include="sources\sky_box.h" />
     <ClInclude Include="sources\skill_spears_sea.h" />
+    <ClInclude Include="sources\slash_wave_launcher.h" />
     <ClInclude Include="sources\spears_sea_launcher.h" />
     <ClInclude Include="sources\sprite.h" />
     <ClInclude Include="sources\sprite_batch.h" />
@@ -1004,6 +1012,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="HLSL\title_logo.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\tone_map_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

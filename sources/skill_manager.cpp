@@ -28,13 +28,18 @@ SkillManager::SkillManager(Graphics& graphics)
 	//槍スキル
 	spear_sea = make_unique<SpearSeaLauncher>(graphics);
 
+	//斬撃波スキル
+	slash_wave = make_unique<SlashWaveLauncher>(graphics);
+	
+	//雷雨スキル
+	lightning_rain = make_unique<LightningRainLauncher>(graphics);
 	//初期スキル設定
 	selected_sup_skill = physical_up.get();
 	selected_atk_skill = magick_bullet.get();
 
 	//リストに追加
 	sup_skill_list = { physical_up, regenerate,restraint };
-	atk_skill_list = { magick_bullet, spear_sea };
+	atk_skill_list = { magick_bullet, spear_sea, slash_wave, lightning_rain };
 	//パラメーター初期化
 	initialize(graphics);
 	
@@ -184,17 +189,17 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 //描画処理
 // 
 //==============================================================
-void SkillManager::render(Graphics& graphics)
+void SkillManager::render(Graphics& graphics, Camera* camera)
 {
 	//スキルの描画
 	{
 		for (auto& s : sup_skill_list)
 		{
-			s->render(graphics);
+			s->render(graphics, camera);
 		}
 		for (auto& s : atk_skill_list)
 		{
-			s->render(graphics);
+			s->render(graphics, camera);
 		}
 	}
 }
@@ -281,6 +286,16 @@ bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_
 	return spear_sea->chant(graphics, launch_pos, target_pos);
 }
 
+bool SkillManager::chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* dir)
+{
+	return slash_wave->chant(graphics, launch_pos, dir);
+}
+
+bool SkillManager::chant_lightning_rain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
+{
+	return lightning_rain->chant(graphics, launch_pos, target_pos);
+}
+
 //==============================================================
 // 
 //クールタイム短縮
@@ -315,6 +330,16 @@ void SkillManager::judge_magic_bullet_vs_enemy(Capsule object_colider, AddDamage
 void SkillManager::judge_spear_sea_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
 {
 	spear_sea->skill_object_hit_judgment(object_colider, damaged_func, camera);
+}
+
+void SkillManager::judge_slash_wave_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
+{
+	slash_wave->skill_object_hit_judgment(object_colider, damaged_func, camera);
+}
+
+void SkillManager::judge_lightning_rain_vs_enemy(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera)
+{
+	lightning_rain->skill_object_hit_judgment(object_colider, damaged_func, camera);
 }
 
 //==============================================================
@@ -444,6 +469,8 @@ void SkillManager::debug_gui(Graphics& graphics)
 	magick_bullet->debug_gui();
 	//槍スキル
 	spear_sea->debug_gui();
+	slash_wave->debug_gui();
+	lightning_rain->debug_gui();
 	
 
 	//UIdebugGUI

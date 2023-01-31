@@ -56,16 +56,24 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	}
 	//メテオ
 	{
-		meteores = std::make_unique<Meteore>(graphics, 12);
+		const int METEORE_MAX_NUM = 12;
+		meteores = std::make_unique<Meteore>(graphics, METEORE_MAX_NUM);
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 		meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
-		meteo_launch_radius = 5;
+		meteo_launch_radius = 20;
 	}
 	//トルネードの部分のダメージ設定
 	{
 		attack_param.power = 10;
 		attack_param.invinsible_time = 0.5f;
+	}
+	//カメラシェイク
+	{
+		camera_shake.max_x_shake = 3.0f;
+		camera_shake.max_y_shake = 7.0f;
+		camera_shake.time = 0.5f;
+
 	}
 
 	const float range = 20.0f;
@@ -81,15 +89,18 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 {
 	//アクティブ状態に
 	active = true;
+	//未チャージ状態に
 	is_charge_max = false;
+	//攻撃タイマーリセット
 	attack_time = 0;
+	//アップデート関数をチャージに変更
 	charge_attack_update = &ChargeAttack::charging_update;
 	//タイマーリセット
 	life_time = 0.0f;
 	//コア位置設定
-		position = pos;
-		const float offset = 70;
-		DirectX::XMFLOAT3 core_pos = { position.x, position.y + offset, position.z };
+	position = pos;
+	const float offset = 70;
+	DirectX::XMFLOAT3 core_pos = { position.x, position.y + offset, position.z };
 	{
 		core->set_init_scale(0);
 		core->play(core_pos);
@@ -140,12 +151,10 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 		meteo_time = 0;
 		meteores->initialize();
 		meteo_launch_count = 0;
+		//コアの場所に配置
 		for (int i = 0; i < meteores->get_max_num(); i++)
 		{
-			const int range = 20;
-			const float ofset = meteo_launch_radius;
-			const float random = fabs(Noise::instance().random_range(ofset, range));
-			meteores->create_on_circle(position, random, i);
+			meteores->set_position(core->get_position(),i);
 		}
 	}
 	//コリジョン初期化
@@ -200,21 +209,21 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
 //描画
 // 
 //==============================================================
-void ChargeAttack::render(Graphics& graphics)
+void ChargeAttack::render(Graphics& graphics, Camera* camera)
 {
 
 	if (active)
 	{
-		core->render(graphics);
+		core->render(graphics, camera);
 
 		tornado->render(graphics);
 		tornado_black->render(graphics);
-		wave->render(graphics);
-		omen_effect->render(graphics);
+		wave->render(graphics, camera);
+		omen_effect->render(graphics, camera);
 	}
 
 	//隕石描画
-	meteores->render(graphics);
+	meteores->render(graphics, camera);
 
 	particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
 
@@ -238,6 +247,13 @@ void ChargeAttack::debug_gui(const char* str_id)
 		ImGui::DragFloat("core_radius", &constants->data.core_radius, 1, 0);
 		ImGui::DragFloat("launch_radius", &meteo_launch_radius, 1, 0);
 		ImGui::DragFloat("radius", &tornado_colider.radius, 1, 0);
+		if (ImGui::CollapsingHeader("camera_shake"))
+		{
+			ImGui::DragFloat("combo1_shake_x", &camera_shake.max_x_shake, 0.1f);
+			ImGui::DragFloat("combo1_shake_y", &camera_shake.max_y_shake, 0.1f);
+			ImGui::DragFloat("combo1_time", &camera_shake.time, 0.1f);
+			ImGui::DragFloat("combo1_smmoth", &camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+		}
 		ImGui::End();
 	}
 #endif
@@ -285,17 +301,12 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 	constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::CS);
 
 	//隕石を地面から浮き上がらせる
-	float min = 1;
-	float max = 9;
 	for (int i = 0; i < meteores->get_max_num(); i++)
 	{
-		//ランダムな速度
-		float random_speed = fabs(Noise::instance().random_range(min, max));
-		min = 2;
-		max = 5;
-		//ランダムなサイズ
-		float random_size = fabs(Noise::instance().random_range(min, max));
-		meteores->rising(elapsed_time, core->get_position(), random_size, random_speed, i);
+		//スケール
+		const float target_scale = 5.0f;
+		const float scale_speed = 0.5f;
+		meteores->gradual_expansion(elapsed_time, target_scale, scale_speed, i);
 	}
 
 	//予兆エフェクト
@@ -314,6 +325,11 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 		charge_attack_update = &ChargeAttack::activities_update;
 		tornado->set_scale({ 0.0f,15.0f,0.0f });
 		tornado_black->set_scale({ 0.0f,15.0f,0.0f });
+	}
+
+	//カメラシェイク
+	{
+		camera->set_camera_shake(camera_shake);
 	}
 }
 //==============================================================

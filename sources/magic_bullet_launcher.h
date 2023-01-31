@@ -19,7 +19,7 @@ public:
 	//更新
 	void update(Graphics& graphics, float elapsed_time) override;
 	//描画
-	void render(Graphics& graphics) override;
+	void render(Graphics& graphics, Camera* camera) override;
 	//発動
 	bool chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir);
 	//スキルの当たり判定
@@ -28,8 +28,10 @@ public:
 	void debug_gui() override;
 
 private:
+	AttackParam atk_param;
 	//スキルの初期パラメーター
-	MagicBullet::InitializeParam skill_init_param;
+
+	MagicBullet::PublicParam skill_init_param;
 	std::unique_ptr<MeshEffect> test_slash_hit;
 
 };

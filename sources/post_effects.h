@@ -11,6 +11,7 @@ public:
 	
 	~PostEffects(){}
 public:
+	//TODO::JSON化してプリセットのように扱えるようにする！！
 	struct CB_PostEffect
 	{
 		//LUMINA

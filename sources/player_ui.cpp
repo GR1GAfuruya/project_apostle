@@ -9,8 +9,8 @@ GaugeUi(graphics, L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
 {
 	gauge.position = { 30.0f,650.0f };
 	gauge.scale = { 0.15f, 0.1f };
-	gauge.color = { 1,2,0,1 };
-	diff_color = { 2.0f,0.0f, 0.0f, 1.0f };
+	gauge.color = { 0.5f,1,0,1 };
+	diff_color = { 1.0f,0.0f, 0.0f, 1.0f };
 }
 
 

@@ -70,11 +70,11 @@ Player::Player(Graphics& graphics, Camera* camera)
 	}
 
 	//ヒットエフェクト
-	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
-	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
-	test_slash_hit->set_init_scale(2.0f);
-	test_slash_hit->set_init_life_duration(0.5f);
-	test_slash_hit->set_init_color({ 2.5f,2.5f,5.9f,0.5f });
+	slash_hit_line = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
+	slash_hit_line->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	slash_hit_line->set_init_scale(2.0f);
+	slash_hit_line->set_init_life_duration(0.5f);
+	slash_hit_line->set_init_color({ 2.5f,2.5f,5.9f,0.5f });
 
 	
 	slash_hit_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),3000);
@@ -136,7 +136,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 		}
 
 	}
-	test_slash_hit->update(graphics,elapsed_time);
+	slash_hit_line->update(graphics,elapsed_time);
 	slash_hit_particle.get()->update(graphics.get_dc().Get(),elapsed_time, slash_hit_update_cs.Get());
 	//スキルの更新
 	skill_manager.get()->update(graphics, elapsed_time);
@@ -180,8 +180,7 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 
 	//自機モデルのトランスフォーム更新
 	transform = Math::calc_world_matrix(scale, orientation, position);
-	//graphics.shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
-	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), camera->get_view(), camera->get_projection(), transform);
 	//剣描画
 	sword->render(graphics);
 }
@@ -194,15 +193,24 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 {
 	for (auto& se : slash_efects)
 	{
-		se->render(graphics);
+		se->render(graphics,camera);
 	}
-	test_slash_hit->render(graphics);
+	slash_hit_line->render(graphics, camera);
 	slash_hit_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
-	skill_manager.get()->render(graphics);
+	skill_manager.get()->render(graphics,camera);
 	slash_hit_particle->debug_gui("slash_hit");
 	//デバッグGUI描画
-	debug_gui(graphics);
+	debug_gui(graphics,camera);
 
+}
+//==============================================================
+// 
+//描画処理（シャドウ）
+// 
+//==============================================================
+void Player::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
+{
+	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 }
 
 //==============================================================
@@ -379,7 +387,7 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 			//スキルを発動できた場合遷移
 			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, &forward))
 			{
-				transition_attack_bullet_state();//状態遷移
+				transition_attack_bullet_state();
 			}
 			break;
 		case ATK_SKILLTYPE::SPEARS_SEA:
@@ -389,8 +397,20 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 				{
 					transition_attack_ground_state();
 				}
-
 			}
+			break;
+		case ATK_SKILLTYPE::SLASH_WAVE:
+			if (skill_manager->chant_slash_wave(graphics, position, &forward))
+			{
+				transition_r_attack_spring_slash_state();
+			}
+			break;
+		case ATK_SKILLTYPE::LIGHTNING_RAIN:
+			if (skill_manager->chant_lightning_rain(graphics, position, camera->get_lock_on_target()))
+			{
+				transition_attack_pull_slash_state();//状態遷移
+			}
+
 			break;
 		default:
 			break;
@@ -408,6 +428,7 @@ void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged
 {
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func, camera);
 	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func, camera);
+	skill_manager->judge_lightning_rain_vs_enemy(object_colider, damaged_func, camera);
 }
 //==============================================================
 // 
@@ -436,26 +457,26 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 				//攻撃が当たったらスキルのクールタイムを短縮させる
 				skill_manager->cool_time_reduction();
 				camera->set_camera_shake(attack_sword_param.camera_shake);
+				//ヒットストップ
+				camera->set_hit_stop(attack_sword_param.hit_stop);
 
 				//ヒットエフェクト再生
-				if (!test_slash_hit->get_active())
+				if (!slash_hit_line->get_active())
 				{
 					//ヒットエフェクト
-					test_slash_hit->play({ sword->get_collision().end });
-					test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
-					test_slash_hit->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
+					slash_hit_line->play({ sword->get_collision().end });
+					slash_hit_line->set_rotate_quaternion(MeshEffect::AXIS::UP, Noise::instance().random_range(0, 90));
+					slash_hit_line->set_rotate_quaternion(MeshEffect::AXIS::FORWARD, Noise::instance().random_range(0, 90));
 
 					slash_hit_particle->set_emitter_pos({ sword->get_collision().end });
 
 					DirectX::XMFLOAT4X4 sword_hand_mat = {};
 					//剣のトランスフォーム更新
 					model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
-					DirectX::XMFLOAT3 vec = Math::get_posture_forward(test_slash_hit->get_orientation());
+					DirectX::XMFLOAT3 vec = Math::get_posture_forward(slash_hit_line->get_orientation());
 					const float slash_power = 70;
 					//slash_hit_particle->set_emitter_velocity(Math::vector_scale(vec, slash_power));
 					slash_hit_particle->launch_emitter(slash_hit_emit_cs.Get());
-					//ヒットストップ
-					camera->set_camera_stop(0.1f);
 				}
 				//test_slash_hit->play(attack_sword_param.collision.end,100.0f);
 			}
@@ -585,38 +606,29 @@ void Player::save_data_file()
 //デバッグGUI表示
 // 
 //==============================================================
-void Player::debug_gui(Graphics& graphics)
+void Player::debug_gui(Graphics& graphics, Camera* camera)
 {
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
 	imgui_menu_bar("Charactor", "player", display_player_imgui);
 
-	ImGui::Begin("slash_hit");
-	if (ImGui::Button("slash_emit"))
-	{
-		
-		slash_hit_particle.get()->launch_emitter(slash_hit_emit_cs.Get());
-	}
-
-	ImGui::End();
-
 	if (display_player_imgui)
 	{
 		
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
-			static int num = 0;
-			ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size() - 1);
-			int mesh_size = model.get()->model_resource.get()->get_meshes().size();
-			ImGui::DragInt("mesh_size", &mesh_size);
-			DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0] * scale;
-			DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1] * scale;
-			ImGui::DragFloat3("bounding_min", &min.x);
-			ImGui::DragFloat3("bounding_max", &max.x);
-			ImGui::DragFloat("add_root_speed", &add_root_speed);
+			//ヒットエフェクト
+			ImGui::Begin("slash_hit");
+			if (ImGui::Button("slash_emit"))
+			{
 
-			debug_figure->create_cuboid(position, max - min,{1,1,1,1});
+				slash_hit_particle.get()->launch_emitter(slash_hit_emit_cs.Get());
+			}
+			ImGui::End();
+
+
+			//カメラ
 			//トランスフォーム
 			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -667,26 +679,50 @@ void Player::debug_gui(Graphics& graphics)
 					save_data_file();
 				}
 				ImGui::Text("attack_pparam");
-				ImGui::DragInt("power", &attack_sword_param.power, 0.1f);
-				ImGui::DragFloat("sword_invinsible_time", &attack_sword_param.invinsible_time, 0.1f);
+				if (ImGui::CollapsingHeader("combo1"))
+				{
+					ImGui::DragInt("combo1_power", &param.combo_1.power, 0.1f);
+					ImGui::DragFloat("combo1_invinsible_time", &param.combo_1.invinsible_time, 0.1f);
 
-				ImGui::Text("combo1_camera_shake");
-				ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
-				ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
-				ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
-				ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("combo1_camera_shake");
+					ImGui::DragFloat("combo1_shake_x", &param.combo_1.camera_shake.max_x_shake, 0.1f);
+					ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
+					ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
+					ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("hit_stop");
+					ImGui::DragFloat("combo1_stop_time", &param.combo_1.hit_stop.time, 0.1f);
+					ImGui::DragFloat("combo1_stopping_strength", &param.combo_1.hit_stop.stopping_strength, 0.1f);
+				}
+				if (ImGui::CollapsingHeader("combo2"))
+				{
+					ImGui::DragInt("combo2_power", &param.combo_2.power, 0.1f);
+					ImGui::DragFloat("combo2_invinsible_time", &param.combo_2.invinsible_time, 0.1f);
 
-				ImGui::Text("combo2_camera_shake");
-				ImGui::DragFloat("combo2_shake_x", &param.combo_2.camera_shake.max_x_shake, 0.1f);
-				ImGui::DragFloat("combo2_shake_y", &param.combo_2.camera_shake.max_y_shake, 0.1f);
-				ImGui::DragFloat("combo2_time", &param.combo_2.camera_shake.time, 0.1f);
-				ImGui::DragFloat("combo2_smmoth", &param.combo_2.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("combo2_camera_shake");
+					ImGui::DragFloat("combo2_shake_x", &param.combo_2.camera_shake.max_x_shake, 0.1f);
+					ImGui::DragFloat("combo2_shake_y", &param.combo_2.camera_shake.max_y_shake, 0.1f);
+					ImGui::DragFloat("combo2_time", &param.combo_2.camera_shake.time, 0.1f);
+					ImGui::DragFloat("combo2_smmoth", &param.combo_2.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("hit_stop");
+					ImGui::DragFloat("combo2_stop_time", &param.combo_2.hit_stop.time, 0.1f);
+					ImGui::DragFloat("combo2_stopping_strengthy", &param.combo_2.hit_stop.stopping_strength, 0.1f);
 
-				ImGui::Text("combo3_camera_shake");
-				ImGui::DragFloat("combo3_shake_x", &param.combo_3.camera_shake.max_x_shake, 0.1f);
-				ImGui::DragFloat("combo3_shake_y", &param.combo_3.camera_shake.max_y_shake, 0.1f);
-				ImGui::DragFloat("combo3_time", &param.combo_3.camera_shake.time, 0.1f);
-				ImGui::DragFloat("combo3_smmoth", &param.combo_3.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+				}
+				if (ImGui::CollapsingHeader("combo3"))
+				{
+					ImGui::DragInt("combo3_power", &param.combo_3.power, 0.1f);
+					ImGui::DragFloat("combo3_invinsible_time", &param.combo_3.invinsible_time, 0.1f);
+
+					ImGui::Text("combo3_camera_shake");
+					ImGui::DragFloat("combo3_shake_x", &param.combo_3.camera_shake.max_x_shake, 0.1f);
+					ImGui::DragFloat("combo3_shake_y", &param.combo_3.camera_shake.max_y_shake, 0.1f);
+					ImGui::DragFloat("combo3_time", &param.combo_3.camera_shake.time, 0.1f);
+					ImGui::DragFloat("combo3_smmoth", &param.combo_3.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+					ImGui::Text("hit_stop");
+					ImGui::DragFloat("combo3_stop_time", &param.combo_3.hit_stop.time, 0.1f);
+					ImGui::DragFloat("combo3_stopping_strength", &param.combo_3.hit_stop.stopping_strength, 0.1f);
+
+				}
 			}
 			if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -709,8 +745,6 @@ void Player::debug_gui(Graphics& graphics)
 
 			}
 			
-
-
 		}
 		ImGui::End();
 
@@ -719,7 +753,7 @@ void Player::debug_gui(Graphics& graphics)
 
 
 	skill_manager.get()->debug_gui(graphics);
-	test_slash_hit->debug_gui("test_slash_hit");
+	slash_hit_line->debug_gui("test_slash_hit");
 #endif // USE_IMGUI
 
 }

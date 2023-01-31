@@ -35,10 +35,12 @@ public:
 
 	virtual void initialize(Graphics& graphics) {};
 	virtual void update(Graphics& graphics, float elapsed_time) = 0;
-	virtual void render(Graphics& graphics) = 0;
+	virtual void render(Graphics& graphics,Camera* camera) = 0;
 
 	//スキルが終了したかどうか
 	bool is_skill_end() { return skill_end_flag; };
+	//スキルがヒットしているか
+	bool is_skill_hit() { return is_hit; };
 
 	CollisionType get_collision_type() { return collision_type; }
 	//当たり判定情報の取得
@@ -51,7 +53,6 @@ public:
 	//デバッグGUI
 	virtual void debug_gui(string str_id) = 0;
 	void set_is_skill_hit(bool h) { is_hit = h; }
-	AttackParam get_atk_param() { return atk_param; }
 protected:
 
 
@@ -73,8 +74,6 @@ protected:
 	bool skill_end_flag = false;
 	//スキルがヒットしたかどうか
 	bool is_hit = false;
-	//攻撃パラメーター
-	AttackParam atk_param;
 	//位置
 	DirectX::XMFLOAT3 position{};
 	//速力

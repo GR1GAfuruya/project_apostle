@@ -119,14 +119,14 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 //描画処理（ディファード）
 // 
 //==============================================================
-void Meteore::render(Graphics& graphics)
+void Meteore::render(Graphics& graphics, Camera* camera)
 {
 	main_effect->render(graphics);
 	for (auto& m : meteo_wave)
 	{
 		if (m->get_active())
 		{
-			m-> render(graphics);
+			m-> render(graphics,camera);
 		}
 	}
 }
@@ -159,14 +159,13 @@ void Meteore::create_on_circle(DirectX::XMFLOAT3 center, float radius, int index
 
 //==============================================================
 // 
-//指定の位置に上昇
+//徐々に大きくなる
 // 
 //==============================================================
-void Meteore::rising(float elapsed_time, DirectX::XMFLOAT3 target_position, float target_scale, float rise_speed, int index)
+void Meteore::gradual_expansion(float elapsed_time, float target_scale, float scale_speed, int index)
 {
-	params[index].position = Math::lerp(params[index].position, target_position, rise_speed * elapsed_time);
-	params[index].scale = Math::lerp(params[index].scale, { target_scale,target_scale,target_scale }, rise_speed * elapsed_time);
-	DirectX::XMFLOAT3 s = params[index].scale;
+	//徐々に大きく
+	params[index].scale = Math::lerp(params[index].scale, { target_scale,target_scale,target_scale }, scale_speed * elapsed_time);
 	//当たり判定の位置と大きさ更新
 	params[index].colider_sphere.center = params[index].position;
 	params[index].colider_sphere.radius = params[index].scale.x;

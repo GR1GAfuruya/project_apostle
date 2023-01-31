@@ -65,7 +65,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 		char overlay[32];
 		sprintf_s(overlay, "now: %d fps  %.3f ms", static_cast<int>(1000.0f / temp_value), temp_value);
-		ImGui::PlotLines("##frame", values, IM_ARRAYSIZE(values), values_offset, overlay, 0, 20, ImVec2(ImGui::GetWindowSize().x * 0.95f, ImGui::GetWindowSize().y * 0.7f));
+		ImGui::PlotLines("##frame", values, IM_ARRAYSIZE(values), values_offset, overlay, 0, 20, ImVec2(ImGui::GetWindowSize().x * 0.75f, ImGui::GetWindowSize().y * 0.5f));
 
 		ImGui::End();
 	}

@@ -12,6 +12,7 @@ public:
 	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func,Camera* camera);
 	//DebugGUI•\Ž¦
 	void debug_gui() override;
+	AttackParam atk_param;
 
 	SpearsSea::PublicParam init_param;
 };

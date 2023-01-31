@@ -79,7 +79,7 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 }
 //==============================================================
 // 
-// 描画
+// 描画 ※フラスタムカリングあり
 // 
 //==============================================================
 void MeshEffect::render(Graphics& graphics)
@@ -99,6 +99,31 @@ void MeshEffect::render(Graphics& graphics)
 	transform = Math::calc_world_matrix(effect_param.scale, effect_param.orientation, effect_param.position);
 	//レンダー
 	shader->render(graphics.get_dc().Get(), model.get(), transform);
+
+
+}
+//==============================================================
+// 
+// 描画 ※フラスタムカリングあり
+// 
+//==============================================================
+void MeshEffect::render(Graphics& graphics,Camera* camera)
+{
+	//エフェクトがアクティブ状態の場合のみ描画
+	if (!active) return;
+
+	//ピクセルシェーダーが設定されていなければ警告
+	//_ASSERT_EXPR(pixel_shader, "ピクセルシェーダーが設定されていません");
+	//シェーダーをアクティブ状態に
+	shader->active(graphics.get_dc().Get(), vertex_shader.Get(), material->get_ps().Get());
+	//定数バッファ送信
+	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
+	//シェーダーリソース送信
+	material->transfer_shader_resource_view(graphics);
+	//トランスフォーム更新
+	transform = Math::calc_world_matrix(effect_param.scale, effect_param.orientation, effect_param.position);
+	//レンダー
+	shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
 
 	
 }

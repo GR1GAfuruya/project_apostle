@@ -9,6 +9,7 @@ struct AttackParam
 	int power;//攻撃力
 	float invinsible_time;//攻撃対象に課す無敵時間
 	Camera::CameraShakeParam camera_shake;//カメラシェイク
+	Camera::HitStopParam hit_stop;//ヒットストップ
 
 	template<class Archive>
 	void serialize(Archive& archive)
@@ -16,7 +17,8 @@ struct AttackParam
 		archive(
 			cereal::make_nvp("power", power),
 			cereal::make_nvp("invinsible_time", invinsible_time),
-			cereal::make_nvp("camera_shake", camera_shake)
+			cereal::make_nvp("camera_shake", camera_shake),
+			cereal::make_nvp("hit_stop", hit_stop)
 		);
 	}
 };

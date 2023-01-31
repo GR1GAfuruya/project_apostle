@@ -7,11 +7,8 @@
 #define ANISOTROPIC 2
 SamplerState sampler_states[3] : register(s0);
 //	テクスチャ
-Texture2D albedo_map : register(t0);
 Texture2D normal_map : register(t1);
 Texture2D position_map : register(t2);
-Texture2D metal_smooth_map : register(t3);
-Texture2D emissive_map : register(t4);
 
 // ピクセルシェーダー
 float4 main(VS_OUT pin) : SV_TARGET

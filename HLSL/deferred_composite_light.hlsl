@@ -27,7 +27,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     float4 color = tex;
     float4 light = light_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
     float4 P = position_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord);
-            //シャドウマップ
+    //シャドウマップ
     float4 shadowparam = mul(P, ShadowVP);
     float d2 = saturate(shadowparam.z / shadowparam.w);
 
@@ -36,14 +36,13 @@ float4 main(VS_OUT pin) : SV_TARGET
     uv = uv * 0.5 + 0.5; //-1<--->+1を0<--->1
     float2 dist = shadow_map.Sample(BorderSampler, uv).xy;
     float shadow = dist.x > d2 - 0.003;
-    //color.rgb *= shadow;
     color.rgb *= min(shadow + 0.6, 1);
     color.a = 1;
 
     //メタリック
     float metallic = metal_smooth_map.Sample(sampler_states[ANISOTROPIC], pin.texcoord).r;
-    float3 m1 = color.rgb * light.rgb;
-    float3 m0 = color.rgb * 0.4;
+    float3 m1 = color.rgb * light.rgb;//メタリックがある状態
+    float3 m0 = color.rgb * 0.4;//メタリックがない状態
     m0 += light.rgb * 0.05;
     color.rgb = lerp(m0, m1, metallic);
     
@@ -64,9 +63,6 @@ float4 main(VS_OUT pin) : SV_TARGET
     color.rgb = lerp(color.rgb,
 				light.rgb, fresnel);
     
-    
-
-
     return color;
 
 }
