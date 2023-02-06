@@ -10,8 +10,6 @@ void Player::transition_idle_state()
 {
 	p_update = &Player::update_idle_state;
 	model->play_animation(PlayerAnimation::PLAYER_IDLE, true);
-	//ルートモーションを使用するか
-	is_root_motion = false;
 	state = State::IDLE;
 }
 
@@ -19,8 +17,6 @@ void Player::transition_move_state()
 {
 	p_update = &Player::update_move_state;
 	model->play_animation(PlayerAnimation::PLAYER_RUN, true);
-	//ルートモーションを使用するか
-	is_root_motion = false;
 	state = State::MOVE;
 }
 
@@ -28,8 +24,6 @@ void Player::transition_avoidance_state()
 {
 	p_update = &Player::update_avoidance_state;
 	model->play_animation(PlayerAnimation::PLAYER_ROLL, false, 0.1f);
-	//ルートモーションを使用するか
-	is_root_motion = false;
 	state = State::ROLL;
 }
 
@@ -37,8 +31,6 @@ void Player::transition_jump_state()
 {
 	p_update = &Player::update_jump_state;
 	model->play_animation(PlayerAnimation::PLAYER_JUMP, false, 0.1f);
-	//ルートモーションを使用するか
-	is_root_motion = false;
 	state = State::JUMP;
 }
 
@@ -46,8 +38,6 @@ void Player::transition_damage_front_state()
 {
 	p_update = &Player::update_damage_front_state;
 	model->play_animation(PlayerAnimation::PLAYER_DAMAGE_FRONT, false);
-	//ルートモーションを使用するか
-	is_root_motion = false;
 	state = State::FRONT_DAMAGE;
 }
 
@@ -55,7 +45,6 @@ void Player::transition_r_attack_spring_slash_state()
 {
 	p_update = &Player::update_r_attack_spring_slash_state;
 	model->play_animation(PlayerAnimation::PLAYER_ATK_SPRING_SLASH, false);
-	//ルートモーション
 	add_impulse(Math::get_posture_forward(orientation) * 50.0f);
 	state = State::SKILL;
 }
@@ -64,8 +53,6 @@ void Player::transition_attack_pull_slash_state()
 {
 	p_update = &Player::update_attack_pull_slash_state;
 	model->play_animation(PlayerAnimation::PLAYER_PULL_SLASH, false);
-	//ルートモーションを使用するか
-	is_root_motion = false;
 	state = State::SKILL;
 
 }

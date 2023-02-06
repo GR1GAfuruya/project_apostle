@@ -15,6 +15,11 @@ public:
 	void render(float elapsedTime,Graphics& graphics) override;
 
 private:
+	enum class TITLE_MENU
+	{
+		GAME_START,
+		EXIT
+	};
 	//タイトル背景
 	std::unique_ptr<SpriteBatch> sprite_title_back = nullptr;
 	//タイトルロゴ
@@ -25,9 +30,14 @@ private:
 	std::unique_ptr<SpriteBatch> sprite_start = nullptr;
 	//EXIT文字
 	std::unique_ptr<SpriteBatch> sprite_exit = nullptr;
+	//選択バー
+	std::unique_ptr<SpriteBatch> select_bar = nullptr;
 	//カメラ
 	std::unique_ptr<Camera> camera;
 
+	DirectX::XMFLOAT2 select_bar_pos;
+
+	TITLE_MENU selected_menu_state;
 	//ロゴ背景に適応するピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> logo_ps;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> srv_main_color;

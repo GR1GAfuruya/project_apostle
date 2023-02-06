@@ -78,6 +78,7 @@ public:
 	void set_init_color(DirectX::XMFLOAT4 c) { init_effect_param.color = c; }
 	void set_init_velocity(DirectX::XMFLOAT3 v) { init_effect_param.velosity = v; }
 	void set_init_life_duration(float d) { init_effect_param.life_duration = d; }
+	void set_life_duration(float d) { effect_param.life_duration = d; }
 	//Setter
 	void set_position(DirectX::XMFLOAT3 p) { effect_param.position = p; }
 	void set_orientation(DirectX::XMFLOAT4 o) { effect_param.orientation = o; }
@@ -99,7 +100,7 @@ public:
 	float get_life_rate() { return life_time/ effect_param.life_duration; }
 	float get_life_time() { return life_time; }
 	bool get_active() { return active; }
-
+	Material get_material() { return *material; }
 	void reset_orientation();
 protected:
 	void dissolve_update(float elapsed_time);

@@ -44,8 +44,8 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
-	 test_mesh_effect->set_material(MaterialManager::instance().mat_lightning.get());
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 test_mesh_effect->set_init_scale(0.1f);
 	 test_mesh_effect->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 
@@ -111,7 +111,7 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->set_init_life_duration(5);
 	//test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
-
+	test_mesh_effect->get_material().reload(graphics);
 	//test_emitter->update(graphics, elapsed_time);
 	//test_meteore->update(graphics, elapsed_time);
 #endif

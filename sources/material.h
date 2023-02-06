@@ -17,6 +17,8 @@ public:
 
 	void create_pixel_shader(ID3D11Device* device, const char* cso_name);
 
+	void reload(Graphics& graphics);
+
 	const Microsoft::WRL::ComPtr<ID3D11VertexShader> get_vs() { return vertex_shader.Get(); }
 	const Microsoft::WRL::ComPtr<ID3D11PixelShader> get_ps() { return pixel_shader.Get(); }
 

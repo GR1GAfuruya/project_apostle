@@ -1,5 +1,6 @@
 #include "skill_ui.h"
 #include "user.h"
+#include "device.h"
 //==============================================================
 // 
 // コンストラクタ
@@ -90,6 +91,23 @@ void SkillUI::icon_render(Graphics& graphics)
 	}
 
 	skill_slot_icon->end(graphics.get_dc().Get());
+	//矢印
+	{
+		//スキル選択更新
+		GamePad* game_pad = &Device::instance().get_game_pad();
+		//入力情報を取得
+		float ax = game_pad->get_axis_RX();
+		float ay = game_pad->get_axis_RY();
+		DirectX::XMFLOAT2 stick_vec = { ax,ay };
+
+		float arrow_angle;
+		DirectX::XMFLOAT2 standard_axis = { 0, 1 };
+		arrow_angle = Math::Dot(stick_vec, standard_axis);
+		arrow_angle = acosf(arrow_angle);
+		float cross{ stick_vec.x * standard_axis.y - stick_vec.y * standard_axis.x };
+		if (cross < 0) arrow_angle = 360.0f - arrow_angle;
+
+	}
 }
 //==============================================================
 // 
@@ -144,6 +162,9 @@ void SkillUI::debug_gui(string str_id)
 		ImGui::DragFloat("add_ang_start", &add_ang_start);
 		ImGui::DragFloat("add_ang_end", &add_ang_end);
 		ImGui::DragFloat("add_ang_lerp_speed", &add_ang_lerp_speed,0.1f);
+		ImGui::DragFloat("add_ang_lerp_speed", &add_ang_lerp_speed,0.1f);
+		//ImGui::DragFloat2("arrow_pos", &arrow_pos.x,0.1f);
+		//ImGui::DragFloat2("arrow_scale", &arrow_scale.x,0.1f);
 		ImGui::DragFloat2("cool_time_gauge_pos", &slots_ui.cool_time_gauge_pos.x,0.1f);
 		ImGui::Separator();
 		ImGui::PopID();

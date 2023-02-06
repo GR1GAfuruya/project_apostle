@@ -231,7 +231,6 @@ void Boss::debug_gui()
 				{
 					transition_skill_3_state();
 				}
-
 			}
 			if (ImGui::Button("load"))
 			{
