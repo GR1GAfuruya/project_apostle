@@ -400,7 +400,7 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 			}
 			break;
 		case ATK_SKILLTYPE::SLASH_WAVE:
-			if (skill_manager->chant_slash_wave(graphics, position, &forward))
+			if (skill_manager->chant_slash_wave(graphics, &left_hand_pos, &forward))
 			{
 				transition_r_attack_spring_slash_state();
 			}
@@ -429,6 +429,7 @@ void Player::judge_skill_collision(Capsule object_colider, AddDamageFunc damaged
 	skill_manager->judge_magic_bullet_vs_enemy(object_colider, damaged_func, camera);
 	skill_manager->judge_spear_sea_vs_enemy(object_colider, damaged_func, camera);
 	skill_manager->judge_lightning_rain_vs_enemy(object_colider, damaged_func, camera);
+	skill_manager->judge_slash_wave_vs_enemy(object_colider, damaged_func, camera);
 }
 //==============================================================
 // 

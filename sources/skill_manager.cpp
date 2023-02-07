@@ -286,7 +286,7 @@ bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_
 	return spear_sea->chant(graphics, launch_pos, target_pos);
 }
 
-bool SkillManager::chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* dir)
+bool SkillManager::chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
 {
 	return slash_wave->chant(graphics, launch_pos, dir);
 }

@@ -303,6 +303,8 @@ void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapse
 	{
 		transition_idle_state();
 	}
+	//‘¬—Íˆ—XV
+	update_velocity(elapsed_time, position);
 
 }
 
