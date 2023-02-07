@@ -1,7 +1,9 @@
 #include "fullscreen_quad.hlsli"
-
+#include "math.hlsli"
 #include "constants.hlsli"
 Texture2D originall_texture : register(t0);
+Texture2D dissolve_texture : register(t10);
+Texture2D distortion_texture : register(t11);
 
 // サンプラーステート
 #define POINT 0
@@ -9,6 +11,16 @@ Texture2D originall_texture : register(t0);
 #define ANISOTROPIC 2
 SamplerState sampler_states[3] : register(s0);
 
+//テクスチャを歪ませる処理（返り値はテクスチャのUVに代入）
+float2 distortion(float2 texcoord, float2 tile, float2 scroll_speed)
+{
+    //タイリングとUVスクロールの処理
+    float2 distortion_uv = tilling(texcoord, tile) + (scroll_speed * time);
+    //歪み
+    float4 distortion_value = distortion_texture.Sample(sampler_states[LINEAR], distortion_uv);
+    return distortion_value.rg;
+
+}
 
 
 float3 RGB2HSV(float3 c)
@@ -130,6 +142,12 @@ float4 radial_blur(float4 c, float2 uv)
     return color / (0.5 * float(channelspread + 1));
 }
 
+float dissolve(float2 uv)
+{
+    float4 dissolve = dissolve_texture.Sample(sampler_states[LINEAR], uv);
+    float alpha = step(scsene_threshold, dissolve.r);
+    return alpha;
+}
 
 float4 main(VS_OUT pin) : SV_Target0
 {
@@ -143,5 +161,10 @@ float4 main(VS_OUT pin) : SV_Target0
     color = Contrast(color);
     //ビネット
     color = Vignette(color,pin.texcoord);
+    
+    //ディゾルブ
+    float2 tile = float2(0.3, 0.3);
+    float2 scroll_speed = float2(0, 0);
+    color.a = dissolve(distortion(pin.texcoord, tile, scroll_speed));
     return color;
 }

@@ -82,4 +82,7 @@ public:
         const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const SkeletalMesh* model,
         const DirectX::XMFLOAT4X4 model_world_mat,
         HitResult& result);
+
+    static bool ring_vs_capsule(const DirectX::XMFLOAT3& center_ring_position, float ring, float ring_width, float ring_height,
+        const DirectX::XMFLOAT3& capsule_start, const DirectX::XMFLOAT3& capsule_end, float capsule_radius);
 };

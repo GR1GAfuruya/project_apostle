@@ -26,7 +26,7 @@ void SceneGame::initialize(Graphics& graphics)
 	StageMain* stageMain = new StageMain(graphics);
 	stageManager.Register(stageMain);
 
-	camera = std::make_unique<Camera>(graphics);
+	camera = std::make_unique<Camera>(graphics, "./resources/Data/scene_game/game_post_effect.json");
 	player = std::make_unique<Player>(graphics, camera.get());
 	boss = std::make_unique<Boss>(graphics);
 	//post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
@@ -118,6 +118,20 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
 
 	//ƒQ[ƒ€ƒNƒŠƒA
+	if (boss->get_health() <= 0)
+	{
+			PostEffects::CB_PostEffect nowparam = camera.get()->get_post_effect()->get_now_param();
+			nowparam.scene_threshold.x += elapsed_time;
+			camera->get_post_effect()->set_posteffect_param(nowparam);
+			if (nowparam.scene_threshold.x >= 1.0f)
+			{
+				SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTitle(graphics)));
+				return;
+			}
+		
+
+
+	}
 }
 
 //==============================================================

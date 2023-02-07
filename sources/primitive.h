@@ -28,3 +28,14 @@ struct Capsule
 
 	
 };
+
+struct Ring
+{
+	DirectX::XMFLOAT3 center;
+	float width;
+	float height;
+	float radius;
+
+
+};
+

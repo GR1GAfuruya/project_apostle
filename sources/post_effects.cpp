@@ -3,15 +3,23 @@
 #include "framework.h"
 #include "shader.h"
 #include "user.h"
+#include "texture.h"
+
+#include <filesystem>
+#include <fstream>
+#include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/string.hpp>
 
 
-PostEffects::PostEffects(ID3D11Device* device)
+PostEffects::PostEffects(ID3D11Device* device, const char* post_effect_file_path)
 {
-	//frameバッファー初期化
+	//ファイル名登録
+	file_path = post_effect_file_path;
 	//元画像
 	original_frame_buffer = make_unique<FrameBuffer>(device,
 		SCREEN_WIDTH, SCREEN_HEIGHT);
-	//輝度抽出画像
+	//ポストエフェクトを掛ける画像
 	post_effect_frame_buffer = make_unique<FrameBuffer>(device,
 		SCREEN_WIDTH, SCREEN_HEIGHT,FB_FLAG::COLOR);
 
@@ -24,8 +32,17 @@ PostEffects::PostEffects(ID3D11Device* device)
 	//定数バッファ
 	cb_post_effect = std::make_unique<Constants<CB_PostEffect>>(device);
 
+	//パラメーターロード
+	load_data_file();
+
 	//シェーダー
 	create_ps_from_cso(device, "shaders/post_effects.cso", post_effects.ReleaseAndGetAddressOf());
+
+	//テクスチャ設定
+	D3D11_TEXTURE2D_DESC texture2d_desc{};
+	load_texture_from_file(device, L"./resources/Effects/Textures/T_Perlin_Noise_M.tga", dissolve_texture.ReleaseAndGetAddressOf(), &texture2d_desc);
+	load_texture_from_file(device, L"./resources/TexMaps/distortion.tga", distortion_texture.ReleaseAndGetAddressOf(), &texture2d_desc);
+
 }
 
 //ポストエフェクト用のRTVに書き込み開始
@@ -56,6 +73,11 @@ void PostEffects::blit(Graphics& graphics)
 	bloom->blit(graphics.get_dc().Get());
 	post_effect_frame_buffer->deactivate(graphics.get_dc().Get());
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_OFF_ZW_OFF, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+
+	//シーン遷移ディゾルブテクスチャ
+	graphics.get_dc().Get()->PSSetShaderResources(10, 1, dissolve_texture.GetAddressOf());
+	graphics.get_dc().Get()->PSSetShaderResources(11, 1, dissolve_texture.GetAddressOf());
+	//ポストエフェクトをかける
 	final_sprite->blit(graphics.get_dc().Get(), post_effect_frame_buffer->get_color_map().GetAddressOf(), 0, 1, post_effects.Get());
 
 
@@ -65,34 +87,83 @@ void PostEffects::blit(Graphics& graphics)
 	if (display_post_effects_imgui)
 	{
 		ImGui::Begin("PostEffect");
-		//パラメータ設定
-		if (display_post_effects_imgui)
+		ImGui::Text("Data");
+		if (ImGui::Button("load"))
 		{
-			if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				ImGui::DragFloat2("origin", &cb_post_effect->data.origin.x, 1.0f, 0.0f, 20.0f);
-				ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
-				ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
-				ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 1.0f, 10.0f);
-				ImGui::DragFloat("contrast", &cb_post_effect->data.contrast, 0.1f, 0.0f, 50.0f);
-				ImGui::DragFloat("ray_power", &cb_post_effect->data.ray_power, 0.1f, 0.0f, 50.0f);
-				ImGui::DragFloat("blur_threshold", &cb_post_effect->data.bloom_extraction_threshold, 0.1f, -1.0f, 10.0f);
-				ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
-				ImGui::DragFloat("falloff", &cb_post_effect->data.falloff, 0.1f, 0, 1.0f);
-				ImGui::DragFloat("amount", &cb_post_effect->data.amount, 0.1f, 0, 1.0f);
-				ImGui::DragFloat3("vignette_color", &cb_post_effect->data.vignette_color.x, 0.1f, 0, 1.0f);
-				ImGui::DragFloat("radial_power", &cb_post_effect->data.radial_power, 0.1f, 0, 1.0f);
+			load_data_file();
+		}
+		ImGui::Separator();
+		if (ImGui::Button("save"))
+		{
+			save_data_file();
+		}
+		//パラメータ設定
+		if (ImGui::CollapsingHeader("Param", ImGuiTreeNodeFlags_DefaultOpen))
+		{
 
-			}
-			if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				ImGui::Text("original");
-				ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
-			}
+			ImGui::DragFloat("blur_threshold", &cb_post_effect->data.bloom_extraction_threshold, 0.1f, -1.0f, 10.0f);
+			ImGui::DragFloat("blur_intensity", &cb_post_effect->data.blur_convolution_intensity, 0.1f, 0, 20);
+			ImGui::DragFloat("radial_power", &cb_post_effect->data.radial_power, 0.1f, 0, 1.0f);
+			ImGui::DragFloat2("scene_threshold", &cb_post_effect->data.scene_threshold.x, 0.1f, 0, 1.0f);
+			ImGui::DragFloat("hueShift", &cb_post_effect->data.hueShift, 0.1f, 0.0f, 10.0f);
+			ImGui::DragFloat("saturation", &cb_post_effect->data.saturation, 0.1f, 0.0f, 10.0f);
+			ImGui::DragFloat("brightness", &cb_post_effect->data.brightness, 0.1f, 1.0f, 10.0f);
+			ImGui::DragFloat("contrast", &cb_post_effect->data.contrast, 0.1f, 0.0f, 50.0f);
+			ImGui::DragFloat("falloff", &cb_post_effect->data.falloff, 0.1f, 0, 1.0f);
+			ImGui::DragFloat("amount", &cb_post_effect->data.amount, 0.1f, 0, 1.0f);
+			ImGui::DragFloat3("vignette_color", &cb_post_effect->data.vignette_color.x, 0.1f, 0, 1.0f);
 
 		}
+		if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Text("original");
+			ImGui::Image(original_frame_buffer->get_color_map().Get(), { SCREEN_WIDTH * (ImGui::GetWindowSize().x / SCREEN_WIDTH),  SCREEN_HEIGHT * (ImGui::GetWindowSize().y / SCREEN_HEIGHT) });
+		}
+
+
 		ImGui::End();
-	}
+	};
 #endif
 
+}
+
+void PostEffects::load_data_file()
+{
+	// Jsonファイルから値を取得
+	std::filesystem::path path = file_path;
+	path.replace_extension(".json");
+	if (std::filesystem::exists(path.c_str()))
+	{
+		std::ifstream ifs;
+		ifs.open(path);
+		if (ifs)
+		{
+			cereal::JSONInputArchive o_archive(ifs);
+			o_archive(cb_post_effect.get()->data);
+		}
+	}
+
+}
+
+void PostEffects::save_data_file()
+{
+	//ベースクラスの初期化パラメーター情報を更新
+	post_effect_init_param = cb_post_effect.get()->data;
+	// Jsonファイルから値を取得
+	std::filesystem::path path = file_path;
+	path.replace_extension(".json");
+	std::ofstream ifs;
+	ifs.open(path);
+	if (ifs)
+	{
+		cereal::JSONOutputArchive o_archive(ifs);
+		o_archive(post_effect_init_param);
+	}
+
+}
+
+PostEffects::CB_PostEffect& PostEffects::get_now_param()
+{
+	CB_PostEffect param = cb_post_effect.get()->data;
+	return param;
 }

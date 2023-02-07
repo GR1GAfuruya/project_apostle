@@ -263,7 +263,6 @@
     <ClCompile Include="sources\regenerate_launcher.cpp" />
     <ClCompile Include="sources\resource_manager.cpp" />
     <ClCompile Include="sources\restraint_launcher.cpp" />
-    <ClCompile Include="sources\scene_tutorial.cpp" />
     <ClCompile Include="sources\scene_game.cpp" />
     <ClCompile Include="sources\scene_loading.cpp" />
     <ClCompile Include="sources\scene_manager.cpp" />
@@ -331,7 +330,6 @@
     <ClInclude Include="sources\player_ui.h" />
     <ClInclude Include="sources\regenerate_launcher.h" />
     <ClInclude Include="sources\restraint_launcher.h" />
-    <ClInclude Include="sources\scene_tutorial.h" />
     <ClInclude Include="sources\shadow_map_shader.h" />
     <ClInclude Include="sources\skill.h" />
     <ClInclude Include="sources\skill_magic_bullet.h" />
@@ -450,23 +448,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\blur_ps.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AssemblyCode</AssemblerOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AssemblyCode</AssemblerOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AssemblyCode</AssemblerOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
     <FxCompile Include="HLSL\hit_effect_emit_cs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -506,10 +487,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="HLSL\color_filter_ps.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\cell_fire_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -717,23 +694,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\luminance_extraction_ps.hlsl">
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AssemblyCode</AssemblerOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AssemblyCode</AssemblerOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shaders\%(Filename).cso</ObjectFileOutput>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AssemblyCode</AssemblerOutput>
-      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
     <FxCompile Include="HLSL\meteore_core.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -802,13 +762,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\radial_blur_ps.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="HLSL\radial_blur_vs.hlsl" />
     <FxCompile Include="HLSL\ramp_shader_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

@@ -14,7 +14,7 @@ bool SlashWaveLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos,
 	//‰r¥‰Â”\‚Èó‘Ô‚È‚ç
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<SlashWave>(graphics, launch_pos, dir, init_param);
+		std:unique_ptr<Skill> skill = make_unique<SlashWave>(graphics, launch_pos, dir, init_param);
 		//ƒŠƒXƒg‚É’Ç‰Á
 		cool_time = max_cool_time;
 		skills.push_back(std::move(skill));

@@ -5,7 +5,7 @@
 #include "light.h"
 #include "camera.h"
 #include <functional>
-class BossAttackSkill1 :public MoveBehavior
+class BossAttackSkill1
 {
 	//==============================================================
 	// 
@@ -14,15 +14,12 @@ class BossAttackSkill1 :public MoveBehavior
 	//=============================================================
 public:
 
-	struct MeteoreParam
+	struct WaveParam
 	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 velocity;
-		DirectX::XMFLOAT3 move_vec;
 		DirectX::XMFLOAT3 scale;
-		bool is_calc_velocity = false;
+		float scale_speed;
 		bool is_hit = false;
-		Sphere colider_sphere;
+		Ring colider_ring;
 
 	};
 	BossAttackSkill1(Graphics& graphics);
@@ -46,20 +43,8 @@ public:
 
 
 private:
-	void update_velocity(float elapsed_time, int index);
-	//移動に関するパラメーターをセット
-	void move(float vx, float vz, float speed, int index);
-	//垂直速力更新処理
-	void update_vertical_velocity(float elapsed_frame, int index);
-	//垂直移動更新処理
-	void update_vertical_move(float elapsed_time, int index);
-	//水平速力更新処理
-	void update_hrizontal_velocity(float elapsed_frame, int index);
-	//水平移動更新処理
-	void update_horizontal_move(float elapsed_time, int index);
-	//弾が当たった時の処理
-	void on_hit(int index);
 
+	void none_update(Graphics& graphics, float elapsed_time, Camera* camera);
 	//チャージ時の更新
 	void charge_state_update(Graphics& graphics, float elapsed_time, Camera* camera);
 	//攻撃時の更新
@@ -69,10 +54,9 @@ private:
 
 	StateUpdate state_update;
 	float ray_power = 5.0f;
-	std::unique_ptr<InstanceMeshEffect> meteore_effect;
 	std::unique_ptr<MeshEffect> arm_effect;
-	std::unique_ptr<MeshEffect> meteo_wave[3];
-	std::unique_ptr<MeteoreParam[]> params;
+	std::unique_ptr<MeshEffect>wave;
+	WaveParam params;
 
 	std::unique_ptr<GPU_Particles> spark_effect;
 	//GPUパーティクルのエミッターCS
@@ -80,16 +64,16 @@ private:
 	//GPUパーティクルのアップデートCS
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> update_cs;
 
-	DirectX::XMFLOAT3 skill_dir[3];
 
 	DirectX::XMFLOAT3 arm_pos;
 	DirectX::XMFLOAT3 arm_dir;
 	float range;
 	float charge_timer;
 	float charge_time;
-	static const int MAX_NUM = 3;
+	float skill_time;
 	AttackParam at_param;
 
+	bool display_imgui = false;
 	//チャージ時のカメラシェイク
 	Camera::CameraShakeParam camera_shake = {};
 

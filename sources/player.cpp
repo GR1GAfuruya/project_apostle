@@ -690,6 +690,7 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 					ImGui::DragFloat("combo1_shake_y", &param.combo_1.camera_shake.max_y_shake, 0.1f);
 					ImGui::DragFloat("combo1_time", &param.combo_1.camera_shake.time, 0.1f);
 					ImGui::DragFloat("combo1_smmoth", &param.combo_1.camera_shake.shake_smoothness, 0.1f, 0.1f, 1.0f);
+
 					ImGui::Text("hit_stop");
 					ImGui::DragFloat("combo1_stop_time", &param.combo_1.hit_stop.time, 0.1f);
 					ImGui::DragFloat("combo1_stopping_strength", &param.combo_1.hit_stop.stopping_strength, 0.1f);

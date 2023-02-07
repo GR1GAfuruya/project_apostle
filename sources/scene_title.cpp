@@ -1,7 +1,6 @@
 #include "scene_title.h"
 #include "scene_loading.h"
 #include "scene_game.h"
-#include "scene_tutorial.h"
 #include "scene_manager.h"
 #include "device.h"
 #include "texture.h"
@@ -21,8 +20,8 @@ SceneTitle::SceneTitle(Graphics& graphics)
 
 	create_ps_from_cso(graphics.get_device().Get(), "./shaders/title_logo.cso", logo_ps.ReleaseAndGetAddressOf());
 
-
-	camera = std::make_unique<Camera>(graphics);
+	is_change_scean_start = false;
+	camera = std::make_unique<Camera>(graphics, "./resources/Data/scene_title/title_post_effect.json");
 
 	//セレクトバー
 	selected_menu_state = TITLE_MENU::GAME_START;
@@ -40,6 +39,8 @@ void SceneTitle::finalize()
 void SceneTitle::update(float elapsedTime, Graphics& graphics)
 {
 	//カメラ更新
+	camera->update(elapsedTime);
+
 	camera->calc_view_projection(graphics, elapsedTime);
 	//デバイス
 	Mouse& mouse = Device::instance().get_mouse();
@@ -64,7 +65,7 @@ void SceneTitle::update(float elapsedTime, Graphics& graphics)
 	case SceneTitle::TITLE_MENU::GAME_START:
 		if (mouse.get_button() & mouse.BTN_Z || game_pad.get_button() & game_pad.BTN_A)
 		{
-			SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneGame(graphics)));
+			is_change_scean_start = true;
 		}
 		break;
 	case SceneTitle::TITLE_MENU::EXIT:
@@ -77,7 +78,17 @@ void SceneTitle::update(float elapsedTime, Graphics& graphics)
 		break;
 	}
 
-
+	if (is_change_scean_start)
+	{
+		PostEffects::CB_PostEffect nowparam = camera.get()->get_post_effect()->get_now_param();
+		nowparam.scene_threshold.x += elapsedTime;
+		camera->get_post_effect()->set_posteffect_param(nowparam);
+		if (nowparam.scene_threshold.x >= 1.0f)
+		{
+			SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneGame(graphics)));
+			return;
+		}
+	}
 
 }
 
@@ -87,7 +98,7 @@ void SceneTitle::render(float elapsedTime,Graphics& graphics)
 	const DirectX::XMFLOAT2 title_pos = { 130,100 };
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 
-	//camera->get_post_effect()->begin(graphics.get_dc().Get());
+	camera->get_post_effect()->begin(graphics.get_dc().Get());
 	//タイトル背景
 	{
 		sprite_title_back->begin(graphics.get_dc().Get());
@@ -153,9 +164,9 @@ void SceneTitle::render(float elapsedTime,Graphics& graphics)
 	//***************************************************************//
 	///						ポストエフェクト  				        ///
 	//***************************************************************//
-	//graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
-	//camera->get_post_effect()->end(graphics.get_dc().Get());
-	//camera->get_post_effect()->blit(graphics);
+	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
+	camera->get_post_effect()->end(graphics.get_dc().Get());
+	camera->get_post_effect()->blit(graphics);
 
 //#if USE_IMGUI
 //	ImGui::Begin("sprite");

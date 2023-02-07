@@ -805,3 +805,21 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
     }
     return hit;
 }
+
+bool Collision::ring_vs_capsule(const DirectX::XMFLOAT3& center_ring_position, float ring_radius, float ring_width, float ring_height,
+    const DirectX::XMFLOAT3& capsule_start, const DirectX::XMFLOAT3& capsule_end, float capsule_radius)
+{
+    debug_figure->create_sphere(center_ring_position, ring_radius, { 0,0,1,1 });
+
+    //ã‰º‚Ì”»’è
+    if (center_ring_position.y + ring_height < capsule_start.y) return false;
+    if (center_ring_position.y - ring_height > capsule_end.y) return false;
+
+    //ƒŠƒ“ƒO‚Ì“à‘¤‚ÆŠO‘¤‚Ì”»’è
+    float ring_capsule_length = Math::calc_vector_AtoB_length({ center_ring_position.x, center_ring_position.z }, { capsule_start.x, capsule_start.z });
+    if(ring_capsule_length > ring_radius + ring_width) return false;
+    if(ring_capsule_length < ring_radius - ring_width) return false;
+
+    //ƒŠƒ“ƒO‚Ì•”•ª‚É‚ ‚½‚Á‚Ä‚¢‚½‚çtrue
+    return true;
+}
