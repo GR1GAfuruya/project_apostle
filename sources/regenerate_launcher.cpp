@@ -2,7 +2,7 @@
 #include "skill_regenerate.h"
 RegenerateLauncher::RegenerateLauncher(Graphics& graphics)
 {
-	max_cool_time = 5;
+	max_cool_time = 15.0f;
 }
 
 bool RegenerateLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)

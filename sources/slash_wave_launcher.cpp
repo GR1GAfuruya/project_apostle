@@ -6,7 +6,7 @@ SlashWaveLauncher::SlashWaveLauncher(Graphics& graphics)
 	atk_param.invinsible_time = 0.2f;
 	init_param.speed = 500.0f;
 	init_param.collider_radius = 5.0f;
-	max_cool_time = 0.5f;
+	max_cool_time = 15.0f;
 }
 
 bool SlashWaveLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)

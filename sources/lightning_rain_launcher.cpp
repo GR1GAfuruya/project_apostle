@@ -15,7 +15,7 @@ LightningRainLauncher::LightningRainLauncher(Graphics& graphics)
 	init_param.skill_duration = 1.5f;
 
 	//クールタイム
-	max_cool_time = 7.0f;
+	max_cool_time = 15.0f;
 
 }
 //==============================================================

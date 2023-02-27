@@ -45,9 +45,19 @@ void SceneGame::initialize(Graphics& graphics)
 	//テスト用
 #if _DEBUG
 	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+	 test_mesh_effect2 = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+	 test_mesh_effect3 = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
 	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 test_mesh_effect->set_init_scale(0.1f);
 	 test_mesh_effect->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
+
+	 test_mesh_effect2->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect2->set_init_scale(0.1f);
+	 test_mesh_effect2->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
+
+	 test_mesh_effect3->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect3->set_init_scale(0.1f);
+	 test_mesh_effect3->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 
 
 	// test_emitter = std::make_unique<Emitter>(graphics,200);
@@ -215,7 +225,11 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };
 	test_mesh_effect->render(graphics,camera.get());
+	test_mesh_effect2->render(graphics,camera.get());
+	test_mesh_effect3->render(graphics,camera.get());
 	test_mesh_effect->debug_gui("test_effect");
+	test_mesh_effect2->debug_gui("test_effect2");
+	test_mesh_effect3->debug_gui("test_effect3");
 	test_mesh_effect->set_position(test_effect_pos);
 	test_mesh_effect->set_scale(test_effect_scale);
 	#if USE_IMGUI
@@ -227,6 +241,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 		if (ImGui::Button("test_effect_play"))
 		{
 			test_mesh_effect->play(test_effect_pos);
+			test_mesh_effect2->play(test_effect_pos);
+			test_mesh_effect3->play(test_effect_pos);
 		}
 		ImGui::DragFloat3("pos", &test_effect_pos.x);
 		ImGui::DragFloat3("color", &test_effect_color.x, 0.1f);

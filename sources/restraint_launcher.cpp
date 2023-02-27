@@ -7,7 +7,7 @@
 //==============================================================
 RestraintLauncher::RestraintLauncher(Graphics& graphics)
 {
-	max_cool_time = 2;
+	max_cool_time == 15.0f;
 }
 //==============================================================
 // 

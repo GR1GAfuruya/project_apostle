@@ -27,7 +27,7 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 	atk_param.hit_stop.time = 0.4f;
 	atk_param.hit_stop.stopping_strength = 5.0f;
 	//クールタイム
-	max_cool_time = 12.0f;
+	max_cool_time = 15.0f;
 
 }
 //==============================================================
