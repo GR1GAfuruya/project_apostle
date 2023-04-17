@@ -809,7 +809,9 @@ bool Collision::ray_vs_model(const DirectX::XMFLOAT3& start, const DirectX::XMFL
 bool Collision::ring_vs_capsule(const DirectX::XMFLOAT3& center_ring_position, float ring_radius, float ring_width, float ring_height,
     const DirectX::XMFLOAT3& capsule_start, const DirectX::XMFLOAT3& capsule_end, float capsule_radius)
 {
-    debug_figure->create_sphere(center_ring_position, ring_radius, { 0,0,1,1 });
+    debug_figure->create_cylinder(center_ring_position, ring_radius + ring_width, ring_height, { 0,0,1,1 });
+    debug_figure->create_cylinder(center_ring_position, ring_radius - ring_width, ring_height, { 0,0,0.7f,1 });
+    debug_figure->create_capsule(capsule_start, capsule_end, capsule_radius, { 1,0,0,1 });
 
     //ã‰º‚Ì”»’è
     if (center_ring_position.y + ring_height < capsule_start.y) return false;

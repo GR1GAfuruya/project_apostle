@@ -69,7 +69,6 @@ public:
 	void debug_gui(string str_id);
 
 
-
 	//初期化関数
 	void set_init_position(DirectX::XMFLOAT3 p) { init_effect_param.position = p; }
 	void set_init_orientation(DirectX::XMFLOAT4 o) { init_effect_param.orientation = o; }
@@ -91,6 +90,7 @@ public:
 	void set_rotate_quaternion(AXIS axis, float ang);
 	void rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec);
 	void set_material(Material* m) { material = m; };
+	void set_dissolve_flag(bool flag) { is_dissolve = flag; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return effect_param.position; }
 	DirectX::XMFLOAT4 get_orientation() { return effect_param.orientation; }
@@ -142,6 +142,8 @@ protected:
 	bool active = false;
 	//ループ再生するかどうか
 	bool is_loop = false;
+	//ディゾルブするかどうか
+	bool is_dissolve = true;
 	//デバッグGUIフラグ
 	bool display_imgui = false;
 

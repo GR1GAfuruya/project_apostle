@@ -154,7 +154,7 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 			attack_sword_param.is_attack = false;
 		}
 	}
-	
+
 	collider.start = position;
 	collider.end = { position.x,position.y + chara_param.height, position.z };
 	collider.radius = 1.0f;
@@ -460,7 +460,7 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 				camera->set_camera_shake(attack_sword_param.camera_shake);
 				//ヒットストップ
 				camera->set_hit_stop(attack_sword_param.hit_stop);
-
+				game_pad->set_vibration(attack_sword_param.hit_viberation.l_moter, attack_sword_param.hit_viberation.r_moter, attack_sword_param.hit_viberation.vibe_time);
 				//ヒットエフェクト再生
 				if (!slash_hit_line->get_active())
 				{
@@ -670,6 +670,11 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 			}
 			if (ImGui::CollapsingHeader("AttackCameraShake", ImGuiTreeNodeFlags_DefaultOpen))
 			{
+				if (ImGui::Button("set_vibration"))
+				{
+					game_pad->set_vibration(1, 1, 0.5);
+
+				}
 				if (ImGui::Button("load"))
 				{
 					load_data_file();
@@ -694,6 +699,9 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 					ImGui::Text("hit_stop");
 					ImGui::DragFloat("combo1_stop_time", &param.combo_1.hit_stop.time, 0.1f);
 					ImGui::DragFloat("combo1_stopping_strength", &param.combo_1.hit_stop.stopping_strength, 0.1f);
+					ImGui::DragFloat("combo1_hit_viberation.l_moter", &param.combo_1.hit_viberation.l_moter, 0.1f);
+					ImGui::DragFloat("combo1_hit_viberation.r_moter", &param.combo_1.hit_viberation.r_moter, 0.1f);
+					ImGui::DragFloat("combo1_vibe_time", &param.combo_1.hit_viberation.vibe_time, 0.1f);
 				}
 				if (ImGui::CollapsingHeader("combo2"))
 				{
@@ -708,6 +716,10 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 					ImGui::Text("hit_stop");
 					ImGui::DragFloat("combo2_stop_time", &param.combo_2.hit_stop.time, 0.1f);
 					ImGui::DragFloat("combo2_stopping_strengthy", &param.combo_2.hit_stop.stopping_strength, 0.1f);
+					ImGui::DragFloat("combo2_hit_viberation.l_moter", &param.combo_2.hit_viberation.l_moter, 0.1f);
+					ImGui::DragFloat("combo2_hit_viberation.r_moter", &param.combo_2.hit_viberation.r_moter, 0.1f);
+					ImGui::DragFloat("combo2_vibe_time", &param.combo_2.hit_viberation.vibe_time, 0.1f);
+
 
 				}
 				if (ImGui::CollapsingHeader("combo3"))
@@ -723,6 +735,10 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 					ImGui::Text("hit_stop");
 					ImGui::DragFloat("combo3_stop_time", &param.combo_3.hit_stop.time, 0.1f);
 					ImGui::DragFloat("combo3_stopping_strength", &param.combo_3.hit_stop.stopping_strength, 0.1f);
+					ImGui::DragFloat("combo3_hit_viberation.l_moter", &param.combo_3.hit_viberation.l_moter, 0.1f);
+					ImGui::DragFloat("combo3_hit_viberation.r_moter", &param.combo_3.hit_viberation.r_moter, 0.1f);
+					ImGui::DragFloat("combo3_vibe_time", &param.combo_3.hit_viberation.vibe_time, 0.1f);
+
 
 				}
 			}

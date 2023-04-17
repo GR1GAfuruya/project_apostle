@@ -211,20 +211,22 @@ void MeshEffect::dissolve_update(float elapsed_time)
 	//フェードイン
 	
 	//フェードアウト
-	const float dissolve_rate = life_time / effect_param.life_duration;
-	//ディゾルブ処理
-	if (life_time < effect_param.life_duration)
+	if (is_dissolve)
 	{
-		constants->data.threshold = lerp(constants->data.threshold, 0.0f, dissolve_rate);
-		constants->data.threshold = lerp(constants->data.threshold, 1.0f, dissolve_rate);
-	}
+		const float dissolve_rate = life_time / effect_param.life_duration;
+		//ディゾルブ処理
+		if (life_time < effect_param.life_duration)
+		{
+			constants->data.threshold = lerp(constants->data.threshold, 0.0f, dissolve_rate);
+			constants->data.threshold = lerp(constants->data.threshold, 1.0f, dissolve_rate);
+		}
 
-	//ディゾルブのクランプ
-	if (constants->data.threshold > 1.0f)
-	{
-		constants->data.threshold = 1.0f;
+		//ディゾルブのクランプ
+		if (constants->data.threshold > 1.0f)
+		{
+			constants->data.threshold = 1.0f;
+		}
 	}
-
 }
 //==============================================================
 // 
