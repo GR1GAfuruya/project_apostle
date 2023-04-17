@@ -8,7 +8,7 @@
 //コンストラクタ
 // 
 //==============================================================
-Camera::Camera(Graphics& graphics)
+Camera::Camera(Graphics& graphics, const char* post_effect_file_path)
 	: range(20.0f)
 	, eye(5, 5, 5)
 	, angle(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(-180.0f), 0)
@@ -61,7 +61,7 @@ Camera::Camera(Graphics& graphics)
 		eye.y = trakking_target.y - front.y * range;
 		eye.z = trakking_target.z - front.z * range;
 	}
-	post_effect = std::make_shared<PostEffects>(graphics.get_device().Get());
+	post_effect = std::make_shared<PostEffects>(graphics.get_device().Get(), post_effect_file_path);
 }
 //==============================================================
 // 

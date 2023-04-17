@@ -68,7 +68,7 @@ public:
 
 public:
     //--------<constructor/destructor>--------//
-    Camera(Graphics& graphics);
+    Camera(Graphics& graphics, const char* post_effect_file_path);
     ~Camera() = default;
 
     //--------< 関数 >--------//
@@ -124,7 +124,7 @@ public:
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
 
-    PostEffects* get_post_effect() { return post_effect.get(); }
+    std::shared_ptr<PostEffects> get_post_effect() { return post_effect; }
     //PostEffects post_effect;
 
     //カメラシェイク

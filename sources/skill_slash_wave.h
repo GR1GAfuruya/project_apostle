@@ -18,22 +18,15 @@ public:
 		float radius;
 		//当たり判定の半径
 		float collider_radius;
-		//槍の長さ
-		float spear_length;
-		//長さの伸び率
-		float spear_length_rate;
 		//ターゲットに向かうスピード
 		float speed;
-		//追従する時間
-		float follow_time;
-
 	};
 	//==============================================================
 	// 
 	// public関数
 	// 
 	//==============================================================
-	SlashWave(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* dir, PublicParam initparam);
+	SlashWave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* target_dir, PublicParam initparam);
 	~SlashWave();
 
 	void initialize(Graphics& graphics) override;
@@ -47,10 +40,6 @@ private:
 	// 定数
 	// 
 	//==============================================================
-	static constexpr int MAX_NUM = 60;
-	static constexpr float SPEAR_SIZE = 0.6f;
-	static constexpr float FOLLOW_TIME = 0.7f;
-	//static constexpr DirectX::XMFLOAT3 SPEAR_SIZE = { 0.5f,0.5f,1.0f };
 
 	//==============================================================
 	// 
@@ -58,22 +47,15 @@ private:
 	// 
 	//==============================================================
 	//インスタンシングメッシュ
-	std::unique_ptr<InstanceMeshEffect> lightning_mesh;
+	std::unique_ptr<MeshEffect> slash_mesh;
 	//ポイントライト
-	std::shared_ptr<PointLight>lightning_light;
+	std::shared_ptr<PointLight> slash_light;
 
 	PublicParam param;
-	//槍を出した数
-	int emit_num;
-	//フィニッシュしたかのフラグ
-	bool finish;
-	//追従する時間
-	float follow_timer;
 
 	//ターゲットの位置
-	DirectX::XMFLOAT3 target_position;
-	//槍出現時最初のフレームのみ行う処理に使う変数
-	bool init_flag;
-	int init_emit_num;
+	std::unique_ptr<DirectX::XMFLOAT3> launch_position;
+	std::unique_ptr<DirectX::XMFLOAT3> target_direction;
+
 
 };

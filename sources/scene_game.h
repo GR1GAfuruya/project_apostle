@@ -63,6 +63,8 @@ private:
 	//テスト用
 #if _DEBUG
 	std::unique_ptr<MeshEffect> test_mesh_effect = nullptr;
+	std::unique_ptr<MeshEffect> test_mesh_effect2 = nullptr;
+	std::unique_ptr<MeshEffect> test_mesh_effect3 = nullptr;
 	
 #endif
 };

@@ -2,14 +2,19 @@
 
 SlashWaveLauncher::SlashWaveLauncher(Graphics& graphics)
 {
+	atk_param.power = 5;
+	atk_param.invinsible_time = 0.2f;
+	init_param.speed = 500.0f;
+	init_param.collider_radius = 5.0f;
+	max_cool_time = 15.0f;
 }
 
-bool SlashWaveLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3* dir)
+bool SlashWaveLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
 {
 	//ârè•â¬î\Ç»èÛë‘Ç»ÇÁ
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<SlashWave>(graphics, launch_pos, dir, init_param);
+		std:unique_ptr<Skill> skill = make_unique<SlashWave>(graphics, launch_pos, dir, init_param);
 		//ÉäÉXÉgÇ…í«â¡
 		cool_time = max_cool_time;
 		skills.push_back(std::move(skill));
@@ -39,4 +44,31 @@ void SlashWaveLauncher::skill_object_hit_judgment(Capsule object_colider, AddDam
 
 void SlashWaveLauncher::debug_gui()
 {
+#if USE_IMGUI
+	imgui_menu_bar("Skill", "SlashWave", display_imgui);
+	if (display_imgui)
+	{
+		ImGui::Begin("SlashWave");
+		if (ImGui::CollapsingHeader("SlashWaveLauncher", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::DragFloat("cool_time", &cool_time);
+			ImGui::DragFloat("max_cool_time", &max_cool_time);
+			ImGui::DragInt("power", &atk_param.power);
+			ImGui::DragFloat("invisible_time", &atk_param.invinsible_time);
+			ImGui::DragFloat("acceleration", &init_param.speed);
+			ImGui::DragFloat("collider_radius", &init_param.collider_radius);
+			int count = 0;
+			for (auto& s : skills)
+			{
+				s->debug_gui(to_string(count).c_str());
+				count++;
+				ImGui::Separator();
+			}
+
+
+		}
+		ImGui::End();
+	}
+#endif
+
 }

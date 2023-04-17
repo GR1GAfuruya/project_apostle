@@ -56,6 +56,7 @@ public:
 private:
 	//スキルアイコンの参照画像
 	std::unique_ptr<SpriteBatch> skill_slot_icon;
+	//std::unique_ptr<SpriteBatch> select_skill_arrow;
 	std::unique_ptr<GaugeUi> cool_time_gauge;
 
 	//描画に関するパラメーター
@@ -74,6 +75,11 @@ private:
 	float add_ang_start;
 	float add_ang_end;
 	float add_ang_lerp_speed;
+
+	////矢印のパラメーター
+	//DirectX::XMFLOAT2 arrow_pos;
+	//DirectX::XMFLOAT2 arrow_scale = { 1,1 };
+	//DirectX::XMFLOAT4 arrow_color = { 1,1,1,1 };
 	//Imguiを表示するか
 	bool display_imgui = false;
 };

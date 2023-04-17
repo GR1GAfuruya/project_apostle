@@ -27,20 +27,16 @@ cbuffer SCENE_CONSTANT : register(b3)
 
 cbuffer POST_EFFECTS_CONSTANT : register(b5)
 {
-    //LUMINA
-    float4 l_min;
-    float4 l_max;
-    float4 lumina;
-    //BLUR
+    //BLOOM
     float2 c_sigma;
     float bloom_extraction_threshold;
     float blur_convolution_intensity;
-   // float4 weight[2]; // 重み
-    //RADIAL_BLUR
-    float2 origin; //中心点
-    float ray_power; //ブラーをかけるパワー :方向ベクトルにかけて光線の長さを決める
-    float wipe_threshold;
-      // 色相調整
+    //ラジアルブラー
+    float radial_power;
+    //シーン遷移
+    float2 scsene_threshold;
+    float pad;
+    // 色相調整
     float hueShift;
     // 彩度調整
     float saturation;
@@ -52,8 +48,6 @@ cbuffer POST_EFFECTS_CONSTANT : register(b5)
     float falloff;
     float amount;
     float3 vignette_color;
-    //ラジアルブラー
-    float radial_power;
 
 }
 

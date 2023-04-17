@@ -23,6 +23,7 @@ MagicBullet::MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, Direct
 		main_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx");
 		main_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		main_effect->set_init_scale(0.5f);
+		main_effect->set_init_life_duration(0.5f);
 		main_effect->set_init_color({ 1.0f,0.8f,5.5f,1.0f });
 	}
 
@@ -156,8 +157,8 @@ MagicBullet::~MagicBullet()
  {
 	 if (is_hit)
 	 {
-		 main_effect->render(graphics, camera);
 	 }
+		 main_effect->render(graphics, camera);
 
 	 for (auto& l : lightning_effect)
 	 {

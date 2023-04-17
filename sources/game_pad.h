@@ -1,7 +1,7 @@
 #pragma once
 
 using GamePadButton = unsigned int;
-
+#include <cereal/cereal.hpp>
 // ゲームパッド
 class GamePad
 {
@@ -22,6 +22,23 @@ public:
 	static const GamePadButton BTN_RIGHT_SHOULDER = (1 << 13);
 	static const GamePadButton BTN_LEFT_TRIGGER   = (1 << 14);
 	static const GamePadButton BTN_RIGHT_TRIGGER  = (1 << 15);
+
+	struct Viberation
+	{
+		float r_moter;
+		float l_moter;
+		float vibe_time;
+		// シリアライズ
+		template<class Archive>
+		void serialize(Archive& archive)
+		{
+			archive(
+				cereal::make_nvp("r_moter", r_moter),
+				cereal::make_nvp("l_moter", l_moter),
+				cereal::make_nvp("vibe_time", vibe_time)
+			);
+		}
+	};
 public:
 	GamePad() {}
 	~GamePad() {}
@@ -65,8 +82,9 @@ private:
 	float				triggerR = 0.0f;
 	int					slot = 0;
 
-	float stack_stop_vib_sec;
 	float vib_stack_sec;
+	float vib_time;
+	bool is_vibration = false;;
 
 	bool operable = true;
 };

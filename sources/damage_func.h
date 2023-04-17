@@ -3,6 +3,7 @@
 #include "primitive.h"
 #include <cereal/cereal.hpp>
 #include "camera.h"
+#include "game_pad.h"
 struct AttackParam
 {
 	bool is_attack;//攻撃中かどうか
@@ -10,7 +11,7 @@ struct AttackParam
 	float invinsible_time;//攻撃対象に課す無敵時間
 	Camera::CameraShakeParam camera_shake;//カメラシェイク
 	Camera::HitStopParam hit_stop;//ヒットストップ
-
+	GamePad::Viberation hit_viberation;
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
@@ -18,7 +19,8 @@ struct AttackParam
 			cereal::make_nvp("power", power),
 			cereal::make_nvp("invinsible_time", invinsible_time),
 			cereal::make_nvp("camera_shake", camera_shake),
-			cereal::make_nvp("hit_stop", hit_stop)
+			cereal::make_nvp("hit_stop", hit_stop),
+			cereal::make_nvp("hit_viberation", hit_viberation)
 		);
 	}
 };

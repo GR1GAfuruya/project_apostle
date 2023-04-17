@@ -26,7 +26,7 @@ void SceneGame::initialize(Graphics& graphics)
 	StageMain* stageMain = new StageMain(graphics);
 	stageManager.Register(stageMain);
 
-	camera = std::make_unique<Camera>(graphics);
+	camera = std::make_unique<Camera>(graphics, "./resources/Data/scene_game/game_post_effect.json");
 	player = std::make_unique<Player>(graphics, camera.get());
 	boss = std::make_unique<Boss>(graphics);
 	//post_effect = std::make_unique<PostEffects>(graphics.get_device().Get());
@@ -44,10 +44,20 @@ void SceneGame::initialize(Graphics& graphics)
 
 	//テスト用
 #if _DEBUG
-	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
-	 test_mesh_effect->set_material(MaterialManager::instance().mat_lightning.get());
+	 test_mesh_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+	 test_mesh_effect2 = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+	 test_mesh_effect3 = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado.fbx");
+	 test_mesh_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	 test_mesh_effect->set_init_scale(0.1f);
 	 test_mesh_effect->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
+
+	 test_mesh_effect2->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect2->set_init_scale(0.1f);
+	 test_mesh_effect2->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
+
+	 test_mesh_effect3->set_material(MaterialManager::instance().mat_fire_distortion.get());
+	 test_mesh_effect3->set_init_scale(0.1f);
+	 test_mesh_effect3->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 
 
 	// test_emitter = std::make_unique<Emitter>(graphics,200);
@@ -111,13 +121,27 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	test_mesh_effect->set_init_life_duration(5);
 	//test_mesh_effect->update(graphics,elapsed_time);
 	test_mesh_effect->set_is_loop(true);
-
+	test_mesh_effect->get_material().reload(graphics);
 	//test_emitter->update(graphics, elapsed_time);
 	//test_meteore->update(graphics, elapsed_time);
 #endif
 	field_spark_particle->update(graphics.get_dc().Get(), elapsed_time, player->get_position());
 
 	//ゲームクリア
+	if (boss->get_health() <= 0)
+	{
+			PostEffects::CB_PostEffect nowparam = camera.get()->get_post_effect()->get_now_param();
+			nowparam.scene_threshold.x += elapsed_time;
+			camera->get_post_effect()->set_posteffect_param(nowparam);
+			if (nowparam.scene_threshold.x >= 1.0f)
+			{
+				SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneTitle(graphics)));
+				return;
+			}
+		
+
+
+	}
 }
 
 //==============================================================
@@ -201,7 +225,11 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	static DirectX::XMFLOAT3 test_effect_pos = { 0.0f,0.0f,0.0f };
 	static DirectX::XMFLOAT3 test_effect_scale = { 0.1f,0.1f,0.1f };
 	test_mesh_effect->render(graphics,camera.get());
+	test_mesh_effect2->render(graphics,camera.get());
+	test_mesh_effect3->render(graphics,camera.get());
 	test_mesh_effect->debug_gui("test_effect");
+	test_mesh_effect2->debug_gui("test_effect2");
+	test_mesh_effect3->debug_gui("test_effect3");
 	test_mesh_effect->set_position(test_effect_pos);
 	test_mesh_effect->set_scale(test_effect_scale);
 	#if USE_IMGUI
@@ -213,6 +241,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 		if (ImGui::Button("test_effect_play"))
 		{
 			test_mesh_effect->play(test_effect_pos);
+			test_mesh_effect2->play(test_effect_pos);
+			test_mesh_effect3->play(test_effect_pos);
 		}
 		ImGui::DragFloat3("pos", &test_effect_pos.x);
 		ImGui::DragFloat3("color", &test_effect_color.x, 0.1f);

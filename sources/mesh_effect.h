@@ -69,7 +69,6 @@ public:
 	void debug_gui(string str_id);
 
 
-
 	//初期化関数
 	void set_init_position(DirectX::XMFLOAT3 p) { init_effect_param.position = p; }
 	void set_init_orientation(DirectX::XMFLOAT4 o) { init_effect_param.orientation = o; }
@@ -78,6 +77,7 @@ public:
 	void set_init_color(DirectX::XMFLOAT4 c) { init_effect_param.color = c; }
 	void set_init_velocity(DirectX::XMFLOAT3 v) { init_effect_param.velosity = v; }
 	void set_init_life_duration(float d) { init_effect_param.life_duration = d; }
+	void set_life_duration(float d) { effect_param.life_duration = d; }
 	//Setter
 	void set_position(DirectX::XMFLOAT3 p) { effect_param.position = p; }
 	void set_orientation(DirectX::XMFLOAT4 o) { effect_param.orientation = o; }
@@ -90,6 +90,7 @@ public:
 	void set_rotate_quaternion(AXIS axis, float ang);
 	void rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec);
 	void set_material(Material* m) { material = m; };
+	void set_dissolve_flag(bool flag) { is_dissolve = flag; };
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return effect_param.position; }
 	DirectX::XMFLOAT4 get_orientation() { return effect_param.orientation; }
@@ -99,7 +100,7 @@ public:
 	float get_life_rate() { return life_time/ effect_param.life_duration; }
 	float get_life_time() { return life_time; }
 	bool get_active() { return active; }
-
+	Material get_material() { return *material; }
 	void reset_orientation();
 protected:
 	void dissolve_update(float elapsed_time);
@@ -141,6 +142,8 @@ protected:
 	bool active = false;
 	//ループ再生するかどうか
 	bool is_loop = false;
+	//ディゾルブするかどうか
+	bool is_dissolve = true;
 	//デバッグGUIフラグ
 	bool display_imgui = false;
 

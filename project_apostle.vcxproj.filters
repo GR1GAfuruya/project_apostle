@@ -552,9 +552,6 @@
     <ClCompile Include="sources\sprite_emitter.cpp">
       <Filter>sources\Effects\Particle\SpriteEmitter</Filter>
     </ClCompile>
-    <ClCompile Include="sources\scene_tutorial.cpp">
-      <Filter>sources\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="sources\boss_attack_skill3.cpp">
       <Filter>sources\Charactor\Boss\Attack\AttackSkill3</Filter>
     </ClCompile>
@@ -887,9 +884,6 @@
     <ClInclude Include="sources\sprite_emitter.h">
       <Filter>sources\Effects\Particle\SpriteEmitter</Filter>
     </ClInclude>
-    <ClInclude Include="sources\scene_tutorial.h">
-      <Filter>sources\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="sources\skill_lightning_rain.h">
       <Filter>sources\Skill\LightningRain</Filter>
     </ClInclude>
@@ -910,16 +904,10 @@
     <FxCompile Include="HLSL\sprite_vs.hlsl">
       <Filter>Shaders\Sprite</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\luminance_extraction_ps.hlsl">
-      <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\fullscreen_quad_vs.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\fullscreen_quad_ps.hlsl">
-      <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\blur_ps.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\sprite_dissolve_vs.hlsl">
@@ -929,12 +917,6 @@
       <Filter>Shaders\Sprite</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\noisy_signal_ps.hlsl">
-      <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\radial_blur_ps.hlsl">
-      <Filter>Shaders\Effect\PostEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\radial_blur_vs.hlsl">
       <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\default_mesh_ps.hlsl">
@@ -972,9 +954,6 @@
     </FxCompile>
     <FxCompile Include="HLSL\mesh_effect_vs.hlsl">
       <Filter>Shaders\Effect\MeshEffect</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\color_filter_ps.hlsl">
-      <Filter>Shaders\Effect\PostEffect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\final_sprite_ps.hlsl">
       <Filter>Shaders\defferd</Filter>

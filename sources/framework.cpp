@@ -100,7 +100,7 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 		graphics->get_dc()->VSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
 		graphics->get_dc()->PSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
 
-		FLOAT color[]{ 0.2f, 0.2f, 0.2f, 1.0f };
+		FLOAT color[]{ 0.0f, 0.0f, 0.0f, 1.0f };
 		graphics->get_dc()->ClearRenderTargetView(graphics->get_render_target_view().Get(), color);
 		graphics->get_dc()->ClearDepthStencilView(graphics->get_depth_stencil_view().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		graphics->get_dc()->OMSetRenderTargets(1, graphics->get_render_target_view().GetAddressOf(), graphics->get_depth_stencil_view().Get());

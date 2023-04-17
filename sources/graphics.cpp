@@ -384,12 +384,11 @@ BOOL Graphics::get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir)
 	return GetOpenFileNameW(&o);
 }
 
-void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader,string id)
+bool Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader,string id)
 {
 	//////シェーダーのコンパイル
 #ifdef USE_IMGUI
 	string id_name = "compile" + id;
-	ImGui::PushID(id.c_str());
 	if (ImGui::Button(id_name.c_str()))
 	{
 		TCHAR init {};
@@ -429,9 +428,10 @@ void Graphics::recompile_pixel_shader(ID3D11PixelShader** pixel_shader,string id
 				pShaderBlob->GetBufferSize(),
 				nullptr,
 				pixel_shader);
+			return true;
 		}
 	}
-	ImGui::PopID();
+	return false;
 #endif
 }
 

@@ -13,7 +13,7 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 	atk_param.invinsible_time = 0.2f;
 	skill_init_param.acceleration = 50.0f;
 	skill_init_param.collider_radius = 2.0f;
-	max_cool_time = 0.5f;
+	max_cool_time = 15.0f;
 
 	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());

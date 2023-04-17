@@ -44,3 +44,11 @@ void Material::create_pixel_shader(ID3D11Device* device, const char* cso_name)
 {
 	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
 }
+
+void Material::reload(Graphics& graphics)
+{
+	if (graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(), id))
+	{
+
+	}
+}

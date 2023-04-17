@@ -27,4 +27,6 @@ public:
 
 private:
 	bool ready = false;
+protected:
+	bool is_change_scean_start;
 };

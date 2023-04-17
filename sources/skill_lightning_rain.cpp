@@ -6,21 +6,18 @@ LightningRain::LightningRain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, D
 	{
 		param = initparam;
 		position = target_pos;
-		attack_colider.start = position;
 	}
 	//エフェクト
 	{
 		lightning_mesh = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
-		lightning_mesh->set_init_life_duration(1.0f);
+		lightning_mesh->set_init_life_duration(0.5f);
 		lightning_mesh->set_material(MaterialManager::instance().mat_lightning.get());
-		lightning_mesh->set_init_scale({ 1.5f,3.0f,1.5f });
+		lightning_mesh->set_init_scale({ 2.5f,3.0f,2.5f });
 		lightning_mesh->set_init_color({ 1.0f,4.0f,6.0f,1.0f });
 	}
 	//当たり判定初期化
 	{
 		skill_duration = 2.0f;
-		DirectX::XMFLOAT3 lightning_dir = { 0,1,0 };
-		attack_colider.end = position + Math::vector_scale(lightning_dir, param.lightning_length);
 		attack_colider.radius = 0;
 	}
 }
@@ -35,16 +32,32 @@ void LightningRain::initialize(Graphics& graphics)
 
 void LightningRain::update(Graphics& graphics, float elapsed_time)
 {
-	if (life_time < 1.0f)
+	if (life_time > 1.5f)
 	{
-		attack_colider.radius = param.collider_radius;
+		//エフェクトがアクティブでないなら再生
+		if(!lightning_mesh->get_active())
+		{
+			DirectX::XMFLOAT3 lightning_dir = { 0,1,0 };
+			attack_colider.start = position;
+			attack_colider.end = position + Math::vector_scale(lightning_dir, param.lightning_length);
+			attack_colider.radius = param.collider_radius;
+
+			auto lightning_pos = position;
+			lightning_pos.y -= param.lightning_length;
+			lightning_mesh->play(lightning_pos);
+		}
 	}
-	//エフェクトがアクティブでないなら再生
-	if (!lightning_mesh->get_active())
+	else
 	{
-		auto lightning_pos = position;
-		lightning_pos.y -= param.lightning_length;
-		lightning_mesh->play(lightning_pos);
+		if (!lightning_mesh->get_active())
+		{
+			auto lightning_pos = position;
+			lightning_pos.y -= param.lightning_length;
+			lightning_mesh->play(lightning_pos);
+			float random = Noise::instance().random_range(0, 360);
+			lightning_mesh->set_rotate_quaternion(MeshEffect::AXIS::UP, random);
+			lightning_mesh->set_scale({ 0.5f,3.0f,0.5f });
+		}
 	}
 
 

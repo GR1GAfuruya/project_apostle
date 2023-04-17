@@ -111,7 +111,7 @@ public:
 	std::mutex& get_mutex() { return mutex_; }
 	//シェーダーのリコンパイル
 	BOOL get_file_name(HWND hWnd, TCHAR* fname, int sz, TCHAR* initDir);
-	void recompile_pixel_shader(ID3D11PixelShader** pixel_shader, string id);
+	bool recompile_pixel_shader(ID3D11PixelShader** pixel_shader, string id);
 private:
 	std::mutex mutex_;
 	
