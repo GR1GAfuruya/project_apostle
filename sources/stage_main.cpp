@@ -73,7 +73,7 @@ void StageMain::render(Graphics& graphics, float elapsed_time, Camera* camera)
 		ImGui::Checkbox("flustm_flag", &flustm_flag);
 		static int num = 0;
 		ImGui::DragInt("mesh_num", &num, 1, 0, model.get()->model_resource.get()->get_meshes().size());
-		int mesh_size = model.get()->model_resource.get()->get_meshes().size();
+		int mesh_size = static_cast<int>(model.get()->model_resource.get()->get_meshes().size());
 		ImGui::DragInt("mesh_size", &mesh_size);
 		DirectX::XMFLOAT3 min = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[0];
 		DirectX::XMFLOAT3 max = model.get()->model_resource.get()->get_meshes().at(num).bounding_box[1];
@@ -85,7 +85,7 @@ void StageMain::render(Graphics& graphics, float elapsed_time, Camera* camera)
 }
 void StageMain::shadow_render(Graphics& graphics, float elapsed_time)
 {
-	graphics.shader->render(graphics.get_dc().Get(), model_shadow.get(), transform);
+	//graphics.shader->render(graphics.get_dc().Get(), model_shadow.get(), transform);
 }
 //==============================================================
 // 

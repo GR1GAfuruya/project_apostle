@@ -265,6 +265,9 @@
     <Filter Include="Shaders\Title">
       <UniqueIdentifier>{6845bda5-282a-4947-bf28-da9ded5cb05a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Component">
+      <UniqueIdentifier>{c6bf4613-6f2e-4b3c-841f-29c9f3bf1293}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -566,6 +569,9 @@
     </ClCompile>
     <ClCompile Include="sources\skill_slash_wave.cpp">
       <Filter>sources\Skill\SlashWave</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\game_object.cpp">
+      <Filter>sources\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -895,6 +901,15 @@
     </ClInclude>
     <ClInclude Include="sources\slash_wave_launcher.h">
       <Filter>sources\Skill\SlashWave</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\component.h">
+      <Filter>sources\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\game_object.h">
+      <Filter>sources\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\transform.h">
+      <Filter>sources\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

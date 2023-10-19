@@ -161,7 +161,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.shader_activate(SHADER_TYPE::SHADOW, RENDER_TYPE::Deferred);
 	deferred->shadow_active(graphics,player->get_position());
 	//ステージ描画
-//	stageManager.shadow_render(graphics,elapsed_time);
+	stageManager.shadow_render(graphics,elapsed_time);
 
 	//プレイヤー描画
 	player->render_s(graphics, elapsed_time, camera.get());
@@ -208,7 +208,7 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	graphics.get_dc()->OMGetRenderTargets(1, &render_target_views, nullptr);
 	graphics.get_dc()->OMSetRenderTargets(1, &render_target_views,	deferred->get_dsv());
 	//スカイボックス
-	skybox->render(graphics);
+	//skybox->render(graphics);
 	//ボス（フォワード）
 	boss->render_f(graphics, elapsed_time, camera.get());
 	//プレイヤー（フォワード）

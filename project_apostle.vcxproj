@@ -216,6 +216,7 @@
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
     <ClCompile Include="sources\emitter.cpp" />
+    <ClCompile Include="sources\game_object.cpp" />
     <ClCompile Include="sources\gauge_ui.cpp" />
     <ClCompile Include="sources\instance_mesh_effect.cpp" />
     <ClCompile Include="sources\instancing_mesh.cpp" />
@@ -308,9 +309,11 @@
     <ClInclude Include="sources\boss_attack_skill1.h" />
     <ClInclude Include="sources\boss_attack_skill3.h" />
     <ClInclude Include="sources\boss_ui.h" />
+    <ClInclude Include="sources\component.h" />
     <ClInclude Include="sources\coordinate_convert.h" />
     <ClInclude Include="sources\damage_func.h" />
     <ClInclude Include="sources\emitter.h" />
+    <ClInclude Include="sources\game_object.h" />
     <ClInclude Include="sources\gauge_ui.h" />
     <ClInclude Include="sources\instance_mesh_effect.h" />
     <ClInclude Include="sources\instancing_mesh.h" />
@@ -401,6 +404,7 @@
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\thunder.h" />
     <ClInclude Include="sources\trail.h" />
+    <ClInclude Include="sources\transform.h" />
     <ClInclude Include="sources\tutorial.h" />
     <ClInclude Include="sources\UI.h" />
     <ClInclude Include="sources\user.h" />
