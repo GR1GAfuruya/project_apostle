@@ -108,8 +108,8 @@ void DeferredRenderer::active(Graphics& graphics)
 void DeferredRenderer::deactive(Graphics& graphics)
 {
 	//ライティング実行
-	lighting(graphics);
 	//描画先を戻す
+	lighting(graphics);
 	graphics.get_dc()->OMSetRenderTargets(1, cached_render_target_view.GetAddressOf(),
 		cached_depth_stencil_view.Get());
 	
