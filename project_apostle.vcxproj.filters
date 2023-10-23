@@ -268,6 +268,12 @@
     <Filter Include="sources\Component">
       <UniqueIdentifier>{c6bf4613-6f2e-4b3c-841f-29c9f3bf1293}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Effects\Manager">
+      <UniqueIdentifier>{9b014a6e-ac6e-47a5-b1b2-f1d4e5b9d257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\Effects\Effect">
+      <UniqueIdentifier>{582d0e01-9ec2-4952-b17c-e663b4ea82b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -572,6 +578,12 @@
     </ClCompile>
     <ClCompile Include="sources\game_object.cpp">
       <Filter>sources\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\EffectManager.cpp">
+      <Filter>sources\Effects\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Effect.cpp">
+      <Filter>sources\Effects\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -910,6 +922,12 @@
     </ClInclude>
     <ClInclude Include="sources\transform.h">
       <Filter>sources\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\EffectManager.h">
+      <Filter>sources\Effects\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Effect.h">
+      <Filter>sources\Effects\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

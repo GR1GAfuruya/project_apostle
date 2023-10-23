@@ -8,6 +8,7 @@
 #include "stage_manager.h"
 #include "scene_title.h"
 #include "material_manager.h"
+#include "EffectManager.h"
 SceneGame::SceneGame(Graphics& graphics)
 {
 	
@@ -115,6 +116,9 @@ void SceneGame::update(float elapsed_time, Graphics& graphics)
 	
 	//**********ステージの更新**********//
 	StageManager::Instance().update(elapsed_time);
+	//**********エフェクトの更新**********//
+	EffectManager::instance().update(elapsed_time);
+	EffectManager::instance().update_transform();
 
 	//エフェクト更新
 #if _DEBUG
@@ -215,6 +219,8 @@ void SceneGame::render(float elapsed_time, Graphics& graphics)
 	player->render_f(graphics, elapsed_time, camera.get());
 	//ステージ上に舞う火花
 	field_spark_particle->render(graphics.get_dc().Get());
+	//**********エフェクトの描画**********//
+	EffectManager::instance().render(camera.get());
 
 
 	//テスト用

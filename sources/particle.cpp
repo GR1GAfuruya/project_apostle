@@ -5,66 +5,121 @@
 #include "texture.h"
 #include "imgui_include.h"
 #include "Operators.h"
-/***************
- 未完成
- *************/
-
-Particles::Particles(Graphics& graphics, InitParam init_param)
+#include "noise.h"
+#include "user.h"
+//==============================================================
+// 
+//コンストラクタ
+// 
+//==============================================================
+Particles::Particles(Param init_param)
 {
 	is_active = true;
 
-	//位置
-	position = init_param.position;
-	//射出方向
-	velocity = init_param.velocity;
-	//色
-	color = init_param.color;
-	//大きさ
-	scale = init_param.scale;
-	//寿命
-	life_time = init_param.life_time;
-}
+	//パラメーター初期化
+	param = init_param;
+	param.transition.position.x = param.transition.position.x + Noise::instance().random_fixed_range(param.transition.random_position.x);
+	param.transition.position.y = param.transition.position.y + Noise::instance().random_fixed_range(param.transition.random_position.y);
+	param.transition.position.z = param.transition.position.z + Noise::instance().random_fixed_range(param.transition.random_position.z);
 
+	param.transition.velocity.x = param.transition.velocity.x + Noise::instance().random_fixed_range(param.transition.random_velocity.x);
+	param.transition.velocity.y = param.transition.velocity.y + Noise::instance().random_fixed_range(param.transition.random_velocity.y);
+	param.transition.velocity.z = param.transition.velocity.z + Noise::instance().random_fixed_range(param.transition.random_velocity.z);
+
+	param.transition.acceleration.x = param.transition.acceleration.x + Noise::instance().random_fixed_range(param.transition.random_acceleration.x);
+	param.transition.acceleration.y = param.transition.acceleration.y + Noise::instance().random_fixed_range(param.transition.random_acceleration.y);
+	param.transition.acceleration.z = param.transition.acceleration.z + Noise::instance().random_fixed_range(param.transition.random_acceleration.z);
+
+
+}
+//==============================================================
+// 
+//デストラクタ
+// 
+//==============================================================
 Particles::~Particles()
 {
 
 }
-
-void Particles::initialize(Graphics& graphics)
+//==============================================================
+// 
+//初期化
+// 
+//==============================================================
+void Particles::initialize()
 {
 }
 
-inline auto rotate(float& x, float& y, float cx, float cy, float cos, float sin)
-{
-	x -= cx;
-	y -= cy;
 
-	float tx{ x }, ty{ y };
-	x = cos * tx + -sin * ty;
-	y = sin * tx + cos * ty;
-
-	x += cx;
-	y += cy;
-};
-
-void Particles::update(Graphics& graphics,float elapsed_time)
+//==============================================================
+// 
+//更新
+// 
+//==============================================================
+void Particles::update(float elapsed_time)
 {
 	//位置更新
 	position_update(elapsed_time);
+	//姿勢更新
+	orientation_update(elapsed_time);
 
 	//寿命更新
 	life_update(elapsed_time);
 }
 
-void Particles::position_update(float elapsed_time)
+void Particles::look_at_camera(Camera& camera)
 {
-	position += velocity * elapsed_time;
+	DirectX::XMFLOAT4 ori = camera.get_orientation();
+	DirectX::XMFLOAT3 Axis;
+	Axis = Math::get_posture_up(ori);
+	ori = Math::rot_quaternion(ori, Axis, DirectX::XMConvertToRadians(180.0f));
+
+	param.orientation = ori;
+
+	Axis = Math::get_posture_forward(param.orientation);
+	param.orientation = Math::rot_quaternion(param.orientation, Axis, DirectX::XMConvertToRadians(param.rotate.rotation.z));
 }
 
+//==============================================================
+// 
+//位置更新
+// 
+//==============================================================
+void Particles::position_update(float elapsed_time)
+{
+	param.transition.velocity += param.transition.acceleration * elapsed_time;
+
+	param.transition.position += param.transition.velocity * elapsed_time;
+}
+
+//==============================================================
+// 
+//姿勢更新
+// 
+//==============================================================
+void Particles::orientation_update(float elapsed_time)
+{
+	DirectX::XMFLOAT3 Axis;
+	Axis = Math::get_posture_right(param.orientation);
+	param.orientation = Math::rot_quaternion(param.orientation, Axis, param.rotate.rotation.x);
+
+	Axis = Math::get_posture_up(param.orientation);
+	param.orientation = Math::rot_quaternion(param.orientation, Axis, param.rotate.rotation.y);
+
+	Axis = Math::get_posture_forward(param.orientation);
+	param.orientation = Math::rot_quaternion(param.orientation, Axis, param.rotate.rotation.z);
+}
+
+
+//==============================================================
+// 
+//寿命更新
+// 
+//==============================================================
 void Particles::life_update(float elapsed_time)
 {
-	time += elapsed_time;
-	if (time > life_time)
+	age += elapsed_time;
+	if (age > param.life_time)
 	{
 		is_active = false;
 	}
