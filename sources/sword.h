@@ -10,8 +10,7 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	Sword() {}
-	Sword(Graphics& graphics);
+	Sword();
 	~Sword() {}
 
 	struct Capsule
@@ -22,8 +21,8 @@ public:
 	};
 
 	void initialize();
-	void update(Graphics& graphics, float elapsed_time);
-	void render(Graphics& graphics);
+	void update(float elapsed_time);
+	void render();
 
 	//‘•”õ‚ÌˆÊ’uæ“¾
 	const DirectX::XMFLOAT3 get_equipped_position() const { return DirectX::XMFLOAT3(transform._41, transform._42, transform._43); }

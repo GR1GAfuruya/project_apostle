@@ -5,7 +5,7 @@
 // コンストラクタ
 // 
 //==============================================================
-LightningRainLauncher::LightningRainLauncher(Graphics& graphics)
+LightningRainLauncher::LightningRainLauncher()
 {
 	atk_param.power = 20;
 	atk_param.invinsible_time = 1.0f;
@@ -23,12 +23,12 @@ LightningRainLauncher::LightningRainLauncher(Graphics& graphics)
 // 発動
 // 
 //==============================================================
-bool LightningRainLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
+bool LightningRainLauncher::chant(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
-	unique_ptr<Skill> skill = make_unique<LightningRain>(graphics, launch_pos, target_pos, init_param);
+		unique_ptr<Skill> skill = make_unique<LightningRain>(launch_pos, target_pos, init_param);
 		//リストに追加
 		cool_time = max_cool_time;
 		skills.push_back(std::move(skill));

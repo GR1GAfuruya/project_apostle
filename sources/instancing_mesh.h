@@ -3,14 +3,14 @@
 class InstanceMesh
 {
 public:
-	InstanceMesh(Graphics& graphics, const char* fbx_filename, const int max_instance);
+    InstanceMesh(const char* fbx_filename, const int max_instance);
 
     void active(ID3D11DeviceContext* immediate_context, ID3D11PixelShader* alter_pixcel_shader);
 
-    void render(Graphics& graphics);
+    void render();
     struct Instance
     {
-        DirectX::XMFLOAT4 quaternion = {0,0,0,1};
+        DirectX::XMFLOAT4 quaternion = { 0,0,0,1 };
         DirectX::XMFLOAT3 position{ 0,0,0 };
         DirectX::XMFLOAT3 scale{ 1,1,1 };
     };
@@ -24,7 +24,7 @@ public:
     DirectX::XMFLOAT4 get_orientation(int index) { return CPU_instance_data[index].quaternion; }
     DirectX::XMFLOAT3 get_scale(int index) { return CPU_instance_data[index].scale; }
 private:
-    void ReplaceBufferContents(Graphics& graphics, ID3D11Buffer* buffer, size_t bufferSize, const void* data);
+    void ReplaceBufferContents(ID3D11Buffer* buffer, size_t bufferSize, const void* data);
 
     struct OBJECT_CONSTANTS
     {
@@ -60,5 +60,5 @@ private:
 
 public:
     DirectX::XMFLOAT3 pos = {};//デバッグ用仮置き
-    DirectX::XMFLOAT3 dir = {0,0,0};//デバッグ用仮置き
+    DirectX::XMFLOAT3 dir = { 0,0,0 };//デバッグ用仮置き
 };

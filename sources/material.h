@@ -4,20 +4,19 @@
 class Material
 {
 public:
-	Material(){}
-	Material(Graphics& graphics);
-	~Material(){}
+	Material();
+	~Material() {}
 
 	//IDŽæ“¾
 	string get_id() { return id; }
 	//SRV‚ðGPU‚É“]‘—
-	void transfer_shader_resource_view(Graphics& graphics);
+	void transfer_shader_resource_view();
 	//SRV‚ðƒŠƒXƒg‚É“o˜^
 	void register_shader_resource(ID3D11Device* device, const wchar_t* filename);
 
 	void create_pixel_shader(ID3D11Device* device, const char* cso_name);
 
-	void reload(Graphics& graphics);
+	void reload();
 
 	const Microsoft::WRL::ComPtr<ID3D11VertexShader> get_vs() { return vertex_shader.Get(); }
 	const Microsoft::WRL::ComPtr<ID3D11PixelShader> get_ps() { return pixel_shader.Get(); }

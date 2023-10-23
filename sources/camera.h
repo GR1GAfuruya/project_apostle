@@ -5,7 +5,6 @@
 #include <wrl/client.h>
 #include "post_effects.h"
 #include "constant.h"
-#include "graphics.h"
 #include "stage.h"
 #include "user.h"
 #include "noise.h"
@@ -68,7 +67,7 @@ public:
 
 public:
     //--------<constructor/destructor>--------//
-    Camera(Graphics& graphics, const char* post_effect_file_path);
+    Camera(const char* post_effect_file_path);
     ~Camera() = default;
 
     //--------< 関数 >--------//
@@ -80,7 +79,7 @@ public:
     //コントローラーのスティックで操作
     void control_by_game_pad_stick(float elapsed_time);
     //void move_viewing_angle(bool is_move, float elapsed_time){};
-    void calc_view_projection(Graphics& graphics, float elapsed_time);
+    void calc_view_projection(float elapsed_time);
     void debug_gui();
     //ヒットストップ関数
     float hit_stop_update(float elapsed_time);
@@ -114,13 +113,15 @@ public:
     const DirectX::XMFLOAT3& get_forward()const { return Math::get_posture_forward(orientation); }
     //右方向取得
     const DirectX::XMFLOAT3& get_right()const { return Math::get_posture_right(orientation); }
+    //クォータニオン取得
+    const DirectX::XMFLOAT4& get_orientation()const { return orientation; }
     //ターゲットが移動しているかどうか
     void set_is_move(bool m) { this->is_move = m; }
     //視野角取得
     const float& get_cape_vision()const { return cape_vision; }
     //ロックオン
     const bool get_lock_on() const { return lock_on; }
-    void set_lock_on()  {  lock_on = !lock_on; }
+    void set_lock_on() { lock_on = !lock_on; }
 
     const  DirectX::XMFLOAT4& get_light_color()const { return light_color; }
 

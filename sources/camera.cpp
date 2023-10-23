@@ -3,12 +3,13 @@
 #include "imgui_include.h"
 #include "Operators.h"
 #include "stage_manager.h"
+#include "graphics.h"
 //==============================================================
 // 
 //コンストラクタ
 // 
 //==============================================================
-Camera::Camera(Graphics& graphics, const char* post_effect_file_path)
+Camera::Camera(const char* post_effect_file_path)
 	: range(20.0f)
 	, eye(5, 5, 5)
 	, angle(DirectX::XMConvertToRadians(0.0f), DirectX::XMConvertToRadians(-180.0f), 0)
@@ -22,13 +23,13 @@ Camera::Camera(Graphics& graphics, const char* post_effect_file_path)
 	, view()
 	, projection()
 	, is_mouse_operation(false)
-	
+
 {
 	HRESULT hr{ S_OK };
 	//----定数バッファ----//
 	// カメラ関連
 	{
-		scene_constant_buffer = std::make_unique<Constants<SCENE_CONSTANTS>>(graphics.get_device().Get());
+		scene_constant_buffer = std::make_unique<Constants<SCENE_CONSTANTS>>(Graphics::instance().get_device().Get());
 	}
 	// orientationの初期化
 	{
@@ -61,7 +62,7 @@ Camera::Camera(Graphics& graphics, const char* post_effect_file_path)
 		eye.y = trakking_target.y - front.y * range;
 		eye.z = trakking_target.z - front.z * range;
 	}
-	post_effect = std::make_shared<PostEffects>(graphics.get_device().Get(), post_effect_file_path);
+	post_effect = std::make_shared<PostEffects>(Graphics::instance().get_device().Get(), post_effect_file_path);
 }
 //==============================================================
 // 
@@ -110,7 +111,7 @@ void Camera::update(float elapsed_time)
 		float height = static_cast<float>(SCREEN_HEIGHT);
 		float aspect_ratio{ width / height };
 		static DirectX::XMFLOAT2 near_far = { 0.1f, 5000.0f };
-		
+
 #ifdef USE_IMGUI
 		if (display_camera_imgui)
 		{
@@ -133,7 +134,7 @@ void Camera::update(float elapsed_time)
 //==============================================================
 void Camera::update_with_tracking(float elapsed_time)
 {
-	
+
 	//Y軸の回転値を-3.14~3.14に収まるようにする
 	if (angle.y < -DirectX::XM_PI) { angle.y += DirectX::XM_2PI; }
 	if (angle.y > DirectX::XM_PI) { angle.y -= DirectX::XM_2PI; }
@@ -146,12 +147,12 @@ void Camera::update_with_tracking(float elapsed_time)
 	DirectX::XMFLOAT3 forward = Math::get_posture_forward(orientation);
 
 	// レイキャスト(ターゲットと壁)
-	DirectX::XMFLOAT3 ray_target = trakking_target + DirectX::XMFLOAT3{0,-0.5,0};//めり込まないよう少し下に下げる
+	DirectX::XMFLOAT3 ray_target = trakking_target + DirectX::XMFLOAT3{ 0,-0.5,0 };//めり込まないよう少し下に下げる
 	DirectX::XMFLOAT3 start = ray_target;
 	DirectX::XMFLOAT3 end = ray_target - forward * DirectX::XMFLOAT3(range, range, range);
 	HitResult hit;
 	StageManager::Instance().ray_cast(start, end, hit);
-	
+
 	hit.distance = (std::max)(hit.distance, 0.5f);
 	hit.distance = (std::min)(hit.distance, range);
 
@@ -216,7 +217,7 @@ void Camera::update_with_lock_on(float elapsed_time)
 				orientationVec = DirectX::XMQuaternionSlerp(orientationVec, q2, lock_on_rate * elapsed_time);
 			}
 		}
-		
+
 
 	}
 	// orientationVecからorientationを更新
@@ -283,7 +284,7 @@ void Camera::control_by_game_pad_stick(float elapsed_time)
 	//------------------------------------
 	//カメラが上か下を向きすぎたときに補正する
 	//------------------------------------
-	
+
 	//向きすぎと判断する値
 	const float overdirection = 0.4f;
 	if (Math::get_posture_up(orientation).y < overdirection)
@@ -318,7 +319,7 @@ void Camera::camera_shake_update(float elapsed_time)
 
 
 	//カメラシェイク効果中でありプレイヤーやロックオンなどのによるカメラへの力が加わっていない場合のみ揺らす
-	if (is_camera_shake && fabs(angle.x) <= 0 && fabs(angle.y) <= 0 && fabs(lock_on_angle) <= 0 )
+	if (is_camera_shake && fabs(angle.x) <= 0 && fabs(angle.y) <= 0 && fabs(lock_on_angle) <= 0)
 	{
 		//時間更新
 		camera_shake_param.time -= elapsed_time;
@@ -397,13 +398,13 @@ void Camera::camera_shake_update(float elapsed_time)
 //ビュープロジェクションの計算
 // 
 //==============================================================
-void Camera::calc_view_projection(Graphics& graphics, float elapsed_time)
+void Camera::calc_view_projection(float elapsed_time)
 {
 	// ビュー行列/プロジェクション行列を作成
 	DirectX::XMMATRIX V = XMLoadFloat4x4(&view);
 	DirectX::XMMATRIX P = XMLoadFloat4x4(&projection);
 	// 定数バッファにフェッチする
-	XMStoreFloat4x4(&scene_constant_buffer->data.view, V );
+	XMStoreFloat4x4(&scene_constant_buffer->data.view, V);
 	XMStoreFloat4x4(&scene_constant_buffer->data.projection, P);
 	XMStoreFloat4x4(&scene_constant_buffer->data.view_projection, V * P);
 	scene_constant_buffer->data.light_color = light_color;
@@ -414,8 +415,8 @@ void Camera::calc_view_projection(Graphics& graphics, float elapsed_time)
 	scene_constant_buffer->data.time += elapsed_time;
 	scene_constant_buffer->data.delta_time = elapsed_time;
 	//すべてのシェーダーで使う可能性があるものなので全部に転送
-	scene_constant_buffer->bind(graphics.get_dc().Get(), 3,CB_FLAG::ALL);
-	
+	scene_constant_buffer->bind(Graphics::instance().get_dc().Get(), 3, CB_FLAG::ALL);
+
 }
 //==============================================================
 // 
@@ -438,7 +439,7 @@ void Camera::debug_gui()
 			ImGui::DragFloat("shake_x", &debug_param.max_x_shake, 0.1f);
 			ImGui::DragFloat("shake_y", &debug_param.max_y_shake, 0.1f);
 			ImGui::DragFloat("time", &debug_param.time, 0.1f);
-			ImGui::DragFloat("smmoth", &debug_param.shake_smoothness ,0.1f,0.1f, 1.0f);
+			ImGui::DragFloat("smmoth", &debug_param.shake_smoothness, 0.1f, 0.1f, 1.0f);
 			ImGui::DragFloat4("orientation", &orientation.x);
 			ImGui::DragFloat4("standard_orientation", &standard_orientation.x);
 			if (ImGui::Button("camera_shake"))

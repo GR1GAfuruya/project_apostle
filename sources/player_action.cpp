@@ -164,7 +164,7 @@ void Player::transition_r_attack_dodge_back_state()
 ///////////////////////////////////////////////////////
 
 //待機
-void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_idle_state(float elapsed_time, Camera* camera)
 {
 	if (input_move(elapsed_time, camera))
 	{
@@ -182,15 +182,15 @@ void Player::update_idle_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics, camera);
-	input_chant_attack_skill(graphics, camera);
+	input_chant_support_skill(camera);
+	input_chant_attack_skill(camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }
 
 //移動
-void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_move_state(float elapsed_time, Camera* camera)
 {
 	if (!input_move(elapsed_time, camera) && is_ground)
 	{
@@ -207,8 +207,8 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 	}
 
 	//スキル入力
-	input_chant_support_skill(graphics, camera);
-	input_chant_attack_skill(graphics, camera);
+	input_chant_support_skill(camera);
+	input_chant_attack_skill(camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
@@ -216,7 +216,7 @@ void Player::update_move_state(Graphics& graphics, float elapsed_time, Camera* c
 
 
 //回避
-void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_avoidance_state(float elapsed_time, Camera* camera)
 {
 	//徐々に速度を落としていく
 	velocity.x /= 2.0f;
@@ -259,7 +259,7 @@ void Player::update_avoidance_state(Graphics& graphics, float elapsed_time, Came
 }
 
 //ジャンプ
-void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_jump_state(float elapsed_time, Camera* camera)
 {
 	input_move(elapsed_time, camera);
 
@@ -278,15 +278,15 @@ void Player::update_jump_state(Graphics& graphics, float elapsed_time, Camera* c
 	input_avoidance();
 
 	//スキル入力
-	input_chant_support_skill(graphics, camera);
-	input_chant_attack_skill(graphics, camera);
+	input_chant_support_skill(camera);
+	input_chant_attack_skill(camera);
 
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }
 
 //正面からの攻撃を食らう
-void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_damage_front_state(float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
 	{
@@ -297,7 +297,7 @@ void Player::update_damage_front_state(Graphics& graphics, float elapsed_time, C
 }
 
 //回転斬り
-void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_r_attack_spring_slash_state(float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
 	{
@@ -309,7 +309,7 @@ void Player::update_r_attack_spring_slash_state(Graphics& graphics, float elapse
 }
 
 //
-void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_attack_pull_slash_state(float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
 	{
@@ -318,7 +318,7 @@ void Player::update_attack_pull_slash_state(Graphics& graphics, float elapsed_ti
 
 }
 
-void Player::update_attack_ground_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_attack_ground_state(float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
 	{
@@ -330,7 +330,7 @@ void Player::update_attack_ground_state(Graphics& graphics, float elapsed_time, 
 }
 
 //バフ獲得アニメーション
-void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_magic_buff_state(float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
 	{
@@ -341,12 +341,12 @@ void Player::update_magic_buff_state(Graphics& graphics, float elapsed_time, Cam
 }
 
 //魔法弾射出行動
-void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_attack_bullet_state(float elapsed_time, Camera* camera)
 {
 	//敵の方向を向く
 	DirectX::XMFLOAT3 target_vec = camera->get_lock_on_target() - position;
 	target_vec.y = 0;
-	Turn(elapsed_time, target_vec, chara_param.turn_speed * 2,orientation);
+	Turn(elapsed_time, target_vec, chara_param.turn_speed * 2, orientation);
 	if (model->is_end_animation())
 	{
 		transition_idle_state();
@@ -356,7 +356,7 @@ void Player::update_attack_bullet_state(Graphics& graphics, float elapsed_time, 
 }
 
 //
-void Player::update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_attack_slash_up_state(float elapsed_time, Camera* camera)
 {
 	if (model->is_end_animation())
 	{
@@ -366,7 +366,7 @@ void Player::update_attack_slash_up_state(Graphics& graphics, float elapsed_time
 	update_velocity(elapsed_time, position);
 }
 
-void Player::update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_r_attack_forward_state(float elapsed_time, Camera* camera)
 {
 	//*************************************//
 	//	ルートモーションに関する更新	   //
@@ -379,11 +379,11 @@ void Player::update_r_attack_forward_state(Graphics& graphics, float elapsed_tim
 
 
 
-void Player::update_attack_air_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_attack_air_state(float elapsed_time, Camera* camera)
 {
 	if (model->anime_param.frame_index > 43 / 2)
 	{
-	//	attack_combo4_effect(graphics, elapsed_time);
+		//	attack_combo4_effect(graphics, elapsed_time);
 	}
 	if (model->is_end_animation())
 	{
@@ -393,7 +393,7 @@ void Player::update_attack_air_state(Graphics& graphics, float elapsed_time, Cam
 	//速力処理更新
 	update_velocity(elapsed_time, position);
 }
-void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_r_attack_combo1_state(float elapsed_time, Camera* camera)
 {
 	//*************************************//
 	//			攻撃判定に関する更新	   //
@@ -430,7 +430,7 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 			transition_r_attack_combo2_state();
 		}
 
-		
+
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
 	}
@@ -442,7 +442,7 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 		}
 
 	}
-			input_move(elapsed_time, camera, param.floating_value, param.floating_value);
+	input_move(elapsed_time, camera, param.floating_value, param.floating_value);
 	//*************************************//
 	//	ルートモーションに関する更新	   //
 	//*************************************//
@@ -452,7 +452,7 @@ void Player::update_r_attack_combo1_state(Graphics& graphics, float elapsed_time
 	update_velocity(elapsed_time, position);
 }
 
-void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_r_attack_combo2_state(float elapsed_time, Camera* camera)
 {
 	DirectX::XMFLOAT3 sword_pos;
 	DirectX::XMFLOAT4X4 bone_ori = {};
@@ -501,7 +501,7 @@ void Player::update_r_attack_combo2_state(Graphics& graphics, float elapsed_time
 	update_velocity(elapsed_time, position);
 }
 
-void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_r_attack_combo3_state(float elapsed_time, Camera* camera)
 {
 	DirectX::XMFLOAT3 sword_pos;
 	DirectX::XMFLOAT4X4 bone_ori = {};
@@ -560,8 +560,8 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 		//攻撃判定OFF
 		attack_sword_param.is_attack = false;
 	}
-	
-	
+
+
 	//回避入力
 	input_avoidance();
 
@@ -569,7 +569,7 @@ void Player::update_r_attack_combo3_state(Graphics& graphics, float elapsed_time
 	update_velocity(elapsed_time, position);
 }
 
-void Player::update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update_r_attack_dodge_back_state(float elapsed_time, Camera* camera)
 {
 	//*************************************//
 	//	ルートモーションに関する更新	   //

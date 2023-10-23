@@ -7,16 +7,16 @@
 class Tutorial :public UI
 {
 public:
-	Tutorial(Graphics& graphiics);
-	~Tutorial(){}
+	Tutorial();
+	~Tutorial() {}
 
-	void initialize(Graphics& graphics);
-	void update(Graphics& graphics, float elapsed_time);
+	void initialize();
+	void update(float elapsed_time);
 	void render(ID3D11DeviceContext* dc);
 	void debug_gui();
 
 	bool get_is_tutorial() { return is_tutorial; }
-	void set_is_tutorial(bool t) {  is_tutorial = t; }
+	void set_is_tutorial(bool t) { is_tutorial = t; }
 
 	void next_bord() { select_tutorial_board_num++; }
 private:

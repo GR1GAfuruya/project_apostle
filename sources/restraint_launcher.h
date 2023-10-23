@@ -13,13 +13,13 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	RestraintLauncher(Graphics& graphics);
+	RestraintLauncher();
 	~RestraintLauncher() override {};
 	//î≠ìÆ
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos, DirectX::XMFLOAT3* down_speed);
+	bool chant(DirectX::XMFLOAT3* target_pos, DirectX::XMFLOAT3* down_speed);
 
 	//DebugGUIï\é¶
 	void debug_gui() override;
-	
+
 
 };

@@ -1,7 +1,8 @@
 #include "tutorial.h"
 
-Tutorial::Tutorial(Graphics& graphics)
+Tutorial::Tutorial()
 {
+	Graphics& graphics = Graphics::instance();
 	//基本操作説明
 	tex_basic_operation = std::make_unique<SpriteBatch>(graphics.get_device().Get(),
 		L"./resources/Sprite/UI/Tutorial/operation.png", 1);
@@ -19,8 +20,9 @@ Tutorial::Tutorial(Graphics& graphics)
 		L"./resources/Sprite/UI/Tutorial/open_tutorial.png", 1);
 }
 
-void Tutorial::initialize(Graphics& graphics)
+void Tutorial::initialize()
 {
+	Graphics& graphics = Graphics::instance();
 	//初期はON
 	is_tutorial = true;
 	//選択されてるボード
@@ -43,21 +45,21 @@ void Tutorial::initialize(Graphics& graphics)
 	//次に進むボタン
 	press_button_param.position = { 540.0f,660.0f };
 	press_button_param.scale = { 0.5f,0.5f };
-	
+
 	//チュートリアル画像展開
 	open_tutorial_param.position = { 20.0f, 300.0f };
-	open_tutorial_param.scale = {0.6f,0.6f };
+	open_tutorial_param.scale = { 0.6f,0.6f };
 }
 
-void Tutorial::update(Graphics& graphics, float elapsed_time)
+void Tutorial::update(float elapsed_time)
 {
 	GamePad& gamepad = Device::instance().get_game_pad();
-	
+
 	//基本操作→スキル選択説明→スキル発動説明の順で配置
 	basic_operation_param.position = { skill_select_param.texsize.x * 0 - basic_operation_param.texsize.x * select_tutorial_board_num ,0.0f };
 	skill_select_param.position = { skill_select_param.texsize.x * 1 - skill_select_param.texsize.x * select_tutorial_board_num ,0.0f };
 	skill_chant_param.position = { skill_chant_param.texsize.x * 2 - skill_chant_param.texsize.x * select_tutorial_board_num ,0.0f };
-	
+
 	//Bボタンで次のボードへ
 	if (gamepad.get_button_down() & GamePad::BTN_A)
 	{

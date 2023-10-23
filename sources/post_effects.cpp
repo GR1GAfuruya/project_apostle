@@ -21,13 +21,13 @@ PostEffects::PostEffects(ID3D11Device* device, const char* post_effect_file_path
 		SCREEN_WIDTH, SCREEN_HEIGHT);
 	//ポストエフェクトを掛ける画像
 	post_effect_frame_buffer = make_unique<FrameBuffer>(device,
-		SCREEN_WIDTH, SCREEN_HEIGHT,FB_FLAG::COLOR);
+		SCREEN_WIDTH, SCREEN_HEIGHT, FB_FLAG::COLOR);
 
 	//最終出力
 	final_sprite = make_unique<FullscreenQuad>(device);
 
 	//-----川瀬式ブルーム-----//
-	bloom = make_unique<Bloom>(device,SCREEN_WIDTH,SCREEN_HEIGHT);
+	bloom = make_unique<Bloom>(device, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	//定数バッファ
 	cb_post_effect = std::make_unique<Constants<CB_PostEffect>>(device);
@@ -58,9 +58,9 @@ void PostEffects::end(ID3D11DeviceContext* dc)
 }
 
 
-void PostEffects::blit(Graphics& graphics)
+void PostEffects::blit()
 {
-	
+	Graphics& graphics = Graphics::instance();
 	//定数バッファ設定
 	cb_post_effect->bind(graphics.get_dc().Get(), 5);
 	//レンダーターゲットを戻す

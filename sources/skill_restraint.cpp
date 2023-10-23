@@ -4,7 +4,7 @@
 //‰Šú‰»
 // 
 //==============================================================
-void Restrain::initialize(Graphics& graphics)
+void Restrain::initialize()
 {
 	life_time = 5.0f;
 }
@@ -13,7 +13,7 @@ void Restrain::initialize(Graphics& graphics)
 //XV
 // 
 //==============================================================
-void Restrain::update(Graphics& graphics, float elapsed_time)
+void Restrain::update(float elapsed_time)
 {
 	life_time -= elapsed_time;
 	if (life_time < 0) skill_end_flag = true;
@@ -23,7 +23,7 @@ void Restrain::update(Graphics& graphics, float elapsed_time)
 //•`‰æ
 // 
 //==============================================================
-void Restrain::render(Graphics& graphics, Camera* camera)
+void Restrain::render(Camera* camera)
 {
 }
 //==============================================================

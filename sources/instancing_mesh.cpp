@@ -5,8 +5,9 @@
 // コンストラクタ
 // 
 //==============================================================
-InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const int max_instance)
+InstanceMesh::InstanceMesh(const char* fbx_filename, const int max_instance)
 {
+	Graphics& graphics = Graphics::instance();
 	model = ResourceManager::instance().load_model_resource(graphics.get_device().Get(), fbx_filename);
 
 	used_instance_count = max_instance;
@@ -24,9 +25,9 @@ InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const i
 			{ "I_ROTATION", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 1,
 			0,D3D11_INPUT_PER_INSTANCE_DATA,    1 },  // Instance rotation quaternion
 			{ "I_POSITION", 0,DXGI_FORMAT_R32G32B32_FLOAT, 1,
-			D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA,    1 },  
+			D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA,    1 },
 			{ "I_SCALE", 0,DXGI_FORMAT_R32G32B32_FLOAT, 1,
-			D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA,    1 },  
+			D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA,    1 },
 	};
 
 	hr = create_vs_from_cso(graphics.get_device().Get(), "shaders\\instancing_mesh_vs.cso", vertex_shader.ReleaseAndGetAddressOf(),
@@ -41,23 +42,23 @@ InstanceMesh::InstanceMesh(Graphics& graphics, const char* fbx_filename, const i
 		graphics.get_device().Get()->CreateBuffer(&bufferDesc, nullptr, instance_data.ReleaseAndGetAddressOf());
 	}
 
-	
+
 	CPU_instance_data.reset(new Instance[max_instance]);
 	//-----------------------------------------------//
 	//				定数バッファの生成
 	//----------------------------------------------//
 	object_constants = std::make_unique<Constants<OBJECT_CONSTANTS>>(graphics.get_device().Get());
-	
+
 }
 //==============================================================
 // 
 // 描画
 // 
 //==============================================================
-void InstanceMesh::render(Graphics& graphics)
+void InstanceMesh::render()
 {
-
-	ReplaceBufferContents(graphics, instance_data.Get(), sizeof(Instance) * used_instance_count, CPU_instance_data.get());
+	Graphics& graphics = Graphics::instance();
+	ReplaceBufferContents(instance_data.Get(), sizeof(Instance) * used_instance_count, CPU_instance_data.get());
 	graphics.get_dc().Get()->IASetInputLayout(input_layout.Get());
 	graphics.get_dc().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -65,10 +66,10 @@ void InstanceMesh::render(Graphics& graphics)
 	{
 		UINT Strides[] = { sizeof(ModelResource::vertex), sizeof(Instance) };
 		UINT Offsets[] = { 0, 0 };
-		
-		ID3D11Buffer* Buffers[] = { mesh.vertex_buffer.Get(), instance_data.Get()};
+
+		ID3D11Buffer* Buffers[] = { mesh.vertex_buffer.Get(), instance_data.Get() };
 		graphics.get_dc().Get()->IASetVertexBuffers(0, _countof(Strides), Buffers, Strides, Offsets);
-		
+
 
 		// The per-instance data is referenced by index...
 		graphics.get_dc().Get()->IASetIndexBuffer(mesh.index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -85,7 +86,7 @@ void InstanceMesh::render(Graphics& graphics)
 			graphics.get_dc().Get()->PSSetShaderResources(20 + resource_num, send_texture_num, s.GetAddressOf());
 			resource_num++;
 		}
-		
+
 		for (const ModelResource::mesh::subset& subset : mesh.subsets)
 		{
 			//描画命令
@@ -108,10 +109,10 @@ void InstanceMesh::active(ID3D11DeviceContext* immediate_context, ID3D11PixelSha
 // 位置、姿勢、大きさをバッファに格納
 // 
 //==============================================================
-void InstanceMesh::ReplaceBufferContents(Graphics& graphics,ID3D11Buffer* buffer, size_t bufferSize, const void* data)
+void InstanceMesh::ReplaceBufferContents(ID3D11Buffer* buffer, size_t bufferSize, const void* data)
 {
 	D3D11_MAPPED_SUBRESOURCE mapped;
-
+	Graphics& graphics = Graphics::instance();
 	graphics.get_dc().Get()->Map(buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	memcpy(mapped.pData, data, bufferSize);
 	graphics.get_dc().Get()->Unmap(buffer, 0);

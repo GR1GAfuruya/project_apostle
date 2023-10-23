@@ -63,7 +63,7 @@ public:
 	GPU_Particles(GPU_Particles&&) noexcept = delete;
 	GPU_Particles& operator=(GPU_Particles&&) noexcept = delete;
 	~GPU_Particles();
-	void initialize(Graphics& graphics);
+	void initialize();
 	void launch_emitter(Microsoft::WRL::ComPtr<ID3D11ComputeShader> replace_emit_cs = nullptr);
 
 	void play(DirectX::XMFLOAT3 pos);

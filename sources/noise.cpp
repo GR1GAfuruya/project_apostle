@@ -11,6 +11,13 @@ float Noise::random_range(float min, float max)
 	return dis(mt);
 }
 
+float Noise::random_fixed_range(float value)
+{
+	if (value <= 0.0f) return 0;
+	std::uniform_real_distribution<> dis(-value, value);
+	return dis(mt);
+}
+
 
 //==============================================================
 // 

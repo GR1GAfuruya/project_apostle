@@ -29,12 +29,12 @@ public:
 	// 
 	//==============================================================
 
-	Meteore(Graphics& graphics,int max_num);
+	Meteore(int max_num);
 	~Meteore() {};
 
 	void initialize();
-	void update(Graphics& graphics, float elapsed_time);
-	void render(Graphics& graphics, Camera* camera);
+	void update(float elapsed_time);
+	void render(Camera* camera);
 	void debug_gui();
 	//ê∂ê¨
 	void create(DirectX::XMFLOAT3 position, int index) { params[index].position = position; }

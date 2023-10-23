@@ -110,24 +110,24 @@ public:
 	// 
 	//==============================================================
 
-	Boss(Graphics& graphics);
+	Boss();
 	~Boss() {};
-	
+
 	//初期化
 	void initialize();
 
 	//更新
-	void update(Graphics& graphics, float elapsed_time, Camera* camera);
+	void update(float elapsed_time, Camera* camera);
 
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
-	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
+	void render_d(float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
-	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
+	void render_f(float elapsed_time, Camera* camera);
 	//シャドウレンダリングするオブジェクト
-	void render_s(Graphics& graphics, float elapsed_time, Camera* camera);
+	void render_s(float elapsed_time, Camera* camera);
 	//UIの描画
-	void render_ui(Graphics& graphics, float elapsed_time);
+	void render_ui(float elapsed_time);
 
 	//デバッグ用GUI描画
 	void debug_gui();
@@ -143,7 +143,7 @@ public:
 	//カメラがボスを見るときに注視するポイント
 	DirectX::XMFLOAT3 get_gazing_point() { return DirectX::XMFLOAT3(position.x, position.y + (chara_param.height + 3), position.z); }
 
-	private:
+private:
 	//==============================================================
 	// 
 	// private関数
@@ -166,7 +166,7 @@ public:
 	//---------------------------//
 	//			攻撃系			 //
 	//---------------------------//
-	
+
 	//右腕横振り攻撃状態に移行
 	void transition_normal_attack_state();
 	//手を振り上げ地面に打ち付ける攻撃状態に移行
@@ -183,7 +183,7 @@ public:
 	//---------------------------//
 	//			ダウン系		 //
 	//---------------------------//
-	
+
 	//空中吹き飛び状態に移行
 	void transition_air_bone_state();
 	//ダメージ怯み状態に移行
@@ -215,31 +215,31 @@ public:
 	//---------------------------//
 	//			移動系			 //
 	//---------------------------//
-	
+
 	//待機状態更新
-	void update_idle_state(Graphics& graphics, float elapsed_time);
+	void update_idle_state(float elapsed_time);
 	//歩き状態更新
-	void update_walk_state(Graphics& graphics, float elapsed_time);
+	void update_walk_state(float elapsed_time);
 	//走り状態更新
-	void update_run_state(Graphics& graphics, float elapsed_time);
+	void update_run_state(float elapsed_time);
 
 
 	//---------------------------//
 	//			攻撃系			 //
 	//---------------------------//
-	
+
 	//右腕横振り攻撃状態更新
-	void update_normal_attack_state(Graphics& graphics, float elapsed_time);
+	void update_normal_attack_state(float elapsed_time);
 	//手を振り上げ地面に打ち付ける攻撃状態更新
-	void update_skill_1_state(Graphics& graphics, float elapsed_time);
+	void update_skill_1_state(float elapsed_time);
 	//チャージ終了状態更新
-	void update_skill_2_end_state(Graphics& graphics, float elapsed_time);
+	void update_skill_2_end_state(float elapsed_time);
 	//チャージ中状態更新
-	void update_skill_2_loop_state(Graphics& graphics, float elapsed_time);
+	void update_skill_2_loop_state(float elapsed_time);
 	//チャージ開始状態更新
-	void update_skill_2_start_state(Graphics& graphics, float elapsed_time);
+	void update_skill_2_start_state(float elapsed_time);
 	//少し溜め右腕を振り払う攻撃状態更新
-	void update_skill_3_state(Graphics& graphics, float elapsed_time);
+	void update_skill_3_state(float elapsed_time);
 
 	//攻撃方法選択
 	void attack_routine(float elapsed_time);
@@ -251,29 +251,29 @@ public:
 	//			ダウン系		 //
 	//---------------------------//
 	//空中吹き飛び状態更新
-	void update_air_bone_state(Graphics& graphics, float elapsed_time);
+	void update_air_bone_state(float elapsed_time);
 	//ダメージ怯み状態更新
-	void update_damage_state(Graphics& graphics, float elapsed_time);
+	void update_damage_state(float elapsed_time);
 	//死亡中（不動）状態更新
-	void update_dead_state(Graphics& graphics, float elapsed_time);
+	void update_dead_state(float elapsed_time);
 	//死亡状態更新
-	void update_die_state(Graphics& graphics, float elapsed_time);
+	void update_die_state(float elapsed_time);
 	//倒れながら呼吸状態更新
-	void update_down_state(Graphics& graphics, float elapsed_time);
+	void update_down_state(float elapsed_time);
 	//ダウン状態（不動）状態更新
-	void update_downdead_state(Graphics& graphics, float elapsed_time);
+	void update_downdead_state(float elapsed_time);
 	//空中に吹き飛ばされた状態から落下状態更新
-	void update_fall_state(Graphics& graphics, float elapsed_time);
+	void update_fall_state(float elapsed_time);
 	//地面に手をつきダウン（初期）状態更新
-	void update_groggy_start_state(Graphics& graphics, float elapsed_time);
+	void update_groggy_start_state(float elapsed_time);
 	//地面に手をつきダウン（ループ）状態更新
-	void update_groggy_loop_state(Graphics& graphics, float elapsed_time);
+	void update_groggy_loop_state(float elapsed_time);
 	//地面に手をつきダウンから起き上がり状態更新
-	void update_groggy_end_state(Graphics& graphics, float elapsed_time);
+	void update_groggy_end_state(float elapsed_time);
 	//倒れた状態から起き上がる状態更新
-	void update_stdand_state(Graphics& graphics, float elapsed_time);
+	void update_stdand_state(float elapsed_time);
 	//立ったままスタン状態更新
-	void update_stun_state(Graphics& graphics, float elapsed_time);
+	void update_stun_state(float elapsed_time);
 
 	//ー－－－
 	void on_dead() override;
@@ -290,7 +290,7 @@ public:
 	// 変数
 	// 
 	//==============================================================
-	typedef void (Boss::* ActUpdate)(Graphics& graphics, float elapsed_time);
+	typedef void (Boss::* ActUpdate)(float elapsed_time);
 	ActUpdate act_update = &Boss::update_idle_state;
 	std::unique_ptr<SkeletalMesh> model;
 	std::unique_ptr<BossAttackSkill1> attack_skill_1;

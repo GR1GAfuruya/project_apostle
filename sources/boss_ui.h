@@ -4,10 +4,10 @@
 class BossUi :public GaugeUi
 {
 public:
-	BossUi(Graphics& graphics);
+	BossUi();
 	~BossUi() override{};
 
-	void initialize(Graphics& graphics);
-	void update(Graphics& graphics, float elapsed_time) override;
+	void initialize();
+	void update(float elapsed_time) override;
 private:
 };

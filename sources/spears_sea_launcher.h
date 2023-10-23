@@ -4,12 +4,12 @@
 class SpearSeaLauncher : public SkillLauncher
 {
 public:
-	SpearSeaLauncher(Graphics& graphics);
+	SpearSeaLauncher();
 	~SpearSeaLauncher() override {};
 
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
+	bool chant(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
-	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func,Camera* camera);
+	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//DebugGUI•\Ž¦
 	void debug_gui() override;
 	AttackParam atk_param;

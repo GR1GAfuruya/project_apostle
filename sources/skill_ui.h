@@ -26,7 +26,7 @@ public:
 		float expansion;
 		float expansion_speed;
 		DirectX::XMFLOAT4 color;
-		DirectX::XMFLOAT2 cool_time_gauge_pos ;
+		DirectX::XMFLOAT2 cool_time_gauge_pos;
 
 	};
 	//==============================================================
@@ -34,16 +34,16 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	SkillUI(Graphics& graphics, const wchar_t* filename);
-	~SkillUI(){}
+	SkillUI(const wchar_t* filename);
+	~SkillUI() {}
 	//初期化
 	void initialize(SlotsUi init_param, int slots_num);
 	//更新
-	void update(Graphics& graphics,float elapsed_time);
+	void update(float elapsed_time);
 	//選択候補のスキルを表示
-	void icon_render(Graphics& graphics);
+	void icon_render();
 	//現在セットされているスキルのアイコンを表示
-	void selected_skill_icon_render(Graphics& graphics, DirectX::XMFLOAT2 pos);
+	void selected_skill_icon_render(DirectX::XMFLOAT2 pos);
 	//デバッグGUI
 	void debug_gui(string str_id);
 	//スキル選択状態かを設定
@@ -51,7 +51,7 @@ public:
 	//選択されているスキルの番号を設定
 	void set_selected_skill_index(int i) { selected_skill_index = i; };
 
-	void cool_time_render(Graphics& graphics, float elapsed_time, float skill_cool_time);
+	void cool_time_render(float elapsed_time, float skill_cool_time);
 
 private:
 	//スキルアイコンの参照画像

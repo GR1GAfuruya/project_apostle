@@ -6,9 +6,10 @@
 //コンストラクタ
 // 
 //==============================================================
-InstanceMeshEffect::InstanceMeshEffect(Graphics& graphics, const char* fbx_filename, const int max_instance)
+InstanceMeshEffect::InstanceMeshEffect(const char* fbx_filename, const int max_instance)
 {
-	model = std::make_unique<InstanceMesh>(graphics, fbx_filename, max_instance);
+	Graphics& graphics = Graphics::instance();
+	model = std::make_unique<InstanceMesh>(fbx_filename, max_instance);
 	constants = std::make_unique<Constants<CONSTANTS>>(graphics.get_device().Get());
 }
 
@@ -30,7 +31,7 @@ void InstanceMeshEffect::play(DirectX::XMFLOAT3 pos)
 //==============================================================
 void InstanceMeshEffect::stop()
 {
-	
+
 	active = false;
 	life_time = 0;
 }
@@ -40,13 +41,13 @@ void InstanceMeshEffect::stop()
 //更新
 // 
 //==============================================================
-void InstanceMeshEffect::update(Graphics& graphics, float elapsed_time)
+void InstanceMeshEffect::update(float elapsed_time)
 {
 	//アクティブ状態なら
 	if (active)
 	{
 		//更新処理
-		
+
 		//寿命処理
 		life_time += elapsed_time;
 		if (life_time > life_span)
@@ -67,8 +68,9 @@ void InstanceMeshEffect::update(Graphics& graphics, float elapsed_time)
 //描画
 // 
 //==============================================================
-void InstanceMeshEffect::render(Graphics& graphics)
+void InstanceMeshEffect::render()
 {
+	Graphics& graphics = Graphics::instance();
 	//エフェクトがアクティブ状態の場合のみ描画
 	if (!active) return;
 
@@ -77,8 +79,8 @@ void InstanceMeshEffect::render(Graphics& graphics)
 	//定数バッファ送信
 	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
 	//シェーダーリソース送信
-	material->transfer_shader_resource_view(graphics);
-	model->render(graphics);
+	material->transfer_shader_resource_view();
+	model->render();
 }
 //==============================================================
 // 
@@ -128,7 +130,7 @@ void InstanceMeshEffect::rotate_base_axis(AXIS axis, DirectX::XMFLOAT3 dir_vec, 
 	{
 	case AXIS::RIGHT:
 		Axis = Math::get_posture_right(model->get_orientation(index));
-		model->set_orientation(Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec), index) ;
+		model->set_orientation(Math::rot_quaternion_dir(model->get_orientation(index), Axis, dir_vec), index);
 		break;
 	case AXIS::UP:
 		Axis = Math::get_posture_up(model->get_orientation(index));

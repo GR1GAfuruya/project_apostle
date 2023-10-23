@@ -33,12 +33,12 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam);
+	SpearsSea(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam);
 	~SpearsSea();
 
-	void initialize(Graphics& graphics) override;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics, Camera* camera)override;
+	void initialize() override;
+	void update(float elapsed_time)override;
+	void render(Camera* camera)override;
 
 	void debug_gui(string str_id);
 private:
@@ -82,5 +82,5 @@ private:
 	//槍出現時最初のフレームのみ行う処理に使う変数
 	bool init_flag;
 	int init_emit_num;
-	
+
 };

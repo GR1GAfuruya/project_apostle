@@ -5,8 +5,9 @@
 //基底クラスのコンストラクタ
 // 
 //==============================================================
-Light::Light(Graphics& graphics)
+Light::Light()
 {
+	Graphics& graphics = Graphics::instance();
 	light_constants = std::make_unique<Constants<DirLightParam>>(graphics.get_device().Get());
 }
 
@@ -15,7 +16,7 @@ Light::Light(Graphics& graphics)
 //平行光コンストラクタ
 // 
 //==============================================================
-DirectionalLight::DirectionalLight(Graphics& graphics,DirectX::XMFLOAT3 dir, DirectX::XMFLOAT3 color) :Light(graphics)
+DirectionalLight::DirectionalLight(DirectX::XMFLOAT3 dir, DirectX::XMFLOAT3 color) :Light()
 {
 	//平行光は｛方向x、方向y、方向z、0.0｝
 	light_constants->data.dir_light_dir = { dir.x, dir.y, dir.z, 0.0f };
@@ -32,8 +33,8 @@ void DirectionalLight::debug_gui(std::string name)
 	ImGui::Begin("light");
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		ImGui::DragFloat3(string("dir " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.1f );
-		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f,0.0f);
+		ImGui::DragFloat3(string("dir " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.1f);
+		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0.0f);
 	}
 	ImGui::End();
 #endif // 0
@@ -82,12 +83,12 @@ DirectX::XMFLOAT3 DirectionalLight::get_color()
 //ポイントライトコンストラクタ
 // 
 //==============================================================
-PointLight::PointLight(Graphics& graphics, DirectX::XMFLOAT3 position, float distance, DirectX::XMFLOAT3 color) :Light(graphics)
+PointLight::PointLight(DirectX::XMFLOAT3 position, float distance, DirectX::XMFLOAT3 color) :Light()
 {
 	//点光源は｛位置x、位置y、位置z、減衰距離｝
 	light_constants->data.dir_light_dir = { position.x, position.y, position.z, distance };
 	light_constants->data.dir_light_color = { color.x, color.y, color.z, 1.0f };
-	
+
 }
 //==============================================================
 // 
@@ -102,7 +103,7 @@ void PointLight::debug_gui(std::string name)
 	{
 		ImGui::DragFloat3(string("position " + name).c_str(), &light_constants->data.dir_light_dir.x, 0.5f);
 		ImGui::DragFloat3(string("color " + name).c_str(), &light_constants->data.dir_light_color.x, 0.1f, 0);
-		ImGui::DragFloat(string("distance " + name).c_str(), &light_constants->data.dir_light_dir.w,0.1f,1,500);
+		ImGui::DragFloat(string("distance " + name).c_str(), &light_constants->data.dir_light_dir.w, 0.1f, 1, 500);
 	}
 	ImGui::End();
 #endif // 0

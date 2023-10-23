@@ -12,7 +12,7 @@ public:
 	// 構造体、列挙型
 	// 
 	//==============================================================
-	
+
 public:
 	//==============================================================
 	// 
@@ -26,27 +26,27 @@ public:
 	virtual ~SkillLauncher() {}
 
 	//初期化
-	virtual void initialize(Graphics& graphics);
+	virtual void initialize();
 	//更新
-	virtual void update(Graphics& graphics, float elapsed_time);
+	virtual void update(float elapsed_time);
 	//描画
-	virtual void render(Graphics& graphics, Camera* camera);
+	virtual void render(Camera* camera);
 	//スキルクールタイム短縮
 	void cool_time_reduction();
 	//DebugGUI表示
-	virtual void debug_gui()= 0;
+	virtual void debug_gui() = 0;
 	//クールタイム取得
-	float get_cool_time() { return cool_time ; }
+	float get_cool_time() { return cool_time; }
 	//クールタイムのパーセント取得
-	float get_cool_time_percent() { return cool_time <= 0 ? 0.0f :1.0f - ( cool_time / max_cool_time); }
+	float get_cool_time_percent() { return cool_time <= 0 ? 0.0f : 1.0f - (cool_time / max_cool_time); }
 
 	//※引数がそれぞれ異なるので継承先で実装
 	////スキルの当たり判定
 	//void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func);
 	////詠唱する
 	//void launch();
-	
-	
+
+
 protected:
 	//==============================================================
 	// 

@@ -27,16 +27,16 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	InstanceMeshEffect(Graphics& graphics, const char* fbx_filename, const int max_instance);
+	InstanceMeshEffect(const char* fbx_filename, const int max_instance);
 	~InstanceMeshEffect() {};
 	//çƒê∂
 	void play(DirectX::XMFLOAT3 pos);
 	//í‚é~
 	void stop();
 	//çXêV
-	void update(Graphics& graphics, float elapsed_time);
+	void update(float elapsed_time);
 	//ï`âÊ
-	void render(Graphics& graphics);
+	void render();
 
 	void debug_gui(string str_id);
 

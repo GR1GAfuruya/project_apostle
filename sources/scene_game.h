@@ -19,18 +19,18 @@
 class SceneGame :public Scene, public GenericFrequentEntities
 {
 public:
-	SceneGame(Graphics& graphics);
+	SceneGame();
 	~SceneGame()override {}
 	//シーン初期化
-	void initialize(Graphics& graphics) override;
+	void initialize() override;
 	//シーン終了処理
 	void finalize() override;
 	//シーンアップデート
-	void update(float elapsedTime, Graphics& graphics) override;
+	void update(float elapsedTime) override;
 	//シーン描画
-	void render(float elapsedTime, Graphics& graphics) override;
+	void render(float elapsedTime) override;
 	//クリ時の更新
-	void clear_update(float elapsedTime, Graphics& graphics);
+	void clear_update(float elapsedTime);
 	//デバッグ描画
 	void debug_gui();
 	//シーンリセット

@@ -8,31 +8,31 @@
 // コンストラクタ
 // 
 //==============================================================
-SkillManager::SkillManager(Graphics& graphics)
+SkillManager::SkillManager()
 {
-	sup_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/support_skill_icon.png");
-	atk_slots_ui = make_unique<SkillUI>(graphics, L"./resources/Sprite/UI/Skill/attack_skill_icon.png");
+	sup_slots_ui = make_unique<SkillUI>(L"./resources/Sprite/UI/Skill/support_skill_icon.png");
+	atk_slots_ui = make_unique<SkillUI>(L"./resources/Sprite/UI/Skill/attack_skill_icon.png");
 
 	//身体能力アップスキル
-	physical_up = make_unique<PhysicalUpLauncher>(graphics);
-	
+	physical_up = make_unique<PhysicalUpLauncher>();
+
 	//リジェネスキル
-	regenerate = make_unique<RegenerateLauncher>(graphics);
-	 
+	regenerate = make_unique<RegenerateLauncher>();
+
 	//拘束スキル
-	restraint = make_unique<RestraintLauncher>(graphics);
-	
+	restraint = make_unique<RestraintLauncher>();
+
 	//魔法弾スキル
-	magick_bullet = make_unique<MagicBulletLauncher>(graphics);
-	
+	magick_bullet = make_unique<MagicBulletLauncher>();
+
 	//槍スキル
-	spear_sea = make_unique<SpearSeaLauncher>(graphics);
+	spear_sea = make_unique<SpearSeaLauncher>();
 
 	//斬撃波スキル
-	slash_wave = make_unique<SlashWaveLauncher>(graphics);
-	
+	slash_wave = make_unique<SlashWaveLauncher>();
+
 	//雷雨スキル
-	lightning_rain = make_unique<LightningRainLauncher>(graphics);
+	lightning_rain = make_unique<LightningRainLauncher>();
 	//初期スキル設定
 	selected_sup_skill = physical_up.get();
 	selected_atk_skill = magick_bullet.get();
@@ -41,8 +41,8 @@ SkillManager::SkillManager(Graphics& graphics)
 	sup_skill_list = { physical_up, regenerate,restraint };
 	atk_skill_list = { magick_bullet, spear_sea, slash_wave, lightning_rain };
 	//パラメーター初期化
-	initialize(graphics);
-	
+	initialize();
+
 }
 
 
@@ -51,17 +51,17 @@ SkillManager::SkillManager(Graphics& graphics)
 // 初期化
 // 
 //==============================================================
-void SkillManager::initialize(Graphics& graphics)
+void SkillManager::initialize()
 {
 	//スキルの初期化
 	{
 		for (auto& s : sup_skill_list)
 		{
-			s->initialize(graphics);
+			s->initialize();
 		}
 		for (auto& s : atk_skill_list)
 		{
-			s->initialize(graphics);
+			s->initialize();
 		}
 	}
 	//UI初期設定
@@ -98,22 +98,22 @@ void SkillManager::initialize(Graphics& graphics)
 //更新処理
 // 
 //==============================================================
-void SkillManager::update(Graphics& graphics, float elapsed_time)
+void SkillManager::update(float elapsed_time)
 {
 	//サポートスキルの更新
-	for(auto& s : sup_skill_list)
+	for (auto& s : sup_skill_list)
 	{
-		s->update(graphics, elapsed_time);
+		s->update(elapsed_time);
 	}
 	//攻撃スキルの更新
 	for (auto& s : atk_skill_list)
 	{
-		s->update(graphics, elapsed_time);
+		s->update(elapsed_time);
 	}
 	//UIアップデート
-	sup_slots_ui->update(graphics, elapsed_time);
+	sup_slots_ui->update(elapsed_time);
 	sup_slots_ui->set_selected_skill_index(static_cast<int>(selected_sup_skill_type));
-	atk_slots_ui->update(graphics, elapsed_time);
+	atk_slots_ui->update(elapsed_time);
 	atk_slots_ui->set_selected_skill_index(static_cast<int>(selected_atk_skill_type));
 
 	//スキル選択更新
@@ -128,7 +128,7 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 		is_selecting_support_skill = true;
 	}
 	//ボタンを放したら解除
-	else if(game_pad->get_button_up() & GamePad::BTN_LEFT_SHOULDER)
+	else if (game_pad->get_button_up() & GamePad::BTN_LEFT_SHOULDER)
 	{
 		//サポートスキルスロットのUIを閉じる
 		sup_slots_ui->set_skill_select(false);
@@ -146,7 +146,7 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 
 	}
 	//ボタンを放したら解除
-	else if(game_pad->get_button_up() & GamePad::BTN_RIGHT_SHOULDER)
+	else if (game_pad->get_button_up() & GamePad::BTN_RIGHT_SHOULDER)
 	{
 		atk_slots_ui->set_skill_select(false);
 		is_selecting_attack_skill = false;
@@ -181,7 +181,7 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 		}
 	}
 
-	
+
 }
 
 //==============================================================
@@ -189,17 +189,17 @@ void SkillManager::update(Graphics& graphics, float elapsed_time)
 //描画処理
 // 
 //==============================================================
-void SkillManager::render(Graphics& graphics, Camera* camera)
+void SkillManager::render(Camera* camera)
 {
 	//スキルの描画
 	{
 		for (auto& s : sup_skill_list)
 		{
-			s->render(graphics, camera);
+			s->render(camera);
 		}
 		for (auto& s : atk_skill_list)
 		{
-			s->render(graphics, camera);
+			s->render(camera);
 		}
 	}
 }
@@ -208,7 +208,7 @@ void SkillManager::render(Graphics& graphics, Camera* camera)
 //描画処理（UI）
 // 
 //==============================================================
-void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
+void SkillManager::ui_render(float elapsed_time)
 {
 #if USE_IMGUI
 	static DirectX::XMFLOAT2 pos1 = { 1000.0f,600.0f };
@@ -224,18 +224,18 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 	DirectX::XMFLOAT2 pos1 = { 1000.0f,600.0f };
 	DirectX::XMFLOAT2 pos2 = { 1120.0f,600.0f };
 #endif
-	sup_slots_ui->icon_render(graphics);
-	sup_slots_ui->selected_skill_icon_render(graphics, pos1);
-	atk_slots_ui->icon_render(graphics);
-	atk_slots_ui->selected_skill_icon_render(graphics, pos2);
+	sup_slots_ui->icon_render();
+	sup_slots_ui->selected_skill_icon_render(pos1);
+	atk_slots_ui->icon_render();
+	atk_slots_ui->selected_skill_icon_render(pos2);
 
 	if (selected_sup_skill->get_cool_time_percent() > 0.0f)
 	{
-		sup_slots_ui->cool_time_render(graphics, elapsed_time, selected_sup_skill->get_cool_time_percent());
+		sup_slots_ui->cool_time_render(elapsed_time, selected_sup_skill->get_cool_time_percent());
 	}
 	if (selected_atk_skill->get_cool_time_percent() > 0.0f)
 	{
-		atk_slots_ui->cool_time_render(graphics, elapsed_time, selected_atk_skill->get_cool_time_percent());
+		atk_slots_ui->cool_time_render(elapsed_time, selected_atk_skill->get_cool_time_percent());
 	}
 
 }
@@ -245,55 +245,55 @@ void SkillManager::ui_render(Graphics& graphics, float elapsed_time)
 //PhycicalUp発動
 // 
 //==============================================================
-bool SkillManager::chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed)
+bool SkillManager::chant_physical_up(DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed)
 {
-	return physical_up->chant(graphics, launch_pos, add_run_speed, add_jump_speed);
+	return physical_up->chant(launch_pos, add_run_speed, add_jump_speed);
 }
 //==============================================================
 // 
 //Regenerate発動
 // 
 //==============================================================
-bool SkillManager::chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)
+bool SkillManager::chant_regenerate(DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)
 {
-	return regenerate->chant(graphics, launch_pos, health, max_health);
+	return regenerate->chant(launch_pos, health, max_health);
 }
 //==============================================================
 // 
 //Restraint発動
 // 
 //==============================================================
-bool SkillManager::chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed)
+bool SkillManager::chant_restraint(DirectX::XMFLOAT3* target_pos, float* down_speed)
 {
-	return restraint->chant(graphics, target_pos, target_pos);
+	return restraint->chant(target_pos, target_pos);
 }
 //==============================================================
 // 
 //MagickBullet発動
 // 
 //==============================================================
-bool SkillManager::chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
+bool SkillManager::chant_magic_bullet(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
 {
-	return magick_bullet->chant(graphics, launch_pos, dir);
+	return magick_bullet->chant(launch_pos, dir);
 }
 //==============================================================
 // 
 //SpearSea発動
 // 
 //==============================================================
-bool SkillManager::chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
+bool SkillManager::chant_spear_sea(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
-	return spear_sea->chant(graphics, launch_pos, target_pos);
+	return spear_sea->chant(launch_pos, target_pos);
 }
 
-bool SkillManager::chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
+bool SkillManager::chant_slash_wave(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
 {
-	return slash_wave->chant(graphics, launch_pos, dir);
+	return slash_wave->chant(launch_pos, dir);
 }
 
-bool SkillManager::chant_lightning_rain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
+bool SkillManager::chant_lightning_rain(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
-	return lightning_rain->chant(graphics, launch_pos, target_pos);
+	return lightning_rain->chant(launch_pos, target_pos);
 }
 
 //==============================================================
@@ -374,7 +374,7 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 	float slots_ang_size = 360.0f / slot_num;
 	//基準軸 操作しやすいようにスロット一つ分の枠の大きさ÷2分左に傾ける
 	float correction_standard_ang = -DirectX::XMConvertToRadians(slots_ang_size / 2);
-	DirectX::XMFLOAT2 standard_axis = { sinf(correction_standard_ang), cosf(correction_standard_ang)};
+	DirectX::XMFLOAT2 standard_axis = { sinf(correction_standard_ang), cosf(correction_standard_ang) };
 	//正規化
 	stick_vec = Math::Normalize(stick_vec);
 	//スティックのさす方向と基準軸間の角度を求める
@@ -396,7 +396,7 @@ int SkillManager::select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num)
 //デバッグGUI表示
 // 
 //==============================================================
-void SkillManager::debug_gui(Graphics& graphics)
+void SkillManager::debug_gui()
 {
 #if USE_IMGUI
 	imgui_menu_bar("Skill", "SkillManager", display_imgui);
@@ -419,8 +419,8 @@ void SkillManager::debug_gui(Graphics& graphics)
 			static int item_current = 0;
 			ImGui::Separator();
 			ImGui::Combo("support_slots", &item_current, support_slot_item, IM_ARRAYSIZE(support_slot_item));
-			
-			
+
+
 			//発動
 			if (ImGui::Button("set_support_skill"))
 			{
@@ -446,19 +446,19 @@ void SkillManager::debug_gui(Graphics& graphics)
 			ImGui::Separator();
 			ImGui::Combo("attack_slots", &item_current2, attack_slot_item, IM_ARRAYSIZE(attack_slot_item));
 
-			
-			
+
+
 			//発動
 			if (ImGui::Button("set_attack_skill"))
 			{
 				set_attack_skill(item_current2);
 			}
-				ImGui::Separator();
+			ImGui::Separator();
 		}
 		ImGui::End();
 	}
 
-	
+
 	//身体能力アップスキル
 	physical_up->debug_gui();
 	//リジェネスキル
@@ -471,7 +471,7 @@ void SkillManager::debug_gui(Graphics& graphics)
 	spear_sea->debug_gui();
 	slash_wave->debug_gui();
 	lightning_rain->debug_gui();
-	
+
 
 	//UIdebugGUI
 	atk_slots_ui->debug_gui("atk_slots_ui");

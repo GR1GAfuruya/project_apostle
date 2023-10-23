@@ -4,7 +4,7 @@
 class FireDistortionMat : public Material
 {
 public:
-	FireDistortionMat(Graphics& graphics);
+	FireDistortionMat();
 	~FireDistortionMat(){}
 
 

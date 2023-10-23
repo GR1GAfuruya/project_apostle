@@ -9,16 +9,16 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	Regenerate(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health,const int max_health);
+	Regenerate(DirectX::XMFLOAT3* launch_pos, int* health, const int max_health);
 	~Regenerate();
 
-	void initialize(Graphics& graphics) override;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics, Camera* camera)override;
+	void initialize() override;
+	void update(float elapsed_time)override;
+	void render(Camera* camera)override;
 
 	bool is_skill_end() { return skill_end_flag; };
 
-	void debug_gui(string str_id );
+	void debug_gui(string str_id);
 protected:
 	//==============================================================
 	// 

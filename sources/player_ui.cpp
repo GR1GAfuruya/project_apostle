@@ -1,10 +1,10 @@
 #include "player_ui.h"
 #include "user.h"
 #include "imgui_include.h"
-PlayerHpGauge::PlayerHpGauge(Graphics& graphics):
-GaugeUi(graphics, L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
-	L"./resources/Sprite/UI/Player/bar.png",
-	nullptr)
+PlayerHpGauge::PlayerHpGauge() :
+	GaugeUi(L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
+		L"./resources/Sprite/UI/Player/bar.png",
+		nullptr)
 {
 	gauge.position = { 30.0f,650.0f };
 	gauge.scale = { 0.15f, 0.1f };
@@ -14,18 +14,19 @@ GaugeUi(graphics, L"./resources/Sprite/UI/Player/player_hp_bar_back.png",
 
 
 
-PlayerUI::PlayerUI(Graphics& graphics)
+PlayerUI::PlayerUI()
 {
-	hp_gauge = std::make_unique <PlayerHpGauge>(graphics);
+	hp_gauge = std::make_unique <PlayerHpGauge>();
 }
 
-void PlayerUI::update(Graphics& graphics, float elapsed_time)
+void PlayerUI::update(float elapsed_time)
 {
-	hp_gauge->update(graphics,elapsed_time);
+	hp_gauge->update(elapsed_time);
 }
 
-void PlayerUI::render(Graphics& graphics)
+void PlayerUI::render()
 {
+	Graphics& graphics = Graphics::instance();
 	hp_gauge->render(graphics.get_dc().Get());
 }
 

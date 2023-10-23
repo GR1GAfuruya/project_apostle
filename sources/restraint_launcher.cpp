@@ -5,7 +5,7 @@
 // コンストラクタ
 // 
 //==============================================================
-RestraintLauncher::RestraintLauncher(Graphics& graphics)
+RestraintLauncher::RestraintLauncher()
 {
 	max_cool_time = 15.0f;
 }
@@ -14,7 +14,7 @@ RestraintLauncher::RestraintLauncher(Graphics& graphics)
 // スキル発動
 // 
 //==============================================================
-bool RestraintLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* target_pos, DirectX::XMFLOAT3* down_speed)
+bool RestraintLauncher::chant(DirectX::XMFLOAT3* target_pos, DirectX::XMFLOAT3* down_speed)
 {
 	//詠唱可能な状態なら
 	if (chantable)

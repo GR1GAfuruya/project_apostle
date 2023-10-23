@@ -1,9 +1,9 @@
 #include "skill_slash_wave.h"
 #include "light_manager.h"
 #include "Operators.h"
-SlashWave::SlashWave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir, PublicParam initparam)
+SlashWave::SlashWave(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir, PublicParam initparam)
 {
-	initialize(graphics);
+	initialize();
 
 	//各初期化パラメーター設定
 	skill_duration = 1.5f;
@@ -11,7 +11,7 @@ SlashWave::SlashWave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX:
 	target_direction.reset(dir);
 	//エフェクト
 	{
-		slash_mesh = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
+		slash_mesh = std::make_unique<MeshEffect>("./resources/Effects/Meshes/eff_slash.fbx");
 		slash_mesh->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		slash_mesh->set_init_scale(0.5f);
 		slash_mesh->set_life_duration(0.2f);
@@ -21,7 +21,7 @@ SlashWave::SlashWave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX:
 	param = initparam;
 
 	//ライト生成
-	slash_light = make_shared<PointLight>(graphics, *launch_pos, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
+	slash_light = make_shared<PointLight>(*launch_pos, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
 	LightManager::instance().register_light("SlashWave", slash_light);
 
 }
@@ -35,21 +35,21 @@ SlashWave::~SlashWave()
 
 }
 
-void SlashWave::initialize(Graphics& graphics)
+void SlashWave::initialize()
 {
 	life_time = 0.5f;
 	collision_type = CollisionType::SPHERE;
 
 }
 
-void SlashWave::update(Graphics& graphics, float elapsed_time)
+void SlashWave::update(float elapsed_time)
 {
-	slash_mesh->update(graphics, elapsed_time);
+	slash_mesh->update(elapsed_time);
 
 	//アニメーションフレームが特定の値に達したら弾射出
 	if (life_time > 1.0f)
 	{
-		if(!slash_mesh->get_active())
+		if (!slash_mesh->get_active())
 		{
 			position = *launch_position;
 			slash_mesh->play(position);
@@ -64,8 +64,8 @@ void SlashWave::update(Graphics& graphics, float elapsed_time)
 		slash_mesh->set_position(position);
 		slash_mesh->rotate_base_axis(MeshEffect::AXIS::RIGHT, Math::Normalize(-*target_direction));
 
-	//ライト位置更新
-	slash_light->set_position(position);
+		//ライト位置更新
+		slash_light->set_position(position);
 	}
 
 	//消滅処理
@@ -74,9 +74,9 @@ void SlashWave::update(Graphics& graphics, float elapsed_time)
 
 }
 
-void SlashWave::render(Graphics& graphics, Camera* camera)
+void SlashWave::render(Camera* camera)
 {
-	slash_mesh->render(graphics, camera);
+	slash_mesh->render(camera);
 }
 
 void SlashWave::debug_gui(string str_id)

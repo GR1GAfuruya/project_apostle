@@ -30,7 +30,7 @@ void Boss::initialize()
 	//エフェクト初期化
 	attack_skill_2->stop();
 
-	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible,type); };
+	damaged_function = [=](int damage, float invincible, WINCE_TYPE type)->bool {return apply_damage(damage, invincible, type); };
 	sickle_hand = model->get_bone_by_name("Bip01-R-ForeTwist");
 	sickle_hand_colide.radius = 8.0f;
 	vs_wall_ray_power = 10.0f;
@@ -46,13 +46,14 @@ void Boss::initialize()
 // コンストラクタ
 // 
 //==============================================================
-Boss::Boss(Graphics& graphics)
+Boss::Boss()
 {
+	Graphics& graphics = Graphics::instance();
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Boss/LordHell.fbx", 60.0f);
-	attack_skill_1 = make_unique<BossAttackSkill1>(graphics);
-	attack_skill_2 = make_unique<ChargeAttack>(graphics);
-	attack_skill_3 = make_unique<BossAttackSkill3>(graphics);
-	ui = make_unique<BossUi>(graphics);
+	attack_skill_1 = make_unique<BossAttackSkill1>();
+	attack_skill_2 = make_unique<ChargeAttack>();
+	attack_skill_3 = make_unique<BossAttackSkill3>();
+	ui = make_unique<BossUi>();
 
 	initialize();
 
@@ -62,24 +63,24 @@ Boss::Boss(Graphics& graphics)
 //更新処理
 // 
 //==============================================================
-void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
+void Boss::update(float elapsed_time, Camera* camera)
 {
 #if _DEBUG
-	 if(!is_update) return;
+	if (!is_update) return;
 #endif
 
-	(this->*act_update)(graphics, elapsed_time);
+	(this->*act_update)(elapsed_time);
 	model->update_animation(elapsed_time);
 	DirectX::XMFLOAT4X4 sickle_bone_mat;
 	model->fech_by_bone(transform, sickle_hand, sickle_hand_colide.start, &sickle_bone_mat);
-	
+
 	//スキル１のアップデート
-	attack_skill_1->update(graphics, elapsed_time,camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
+	attack_skill_1->update(elapsed_time, camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
 	//スキル2のアップデート
-	attack_skill_2->update(graphics, elapsed_time,camera);
+	attack_skill_2->update(elapsed_time, camera);
 	attack_skill_2->set_target_pos(target_pos);
 	//スキル3のアップデート
-	attack_skill_3->update(graphics, elapsed_time,camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
+	attack_skill_3->update(elapsed_time, camera, sickle_hand_colide.start, Math::get_posture_right(sickle_bone_mat));
 
 	//bodyの攻撃用当たり判定
 	boss_body_collision.capsule.start = position;
@@ -93,15 +94,16 @@ void Boss::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	//無敵時間更新
 	update_invicible_timer(elapsed_time);
 	//UI更新
-	ui->update(graphics, elapsed_time);
+	ui->update(elapsed_time);
 }
 //==============================================================
 // 
 //描画処理（ディファード）
 // 
 //==============================================================
-void Boss::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
+void Boss::render_d(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 #if _DEBUG
 	if (!is_render) return;
 #endif
@@ -114,21 +116,23 @@ void Boss::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 //描画処理（フォワード）
 // 
 //==============================================================
-void Boss::render_f(Graphics& graphics, float elapsed_time,Camera* camera)
+void Boss::render_f(float elapsed_time, Camera* camera)
 {
-	attack_skill_1->render(graphics, camera);
-	attack_skill_2->render(graphics, camera);
-	attack_skill_3->render(graphics, camera);
+	Graphics& graphics = Graphics::instance();
+	attack_skill_1->render(camera);
+	attack_skill_2->render(camera);
+	attack_skill_3->render(camera);
 	debug_gui();
-	
+
 }
 //==============================================================
 // 
 //描画処理（シャドウ）
 // 
 //==============================================================
-void Boss::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
+void Boss::render_s(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 
 }
@@ -137,8 +141,9 @@ void Boss::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
 //描画処理（UI）
 // 
 //==============================================================
-void Boss::render_ui(Graphics& graphics, float elapsed_time)
+void Boss::render_ui(float elapsed_time)
 {
+	Graphics& graphics = Graphics::instance();
 	ui->set_percent(get_hp_percent());
 	ui->render(graphics.get_dc().Get());
 }
@@ -160,7 +165,7 @@ void Boss::on_damaged(WINCE_TYPE type)
 {
 	/*ステートがダメージを受けているか攻撃している途中
 	 あるいは怯み処理を行わない攻撃タイプの時は処理を飛ばす*/
-	if (state == State::DAMAGE || state == State::ATTACK  || type == WINCE_TYPE::NONE)
+	if (state == State::DAMAGE || state == State::ATTACK || type == WINCE_TYPE::NONE)
 	{
 		return;
 	}
@@ -253,10 +258,10 @@ void Boss::debug_gui()
 			}
 			ImGui::DragInt("hp", &health);
 			ImGui::DragFloat("height", &chara_param.height);
-			ImGui::DragFloat("turnspeed", &chara_param.turn_speed,0.1f);
-			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius,0.1f);
-			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height,0.1f);
-			ImGui::DragFloat("sickle_.radius", &sickle_hand_colide.radius,1);
+			ImGui::DragFloat("turnspeed", &chara_param.turn_speed, 0.1f);
+			ImGui::DragFloat("boss_collision.radius", &boss_body_collision.capsule.radius, 0.1f);
+			ImGui::DragFloat("boss_collision.height", &boss_body_collision.height, 0.1f);
+			ImGui::DragFloat("sickle_.radius", &sickle_hand_colide.radius, 1);
 		}
 		ImGui::End();
 	}
@@ -279,7 +284,7 @@ void Boss::calc_attack_vs_player(DirectX::XMFLOAT3 player_cap_start, DirectX::XM
 		{
 			sickle_attack_param.power = 5;
 			sickle_attack_param.invinsible_time = 0.55f;
-			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time,WINCE_TYPE::NONE);
+			damaged_func(sickle_attack_param.power, sickle_attack_param.invinsible_time, WINCE_TYPE::NONE);
 		}
 	}
 

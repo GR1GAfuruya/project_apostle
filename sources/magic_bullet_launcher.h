@@ -14,14 +14,14 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	MagicBulletLauncher(Graphics& graphics);
+	MagicBulletLauncher();
 	~MagicBulletLauncher() override {};
 	//更新
-	void update(Graphics& graphics, float elapsed_time) override;
+	void update(float elapsed_time) override;
 	//描画
-	void render(Graphics& graphics, Camera* camera) override;
+	void render(Camera* camera) override;
 	//発動
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir);
+	bool chant(DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir);
 	//スキルの当たり判定
 	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//DebugGUI表示

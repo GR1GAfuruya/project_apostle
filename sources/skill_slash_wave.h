@@ -26,12 +26,12 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	SlashWave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* target_dir, PublicParam initparam);
+	SlashWave(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* target_dir, PublicParam initparam);
 	~SlashWave();
 
-	void initialize(Graphics& graphics) override;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics, Camera* camera)override;
+	void initialize() override;
+	void update(float elapsed_time)override;
+	void render(Camera* camera)override;
 
 	void debug_gui(string str_id);
 private:

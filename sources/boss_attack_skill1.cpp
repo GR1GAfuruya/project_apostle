@@ -5,28 +5,28 @@
 //コンストラクタ
 // 
 //==============================================================
-BossAttackSkill1::BossAttackSkill1(Graphics& graphics)
+BossAttackSkill1::BossAttackSkill1()
 {
 	const DirectX::XMFLOAT4 FIRE_COLOR = { 4.0f, 1.0f, 0.7f, 0.8f };
 
 	//腕のエフェクト
 	{
-		arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		arm_effect = make_unique<MeshEffect>("./resources/Effects/Meshes/eff_tornado4.fbx");
 		arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		arm_effect->set_init_color(FIRE_COLOR);
 		arm_effect->set_init_scale(0);
 		arm_effect->set_init_life_duration(0.5f);
 	}
 	//爆発後の余韻エフェクト
-	wave_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/torus.fbx");
+	wave_effect = make_unique<MeshEffect>("./resources/Effects/Meshes/torus.fbx");
 	wave_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	wave_effect->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 	wave_effect->set_init_life_duration(2.0f);
 	wave_effect->set_init_scale(0);
 
 	//更新関数初期化
-	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-		->void {return attack_state_update(graphics, elapsed_time, camera); };
+	state_update = [=](float elapsed_time, Camera* camera)
+		->void {return attack_state_update(elapsed_time, camera); };
 
 	wave_params.position = { 0,0,0 };
 	wave_params.height = 2;
@@ -66,8 +66,8 @@ BossAttackSkill1::~BossAttackSkill1()
 //==============================================================
 void BossAttackSkill1::chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir)
 {
-	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-		->void {return charge_state_update(graphics, elapsed_time, camera); };
+	state_update = [=](float elapsed_time, Camera* camera)
+		->void {return charge_state_update(elapsed_time, camera); };
 
 	arm_effect->play(arm_pos);
 	arm_effect->rotate_base_axis(MeshEffect::AXIS::UP, arm_dir);
@@ -89,21 +89,21 @@ void BossAttackSkill1::stop()
 //更新
 // 
 //==============================================================
-void BossAttackSkill1::update(Graphics& graphics, float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir)
+void BossAttackSkill1::update(float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir)
 {
 	this->arm_pos = arm_pos;
 	this->arm_dir = arm_dir;
 
-	wave_effect->set_scale({ wave_params.radius /25.0f ,wave_params.height / 10.0f,wave_params.radius / 25.0f });
+	wave_effect->set_scale({ wave_params.radius / 25.0f ,wave_params.height / 10.0f,wave_params.radius / 25.0f });
 	//wave_params.width = wave_params.radius / 5.0f;
 	wave_effect->set_position(wave_params.position);
-	wave_effect->update(graphics, elapsed_time);
-	arm_effect->update(graphics, elapsed_time);
+	wave_effect->update(elapsed_time);
+	arm_effect->update(elapsed_time);
 	//meteore_effect->update(graphics, elapsed_time);
 
-	if (wave_params.active )
+	if (wave_params.active)
 	{
-		state_update(graphics, elapsed_time, camera);
+		state_update(elapsed_time, camera);
 	}
 };
 
@@ -114,14 +114,14 @@ void BossAttackSkill1::update(Graphics& graphics, float elapsed_time, Camera* ca
 //チャージしているときの更新
 // 
 //==============================================================
-void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void BossAttackSkill1::charge_state_update(float elapsed_time, Camera* camera)
 {
 	charge_timer += elapsed_time;
 	if (charge_timer > charge_time)
 	{
 		//更新関数を攻撃に
-		state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-			->void {return attack_state_update(graphics, elapsed_time, camera); };
+		state_update = [=](float elapsed_time, Camera* camera)
+			->void {return attack_state_update(elapsed_time, camera); };
 		//カメラシェイク
 		camera->set_camera_shake(camera_shake);
 		//腕エフェクトストップ
@@ -144,7 +144,7 @@ void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_tim
 		arm_effect->rotate_base_axis(MeshEffect::AXIS::UP, arm_dir);
 
 		const float scale_speed = 10.0f;
-		arm_effect->set_scale(arm_effect->get_scale().x + scale_speed * elapsed_time );
+		arm_effect->set_scale(arm_effect->get_scale().x + scale_speed * elapsed_time);
 
 		if (!arm_effect->get_active())
 		{
@@ -158,7 +158,7 @@ void BossAttackSkill1::charge_state_update(Graphics& graphics, float elapsed_tim
 //攻撃したときの更新
 // 
 //==============================================================
-void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void BossAttackSkill1::attack_state_update(float elapsed_time, Camera* camera)
 {
 	wave_params.position = boss_position;
 
@@ -180,10 +180,10 @@ void BossAttackSkill1::attack_state_update(Graphics& graphics, float elapsed_tim
 //描画
 // 
 //==============================================================
-void BossAttackSkill1::render(Graphics& graphics,Camera* camera)
+void BossAttackSkill1::render(Camera* camera)
 {
-	wave_effect->render(graphics);
-	arm_effect->render(graphics,camera);
+	wave_effect->render();
+	arm_effect->render(camera);
 }
 
 //==============================================================

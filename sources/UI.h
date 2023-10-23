@@ -8,7 +8,7 @@ public:
     UI() {}
     virtual ~UI() {}
     //--------< ŠÖ” >--------//
-    virtual void update(Graphics& graphics, float elapsed_time) = 0;
+    virtual void update(float elapsed_time) = 0;
     virtual void render(ID3D11DeviceContext* dc) = 0;
     //--------< \‘¢‘Ì >--------//
     struct Element

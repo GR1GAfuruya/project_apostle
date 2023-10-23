@@ -6,8 +6,8 @@
 class StageManager
 {
 private:
-	StageManager(){}
-	~StageManager(){}
+	StageManager() {}
+	~StageManager() {}
 
 public:
 	static StageManager& Instance()
@@ -19,14 +19,14 @@ public:
 	//更新処理
 	void update(float elapsedTime);
 	//描画処理
-	void render(Graphics& graphics, float elapsed_time, Camera* camera);
-	void shadow_render(Graphics& graphics, float elapsed_time);
+	void render(float elapsed_time, Camera* camera);
+	void shadow_render(float elapsed_time);
 	//ステージ登録
 	void Register(Stage* stage);
 	//ステージ全削除
 	void Clear();
 	//レイキャスト
-	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) ;
+	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit);
 
 private:
 	std::vector<Stage*> stages;

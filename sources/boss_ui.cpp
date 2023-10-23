@@ -2,10 +2,10 @@
 #include "imgui_include.h"
 #include "user.h"
 
-BossUi::BossUi(Graphics& graphics) :
-	GaugeUi(graphics, L"./resources/Sprite/UI/Boss/boss_hp_bar_back.png",
-	L"./resources/Sprite/UI/Boss/bar.png",
-	nullptr)
+BossUi::BossUi() :
+	GaugeUi(L"./resources/Sprite/UI/Boss/boss_hp_bar_back.png",
+		L"./resources/Sprite/UI/Boss/bar.png",
+		nullptr)
 {
 	gauge.position = { 100.0f,40.0f };
 	gauge.scale = { 1.0f, 0.1f };
@@ -14,15 +14,15 @@ BossUi::BossUi(Graphics& graphics) :
 	diff_color = { 1.0f,1.0f, 0.5f, 1.0f };
 }
 
-void BossUi::initialize(Graphics& graphics)
+void BossUi::initialize()
 {
-	
+
 }
 
-void BossUi::update(Graphics& graphics, float elapsed_time)
+void BossUi::update(float elapsed_time)
 {
 	static bool is_display_imgui = false;
-	GaugeUi::update(graphics, elapsed_time);
+	GaugeUi::update(elapsed_time);
 	imgui_menu_bar("UI", "boss gauge", is_display_imgui);
 #ifdef USE_IMGUI
 	if (is_display_imgui)

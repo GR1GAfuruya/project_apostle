@@ -54,17 +54,17 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	MeshEffect(Graphics& graphics, const char* fbx_filename);
+	MeshEffect(const char* fbx_filename);
 	~MeshEffect(){};
 	//再生
 	void play(DirectX::XMFLOAT3 pos);
 	//停止
 	void stop();
 	//更新
-	void update(Graphics& graphics, float elapsed_time);
+	void update(float elapsed_time);
 	//描画
-	void render(Graphics& graphics);//フラスタムカリング無
-	void render(Graphics& graphics,Camera* camera);//フラスタムカリングあり
+	void render();//フラスタムカリング無
+	void render(Camera* camera);//フラスタムカリングあり
 
 	void debug_gui(string str_id);
 

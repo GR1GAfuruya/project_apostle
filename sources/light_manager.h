@@ -10,11 +10,11 @@ private:
 	LightManager() {};
 	~LightManager();
 public:
-	void initialize(Graphics& graphics);
+	void initialize();
 	//ライトを監視対象に追加
 	void  register_light(std::string name, std::shared_ptr<Light> light);
 	//ライトをG-Bufferに送る
-	void draw(Graphics& graphics, ID3D11ShaderResourceView** rtv, int rtv_num);
+	void draw(ID3D11ShaderResourceView** rtv, int rtv_num);
 
 	void debug_gui();
 
@@ -37,7 +37,7 @@ private:
 #endif
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> shadow_map_light;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> deferred_light;
-	
+
 	bool display_imgui = false;
 
 };

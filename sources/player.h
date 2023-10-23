@@ -14,24 +14,24 @@
 class Player final :public Charactor
 {
 public:
-	Player(Graphics& graphics, Camera* camera);
+	Player(Camera* camera);
 	~Player()override;
 
 	//初期化処理
 	void initialize();
 	//更新処理
-	void update(Graphics& graphics, float elapsed_time, Camera* camera);
+	void update(float elapsed_time, Camera* camera);
 	//描画処理
 	//ディファードでレンダリングするオブジェクト
-	void render_d(Graphics& graphics, float elapsed_time, Camera* camera);
+	void render_d(float elapsed_time, Camera* camera);
 	//フォワードレンダリングするオブジェクト
-	void render_f(Graphics& graphics, float elapsed_time, Camera* camera);
+	void render_f(float elapsed_time, Camera* camera);
 	//シャドウレンダリングするオブジェクト
-	void render_s(Graphics& graphics, float elapsed_time, Camera* camera);
+	void render_s(float elapsed_time, Camera* camera);
 	//UI描画
-	void render_ui(Graphics& graphics, float elapsed_time);
+	void render_ui(float elapsed_time);
 	//デバッグ用GUI描画
-	void debug_gui(Graphics& graphics, Camera* camera);
+	void debug_gui(Camera* camera);
 	//プレイヤーの腰当たりの位置
 	DirectX::XMFLOAT3 get_waist_position() { return DirectX::XMFLOAT3(position.x, position.y + chara_param.height / 2, position.z); }
 	//カメラがプレイヤーを見るときに注視するポイント
@@ -153,26 +153,26 @@ private:
 
 
 	//********各ステートのアップデート**********//r_はルートモーション付き
-	void update_idle_state(Graphics& graphics, float elapsed_time, Camera* camera);
-	void update_move_state(Graphics& graphics, float elapsed_time, Camera* camera);//走り
-	void update_avoidance_state(Graphics& graphics, float elapsed_time, Camera* camera);//回避
-	void update_jump_state(Graphics& graphics, float elapsed_time, Camera* camera);//ジャンプ
-	void update_damage_front_state(Graphics& graphics, float elapsed_time, Camera* camera);//前から被ダメ
-	void update_r_attack_spring_slash_state(Graphics& graphics, float elapsed_time, Camera* camera);//前回転切り
-	void update_attack_pull_slash_state(Graphics& graphics, float elapsed_time, Camera* camera);//敵を引き付けて斬るk
-	void update_attack_ground_state(Graphics& graphics, float elapsed_time, Camera* camera);//地面に手を付けて口寄せみたいなk
-	void update_magic_buff_state(Graphics& graphics, float elapsed_time, Camera* camera);//バフk
-	void update_attack_bullet_state(Graphics& graphics, float elapsed_time, Camera* camera);//空中に巻き上げ斬るk
-	void update_attack_slash_up_state(Graphics& graphics, float elapsed_time, Camera* camera);//小さい魔法弾打つようなkk
-	void update_r_attack_forward_state(Graphics& graphics, float elapsed_time, Camera* camera);//前進斬り
-	void update_attack_air_state(Graphics& graphics, float elapsed_time, Camera* camera);//ジャンプして地面に魔法うつ
-	void update_r_attack_combo1_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-1
-	void update_r_attack_combo2_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-2
-	void update_r_attack_combo3_state(Graphics& graphics, float elapsed_time, Camera* camera);//コンボ2-3
-	void update_r_attack_dodge_back_state(Graphics& graphics, float elapsed_time, Camera* camera);//後方に回避しながら魔法
+	void update_idle_state(float elapsed_time, Camera* camera);
+	void update_move_state(float elapsed_time, Camera* camera);//走り
+	void update_avoidance_state(float elapsed_time, Camera* camera);//回避
+	void update_jump_state(float elapsed_time, Camera* camera);//ジャンプ
+	void update_damage_front_state(float elapsed_time, Camera* camera);//前から被ダメ
+	void update_r_attack_spring_slash_state(float elapsed_time, Camera* camera);//前回転切り
+	void update_attack_pull_slash_state(float elapsed_time, Camera* camera);//敵を引き付けて斬るk
+	void update_attack_ground_state(float elapsed_time, Camera* camera);//地面に手を付けて口寄せみたいなk
+	void update_magic_buff_state(float elapsed_time, Camera* camera);//バフk
+	void update_attack_bullet_state(float elapsed_time, Camera* camera);//空中に巻き上げ斬るk
+	void update_attack_slash_up_state(float elapsed_time, Camera* camera);//小さい魔法弾打つようなkk
+	void update_r_attack_forward_state(float elapsed_time, Camera* camera);//前進斬り
+	void update_attack_air_state(float elapsed_time, Camera* camera);//ジャンプして地面に魔法うつ
+	void update_r_attack_combo1_state(float elapsed_time, Camera* camera);//コンボ2-1
+	void update_r_attack_combo2_state(float elapsed_time, Camera* camera);//コンボ2-2
+	void update_r_attack_combo3_state(float elapsed_time, Camera* camera);//コンボ2-3
+	void update_r_attack_dodge_back_state(float elapsed_time, Camera* camera);//後方に回避しながら魔法
 
 	//更新関数の関数ポインタの定義
-	typedef void (Player::* ActUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
+	typedef void (Player::* ActUpdate)(float elapsed_time, Camera* camera);
 
 	//プレイヤーの移動入力処理
 	bool input_move(float elapsedTime, Camera* camera);
@@ -185,9 +185,9 @@ private:
 	//回避入力
 	void input_avoidance();
 	//サポートスキル詠唱入力
-	void input_chant_support_skill(Graphics& graphics, Camera* camera);
+	void input_chant_support_skill(Camera* camera);
 	//攻撃スキル詠唱入力
-	void input_chant_attack_skill(Graphics& graphics, Camera* camera);
+	void input_chant_attack_skill(Camera* camera);
 	
 	//着地したか
 	void on_landing()override;

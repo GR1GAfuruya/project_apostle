@@ -1,7 +1,8 @@
 #include "mat_meteore.h"
 
-MeteoreMat::MeteoreMat(Graphics& graphics)
+MeteoreMat::MeteoreMat()
 {
+	Graphics& graphics = Graphics::instance();
 	//シェーダーリソースの設定
 	register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/Traill3_output.png");
 	register_shader_resource(graphics.get_device().Get(), L"./resources/Effects/Textures/T_Perlin_Noise_M.tga");

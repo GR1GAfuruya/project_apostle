@@ -42,38 +42,38 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	SkillManager(Graphics& graphics);
+	SkillManager();
 	~SkillManager() {};
 
 	//初期化
-	void initialize(Graphics& graphics);
+	void initialize();
 	//更新
-	void update(Graphics& graphics, float elapsed_time);
+	void update(float elapsed_time);
 	//描画
-	void render(Graphics& graphics, Camera* camera);
+	void render(Camera* camera);
 
 	//UI描画
-	void ui_render(Graphics& graphics, float elapsed_time);
+	void ui_render(float elapsed_time);
 
 	SupportSkillType get_selected_sup_skill_type() { return selected_sup_skill_type; }
 
 	AttackSkillType get_selected_atk_skill_type() { return selected_atk_skill_type; }
 
 	//スキル詠唱
-	bool chant_physical_up(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed);
+	bool chant_physical_up(DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed);
 
-	bool chant_regenerate(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health);
+	bool chant_regenerate(DirectX::XMFLOAT3* launch_pos, int* health, const int max_health);
 
-	bool chant_restraint(Graphics& graphics, DirectX::XMFLOAT3* target_pos, float* down_speed);
+	bool chant_restraint(DirectX::XMFLOAT3* target_pos, float* down_speed);
 
 	//攻撃スキル詠唱
-	bool chant_magic_bullet(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
-	
-	bool chant_spear_sea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
+	bool chant_magic_bullet(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
 
-	bool chant_slash_wave(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
+	bool chant_spear_sea(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
-	bool chant_lightning_rain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
+	bool chant_slash_wave(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
+
+	bool chant_lightning_rain(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos);
 
 	//スキルクールタイム短縮
 	void cool_time_reduction();
@@ -92,9 +92,9 @@ public:
 		return false;
 	}
 
-	int select_skill_slot(DirectX::XMFLOAT2 stick_vec,int slot_num);
+	int select_skill_slot(DirectX::XMFLOAT2 stick_vec, int slot_num);
 	//デバッグGUI
-	void debug_gui(Graphics& graphics);
+	void debug_gui();
 
 private:
 	//サポートスキルセット
@@ -111,7 +111,7 @@ private:
 	std::shared_ptr<PhysicalUpLauncher> physical_up;
 	std::shared_ptr<RegenerateLauncher> regenerate;
 	std::shared_ptr<RestraintLauncher> restraint;
-	 
+
 	std::shared_ptr<MagicBulletLauncher> magick_bullet;
 	std::shared_ptr<SpearSeaLauncher> spear_sea;
 	std::shared_ptr<SlashWaveLauncher> slash_wave;
@@ -132,7 +132,7 @@ private:
 	bool display_imgui;
 	bool is_selecting_support_skill;
 	bool is_selecting_attack_skill;
-	
+
 	//==============================================================
 	// 
 	// 定数

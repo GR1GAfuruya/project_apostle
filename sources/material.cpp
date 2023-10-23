@@ -6,7 +6,7 @@
 // コンストラクタ
 // 
 //==============================================================
-Material::Material(Graphics& graphics)
+Material::Material()
 {
 }
 
@@ -15,8 +15,9 @@ Material::Material(Graphics& graphics)
 //SRVをGPUに転送
 // 
 //==============================================================
-void Material::transfer_shader_resource_view(Graphics& graphics)
+void Material::transfer_shader_resource_view()
 {
+	Graphics& graphics = Graphics::instance();
 	graphics.get_dc().Get()->PSSetShaderResources(
 		MATERIAL_START_SLOT, shader_resources.size(), shader_resources.data()->GetAddressOf());
 }
@@ -45,8 +46,9 @@ void Material::create_pixel_shader(ID3D11Device* device, const char* cso_name)
 	create_ps_from_cso(device, cso_name, pixel_shader.ReleaseAndGetAddressOf());
 }
 
-void Material::reload(Graphics& graphics)
+void Material::reload()
 {
+	Graphics& graphics = Graphics::instance();
 	if (graphics.recompile_pixel_shader(pixel_shader.GetAddressOf(), id))
 	{
 

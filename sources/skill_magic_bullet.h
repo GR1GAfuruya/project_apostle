@@ -20,17 +20,17 @@ public:
 	// publicä÷êî
 	// 
 	//=============================================================
-	MagicBullet(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, PublicParam initparam);
+	MagicBullet(DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir, PublicParam initparam);
 	~MagicBullet();
 
-	void initialize(Graphics& graphics) ;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics, Camera* camera)override;
+	void initialize();
+	void update(float elapsed_time)override;
+	void render(Camera* camera)override;
 
 
 	void debug_gui(string str_id);
 protected:
-	
+
 
 	//==============================================================
 	// 
