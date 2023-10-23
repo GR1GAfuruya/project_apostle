@@ -12,14 +12,14 @@ public:
 		return instance;
 	}
 
-	void initialize(Graphics& graphics);
-	void update(float elapsed_time,Graphics& graphics);
-	void render(float elapsed_time, Graphics& graphics);
+	void initialize();
+	void update(float elapsed_time);
+	void render(float elapsed_time);
 
 	//シーンクリア
 	void clear();
 
-	void change_scene(Graphics& graphics, Scene* scene);
+	void change_scene(Scene* scene);
 
 private:
 	//現在のシーン

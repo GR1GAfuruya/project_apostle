@@ -5,19 +5,19 @@
 class Emitter
 {
 public:
-	Emitter(Graphics& graphics, int max_particles);
+	Emitter(int max_particles);
 	~Emitter();
 
 	void play(DirectX::XMFLOAT3 pos);
 
 
-	void emit(Graphics& graphics, float elapsed_time);
+	void emit(float elapsed_time);
 
-	void update(Graphics& graphics, float elapsed_time);
+	void update(float elapsed_time);
 
-	void render(Graphics& graphics, Camera& camera);
+	void render(Camera& camera);
 
-	void debug_gui(Graphics& graphics, string id);
+	void debug_gui(string id);
 
 	//==============================================================
 	// 

@@ -4,8 +4,9 @@
 #include "scene_manager.h"
 #include "device.h"
 #include "texture.h"
-SceneTitle::SceneTitle(Graphics& graphics)
+SceneTitle::SceneTitle()
 {
+	Graphics& graphics = Graphics::instance();
 	sprite_title_back = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".//resources//Sprite//Title//title_back.png", 1);
 	sprite_title_logo = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".//resources//Sprite//Title//title_logo.png", 1);
 	sprite_title_logo_back = std::make_unique<SpriteBatch>(graphics.get_device().Get(), L".//resources//Sprite//Title//title_logo_back.png", 1);
@@ -21,14 +22,14 @@ SceneTitle::SceneTitle(Graphics& graphics)
 	create_ps_from_cso(graphics.get_device().Get(), "./shaders/title_logo.cso", logo_ps.ReleaseAndGetAddressOf());
 
 	is_change_scean_start = false;
-	camera = std::make_unique<Camera>(graphics, "./resources/Data/scene_title/title_post_effect.json");
+	camera = std::make_unique<Camera>("./resources/Data/scene_title/title_post_effect.json");
 
 	//セレクトバー
 	selected_menu_state = TITLE_MENU::GAME_START;
 	select_bar_pos = { 400.0f,400.0f };
 }
 
-void SceneTitle::initialize(Graphics& graphics)
+void SceneTitle::initialize()
 {
 }
 
@@ -36,12 +37,12 @@ void SceneTitle::finalize()
 {
 }
 
-void SceneTitle::update(float elapsedTime, Graphics& graphics)
+void SceneTitle::update(float elapsedTime)
 {
 	//カメラ更新
 	camera->update(elapsedTime);
 
-	camera->calc_view_projection(graphics, elapsedTime);
+	camera->calc_view_projection(elapsedTime);
 	//デバイス
 	Mouse& mouse = Device::instance().get_mouse();
 	GamePad& game_pad = Device::instance().get_game_pad();
@@ -52,7 +53,7 @@ void SceneTitle::update(float elapsedTime, Graphics& graphics)
 		//上に倒したときはゲームスタート
 		selected_menu_state = TITLE_MENU::GAME_START;
 	}
-	else if(game_pad.get_axis_LY() < -0.2f)
+	else if (game_pad.get_axis_LY() < -0.2f)
 	{
 		//下に倒したときは抜ける
 		selected_menu_state = TITLE_MENU::EXIT;
@@ -85,16 +86,16 @@ void SceneTitle::update(float elapsedTime, Graphics& graphics)
 		camera->get_post_effect()->set_posteffect_param(nowparam);
 		if (nowparam.scene_threshold.x >= 1.0f)
 		{
-			SceneManager::instance().change_scene(graphics, new SceneLoading(new SceneGame(graphics)));
+			SceneManager::instance().change_scene(new SceneLoading(new SceneGame()));
 			return;
 		}
 	}
 
 }
 
-void SceneTitle::render(float elapsedTime,Graphics& graphics)
+void SceneTitle::render(float elapsedTime)
 {
-
+	Graphics& graphics = Graphics::instance();
 	const DirectX::XMFLOAT2 title_pos = { 130,100 };
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 
@@ -124,7 +125,7 @@ void SceneTitle::render(float elapsedTime,Graphics& graphics)
 		sprite_title_logo->render(graphics.get_dc().Get(), title_pos, { 1,1 });
 		sprite_title_logo->end(graphics.get_dc().Get());
 	}
-	
+
 	const DirectX::XMFLOAT2 start_str_pos = { 400.0f,440.0f };//メニューテキストのGAME_STARTの位置
 	const DirectX::XMFLOAT2 exit_str_pos = { 400.0f,540.0f };//メニューテキストのEXITの位置
 	const float offset = -30.0f;//メニューバーの位置に足す値
@@ -160,21 +161,21 @@ void SceneTitle::render(float elapsedTime,Graphics& graphics)
 		sprite_exit->end(graphics.get_dc().Get());
 	}
 
-	
+
 	//***************************************************************//
 	///						ポストエフェクト  				        ///
 	//***************************************************************//
 	graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::CULL_NONE);
 	camera->get_post_effect()->end(graphics.get_dc().Get());
-	camera->get_post_effect()->blit(graphics);
+	camera->get_post_effect()->blit();
 
-//#if USE_IMGUI
-//	ImGui::Begin("sprite");
-//	//ImGui::DragFloat2("pos",&start_str_pos.x,0.1f);
-//	ImGui::DragFloat("offset",&offset,0.1f);
-//	ImGui::End();
-//
-//
-//#endif
+	//#if USE_IMGUI
+	//	ImGui::Begin("sprite");
+	//	//ImGui::DragFloat2("pos",&start_str_pos.x,0.1f);
+	//	ImGui::DragFloat("offset",&offset,0.1f);
+	//	ImGui::End();
+	//
+	//
+	//#endif
 
 }

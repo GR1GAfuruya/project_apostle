@@ -7,38 +7,39 @@
 //コンストラクタ
 // 
 //==============================================================
-ChargeAttack::ChargeAttack(Graphics& graphics)
+ChargeAttack::ChargeAttack()
 {
+	Graphics& graphics = Graphics::instance();
 	//coreの初期設定
 	{
-		core = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+		core = make_unique<MeshEffect>("./resources/Effects/Meshes/eff_sphere.fbx");
 		core->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		core->set_init_color(FIRE_COLOR);
 	}
 	//waveの初期設定
 	{
-		wave = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/torus.fbx");
+		wave = std::make_unique<MeshEffect>("./resources/Effects/Meshes/torus.fbx");
 		wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		wave->set_init_color(FIRE_COLOR);
 	}
 	//tornadoの初期設定
 	{
-		tornado = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		tornado = std::make_unique<MeshEffect>("./resources/Effects/Meshes/eff_tornado4.fbx");
 		tornado->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		tornado->set_init_color(FIRE_COLOR);
 	}
 	//黒tornadoの初期設定
 	{
-		tornado_black = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		tornado_black = std::make_unique<MeshEffect>("./resources/Effects/Meshes/eff_tornado4.fbx");
 		tornado_black->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		tornado_black->set_init_color({ 0.3f,0.2f,0.0f,0.8f });
 	}
 	//予兆エフェクト
 	{
-		omen_effect = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_aura.fbx");
+		omen_effect = std::make_unique<MeshEffect>("./resources/Effects/Meshes/eff_aura.fbx");
 		omen_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		omen_effect->set_init_life_duration(0.5f);
-		omen_effect->set_init_scale({0.0f, 0.0f, 11.0f});
+		omen_effect->set_init_scale({ 0.0f, 0.0f, 11.0f });
 		omen_effect->set_init_color({ FIRE_COLOR });
 	}
 	//定数バッファ初期設定
@@ -46,7 +47,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	//particleの初期設定
 	{
 		particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 70000);
-		particle.get()->initialize(graphics);
+		particle.get()->initialize();
 		particle.get()->set_emitter_rate(6000);
 		particle.get()->set_emitter_life_time(4);
 		particle.get()->set_particle_life_time(5);
@@ -57,7 +58,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	//メテオ
 	{
 		const int METEORE_MAX_NUM = 12;
-		meteores = std::make_unique<Meteore>(graphics, METEORE_MAX_NUM);
+		meteores = std::make_unique<Meteore>(METEORE_MAX_NUM);
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_emit.cso", emit_cs.ReleaseAndGetAddressOf());
 		create_cs_from_cso(graphics.get_device().Get(), "shaders/boss_charge_attack_update.cso", update_cs.ReleaseAndGetAddressOf());
 		meteo_span = ATTACK_TIME / (meteores->get_max_num() + 1);
@@ -77,7 +78,7 @@ ChargeAttack::ChargeAttack(Graphics& graphics)
 	}
 
 	const float range = 20.0f;
-	boss_light = make_shared<PointLight>(graphics, position, range, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
+	boss_light = make_shared<PointLight>(position, range, DirectX::XMFLOAT3(FIRE_COLOR.x, FIRE_COLOR.y, FIRE_COLOR.z));
 
 }
 //==============================================================
@@ -154,7 +155,7 @@ void ChargeAttack::chant(DirectX::XMFLOAT3 pos)
 		//コアの場所に配置
 		for (int i = 0; i < meteores->get_max_num(); i++)
 		{
-			meteores->set_position(core->get_position(),i);
+			meteores->set_position(core->get_position(), i);
 		}
 	}
 	//コリジョン初期化
@@ -187,20 +188,21 @@ void ChargeAttack::stop()
 //更新
 // 
 //==============================================================
-void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
+void ChargeAttack::update(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	if (active)
 	{
 		life_time += elapsed_time;
 		//更新
-		(this->*charge_attack_update)(graphics, elapsed_time, camera);
-		core->update(graphics, elapsed_time);
-		wave->update(graphics, elapsed_time);
-		tornado->update(graphics, elapsed_time);
-		tornado_black->update(graphics, elapsed_time);
-		omen_effect->update(graphics, elapsed_time);
+		(this->*charge_attack_update)(elapsed_time, camera);
+		core->update(elapsed_time);
+		wave->update(elapsed_time);
+		tornado->update(elapsed_time);
+		tornado_black->update(elapsed_time);
+		omen_effect->update(elapsed_time);
 	}
-	meteores->update(graphics, elapsed_time);
+	meteores->update(elapsed_time);
 
 	particle.get()->update(graphics.get_dc().Get(), elapsed_time, update_cs.Get());
 }
@@ -209,21 +211,21 @@ void ChargeAttack::update(Graphics& graphics, float elapsed_time,Camera* camera)
 //描画
 // 
 //==============================================================
-void ChargeAttack::render(Graphics& graphics, Camera* camera)
+void ChargeAttack::render(Camera* camera)
 {
-
+	Graphics& graphics = Graphics::instance();
 	if (active)
 	{
-		core->render(graphics, camera);
+		core->render(camera);
 
-		tornado->render(graphics);
-		tornado_black->render(graphics);
-		wave->render(graphics, camera);
-		omen_effect->render(graphics, camera);
+		tornado->render();
+		tornado_black->render();
+		wave->render(camera);
+		omen_effect->render(camera);
 	}
 
 	//隕石描画
-	meteores->render(graphics, camera);
+	meteores->render(camera);
 
 	particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
 
@@ -287,13 +289,14 @@ void ChargeAttack::calc_vs_player(DirectX::XMFLOAT3 capsule_start, DirectX::XMFL
 //チャージ中のアップデート
 // 
 //==============================================================
-void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void ChargeAttack::charging_update(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	//更新処理
 	float core_scale = lerp(core->get_scale().x, 0.3f, 0.2f * elapsed_time);
 	core->set_scale(core_scale);
 	core->constants->data.scroll_speed += elapsed_time;
-	core->update(graphics, elapsed_time);
+	core->update(elapsed_time);
 
 	//コアの重力設定
 	constants->data.core_gravitation = 0.5f;
@@ -337,9 +340,9 @@ void ChargeAttack::charging_update(Graphics& graphics, float elapsed_time, Camer
 //チャージが完了し、発動したときのアップデート
 // 
 //==============================================================
-void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void ChargeAttack::activities_update(float elapsed_time, Camera* camera)
 {
-	
+	Graphics& graphics = Graphics::instance();
 	auto fade_out = [=](float alpha) {return (std::max)(alpha - 0.5f * elapsed_time, 0.0f); };
 
 	//コアエフェクト
@@ -347,7 +350,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 		const float core_s = lerp(core->get_scale().x, 10.0f, 1.5f * elapsed_time);
 		core->set_scale(core_s);
 		core->constants->data.scroll_speed += elapsed_time;
-		core->update(graphics, elapsed_time);
+		core->update(elapsed_time);
 
 		//コアの重力設定
 		//反転させてパーティクルを飛び散らせる
@@ -392,7 +395,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 	if (attack_time <= ATTACK_TIME || meteo_launch_count < meteores->get_max_num())
 	{
 		meteo_time += elapsed_time;
-		if (meteo_time >= meteo_span )
+		if (meteo_time >= meteo_span)
 		{
 			//power
 			const float min = 50;
@@ -401,7 +404,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 			float power = random;
 			//方向
 			DirectX::XMFLOAT3 direction = Math::circumferential_placement(core->get_position(),
-				power,meteo_launch_count, meteores->get_max_num());
+				power, meteo_launch_count, meteores->get_max_num());
 			//正規化
 			direction = Math::Normalize(direction);
 			//射出
@@ -412,7 +415,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 			meteo_launch_count++;
 		};
 
-		
+
 	}
 
 	//ポストエフェクトのラジアルブラー実行
@@ -429,7 +432,7 @@ void ChargeAttack::activities_update(Graphics& graphics, float elapsed_time, Cam
 //消滅時のアップデート
 // 
 //==============================================================
-void ChargeAttack::vanishing_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void ChargeAttack::vanishing_update(float elapsed_time, Camera* camera)
 {
 	//徐々に消えていく関数
 	const float fade_out_speed = 7.0f;

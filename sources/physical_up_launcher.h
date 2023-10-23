@@ -13,10 +13,10 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	PhysicalUpLauncher(Graphics& graphics);
+	PhysicalUpLauncher();
 	~PhysicalUpLauncher() override {};
 	//î≠ìÆ
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed);
+	bool chant(DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed);
 
 	//DebugGUIï\é¶
 	void debug_gui() override;

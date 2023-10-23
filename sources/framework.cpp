@@ -7,20 +7,19 @@
 
 framework::framework(HWND hwnd) : hwnd(hwnd)
 {
-	
+
 }
 
 bool framework::initialize()
 {
 
-	graphics = std::make_unique<Graphics>();
 
-	graphics->initialize(hwnd);
-	entities_initialize(*graphics);
+	Graphics::instance().initialize(hwnd);
+	entities_initialize();
 
 	// debug_flags
 	debug_flags = std::make_unique<DebugFlag>();
-	SceneManager::instance().change_scene(*graphics, new SceneTitle(*graphics));
+	SceneManager::instance().change_scene(new SceneTitle());
 	return true;
 }
 
@@ -31,7 +30,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 #endif
-	
+
 	// device
 	Device::instance().update(hwnd, elapsed_time);
 	Device::instance().get_mouse().operation_activation();
@@ -39,9 +38,9 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 
 	debug_flags->update();
 	//シーンアップデート
-	graphics->set_hwnd(hwnd);
-	SceneManager::instance().update(elapsed_time,*graphics);
-	graphics->debug_gui();
+	Graphics::instance().set_hwnd(hwnd);
+	SceneManager::instance().update(elapsed_time);
+	Graphics::instance().debug_gui();
 
 	// フレーム表示
 	{
@@ -92,38 +91,39 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 {
 	//別スレッド中にデバイスコンテキストが使われていた場合に
 	//同時アクセスしないように排他制御する
-	std::lock_guard<std::mutex> lock(graphics->get_mutex());
+	Graphics& graphics = Graphics::instance();
+	std::lock_guard<std::mutex> lock(graphics.get_mutex());
 	{
 		ID3D11RenderTargetView* null_render_target_views[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT]{};
-		graphics->get_dc()->OMSetRenderTargets(_countof(null_render_target_views), null_render_target_views, 0);
+		graphics.get_dc()->OMSetRenderTargets(_countof(null_render_target_views), null_render_target_views, 0);
 		ID3D11ShaderResourceView* null_shader_resource_views[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT]{};
-		graphics->get_dc()->VSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
-		graphics->get_dc()->PSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
+		graphics.get_dc()->VSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
+		graphics.get_dc()->PSSetShaderResources(0, _countof(null_shader_resource_views), null_shader_resource_views);
 
 		FLOAT color[]{ 0.0f, 0.0f, 0.0f, 1.0f };
-		graphics->get_dc()->ClearRenderTargetView(graphics->get_render_target_view().Get(), color);
-		graphics->get_dc()->ClearDepthStencilView(graphics->get_depth_stencil_view().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		graphics->get_dc()->OMSetRenderTargets(1, graphics->get_render_target_view().GetAddressOf(), graphics->get_depth_stencil_view().Get());
+		graphics.get_dc()->ClearRenderTargetView(graphics.get_render_target_view().Get(), color);
+		graphics.get_dc()->ClearDepthStencilView(graphics.get_depth_stencil_view().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		graphics.get_dc()->OMSetRenderTargets(1, graphics.get_render_target_view().GetAddressOf(), graphics.get_depth_stencil_view().Get());
 
-		graphics->get_dc()->PSSetSamplers(0, 1, graphics->get_sampler_state(ST_SAMPLER::POINT).GetAddressOf());
-		graphics->get_dc()->PSSetSamplers(1, 1, graphics->get_sampler_state(ST_SAMPLER::LINEAR).GetAddressOf());
-		graphics->get_dc()->PSSetSamplers(2, 1, graphics->get_sampler_state(ST_SAMPLER::ANISOTROPIC).GetAddressOf());
-		graphics->get_dc()->PSSetSamplers(3, 1, graphics->get_sampler_state(ST_SAMPLER::LINEAR_BORDER_BLACK).GetAddressOf());
-		graphics->get_dc()->PSSetSamplers(4, 1, graphics->get_sampler_state(ST_SAMPLER::LINEAR_BORDER_WHITE).GetAddressOf());
-		graphics->get_dc()->PSSetSamplers(5, 1, graphics->get_sampler_state(ST_SAMPLER::CLAMP).GetAddressOf());
-		graphics->get_dc()->PSSetSamplers(6, 1, graphics->get_sampler_state(ST_SAMPLER::SHADOW_MAP).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(0, 1, graphics.get_sampler_state(ST_SAMPLER::POINT).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(1, 1, graphics.get_sampler_state(ST_SAMPLER::LINEAR).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(2, 1, graphics.get_sampler_state(ST_SAMPLER::ANISOTROPIC).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(3, 1, graphics.get_sampler_state(ST_SAMPLER::LINEAR_BORDER_BLACK).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(4, 1, graphics.get_sampler_state(ST_SAMPLER::LINEAR_BORDER_WHITE).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(5, 1, graphics.get_sampler_state(ST_SAMPLER::CLAMP).GetAddressOf());
+		graphics.get_dc()->PSSetSamplers(6, 1, graphics.get_sampler_state(ST_SAMPLER::SHADOW_MAP).GetAddressOf());
 
-		graphics->set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE );
+		graphics.set_graphic_state_priset(ST_DEPTH::ZT_ON_ZW_ON, ST_BLEND::ALPHA, ST_RASTERIZER::SOLID_ONESIDE);
 	}
 
 
-	SceneManager::instance().render(elapsed_time,*graphics);
+	SceneManager::instance().render(elapsed_time);
 #ifdef USE_IMGUI
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif
 	UINT sync_interval{ 0 };
-	graphics->get_swap_chain()->Present(sync_interval, 0);
+	graphics.get_swap_chain()->Present(sync_interval, 0);
 }
 
 LRESULT framework::handle_message(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -168,10 +168,10 @@ LRESULT framework::handle_message(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 
 bool framework::uninitialize()
 {
-	
+
 	//releaseAllTextures();
 	SceneManager::instance().clear();
-	entities_uninitialize(*graphics);
+	entities_uninitialize();
 
 	return true;
 }
@@ -211,7 +211,7 @@ int framework::run()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 	ImGui_ImplWin32_Init(hwnd);
-	ImGui_ImplDX11_Init(graphics->get_device().Get(), graphics->get_dc().Get());
+	ImGui_ImplDX11_Init(Graphics::instance().get_device().Get(), Graphics::instance().get_dc().Get());
 	ImGui::StyleColorsClassic();
 #endif
 
@@ -240,10 +240,10 @@ int framework::run()
 
 #if 1
 	BOOL fullscreen = 0;
-	graphics->get_swap_chain()->GetFullscreenState(&fullscreen, 0);
+	Graphics::instance().get_swap_chain()->GetFullscreenState(&fullscreen, 0);
 	if (fullscreen)
 	{
-		graphics->get_swap_chain()->SetFullscreenState(FALSE, 0);
+		Graphics::instance().get_swap_chain()->SetFullscreenState(FALSE, 0);
 	}
 #endif
 

@@ -9,27 +9,27 @@ SceneManager::~SceneManager()
 	clear();
 }
 
-void SceneManager::initialize(Graphics& graphics)
+void SceneManager::initialize()
 {
 	if (current_scene != nullptr)
 	{
-		current_scene->initialize(graphics);
+		current_scene->initialize();
 	}
 }
 
-void SceneManager::update(float elapsed_time, Graphics& graphics)
+void SceneManager::update(float elapsed_time)
 {
 	if (current_scene != nullptr)
 	{
-		current_scene->update(elapsed_time, graphics);
+		current_scene->update(elapsed_time);
 	}
 }
 
-void SceneManager::render(float elapsed_time, Graphics& graphics)
+void SceneManager::render(float elapsed_time)
 {
-	if(current_scene != nullptr)
+	if (current_scene != nullptr)
 	{
-		current_scene->render(elapsed_time, graphics);
+		current_scene->render(elapsed_time);
 	}
 }
 
@@ -43,11 +43,11 @@ void SceneManager::clear()
 	}
 }
 
-void SceneManager::change_scene(Graphics& graphics,Scene* scene)
+void SceneManager::change_scene(Scene* scene)
 {
 	//古いシーンの終了処理
 	clear();
 	current_scene = scene;
 	//シーン初期化処理
-	if (!current_scene->is_ready()) current_scene->initialize(graphics);
+	if (!current_scene->is_ready()) current_scene->initialize();
 }

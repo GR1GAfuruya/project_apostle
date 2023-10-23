@@ -13,10 +13,10 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	RegenerateLauncher(Graphics& graphics);
+	RegenerateLauncher();
 	~RegenerateLauncher() override {};
 	//î≠ìÆ
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health);
+	bool chant(DirectX::XMFLOAT3* launch_pos, int* health, const int max_health);
 
 	//DebugGUIï\é¶
 	void debug_gui() override;

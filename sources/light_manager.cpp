@@ -6,8 +6,9 @@
 //初期化
 // 
 //==============================================================
-void LightManager::initialize(Graphics& graphics)
+void LightManager::initialize()
 {
+	Graphics& graphics = Graphics::instance();
 	HRESULT hr;
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_light.cso", deferred_light.GetAddressOf());
 	hr = create_ps_from_cso(graphics.get_device().Get(), "shaders/deferred_light_shadow.cso", shadow_map_light.GetAddressOf());
@@ -16,7 +17,7 @@ void LightManager::initialize(Graphics& graphics)
 #if CAST_SHADOW
 	DirectX::XMFLOAT3 shadow_light_dir = { 1.0f, -1.0f, -1.0 };
 	DirectX::XMFLOAT3 shadow_color = { 0.2f, 0.2f, 0.2f };
-	shadow_dir_light = std::make_shared<DirectionalLight>(graphics, shadow_light_dir, shadow_color);
+	shadow_dir_light = std::make_shared<DirectionalLight>(shadow_light_dir, shadow_color);
 	LightManager::instance().register_light("shadow_dir_light", shadow_dir_light);
 #endif
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
@@ -62,9 +63,9 @@ void LightManager::register_light(std::string name, std::shared_ptr<Light> light
 //ライトバッファにライトを書き込む
 // 
 //==============================================================
-void LightManager::draw(Graphics& graphics, ID3D11ShaderResourceView** rtv,int rtv_num)
+void LightManager::draw(ID3D11ShaderResourceView** rtv, int rtv_num)
 {
-	
+	Graphics& graphics = Graphics::instance();
 	//影用ライト描画
 #if CAST_SHADOW
 	//shadow_dir_light->light_constants->bind(graphics.get_dc().Get(), 7);

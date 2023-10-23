@@ -4,7 +4,7 @@
 class LightningMat : public Material
 {
 public:
-	LightningMat(Graphics& graphics);
+	LightningMat();
 	~LightningMat() {}
 
 

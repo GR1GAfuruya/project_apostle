@@ -7,13 +7,13 @@
 //初期化
 // 
 //==============================================================
-void SkillLauncher::initialize(Graphics& graphics)
+void SkillLauncher::initialize()
 {
-	 cool_time = 0;
+	cool_time = 0;
 	//詠唱可能か
-	 chantable = true;
-	 //クールタイム短縮率の設定　初期はクールタイムの最大値の5%
-	 reduction_rate = 0.05f;
+	chantable = true;
+	//クールタイム短縮率の設定　初期はクールタイムの最大値の5%
+	reduction_rate = 0.05f;
 	// skill.clear();
 }
 //==============================================================
@@ -21,11 +21,11 @@ void SkillLauncher::initialize(Graphics& graphics)
 //更新
 // 
 //==============================================================
-void SkillLauncher::update(Graphics& graphics, float elapsed_time)
+void SkillLauncher::update(float elapsed_time)
 {
 	for (auto& s : skills)
 	{
-		s->update(graphics, elapsed_time);
+		s->update(elapsed_time);
 	}
 	//寿命が尽きたスキルを削除
 	skills.erase(std::remove_if(std::begin(skills), std::end(skills),
@@ -34,7 +34,7 @@ void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 	//クールタイム更新
 	if (cool_time > 0)
 	{
-		cool_time -=  elapsed_time;
+		cool_time -= elapsed_time;
 	}
 	else
 	{
@@ -49,11 +49,11 @@ void SkillLauncher::update(Graphics& graphics, float elapsed_time)
 //描画
 // 
 //==============================================================
-void SkillLauncher::render(Graphics& graphics, Camera* camera)
+void SkillLauncher::render(Camera* camera)
 {
 	for (auto& s : skills)
 	{
-		s->render(graphics,camera);
+		s->render(camera);
 	}
 }
 //==============================================================
@@ -63,7 +63,7 @@ void SkillLauncher::render(Graphics& graphics, Camera* camera)
 //==============================================================
 void SkillLauncher::cool_time_reduction()
 {
-	
+
 	if (cool_time > 0)
 	{
 		//短縮率は個々で設定
@@ -71,5 +71,5 @@ void SkillLauncher::cool_time_reduction()
 		//0以下になったら0に戻しておく
 		if (cool_time < 0) cool_time = 0;
 	}
-	
+
 }

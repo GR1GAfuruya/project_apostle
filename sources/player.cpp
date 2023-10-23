@@ -50,19 +50,20 @@ void Player::initialize()
 // コンストラクタ
 // 
 //==============================================================
-Player::Player(Graphics& graphics, Camera* camera)
+Player::Player(Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	//キャラクターモデル
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/womanParadinInplace.fbx", 30.0f);
-	skill_manager = std::make_unique<SkillManager>(graphics);
+	skill_manager = std::make_unique<SkillManager>();
 	//キャラが持つ剣
-	sword = std::make_unique<Sword>(graphics);
+	sword = std::make_unique<Sword>();
 	//UI
-	ui = std::make_unique<PlayerUI>(graphics);
+	ui = std::make_unique<PlayerUI>();
 	//攻撃時エフェクト
 	for (auto& se : slash_efects)
 	{
-		se = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_slash.fbx");
+		se = std::make_unique<MeshEffect>("./resources/Effects/Meshes/eff_slash.fbx");
 		se->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		se->set_init_scale(0.15f);
 		se->set_init_life_duration(0.2f);
@@ -70,21 +71,21 @@ Player::Player(Graphics& graphics, Camera* camera)
 	}
 
 	//ヒットエフェクト
-	slash_hit_line = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
+	slash_hit_line = std::make_unique<MeshEffect>("./resources/Effects/Meshes/slash_ray.fbx");
 	slash_hit_line->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	slash_hit_line->set_init_scale(2.0f);
 	slash_hit_line->set_init_life_duration(0.5f);
 	slash_hit_line->set_init_color({ 2.5f,2.5f,5.9f,0.5f });
 
-	
-	slash_hit_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(),3000);
-	slash_hit_particle.get()->initialize(graphics);
+
+	slash_hit_particle = std::make_unique<GPU_Particles>(graphics.get_device().Get(), 3000);
+	slash_hit_particle.get()->initialize();
 	slash_hit_particle.get()->set_emitter_rate(5500);
-	slash_hit_particle.get()->set_particle_size({0.1f,0.1f});
+	slash_hit_particle.get()->set_particle_size({ 0.1f,0.1f });
 	slash_hit_particle.get()->set_emitter_life_time(0.15f);
 	slash_hit_particle.get()->set_particle_streak_factor(0.03f);
 	slash_hit_particle.get()->set_particle_life_time(0.4f);
-	slash_hit_particle.get()->set_color({ 1.0f,2.2f,5.0f,1.0f});
+	slash_hit_particle.get()->set_color({ 1.0f,2.2f,5.0f,1.0f });
 
 	mouse = &Device::instance().get_mouse();
 	game_pad = &Device::instance().get_game_pad();
@@ -113,12 +114,13 @@ Player::~Player()
 //更新処理
 // 
 //==============================================================
-void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::update(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	//更新処理
-	(this->*p_update)(graphics, elapsed_time, camera);
-	
-	if (game_pad->get_button_down() & GamePad::BTN_Y) 
+	(this->*p_update)(elapsed_time, camera);
+
+	if (game_pad->get_button_down() & GamePad::BTN_Y)
 	{
 		camera->set_lock_on();
 	}
@@ -129,24 +131,24 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	update_invicible_timer(elapsed_time);
 	for (auto& se : slash_efects)
 	{
-		se->update(graphics, elapsed_time);
+		se->update(elapsed_time);
 		if (se->get_active())
 		{
 			se->set_scale(se->get_scale().x + (0.9f * elapsed_time));
 		}
 
 	}
-	slash_hit_line->update(graphics,elapsed_time);
-	slash_hit_particle.get()->update(graphics.get_dc().Get(),elapsed_time, slash_hit_update_cs.Get());
+	slash_hit_line->update(elapsed_time);
+	slash_hit_particle.get()->update(graphics.get_dc().Get(), elapsed_time, slash_hit_update_cs.Get());
 	//スキルの更新
-	skill_manager.get()->update(graphics, elapsed_time);
+	skill_manager.get()->update(elapsed_time);
 
 	//モデルのアニメーション更新
 	model->update_animation(elapsed_time);
-	
+
 	//ソード更新
 	{
-		sword->update(graphics, elapsed_time);
+		sword->update(elapsed_time);
 
 		//通常攻撃状態じゃなければ当たり判定を切る
 		if (state != State::NORMAL_ATTACK)
@@ -159,20 +161,21 @@ void Player::update(Graphics& graphics, float elapsed_time, Camera* camera)
 	collider.end = { position.x,position.y + chara_param.height, position.z };
 	collider.radius = 1.0f;
 	//skill系仮置き
-	
+
 	//スキル選択中カメラ操作ストップ
 	camera->set_camera_operate_stop(skill_manager.get()->is_selecting_skill());
 	//UI
 	ui->set_hp_percent(get_hp_percent());
-	ui->update(graphics, elapsed_time);
+	ui->update(elapsed_time);
 }
 //==============================================================
 // 
 //描画処理（ディファード）
 // 
 //==============================================================
-void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::render_d(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	DirectX::XMFLOAT4X4 sword_hand_mat = {};
 	//剣のトランスフォーム更新
 	model->fech_bone_world_matrix(transform, right_hand, &sword_hand_mat);
@@ -182,25 +185,26 @@ void Player::render_d(Graphics& graphics, float elapsed_time, Camera* camera)
 	transform = Math::calc_world_matrix(scale, orientation, position);
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), camera->get_view(), camera->get_projection(), transform);
 	//剣描画
-	sword->render(graphics);
+	sword->render();
 }
 //==============================================================
 // 
 //描画処理（フォワード）
 // 
 //==============================================================
-void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::render_f(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	for (auto& se : slash_efects)
 	{
-		se->render(graphics,camera);
+		se->render(camera);
 	}
-	slash_hit_line->render(graphics, camera);
-	slash_hit_particle->render(graphics.get_dc().Get(),graphics.get_device().Get());
-	skill_manager.get()->render(graphics,camera);
+	slash_hit_line->render(camera);
+	slash_hit_particle->render(graphics.get_dc().Get(), graphics.get_device().Get());
+	skill_manager.get()->render(camera);
 	slash_hit_particle->debug_gui("slash_hit");
 	//デバッグGUI描画
-	debug_gui(graphics,camera);
+	debug_gui(camera);
 
 }
 //==============================================================
@@ -208,8 +212,9 @@ void Player::render_f(Graphics& graphics, float elapsed_time, Camera* camera)
 //描画処理（シャドウ）
 // 
 //==============================================================
-void Player::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
+void Player::render_s(float elapsed_time, Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 }
 
@@ -218,12 +223,12 @@ void Player::render_s(Graphics& graphics, float elapsed_time, Camera* camera)
 //描画処理（UI）
 // 
 //==============================================================
-void Player::render_ui(Graphics& graphics, float elapsed_time)
+void Player::render_ui(float elapsed_time)
 {
 	//プレイヤーのUI
-	ui->render(graphics);
+	ui->render();
 	//スキルのUI
-	skill_manager.get()->ui_render(graphics, elapsed_time);
+	skill_manager.get()->ui_render(elapsed_time);
 }
 
 
@@ -316,7 +321,7 @@ void Player::input_jump()
 			transition_jump_state();
 			Jump(param.jump_speed);
 			is_ground = false;//ジャンプしても地面についているというありえない状況を回避するため
-			
+
 			++jump_count;
 		}
 	}
@@ -339,31 +344,31 @@ void Player::input_avoidance()
 //サポートスキル発動処理
 // 
 //==============================================================
-void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
+void Player::input_chant_support_skill(Camera* camera)
 {
 	if (game_pad->get_button() & GamePad::BTN_LEFT_TRIGGER) //左トリガーでサポートスキル発動
 	{
 		switch (skill_manager->get_selected_sup_skill_type())
 		{
 		case SP_SKILLTYPE::PHYSICAL_UP:
-			if (skill_manager->chant_physical_up(graphics, &position, &chara_param.move_speed, &param.jump_speed))
+			if (skill_manager->chant_physical_up(&position, &chara_param.move_speed, &param.jump_speed))
 			{
 				transition_magic_buff_state();//状態遷移
 			}
 			break;
-			case SP_SKILLTYPE::REGENERATE:
-				if (skill_manager->chant_regenerate(graphics, &position, &health, get_max_health()))
-				{
-					transition_attack_slash_up_state();
-				}
+		case SP_SKILLTYPE::REGENERATE:
+			if (skill_manager->chant_regenerate(&position, &health, get_max_health()))
+			{
+				transition_attack_slash_up_state();
+			}
 
 			break;
-			case SP_SKILLTYPE::RESTRAINNT:
-				transition_attack_pull_slash_state();
+		case SP_SKILLTYPE::RESTRAINNT:
+			transition_attack_pull_slash_state();
 			break;
-			case SP_SKILLTYPE::TEST:
-				transition_attack_pull_slash_state();
-				break;
+		case SP_SKILLTYPE::TEST:
+			transition_attack_pull_slash_state();
+			break;
 		default:
 			break;
 		}
@@ -375,17 +380,17 @@ void Player::input_chant_support_skill(Graphics& graphics, Camera* camera)
 //攻撃スキル発動処理
 // 
 //==============================================================
-void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
+void Player::input_chant_attack_skill(Camera* camera)
 {
 	model->fech_by_bone(transform, left_hand, left_hand_pos);
 	if (game_pad->get_button() & GamePad::BTN_RIGHT_TRIGGER)  //右トリガーで攻撃スキル発動
 	{
 		switch (skill_manager->get_selected_atk_skill_type())
 		{
-		case ATK_SKILLTYPE::MAGICBULLET :
-			
+		case ATK_SKILLTYPE::MAGICBULLET:
+
 			//スキルを発動できた場合遷移
-			if (skill_manager->chant_magic_bullet(graphics, &left_hand_pos, &forward))
+			if (skill_manager->chant_magic_bullet(&left_hand_pos, &forward))
 			{
 				transition_attack_bullet_state();
 			}
@@ -393,20 +398,20 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 		case ATK_SKILLTYPE::SPEARS_SEA:
 			if (is_ground)
 			{
-				if (skill_manager->chant_spear_sea(graphics, position, position))
+				if (skill_manager->chant_spear_sea(position, position))
 				{
 					transition_attack_ground_state();
 				}
 			}
 			break;
 		case ATK_SKILLTYPE::SLASH_WAVE:
-			if (skill_manager->chant_slash_wave(graphics, &left_hand_pos, &forward))
+			if (skill_manager->chant_slash_wave(&left_hand_pos, &forward))
 			{
 				transition_r_attack_spring_slash_state();
 			}
 			break;
 		case ATK_SKILLTYPE::LIGHTNING_RAIN:
-			if (skill_manager->chant_lightning_rain(graphics, position, camera->get_lock_on_target()))
+			if (skill_manager->chant_lightning_rain(position, camera->get_lock_on_target()))
 			{
 				transition_attack_pull_slash_state();//状態遷移
 			}
@@ -415,8 +420,8 @@ void Player::input_chant_attack_skill(Graphics& graphics, Camera* camera)
 		default:
 			break;
 		}
-		
-		
+
+
 	}
 }
 //==============================================================
@@ -530,7 +535,7 @@ void Player::on_damaged(WINCE_TYPE type)
 	default:
 		break;
 	}
-	
+
 }
 
 //==============================================================
@@ -607,7 +612,7 @@ void Player::save_data_file()
 //デバッグGUI表示
 // 
 //==============================================================
-void Player::debug_gui(Graphics& graphics, Camera* camera)
+void Player::debug_gui(Camera* camera)
 {
 #ifdef USE_IMGUI
 	ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
@@ -616,7 +621,7 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 
 	if (display_player_imgui)
 	{
-		
+
 		if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
 		{
 			//ヒットエフェクト
@@ -655,7 +660,7 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 				ImGui::DragFloat("gravity", &gravity);
 				ImGui::DragFloat("floating_value", &param.floating_value);
 				ImGui::DragFloat("invinsible_timer", &invincible_timer);
-				ImGui::DragFloat("TurnSpeed", &chara_param.turn_speed,0.1f);
+				ImGui::DragFloat("TurnSpeed", &chara_param.turn_speed, 0.1f);
 				ImGui::DragFloat("MoveSpeed", &chara_param.move_speed, 0.1f);
 				ImGui::DragFloat("avoidance_speed", &param.avoidance_speed);
 				ImGui::DragFloat("friction", &chara_param.friction);
@@ -757,12 +762,12 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 				ImGui::DragInt("frame_index", &model->anime_param.frame_index);
 				ImGui::Checkbox("end_flag", &model->anime_param.end_flag);
 				ImGui::DragFloat("current_time", &model->anime_param.current_time);
-				ImGui::DragFloat("playback_speed", &model->anime_param.playback_speed,0.1f);
+				ImGui::DragFloat("playback_speed", &model->anime_param.playback_speed, 0.1f);
 				ImGui::DragFloat("blend_time", &model->anime_param.blend_time);
 				ImGui::DragFloat("sampling", &model->anime_param.animation.sampling_rate);
 
 			}
-			
+
 		}
 		ImGui::End();
 
@@ -770,7 +775,7 @@ void Player::debug_gui(Graphics& graphics, Camera* camera)
 
 
 
-	skill_manager.get()->debug_gui(graphics);
+	skill_manager.get()->debug_gui();
 	slash_hit_line->debug_gui("test_slash_hit");
 #endif // USE_IMGUI
 

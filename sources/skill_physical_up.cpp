@@ -5,7 +5,7 @@
 //コンストラクタ
 // 
 //==============================================================
-PhysicalUp::PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* run_speed, float* jump_speed)
+PhysicalUp::PhysicalUp(DirectX::XMFLOAT3* launch_pos, float* run_speed, float* jump_speed)
 {
 	*run_speed *= magnification;
 	*jump_speed *= magnification;
@@ -13,9 +13,9 @@ PhysicalUp::PhysicalUp(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float*
 	enhanced_run_speed.reset(run_speed);
 	enhanced_jump_speed.reset(jump_speed);
 	//ライト生成
-	light = make_shared<PointLight>(graphics, position, 15.0f, DirectX::XMFLOAT3(1.1f, 1.8f, 0.5f));
+	light = make_shared<PointLight>(position, 15.0f, DirectX::XMFLOAT3(1.1f, 1.8f, 0.5f));
 	LightManager::instance().register_light("PhysicalUp", light);
-	initialize(graphics);
+	initialize();
 }
 
 PhysicalUp::~PhysicalUp()
@@ -35,7 +35,7 @@ PhysicalUp::~PhysicalUp()
 //初期化
 // 
 //==============================================================
-void PhysicalUp::initialize(Graphics& graphics)
+void PhysicalUp::initialize()
 {
 	life_time = 10.0f;
 }
@@ -44,7 +44,7 @@ void PhysicalUp::initialize(Graphics& graphics)
 //更新
 // 
 //==============================================================
-void PhysicalUp::update(Graphics& graphics, float elapsed_time)
+void PhysicalUp::update(float elapsed_time)
 {
 	life_time -= elapsed_time;
 	const float offset = 11.0f;
@@ -60,7 +60,7 @@ void PhysicalUp::update(Graphics& graphics, float elapsed_time)
 //描画
 // 
 //==============================================================
-void PhysicalUp::render(Graphics& graphics, Camera* camera)
+void PhysicalUp::render(Camera* camera)
 {
 
 }
@@ -80,7 +80,7 @@ void PhysicalUp::debug_gui(string str_id)
 	ImGui::DragFloat("life_time", &life_time);
 	ImGui::DragFloat("enhanced_jump_speed", &(*enhanced_jump_speed));
 	ImGui::DragFloat3("pos", &position.x);
-	
+
 	/*これより上にパラメーター記述*/
 	ImGui::PopID();
 	ImGui::End();

@@ -8,8 +8,9 @@
 // コンストラクタ
 // 
 //==============================================================
-DeferredRenderer::DeferredRenderer(Graphics& graphics)
+DeferredRenderer::DeferredRenderer()
 {
+	Graphics& graphics = Graphics::instance();
 	//G-Buffer
 	g_color = std::make_unique<GBuffer>();
 	g_depth = std::make_unique<GBuffer>();
@@ -56,8 +57,9 @@ DeferredRenderer::DeferredRenderer(Graphics& graphics)
 // ディファードレンダー書き込み開始
 // 
 //==============================================================
-void DeferredRenderer::active(Graphics& graphics)
+void DeferredRenderer::active()
 {
+	Graphics& graphics = Graphics::instance();
 	//RTVを変更する前に使用中のRTVを保存
 	graphics.get_dc()->OMGetRenderTargets(1, cached_render_target_view.ReleaseAndGetAddressOf(), cached_depth_stencil_view.ReleaseAndGetAddressOf());
 
@@ -105,22 +107,24 @@ void DeferredRenderer::active(Graphics& graphics)
 // ディファードレンダー書き込み終了
 // 
 //==============================================================
-void DeferredRenderer::deactive(Graphics& graphics)
+void DeferredRenderer::deactive()
 {
+	Graphics& graphics = Graphics::instance();
 	//ライティング実行
+	lighting();
 	//描画先を戻す
-	lighting(graphics);
 	graphics.get_dc()->OMSetRenderTargets(1, cached_render_target_view.GetAddressOf(),
 		cached_depth_stencil_view.Get());
-	
+
 }
 //==============================================================
 // 
 // ライティング
 // 
 //==============================================================
-void DeferredRenderer::lighting(Graphics& graphics) const
+void DeferredRenderer::lighting() const
 {
+	Graphics& graphics = Graphics::instance();
 	ID3D11RenderTargetView* rtv = l_light->get_rtv();
 	// レンダーターゲットビュー設定
 	graphics.get_dc()->OMSetRenderTargets(
@@ -152,7 +156,7 @@ void DeferredRenderer::lighting(Graphics& graphics) const
 	shadow_constants->bind(graphics.get_dc().Get(), 10, CB_FLAG::PS_VS);
 	graphics.get_dc().Get()->PSSetShaderResources(16, 1, shadow_frame_buffer->get_color_map().GetAddressOf());
 #endif
-	LightManager::instance().draw(graphics, g_buffers, G_BUFFERS_NUM);
+	LightManager::instance().draw(g_buffers, G_BUFFERS_NUM);
 
 	//ライトの合成 ブレンドステートをアルファに
 	graphics.set_blend_state(ST_BLEND::ALPHA);
@@ -171,8 +175,9 @@ void DeferredRenderer::lighting(Graphics& graphics) const
 // 描画
 // 
 //==============================================================
-void DeferredRenderer::render(Graphics& graphics)
+void DeferredRenderer::render()
 {
+	Graphics& graphics = Graphics::instance();
 	ID3D11ShaderResourceView* g_buffers[]
 	{
 		l_composite->get_srv(),
@@ -197,7 +202,7 @@ void DeferredRenderer::render(Graphics& graphics)
 		ImGui::Image(g_metal_smooth->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
 		ImGui::Text("light");
 		ImGui::Image(l_light->get_srv(), { 1280 * (ImGui::GetWindowSize().x / 1280),  720 * (ImGui::GetWindowSize().y / 720) });
-		ImGui::DragFloat("scale", &scale,0.1f);
+		ImGui::DragFloat("scale", &scale, 0.1f);
 		ImGui::DragFloat("vie", &vie, 0.1f);
 		ImGui::DragFloat("FarZ", &FarZ, 0.1f);
 #if CAST_SHADOW
@@ -216,10 +221,11 @@ void DeferredRenderer::render(Graphics& graphics)
 // 
 //==============================================================
 #if CAST_SHADOW
-void DeferredRenderer::shadow_active(Graphics& graphics,DirectX::XMFLOAT3 target_pos)
+void DeferredRenderer::shadow_active(DirectX::XMFLOAT3 target_pos)
 {
+	Graphics& graphics = Graphics::instance();
 	DirectX::XMFLOAT4 clearColor = { FLT_MAX, FLT_MAX, FLT_MAX, 1.0f };
-	shadow_frame_buffer->clear(graphics.get_dc().Get(),FB_FLAG::COLOR_DEPTH_STENCIL, clearColor);
+	shadow_frame_buffer->clear(graphics.get_dc().Get(), FB_FLAG::COLOR_DEPTH_STENCIL, clearColor);
 	shadow_frame_buffer->activate(graphics.get_dc().Get());
 
 	// ビューポートの設定
@@ -253,8 +259,9 @@ void DeferredRenderer::shadow_active(Graphics& graphics,DirectX::XMFLOAT3 target
 // 影用の描画書き込み終了
 // 
 //==============================================================
-void DeferredRenderer::shadow_deactive(Graphics& graphics)
+void DeferredRenderer::shadow_deactive()
 {
+	Graphics& graphics = Graphics::instance();
 	shadow_frame_buffer->deactivate(graphics.get_dc().Get());
 }
 #endif
@@ -278,7 +285,7 @@ void DeferredRenderer::depth_stencil_create(ID3D11Device* device, DXGI_FORMAT fo
 	td.SampleDesc.Count = 1;
 	td.SampleDesc.Quality = 0;
 	td.Usage = D3D11_USAGE_DEFAULT;
-	td.BindFlags = D3D11_BIND_DEPTH_STENCIL ;
+	td.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	td.CPUAccessFlags = 0;
 	td.MiscFlags = 0;
 
@@ -297,5 +304,5 @@ void DeferredRenderer::depth_stencil_create(ID3D11Device* device, DXGI_FORMAT fo
 	hr = device->CreateDepthStencilView(depth_stencil_buffer.Get(), &dsvd, depth_stencil_view.GetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 
-	
+
 }

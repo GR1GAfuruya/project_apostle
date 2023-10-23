@@ -7,15 +7,27 @@ class Noise
 private:
 	Noise() { mt.seed(rnd()); }
 
-public: 
+public:
 	static Noise& instance()
 	{
 		static Noise instance;
 		return instance;
 	}
 	uint32_t get_rnd() { return static_cast<uint32_t> (mt()); }
-
+	/// <summary>
+	/// 最小値と最大値を取りその範囲内でのランダム値を返す
+	/// </summary>
+	/// <param name="min">最低値</param>
+	/// <param name="max">最高値</param>
+	/// <returns></returns>
 	float random_range(float min, float max);
+
+	/// <summary>
+	/// 指定した値のマイナスの値とプラスの値の範囲内でのランダム値を返す
+	/// </summary>
+	/// <param name="value">指定する値</param>
+	/// <returns></returns>
+	float random_fixed_range(float value);
 private:
 	std::random_device rnd;
 	std::mt19937 mt;

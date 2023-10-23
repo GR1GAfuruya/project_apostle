@@ -7,7 +7,7 @@
 // コンストラクタ
 // 
 //==============================================================
-MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
+MagicBulletLauncher::MagicBulletLauncher()
 {
 	atk_param.power = 5;
 	atk_param.invinsible_time = 0.2f;
@@ -15,7 +15,7 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 	skill_init_param.collider_radius = 2.0f;
 	max_cool_time = 15.0f;
 
-	test_slash_hit = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/slash_ray.fbx");
+	test_slash_hit = std::make_unique<MeshEffect>("./resources/Effects/Meshes/slash_ray.fbx");
 	test_slash_hit->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	test_slash_hit->set_init_scale(2.0f);
 	test_slash_hit->set_init_life_duration(0.1f);
@@ -28,13 +28,13 @@ MagicBulletLauncher::MagicBulletLauncher(Graphics& graphics)
 // 更新
 // 
 //==============================================================
-void MagicBulletLauncher::update(Graphics& graphics, float elapsed_time)
+void MagicBulletLauncher::update(float elapsed_time)
 {
 	//ベースのアップデート
-	SkillLauncher::update(graphics, elapsed_time);
+	SkillLauncher::update(elapsed_time);
 
 	//エフェクト更新
-	test_slash_hit->update(graphics, elapsed_time);
+	test_slash_hit->update(elapsed_time);
 
 }
 //==============================================================
@@ -42,13 +42,13 @@ void MagicBulletLauncher::update(Graphics& graphics, float elapsed_time)
 // 描画
 // 
 //==============================================================
-void MagicBulletLauncher::render(Graphics& graphics,Camera* camera)
+void MagicBulletLauncher::render(Camera* camera)
 {
 	//ベースの描画
-	SkillLauncher::render(graphics,camera);
+	SkillLauncher::render(camera);
 
 	//エフェクト更新
-	test_slash_hit->render(graphics, camera);
+	test_slash_hit->render(camera);
 
 }
 //==============================================================
@@ -56,12 +56,12 @@ void MagicBulletLauncher::render(Graphics& graphics,Camera* camera)
 // スキル発動
 // 
 //==============================================================
-bool MagicBulletLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir)
+bool MagicBulletLauncher::chant(DirectX::XMFLOAT3* init_pos, DirectX::XMFLOAT3* dir)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
-		unique_ptr<Skill> skill = make_unique<MagicBullet>(graphics, init_pos, dir, skill_init_param);
+		unique_ptr<Skill> skill = make_unique<MagicBullet>(init_pos, dir, skill_init_param);
 		cool_time = max_cool_time;
 		//リストに追加
 		skills.push_back(std::move(skill));

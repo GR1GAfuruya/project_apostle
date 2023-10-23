@@ -9,8 +9,8 @@ class PostEffects
 {
 public:
 	PostEffects(ID3D11Device* device, const char* post_effect_file_path);
-	~PostEffects(){}
-	
+	~PostEffects() {}
+
 	//TODO::JSON化してプリセットのように扱えるようにする！！
 	struct CB_PostEffect
 	{
@@ -62,14 +62,14 @@ public:
 public:
 	void begin(ID3D11DeviceContext* dc);
 	void end(ID3D11DeviceContext* dc);
-	void blit(Graphics& graphics);
+	void blit();
 	//----------<ファイル>------------//
 	void load_data_file();
 	void save_data_file();
 	const char* file_path;
 
 	float get_radial_blur_power() { return cb_post_effect.get()->data.radial_power; }
-	void set_radial_blur_power(float p) {  cb_post_effect.get()->data.radial_power = p; }
+	void set_radial_blur_power(float p) { cb_post_effect.get()->data.radial_power = p; }
 	CB_PostEffect& get_init_param() { return post_effect_init_param; }
 	CB_PostEffect& get_now_param();
 

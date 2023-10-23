@@ -12,7 +12,7 @@
 //コンストラクタ
 // 
 //==============================================================
-BossAttackSkill3::BossAttackSkill3(Graphics& graphics)
+BossAttackSkill3::BossAttackSkill3()
 {
 	acceleration = 15.0f;
 	friction = 0.0f;
@@ -23,11 +23,11 @@ BossAttackSkill3::BossAttackSkill3(Graphics& graphics)
 
 	range = 10;
 	const DirectX::XMFLOAT4 FIRE_COLOR = { 4.0f, 1.0f, 0.7f, 0.8f };
-	meteore_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx", MAX_NUM);
+	meteore_effect = make_unique<InstanceMeshEffect>("./resources/Effects/Meshes/eff_tornado4.fbx", MAX_NUM);
 	meteore_effect->set_material(MaterialManager::instance().mat_meteore.get());
 	meteore_effect->constants->data.particle_color = FIRE_COLOR;
 
-	arm_effect = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+	arm_effect = make_unique<MeshEffect>("./resources/Effects/Meshes/eff_tornado4.fbx");
 	arm_effect->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	arm_effect->set_init_color(FIRE_COLOR);
 	arm_effect->set_init_scale(0);
@@ -35,15 +35,15 @@ BossAttackSkill3::BossAttackSkill3(Graphics& graphics)
 
 	for (auto& m : meteo_wave)
 	{
-		m = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_tornado4.fbx");
+		m = make_unique<MeshEffect>("./resources/Effects/Meshes/eff_tornado4.fbx");
 		m->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		m->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 		m->set_init_life_duration(2.0f);
 		m->set_init_scale(2.0f);
 	}
 
-	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-		->void {return attack_state_update(graphics, elapsed_time, camera); };
+	state_update = [=](float elapsed_time, Camera* camera)
+		->void {return attack_state_update(elapsed_time, camera); };
 
 	meteore_effect->play({ 0,0,0 });
 	meteore_effect->set_is_loop(true);
@@ -75,8 +75,8 @@ BossAttackSkill3::~BossAttackSkill3()
 //==============================================================
 void BossAttackSkill3::chant(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 dir)
 {
-	state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-		->void {return charge_state_update(graphics, elapsed_time, camera); };
+	state_update = [=](float elapsed_time, Camera* camera)
+		->void {return charge_state_update(elapsed_time, camera); };
 
 	arm_effect->play(arm_pos);
 	arm_effect->rotate_base_axis(MeshEffect::AXIS::UP, arm_dir);
@@ -113,21 +113,21 @@ void BossAttackSkill3::stop()
 //更新
 // 
 //==============================================================
-void BossAttackSkill3::update(Graphics& graphics, float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir)
+void BossAttackSkill3::update(float elapsed_time, Camera* camera, DirectX::XMFLOAT3 arm_pos, DirectX::XMFLOAT3 arm_dir)
 {
 	this->arm_pos = arm_pos;
 	this->arm_dir = arm_dir;
 
-	state_update(graphics, elapsed_time, camera);
+	state_update(elapsed_time, camera);
 
-	arm_effect->update(graphics, elapsed_time);
-	meteore_effect->update(graphics, elapsed_time);
+	arm_effect->update(elapsed_time);
+	meteore_effect->update(elapsed_time);
 
 	for (auto& m : meteo_wave)
 	{
 		if (m->get_active())
 		{
-			m->update(graphics, elapsed_time);
+			m->update(elapsed_time);
 		}
 	}
 };
@@ -139,13 +139,13 @@ void BossAttackSkill3::update(Graphics& graphics, float elapsed_time, Camera* ca
 //チャージしているときの更新
 // 
 //==============================================================
-void BossAttackSkill3::charge_state_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void BossAttackSkill3::charge_state_update(float elapsed_time, Camera* camera)
 {
 	charge_timer += elapsed_time;
 	if (charge_timer > charge_time)
 	{
-		state_update = [=](Graphics& graphics, float elapsed_time, Camera* camera)
-			->void {return attack_state_update(graphics, elapsed_time, camera); };
+		state_update = [=](float elapsed_time, Camera* camera)
+			->void {return attack_state_update(elapsed_time, camera); };
 		arm_effect->stop();
 		charge_timer = 0;
 	}
@@ -172,7 +172,7 @@ void BossAttackSkill3::charge_state_update(Graphics& graphics, float elapsed_tim
 //攻撃したときの更新
 // 
 //==============================================================
-void BossAttackSkill3::attack_state_update(Graphics& graphics, float elapsed_time, Camera* camera)
+void BossAttackSkill3::attack_state_update(float elapsed_time, Camera* camera)
 {
 	for (int i = 0; i < MAX_NUM; i++)
 	{
@@ -207,7 +207,7 @@ void BossAttackSkill3::attack_state_update(Graphics& graphics, float elapsed_tim
 				}
 			}
 		}
-		meteo_wave[i]->update(graphics, elapsed_time);
+		meteo_wave[i]->update(elapsed_time);
 		//当たり判定の位置と大きさ更新
 		params[i].colider_sphere.center = params[i].position;
 		params[i].colider_sphere.radius = params[i].scale.x * 3.5f;
@@ -219,13 +219,13 @@ void BossAttackSkill3::attack_state_update(Graphics& graphics, float elapsed_tim
 //描画
 // 
 //==============================================================
-void BossAttackSkill3::render(Graphics& graphics, Camera* camera)
+void BossAttackSkill3::render(Camera* camera)
 {
-	meteore_effect->render(graphics);
-	arm_effect->render(graphics, camera);
+	meteore_effect->render();
+	arm_effect->render(camera);
 	for (int i = 0; i < MAX_NUM; i++)
 	{
-		meteo_wave[i]->render(graphics, camera);
+		meteo_wave[i]->render(camera);
 	}
 }
 

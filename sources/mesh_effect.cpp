@@ -6,8 +6,9 @@
 // コンストラクタ
 // 
 //==============================================================
-MeshEffect::MeshEffect(Graphics& graphics, const char* fbx_filename)
+MeshEffect::MeshEffect(const char* fbx_filename)
 {
+	Graphics& graphics = Graphics::instance();
 	model = make_unique<SkeletalMesh>(graphics.get_device().Get(), fbx_filename);
 	constants = std::make_unique<Constants<CONSTANTS>>(graphics.get_device().Get());
 	create_vs_from_cso(graphics.get_device().Get(), "shaders/mesh_effect_vs.cso",
@@ -45,7 +46,7 @@ void MeshEffect::stop()
 // 更新
 // 
 //==============================================================
-void MeshEffect::update(Graphics& graphics, float elapsed_time)
+void MeshEffect::update(float elapsed_time)
 {
 	//アクティブ状態なら
 	if (active)
@@ -82,8 +83,9 @@ void MeshEffect::update(Graphics& graphics, float elapsed_time)
 // 描画 ※フラスタムカリングあり
 // 
 //==============================================================
-void MeshEffect::render(Graphics& graphics)
+void MeshEffect::render()
 {
+	Graphics& graphics = Graphics::instance();
 	//エフェクトがアクティブ状態の場合のみ描画
 	if (!active) return;
 
@@ -94,7 +96,7 @@ void MeshEffect::render(Graphics& graphics)
 	//定数バッファ送信
 	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
 	//シェーダーリソース送信
-	material->transfer_shader_resource_view(graphics);
+	material->transfer_shader_resource_view();
 	//トランスフォーム更新
 	transform = Math::calc_world_matrix(effect_param.scale, effect_param.orientation, effect_param.position);
 	//レンダー
@@ -107,8 +109,9 @@ void MeshEffect::render(Graphics& graphics)
 // 描画 ※フラスタムカリングあり
 // 
 //==============================================================
-void MeshEffect::render(Graphics& graphics,Camera* camera)
+void MeshEffect::render(Camera* camera)
 {
+	Graphics& graphics = Graphics::instance();
 	//エフェクトがアクティブ状態の場合のみ描画
 	if (!active) return;
 
@@ -119,13 +122,13 @@ void MeshEffect::render(Graphics& graphics,Camera* camera)
 	//定数バッファ送信
 	constants->bind(graphics.get_dc().Get(), 9, CB_FLAG::PS_VS);
 	//シェーダーリソース送信
-	material->transfer_shader_resource_view(graphics);
+	material->transfer_shader_resource_view();
 	//トランスフォーム更新
 	transform = Math::calc_world_matrix(effect_param.scale, effect_param.orientation, effect_param.position);
 	//レンダー
-	shader->render(graphics.get_dc().Get(), model.get(),camera->get_view(),camera->get_projection(), transform);
+	shader->render(graphics.get_dc().Get(), model.get(), camera->get_view(), camera->get_projection(), transform);
 
-	
+
 }
 //==============================================================
 // 
@@ -209,7 +212,7 @@ void MeshEffect::reset_orientation()
 void MeshEffect::dissolve_update(float elapsed_time)
 {
 	//フェードイン
-	
+
 	//フェードアウト
 	if (is_dissolve)
 	{

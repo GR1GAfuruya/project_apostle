@@ -1,6 +1,6 @@
 #include "slash_wave_launcher.h"
 
-SlashWaveLauncher::SlashWaveLauncher(Graphics& graphics)
+SlashWaveLauncher::SlashWaveLauncher()
 {
 	atk_param.power = 5;
 	atk_param.invinsible_time = 0.2f;
@@ -9,12 +9,12 @@ SlashWaveLauncher::SlashWaveLauncher(Graphics& graphics)
 	max_cool_time = 15.0f;
 }
 
-bool SlashWaveLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
+bool SlashWaveLauncher::chant(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
-		std:unique_ptr<Skill> skill = make_unique<SlashWave>(graphics, launch_pos, dir, init_param);
+	std:unique_ptr<Skill> skill = make_unique<SlashWave>(launch_pos, dir, init_param);
 		//リストに追加
 		cool_time = max_cool_time;
 		skills.push_back(std::move(skill));
@@ -28,7 +28,7 @@ void SlashWaveLauncher::skill_object_hit_judgment(Capsule object_colider, AddDam
 {
 	for (auto& s : skills)
 	{
-		if (Collision::sphere_vs_capsule(s->get_colider().start ,s->get_colider().radius,
+		if (Collision::sphere_vs_capsule(s->get_colider().start, s->get_colider().radius,
 			object_colider.start, object_colider.end, object_colider.radius))
 		{
 			//スキルがヒット

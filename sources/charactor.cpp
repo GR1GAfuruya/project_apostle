@@ -115,7 +115,7 @@ void Charactor::Turn(float elapsed_time, DirectX::XMFLOAT3 move_vec, float speed
 	MoveVec = DirectX::XMVector3Normalize(MoveVec);
 
 	DirectX::XMVECTOR axis;	//回転軸
-	
+
 	axis = up;
 	DirectX::XMVECTOR Ang = DirectX::XMVector3Dot(forward, MoveVec);
 	DirectX::XMStoreFloat(&turn_angle, Ang);
@@ -330,7 +330,7 @@ void Charactor::update_hrizontal_velocity(float elapsed_frame)
 }
 
 
-void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& position)
+void Charactor::update_horizontal_move(float elapsed_time, DirectX::XMFLOAT3& position)
 {
 
 	// 水平速力計算
@@ -345,7 +345,7 @@ void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& pos
 
 		// レイの開始位置と終点位置
 		DirectX::XMFLOAT3 start = { position.x - mx / 50.0f, position.y + stepOffset * 2, position.z - mz / 50.0f };
-		DirectX::XMFLOAT3 end = { position.x + mx* vs_wall_ray_power, start.y, position.z + mz * vs_wall_ray_power };
+		DirectX::XMFLOAT3 end = { position.x + mx * vs_wall_ray_power, start.y, position.z + mz * vs_wall_ray_power };
 		HitResult hit;
 		if (StageManager::Instance().ray_cast(start, end, hit))//何か壁があれば
 		{
@@ -389,7 +389,7 @@ void Charactor::update_horizontal_move(float elapsed_time,DirectX::XMFLOAT3& pos
 			position.x += mx;
 			position.z += mz;
 		}
-		
+
 	}
 }
 

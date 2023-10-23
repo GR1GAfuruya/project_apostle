@@ -4,15 +4,15 @@
 class ParticleSystem
 {
 public:
-	ParticleSystem(Graphics& graphics);
+	ParticleSystem();
 	virtual ~ParticleSystem();
 
 	void Play(DirectX::XMFLOAT3 pos);
 
 
-	void update(Graphics& graphics, float elapsed_time);
+	void update(float elapsed_time);
 
-	void render(Graphics& graphics, Camera& camera);
+	void render(Camera& camera);
 
 	void register_emitter(std::unique_ptr<Emitter> p);
 private:

@@ -6,15 +6,16 @@ std::unique_ptr<DebugFigures>    GenericFrequentEntities::debug_figure = nullptr
 //std::unique_ptr<Mouse>           GenericFrequentEntities::mouse = nullptr;
 //std::unique_ptr<GamePad>         GenericFrequentEntities::game_pad = nullptr;
 
-void GenericFrequentEntities::entities_initialize(Graphics& graphics)
+void GenericFrequentEntities::entities_initialize()
 {
+    Graphics& graphics = Graphics::instance();
     // resource_manager
     resource_manager = std::make_unique<ResourceManager>();
     // debug_figure
     debug_figure = std::make_unique<DebugFigures>(graphics.get_device().Get());
 }
 
-void GenericFrequentEntities::entities_uninitialize(Graphics& graphics)
+void GenericFrequentEntities::entities_uninitialize()
 {
     // このクラスは各実体は一つしか持たないがデストラクタは継承した回数分呼ばれるので
     // ここで明示的に解放しないと二回目以降のデストラクタで落ちてしまう。

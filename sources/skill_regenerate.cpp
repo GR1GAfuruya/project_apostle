@@ -5,17 +5,17 @@
 //コンストラクタ
 // 
 //==============================================================
-Regenerate::Regenerate(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)
-{ 
+Regenerate::Regenerate(DirectX::XMFLOAT3* launch_pos, int* health, const int max_health)
+{
 	light_position.reset(launch_pos);
 	charactor_health.reset(health);
 	recovery_max_health = max_health;
 
 	//ライト生成
-	light = make_shared<PointLight>(graphics, position, 15.0f, DirectX::XMFLOAT3(0.4f, 1.8f, 0.5f));
+	light = make_shared<PointLight>(position, 15.0f, DirectX::XMFLOAT3(0.4f, 1.8f, 0.5f));
 	LightManager::instance().register_light("Regenerate", light);
 
-	initialize(graphics);
+	initialize();
 }
 //==============================================================
 // 
@@ -34,7 +34,7 @@ Regenerate::~Regenerate()
 //初期化
 // 
 //==============================================================
-void Regenerate::initialize(Graphics& graphics)
+void Regenerate::initialize()
 {
 	//スキル時間
 	life_time = 6.0f;
@@ -48,7 +48,7 @@ void Regenerate::initialize(Graphics& graphics)
 //更新
 // 
 //==============================================================
-void Regenerate::update(Graphics& graphics, float elapsed_time)
+void Regenerate::update(float elapsed_time)
 {
 	//体力が最大値以下なら一定時間ごとに回復
 	if (*charactor_health < recovery_max_health)
@@ -76,7 +76,7 @@ void Regenerate::update(Graphics& graphics, float elapsed_time)
 //描画
 // 
 //==============================================================
-void Regenerate::render(Graphics& graphics, Camera* camera)
+void Regenerate::render(Camera* camera)
 {
 }
 //==============================================================
@@ -95,7 +95,7 @@ void Regenerate::debug_gui(string str_id)
 
 	ImGui::DragFloat("life_time", &life_time);
 	ImGui::Checkbox("skill_end_flag", &skill_end_flag);
-	
+
 	/*これより上にパラメーター記述*/
 	ImGui::PopID();
 	ImGui::End();

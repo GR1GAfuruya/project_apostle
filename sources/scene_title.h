@@ -6,13 +6,13 @@
 class SceneTitle :public Scene
 {
 public:
-	SceneTitle(Graphics& graphics);
+	SceneTitle();
 	~SceneTitle()override {}
 
-	void initialize(Graphics& graphics) override;
+	void initialize() override;
 	void finalize() override;
-	void update(float elapsedTime, Graphics& graphics) override;
-	void render(float elapsedTime,Graphics& graphics) override;
+	void update(float elapsedTime) override;
+	void render(float elapsedTime) override;
 
 private:
 	enum class TITLE_MENU

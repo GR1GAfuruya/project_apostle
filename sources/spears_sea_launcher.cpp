@@ -5,7 +5,7 @@
 // コンストラクタ
 // 
 //==============================================================
-SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
+SpearSeaLauncher::SpearSeaLauncher()
 {
 	init_param.radius = 15;
 	init_param.collider_radius = 8;
@@ -35,12 +35,12 @@ SpearSeaLauncher::SpearSeaLauncher(Graphics& graphics)
 // 発動
 // 
 //==============================================================
-bool SpearSeaLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
+bool SpearSeaLauncher::chant(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
-	std:unique_ptr<Skill> skill = make_unique<SpearsSea>(graphics, launch_pos, target_pos, init_param);
+	std:unique_ptr<Skill> skill = make_unique<SpearsSea>(launch_pos, target_pos, init_param);
 		//リストに追加
 		cool_time = max_cool_time;
 		skills.push_back(std::move(skill));
@@ -58,7 +58,7 @@ void SpearSeaLauncher::skill_object_hit_judgment(Capsule object_colider, AddDama
 {
 	for (auto& s : skills)
 	{
-		if(!s->is_skill_hit())
+		if (!s->is_skill_hit())
 		{
 			if (Collision::sphere_vs_capsule(s->get_colider().start, s->get_colider().radius,
 				object_colider.start, object_colider.end, object_colider.radius))

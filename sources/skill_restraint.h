@@ -8,12 +8,12 @@ public:
 	// publicŠÖ”
 	// 
 	//==============================================================
-	Restrain(){}
+	Restrain() {}
 	~Restrain() {}
 
-	void initialize(Graphics& graphics) override;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics, Camera* camera)override;
+	void initialize() override;
+	void update(float elapsed_time)override;
+	void render(Camera* camera)override;
 
 	void debug_gui(string str_id);
 protected:
@@ -30,7 +30,7 @@ protected:
 	// •Ï”
 	// 
 	//==============================================================
-	
+
 
 
 	//==============================================================

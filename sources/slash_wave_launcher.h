@@ -4,10 +4,10 @@
 class SlashWaveLauncher : public SkillLauncher
 {
 public:
-	SlashWaveLauncher(Graphics& graphics);
+	SlashWaveLauncher();
 	~SlashWaveLauncher() override {};
 
-	bool chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
+	bool chant(DirectX::XMFLOAT3* launch_pos, DirectX::XMFLOAT3* dir);
 
 	void skill_object_hit_judgment(Capsule object_colider, AddDamageFunc damaged_func, Camera* camera);
 	//DebugGUI•\Ž¦

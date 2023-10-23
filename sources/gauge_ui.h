@@ -7,11 +7,11 @@ public:
 	//--------<constructor/destructor>--------//
 	GaugeUi() :now_percent(1)
 	{}
-	GaugeUi(Graphics& graphics, const wchar_t* back_filename, const wchar_t* body_filename, const wchar_t* frame_filename);
+	GaugeUi(const wchar_t* back_filename, const wchar_t* body_filename, const wchar_t* frame_filename);
 	virtual ~GaugeUi() {}
 
 	//--------< ŠÖ” >--------//
-	void update(Graphics& graphics, float elapsed_time) override;
+	void update(float elapsed_time) override;
 	void render(ID3D11DeviceContext* dc) override;
 
 	void set_percent(float per) { now_percent = per; }

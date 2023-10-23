@@ -5,7 +5,7 @@
 // コンストラクタ
 // 
 //==============================================================
-PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
+PhysicalUpLauncher::PhysicalUpLauncher()
 {
 	max_cool_time = 5;
 }
@@ -14,16 +14,16 @@ PhysicalUpLauncher::PhysicalUpLauncher(Graphics& graphics)
 // スキル発動
 // 
 //==============================================================
-bool PhysicalUpLauncher::chant(Graphics& graphics, DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed)
+bool PhysicalUpLauncher::chant(DirectX::XMFLOAT3* launch_pos, float* add_run_speed, float* add_jump_speed)
 {
 	//詠唱可能な状態なら
 	if (chantable)
 	{
-		unique_ptr<Skill> skill = make_unique<PhysicalUp>(graphics, launch_pos, add_run_speed, add_jump_speed);
+		unique_ptr<Skill> skill = make_unique<PhysicalUp>(launch_pos, add_run_speed, add_jump_speed);
 		cool_time = max_cool_time;
 		//リストに追加
 		skills.push_back(std::move(skill));
-		
+
 		chantable = false;
 		return true;
 	}

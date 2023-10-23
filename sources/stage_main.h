@@ -5,7 +5,7 @@
 class StageMain : public Stage
 {
 public:
-	StageMain(Graphics& graphics);
+	StageMain();
 	~StageMain() override;
 
 	//インスタンス取得
@@ -15,8 +15,8 @@ public:
 	void update(float elapsedTime)override;
 
 	//描画処理
-	void render(Graphics& graphics, float elapsed_time, Camera* camera)override;
-	void  shadow_render(Graphics& graphics, float elapsed_time)override;
+	void render(float elapsed_time, Camera* camera)override;
+	void  shadow_render(float elapsed_time)override;
 	// レイキャスト
 	bool ray_cast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) override;
 

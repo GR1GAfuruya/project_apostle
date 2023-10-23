@@ -1,8 +1,9 @@
 #include "sword.h"
 
 #include "Operators.h"
-Sword::Sword(Graphics& graphics)
+Sword::Sword()
 {
+	Graphics& graphics = Graphics::instance();
 	model = std::make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/Player/dark_sword.fbx");
 	collision = {};
 }
@@ -17,7 +18,7 @@ void Sword::initialize()
 	radius = 0.6f;
 }
 
-void Sword::update(Graphics& graphics, float elapsed_time)
+void Sword::update(float elapsed_time)
 {
 	//ワールド行列更新
 	transform = Math::calc_world_matrix(parent_transform, scale, orientation, position);
@@ -29,8 +30,9 @@ void Sword::update(Graphics& graphics, float elapsed_time)
 	collision.radius = radius;
 }
 
-void Sword::render(Graphics &graphics)
+void Sword::render()
 {
+	Graphics& graphics = Graphics::instance();
 	graphics.shader->render(graphics.get_dc().Get(), model.get(), transform);
 #if USE_IMGUI
 	imgui_menu_and_sub_bar("Charactor", "wepon", "sword", display_imgui);

@@ -10,7 +10,7 @@ private:
 	~MaterialManager(){}
 public:
 	//‰Šú‚Ìƒ}ƒeƒŠƒAƒ‹¶¬
-	void create_materials(Graphics& graohics);
+	void create_materials();
 	static MaterialManager& instance()
 	{
 		static MaterialManager instance;

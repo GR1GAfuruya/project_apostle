@@ -1,8 +1,9 @@
 #include "sky_box.h"
 #include"user.h"
 #include "texture.h"
-SkyBox::SkyBox(Graphics& graphics)
+SkyBox::SkyBox()
 {
+	Graphics& graphics = Graphics::instance();
 	sky_model = make_unique<SkeletalMesh>(graphics.get_device().Get(), "./resources/Model/sky.fbx");
 	scale = { 0.5f,0.5f,0.5f };
 	D3D11_TEXTURE2D_DESC texture2d_desc{};
@@ -10,13 +11,14 @@ SkyBox::SkyBox(Graphics& graphics)
 		env_map.ReleaseAndGetAddressOf(), &texture2d_desc);
 }
 
-void SkyBox::render(Graphics& graphics)
+void SkyBox::render()
 {
+	Graphics& graphics = Graphics::instance();
 	graphics.get_dc()->PSSetShaderResources(15, 1, env_map.GetAddressOf());
 	graphics.shader->render(graphics.get_dc().Get(), sky_model.get(), Math::calc_world_matrix(scale, angle, position));
 }
 
-void SkyBox::load_convert_env_map_and_cube_map(Graphics& graphics)
+void SkyBox::load_convert_env_map_and_cube_map()
 {
 	//// Unfiltered environment cube map (temporary).
 	//Texture envTextureUnfiltered = createTextureCube(1024, 1024, DXGI_FORMAT_R16G16B16A16_FLOAT);

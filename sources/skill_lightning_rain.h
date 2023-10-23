@@ -27,12 +27,12 @@ public:
 	// publicä÷êî
 	// 
 	//==============================================================
-	LightningRain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam);
+	LightningRain(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam);
 	~LightningRain();
 
-	void initialize(Graphics& graphics) override;
-	void update(Graphics& graphics, float elapsed_time)override;
-	void render(Graphics& graphics, Camera* camera)override;
+	void initialize() override;
+	void update(float elapsed_time)override;
+	void render(Camera* camera)override;
 
 	void lightning_emit(int index_offset, int emit_max_num, float size);
 	void debug_gui(string str_id);

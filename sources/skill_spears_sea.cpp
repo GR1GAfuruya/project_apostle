@@ -7,13 +7,13 @@
 //コンストラクタ
 // 
 //==============================================================
-SpearsSea::SpearsSea(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam)
+SpearsSea::SpearsSea(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam)
 {
 	//パラメーター初期化
-	initialize(graphics);
+	initialize();
 
 
-	instance_mesh = std::make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/eff_spear.fbx",MAX_NUM);
+	instance_mesh = std::make_unique<InstanceMeshEffect>("./resources/Effects/Meshes/eff_spear.fbx", MAX_NUM);
 	instance_mesh->set_material(MaterialManager::instance().mat_fire_distortion.get());
 	instance_mesh->constants->data.particle_color = { 1.0f,0.8f,5.5f,1.0f };
 	position = launch_pos;
@@ -48,7 +48,7 @@ SpearsSea::~SpearsSea()
 //初期化
 // 
 //==============================================================
-void SpearsSea::initialize(Graphics& graphics)
+void SpearsSea::initialize()
 {
 	skill_duration = 0;
 	finish = false;
@@ -62,7 +62,7 @@ void SpearsSea::initialize(Graphics& graphics)
 //更新処理
 // 
 //==============================================================
-void SpearsSea::update(Graphics& graphics, float elapsed_time)
+void SpearsSea::update(float elapsed_time)
 {
 	life_time += elapsed_time;
 	//槍エフェクトの再生
@@ -87,7 +87,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 			//攻撃の当たり判定パラメーター設定
 			attack_colider.start = { position.x,position.y,position.z };
 			//槍が一定の長さになったら当たり判定設定
-			if (param.spear_length > spear_maximum_extension - 0.1f )
+			if (param.spear_length > spear_maximum_extension - 0.1f)
 			{
 				attack_colider.radius = param.radius;
 			}
@@ -99,7 +99,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 				finish = true;
 				//ライト設置
 				DirectX::XMFLOAT3 point_light_pos = { position.x,position.y + 10.0f,position.z };//槍の位置より少し上に配置
-				spear_light = make_shared<PointLight>(graphics, point_light_pos, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
+				spear_light = make_shared<PointLight>(point_light_pos, 30.0f, DirectX::XMFLOAT3(1.0f, 0.8f, 5.5f));
 				LightManager::instance().register_light("SpearsSea", spear_light);
 
 			}
@@ -124,7 +124,7 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 	const float dissolve_rate = 2.0f;
 	const float start_threshold_time = 0.5f;
 	//ディゾルブ処理
-	if(life_time > skill_duration - start_threshold_time)
+	if (life_time > skill_duration - start_threshold_time)
 	{
 		if (instance_mesh->constants->data.threshold <= 1.0f)
 		{
@@ -140,9 +140,9 @@ void SpearsSea::update(Graphics& graphics, float elapsed_time)
 //描画
 // 
 //==============================================================
-void SpearsSea::render(Graphics& graphics, Camera* camera)
+void SpearsSea::render(Camera* camera)
 {
-	instance_mesh->render(graphics);
+	instance_mesh->render();
 }
 
 
@@ -188,10 +188,10 @@ void SpearsSea::debug_gui(string str_id)
 	/*これより下にパラメーター記述*/
 	//ImGui::BulletText(name.c_str());
 	ImGui::DragFloat("life_time", &life_time);
-	ImGui::DragFloat("threshold", &instance_mesh->constants->data.threshold,0.01f);
-	ImGui::DragInt("emit_num", &emit_num,0.1f);
-	ImGui::DragFloat3("pos", &position.x,0.1f);
-	ImGui::DragFloat3("target_position", &target_position.x,0.1f);
+	ImGui::DragFloat("threshold", &instance_mesh->constants->data.threshold, 0.01f);
+	ImGui::DragInt("emit_num", &emit_num, 0.1f);
+	ImGui::DragFloat3("pos", &position.x, 0.1f);
+	ImGui::DragFloat3("target_position", &target_position.x, 0.1f);
 	if (ImGui::CollapsingHeader(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		instance_mesh->debug_gui(skill_name);

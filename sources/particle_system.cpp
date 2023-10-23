@@ -1,6 +1,6 @@
 #include "particle_system.h"
 
-ParticleSystem::ParticleSystem(Graphics& graphics)
+ParticleSystem::ParticleSystem()
 {
 
 }
@@ -15,21 +15,21 @@ void ParticleSystem::Play(DirectX::XMFLOAT3 pos)
 	position = pos;
 }
 
-void ParticleSystem::update(Graphics& graphics, float elapsed_time)
+void ParticleSystem::update(float elapsed_time)
 {
 	//エミッターによるパーティクルの発生
 	for (auto& e : emitters)
 	{
-		e->update(graphics, elapsed_time);
+		e->update(elapsed_time);
 	}
 }
 
-void ParticleSystem::render(Graphics& graphics, Camera& camera)
+void ParticleSystem::render(Camera& camera)
 {
 	//エミッターの描画関数実行（中でパーティクルの描画処理が行われている）
 	for (auto& e : emitters)
 	{
-		e->render(graphics,camera);
+		e->render(camera);
 	}
 }
 

@@ -89,7 +89,6 @@ public:
 	}
 private:
 	//----------<•Ï”>----------//
-	std::unique_ptr<Graphics> graphics;
 	// DebugFlags
 	std::unique_ptr<DebugFlag> debug_flags;
 };

@@ -4,7 +4,7 @@
 class PlayerHpGauge : public GaugeUi
 {
 public:
-	PlayerHpGauge(Graphics& graphics);
+	PlayerHpGauge();
 	~PlayerHpGauge() override {};
 
 private:
@@ -15,10 +15,10 @@ private:
 class PlayerUI
 {
 public:
-	PlayerUI(Graphics& graphics);
+	PlayerUI();
 	~PlayerUI() {};
-	void update(Graphics& graphics, float elapsed_time);
-	void render(Graphics& graphics);
+	void update(float elapsed_time);
+	void render();
 	void set_hp_percent(float arg);
 private:
 	std::unique_ptr<PlayerHpGauge> hp_gauge;

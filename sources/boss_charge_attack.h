@@ -8,7 +8,7 @@ class ChargeAttack
 {
 public:
 	//コンストラクタ
-	ChargeAttack(Graphics& grapghics);
+	ChargeAttack();
 	//デストラクタ
 	~ChargeAttack(){}
 	//発動
@@ -16,9 +16,9 @@ public:
 	//停止
 	void stop();
 	//更新
-	void update(Graphics& graphics, float elapsed_time,Camera* camera);
+	void update(float elapsed_time,Camera* camera);
 	//描画
-	void render(Graphics& graphics, Camera* camera);
+	void render(Camera* camera);
 	//デバッグGUI
 	void debug_gui(const char* str_id);
 	//チャージ完了したかどうか
@@ -30,13 +30,13 @@ public:
 
 private:
 	//チャージ中の更新
-	void charging_update(Graphics& graphics, float elapsed_time, Camera* camera);
+	void charging_update(float elapsed_time, Camera* camera);
 	//発動中の更新
-	void activities_update(Graphics& graphics, float elapsed_time, Camera* camera);
+	void activities_update(float elapsed_time, Camera* camera);
 	//消滅時の更新
-	void vanishing_update(Graphics& graphics, float elapsed_time, Camera* camera);
+	void vanishing_update(float elapsed_time, Camera* camera);
 
-	typedef void (ChargeAttack::* ChargeAttackUpdate)(Graphics& graphics, float elapsed_time, Camera* camera);
+	typedef void (ChargeAttack::* ChargeAttackUpdate)(float elapsed_time, Camera* camera);
 	ChargeAttackUpdate charge_attack_update = &ChargeAttack::charging_update;
 	struct ChargeAttackConstants
 	{

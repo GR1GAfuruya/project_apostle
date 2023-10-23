@@ -56,8 +56,16 @@ public:
 
 	
 	//------------<コンストラクタ/デストラクタ>-----------//
+private:
 	Graphics(){}
 	~Graphics();
+public:
+	static Graphics& instance()
+	{
+		static Graphics instance;
+		return instance;
+	}
+
 
 	//------------<ゲッター/セッター>-----------//
 	Microsoft::WRL::ComPtr<ID3D11Device> get_device() { return device; }							//DirectX11の機能にアクセスするためのデバイス。このデバイスから描画に必要なオブジェクトの生成などを行う		

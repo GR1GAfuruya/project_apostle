@@ -15,9 +15,9 @@ public:
 protected:
     //--------< ŠÖ” >--------//
     /*ŒÄ‚Ño‚µ‚ÍFramework‚Ì‚İ*/
-    void entities_initialize(Graphics& graphics);
+    void entities_initialize();
     /*ŒÄ‚Ño‚µ‚ÍFramework‚Ì‚İ*/
-    void entities_uninitialize(Graphics& graphics);
+    void entities_uninitialize();
     //--------< •Ï” >--------//
     static std::unique_ptr<ResourceManager> resource_manager;
     static std::unique_ptr<DebugFigures> debug_figure;

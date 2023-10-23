@@ -1,6 +1,6 @@
 #include "skill_lightning_rain.h"
 #include "Operators.h"
-LightningRain::LightningRain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam)
+LightningRain::LightningRain(DirectX::XMFLOAT3 launch_pos, DirectX::XMFLOAT3 target_pos, PublicParam initparam)
 {
 	//初期化パラメーター
 	{
@@ -9,7 +9,7 @@ LightningRain::LightningRain(Graphics& graphics, DirectX::XMFLOAT3 launch_pos, D
 	}
 	//エフェクト
 	{
-		lightning_mesh = std::make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/lightning.fbx");
+		lightning_mesh = std::make_unique<MeshEffect>("./resources/Effects/Meshes/lightning.fbx");
 		lightning_mesh->set_init_life_duration(0.5f);
 		lightning_mesh->set_material(MaterialManager::instance().mat_lightning.get());
 		lightning_mesh->set_init_scale({ 2.5f,3.0f,2.5f });
@@ -26,16 +26,16 @@ LightningRain::~LightningRain()
 {
 }
 
-void LightningRain::initialize(Graphics& graphics)
+void LightningRain::initialize()
 {
 }
 
-void LightningRain::update(Graphics& graphics, float elapsed_time)
+void LightningRain::update(float elapsed_time)
 {
 	if (life_time > 1.5f)
 	{
 		//エフェクトがアクティブでないなら再生
-		if(!lightning_mesh->get_active())
+		if (!lightning_mesh->get_active())
 		{
 			DirectX::XMFLOAT3 lightning_dir = { 0,1,0 };
 			attack_colider.start = position;
@@ -61,16 +61,16 @@ void LightningRain::update(Graphics& graphics, float elapsed_time)
 	}
 
 
-	lightning_mesh->update(graphics, elapsed_time);
+	lightning_mesh->update(elapsed_time);
 	//消滅処理+
 	life_time += elapsed_time;
 	if (life_time > skill_duration) skill_end_flag = true;
 
 }
 
-void LightningRain::render(Graphics& graphics, Camera* camera)
+void LightningRain::render(Camera* camera)
 {
-	lightning_mesh->render(graphics, camera);
+	lightning_mesh->render(camera);
 }
 
 void LightningRain::lightning_emit(int index_offset, int emit_max_num, float size)

@@ -7,15 +7,16 @@
 // コンストラクタ
 // 
 //==============================================================
-Meteore::Meteore(Graphics& graphics, int max_num)
+Meteore::Meteore(int max_num)
 {
-	main_effect = make_unique<InstanceMeshEffect>(graphics, "./resources/Effects/Meshes/meteore3.fbx", max_num);
+	Graphics& graphics = Graphics::instance();
+	main_effect = make_unique<InstanceMeshEffect>("./resources/Effects/Meshes/meteore3.fbx", max_num);
 	main_effect->set_material(MaterialManager::instance().mat_meteore.get());
 	main_effect->constants->data.particle_color = { 4.0f, 1.0f, 0.7f, 0.8f };
 
 	for (int i = 0; i < max_num; i++)
 	{
-		std::unique_ptr<MeshEffect> m_wave = make_unique<MeshEffect>(graphics, "./resources/Effects/Meshes/eff_sphere.fbx");
+		std::unique_ptr<MeshEffect> m_wave = make_unique<MeshEffect>("./resources/Effects/Meshes/eff_sphere.fbx");
 		m_wave->set_material(MaterialManager::instance().mat_fire_distortion.get());
 		m_wave->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 		m_wave->set_init_scale(0);
@@ -67,9 +68,9 @@ void Meteore::initialize()
 // 
 //==============================================================
 
-void Meteore::update(Graphics& graphics, float elapsed_time)
+void Meteore::update(float elapsed_time)
 {
-	main_effect->update(graphics,elapsed_time);
+	main_effect->update(elapsed_time);
 	//meteo_wave->update(graphics,elapsed_time);
 	//半径
 	radius = 3.5f;
@@ -80,7 +81,7 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 		//速度計算をするかどうか
 		if (params[i].is_calc_velocity)
 		{
-			update_velocity(elapsed_time,i);
+			update_velocity(elapsed_time, i);
 			DirectX::XMFLOAT3 aura_dir = { -params[i].velocity.x,-params[i].velocity.y ,-params[i].velocity.z };
 			DirectX::XMFLOAT3 add_pos = Math::vector_scale(Math::Normalize(params[i].velocity), 5);
 		};
@@ -107,26 +108,26 @@ void Meteore::update(Graphics& graphics, float elapsed_time)
 			}
 		}
 
-		meteo_wave.at(i)->update(graphics, elapsed_time);
+		meteo_wave.at(i)->update(elapsed_time);
 		//当たり判定の位置と大きさ更新
 		params[i].colider_sphere.center = params[i].position;
 		params[i].colider_sphere.radius = params[i].scale.x * radius;
 	}
-	
+
 }
 //==============================================================
 // 
 //描画処理（ディファード）
 // 
 //==============================================================
-void Meteore::render(Graphics& graphics, Camera* camera)
+void Meteore::render(Camera* camera)
 {
-	main_effect->render(graphics);
+	main_effect->render();
 	for (auto& m : meteo_wave)
 	{
 		if (m->get_active())
 		{
-			m-> render(graphics,camera);
+			m->render(camera);
 		}
 	}
 }
@@ -186,7 +187,7 @@ void Meteore::launch(DirectX::XMFLOAT3 init_vec, float speed, int index)
 	//当たり判定の位置と大きさ更新
 	params[index].colider_sphere.center = params[index].position;
 	params[index].colider_sphere.radius = params[index].scale.x * radius;
-	
+
 
 	meteo_wave.at(index)->set_scale(0);
 
@@ -296,7 +297,7 @@ void Meteore::update_vertical_move(float elapsed_time, int index)
 			//地面に設置している
 			params[index].position = hit.position;
 
-		
+
 			//TODO:当たった時の処理に移行
 			on_hit(index);
 			//main_effect->stop();
@@ -304,7 +305,7 @@ void Meteore::update_vertical_move(float elapsed_time, int index)
 			params[index].velocity = { 0,0,0 };
 			params[index].move_vec.x = 0.0f;
 			params[index].move_vec.z = 0.0f;
-			
+
 		}
 		else
 		{
@@ -385,7 +386,7 @@ void Meteore::update_horizontal_move(float elapsed_time, int index)
 			params[index].position.x = hit.position.x;
 			params[index].position.z = hit.position.z;
 			params[index].velocity.x = 0;
-			params[index].velocity.z = 0;			
+			params[index].velocity.z = 0;
 		}
 		else
 		{

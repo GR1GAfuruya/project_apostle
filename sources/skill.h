@@ -33,9 +33,9 @@ public:
 	Skill() {};
 	virtual ~Skill() {};
 
-	virtual void initialize(Graphics& graphics) {};
-	virtual void update(Graphics& graphics, float elapsed_time) = 0;
-	virtual void render(Graphics& graphics,Camera* camera) = 0;
+	virtual void initialize() {};
+	virtual void update(float elapsed_time) = 0;
+	virtual void render(Camera* camera) = 0;
 
 	//ƒXƒLƒ‹‚ªI—¹‚µ‚½‚©‚Ç‚¤‚©
 	bool is_skill_end() { return skill_end_flag; };

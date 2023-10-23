@@ -4,8 +4,9 @@
 #include "imgui_include.h"
 #include "user.h"
 #include "texture.h"
-Emitter::Emitter(Graphics& graphics, int max_particles)
+Emitter::Emitter(int max_particles)
 {
+	Graphics& graphics = Graphics::instance();
 	this->max_particles = 1;
 	emit_span = 1;
 	active = false;
@@ -36,7 +37,7 @@ void Emitter::play(DirectX::XMFLOAT3 pos)
 }
 
 
-void Emitter::emit(Graphics& graphics, float elapsed_time)
+void Emitter::emit(float elapsed_time)
 {
 	if (active)
 	{
@@ -48,14 +49,14 @@ void Emitter::emit(Graphics& graphics, float elapsed_time)
 			int p_size = static_cast<int>(particles.size());
 			if (p_size < max_particles)
 			{
-				Particles::InitParam init_param;
-				init_param.position = position;
+				Particles::Param init_param;
+				init_param.transition.position = position;
 				init_param.life_time = 0.5;
-				init_param.scale = { 1,1 };
-				init_param.velocity = emit_dir;
+				init_param.scaling.scale = { 1,1,1 };
+				init_param.transition.velocity = emit_dir;
 				for (int i = 0; i < burst_num; i++)
 				{
-					particles.emplace_back(make_unique<Particles>(graphics, init_param));
+					particles.emplace_back(make_unique<Particles>(init_param));
 				}
 				//タイマーリセット
 				emit_timer = 0;
@@ -65,12 +66,12 @@ void Emitter::emit(Graphics& graphics, float elapsed_time)
 }
 
 
-void Emitter::update(Graphics& graphics, float elapsed_time)
+void Emitter::update(float elapsed_time)
 {
 	//パーティクルの更新
 	for (auto& p : particles)
 	{
-		p->update(graphics, elapsed_time);
+		p->update(elapsed_time);
 	}
 	//エミッターの寿命更新、パーティクルの寿命処理
 	life_update(elapsed_time);
@@ -82,11 +83,12 @@ void Emitter::update(Graphics& graphics, float elapsed_time)
 	position_update(elapsed_time);
 
 	//エミット時間処理
-	emit(graphics, elapsed_time);
+	emit(elapsed_time);
 }
 
-void Emitter::render(Graphics& graphics, Camera& camera)
+void Emitter::render(Camera& camera)
 {
+	Graphics& graphics = Graphics::instance();
 	graphics.get_dc()->VSSetShader(vertex_shader.Get(), nullptr, 0);
 	//graphics.get_dc()->GSSetShader(geometry_shader.Get(), nullptr, 0);
 	graphics.get_dc()->PSSetShader(pixel_shader.Get(), nullptr, 0);
@@ -107,7 +109,7 @@ void Emitter::render(Graphics& graphics, Camera& camera)
 	graphics.get_dc()->PSSetShader(nullptr, nullptr, 0);
 }
 
-void Emitter::debug_gui(Graphics& graphics, string id)
+void Emitter::debug_gui(string id)
 {
 	imgui_menu_bar("effect", "emitter", display_imgui);
 #if USE_IMGUI
@@ -122,13 +124,13 @@ void Emitter::debug_gui(Graphics& graphics, string id)
 		ImGui::DragFloat("emit_span", &emit_span, 0.1f);
 		int p_num = particles.size();
 		int r_num = removes.size();
-	//	int v_num = vertices.size();
+		//	int v_num = vertices.size();
 		ImGui::DragInt("particle_num", &p_num);
 		ImGui::DragInt("removes_num", &r_num);
-	//	ImGui::DragInt("vertex_num", &v_num);
+		//	ImGui::DragInt("vertex_num", &v_num);
 		ImGui::Checkbox("active", &active);
 		ImGui::End();
-		
+
 	}
 #endif // USE_IMGUI
 
