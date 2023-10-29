@@ -16,6 +16,7 @@
 #include "generic_frequent_entities.h"
 #include "tutorial.h"
 #include "emitter.h"
+#include "effect.h"
 class SceneGame :public Scene, public GenericFrequentEntities
 {
 public:
@@ -65,6 +66,6 @@ private:
 	std::unique_ptr<MeshEffect> test_mesh_effect = nullptr;
 	std::unique_ptr<MeshEffect> test_mesh_effect2 = nullptr;
 	std::unique_ptr<MeshEffect> test_mesh_effect3 = nullptr;
-	
+	std::unique_ptr<Effect> test_effect = nullptr;
 #endif
 };

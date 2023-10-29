@@ -11,7 +11,7 @@
 #include "texture.h"
 #include "Operators.h"
 #include "game_object.h"
-#include "EffectManager.h"
+#include "effect_manager.h"
 SceneGame::SceneGame()
 {
 
@@ -66,6 +66,7 @@ void SceneGame::initialize()
 	test_mesh_effect3->set_init_scale(0.1f);
 	test_mesh_effect3->set_init_color({ 4.0f, 1.0f, 0.7f, 0.8f });
 
+	test_effect = make_unique<Effect>("");
 	//SpriteEmitterInstance::InitParam init;
 	//init.duration = 5;
 	//test_emitter = std::make_unique<SpriteEmitterInstance>(init, 1000);
@@ -231,8 +232,17 @@ void SceneGame::render(float elapsed_time)
 				SceneManager::instance().change_scene(new SceneLoading(new SceneTitle()));
 				return;
 			};
+			if (ImGui::Button("effect_play"))
+			{
+				test_effect->play(player->get_position());
+			};
 
+			if (ImGui::Button("effect_stop"))
+			{
+				test_effect->stop();
+			};
 
+			test_effect->debug_gui("1");
 		}
 #endif
 	}

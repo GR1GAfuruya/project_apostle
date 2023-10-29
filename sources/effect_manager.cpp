@@ -1,4 +1,4 @@
-#include "EffectManager.h"
+#include "effect_manager.h"
 #include "transform.h"
 
 std::shared_ptr<GameObject> EffectManager::create()

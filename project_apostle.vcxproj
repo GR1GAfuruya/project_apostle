@@ -215,8 +215,8 @@
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
-    <ClCompile Include="sources\Effect.cpp" />
-    <ClCompile Include="sources\EffectManager.cpp" />
+    <ClCompile Include="sources\effect.cpp" />
+    <ClCompile Include="sources\effect_manager.cpp" />
     <ClCompile Include="sources\emitter.cpp" />
     <ClCompile Include="sources\game_object.cpp" />
     <ClCompile Include="sources\gauge_ui.cpp" />
@@ -314,8 +314,8 @@
     <ClInclude Include="sources\component.h" />
     <ClInclude Include="sources\coordinate_convert.h" />
     <ClInclude Include="sources\damage_func.h" />
-    <ClInclude Include="sources\Effect.h" />
-    <ClInclude Include="sources\EffectManager.h" />
+    <ClInclude Include="sources\effect.h" />
+    <ClInclude Include="sources\effect_manager.h" />
     <ClInclude Include="sources\emitter.h" />
     <ClInclude Include="sources\game_object.h" />
     <ClInclude Include="sources\gauge_ui.h" />
@@ -874,27 +874,11 @@
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
       <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">shaders\%(Filename).cso</AssemblerOutputFile>
     </FxCompile>
-    <FxCompile Include="HLSL\sprite_particle_gs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="HLSL\sprite_particle_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="HLSL\sprite_ps.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">shaders\%(Filename).cso</ObjectFileOutput>

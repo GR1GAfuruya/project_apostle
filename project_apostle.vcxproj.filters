@@ -579,10 +579,10 @@
     <ClCompile Include="sources\game_object.cpp">
       <Filter>sources\Component</Filter>
     </ClCompile>
-    <ClCompile Include="sources\EffectManager.cpp">
+    <ClCompile Include="sources\effect_manager.cpp">
       <Filter>sources\Effects\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Effect.cpp">
+    <ClCompile Include="sources\effect.cpp">
       <Filter>sources\Effects\Effect</Filter>
     </ClCompile>
   </ItemGroup>
@@ -923,10 +923,10 @@
     <ClInclude Include="sources\transform.h">
       <Filter>sources\Component</Filter>
     </ClInclude>
-    <ClInclude Include="sources\EffectManager.h">
+    <ClInclude Include="sources\effect_manager.h">
       <Filter>sources\Effects\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Effect.h">
+    <ClInclude Include="sources\effect.h">
       <Filter>sources\Effects\Effect</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1138,20 +1138,17 @@
     <FxCompile Include="HLSL\hit_effect_update_cs.hlsl">
       <Filter>Shaders\Effect\Player\HitEffect</Filter>
     </FxCompile>
-    <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
-      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\sprite_particle_ps.hlsl">
-      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
-    </FxCompile>
-    <FxCompile Include="HLSL\sprite_particle_gs.hlsl">
-      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
-    </FxCompile>
     <FxCompile Include="HLSL\lightning.hlsl">
       <Filter>Shaders\Effect</Filter>
     </FxCompile>
     <FxCompile Include="HLSL\title_logo.hlsl">
       <Filter>Shaders\Title</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_ps.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
+    </FxCompile>
+    <FxCompile Include="HLSL\sprite_particle_vs.hlsl">
+      <Filter>Shaders\Effect\Particle\sprite_particle</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

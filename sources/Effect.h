@@ -7,7 +7,6 @@ public:
 	Effect(const char* file_name);
 	~Effect();
 
-public:
 	//==============================================================
 	// 
 	// ç\ë¢ëÃ
@@ -29,9 +28,10 @@ public:
 
 	//void update(float elapsed_time);
 
-	void render(Camera& camera);
+	//void render(Camera& camera);
 
 	void debug_gui(string id);
+private:
 
 	shared_ptr<GameObject> effect;
 };

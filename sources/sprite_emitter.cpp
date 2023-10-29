@@ -5,19 +5,23 @@
 #include "user.h"
 #include "texture.h"
 #include "graphics.h"
-
+#include "transform.h"
 //==============================================================
 // 
 //コンストラクタ
 // 
 //==============================================================
-SpriteEmitter::SpriteEmitter(InitParam param, int max_particles)
+SpriteEmitter::SpriteEmitter(int max_particles)
 	: max_vertices(max_particles * 4)
 {
 	this->max_particles = max_particles;
 	emit_span = 1;
 	active = false;
 	create_com_object(max_particles);
+	
+	active = true;
+	life_timer = 0;
+	position = { 0,0,0 };
 }
 //==============================================================
 // 
@@ -107,10 +111,10 @@ void SpriteEmitter::create_com_object(int max_particles)
 
 	};
 	// 頂点シェーダーオブジェクトの生成
-	const char* cso_name_vs{ "shaders/sprite_particle_ins_vs.cso" };
+	const char* cso_name_vs{ "shaders/sprite_particle_vs.cso" };
 	create_vs_from_cso(graphics.get_device().Get(), cso_name_vs, vertex_shader.GetAddressOf(), input_layout.GetAddressOf(), input_element_desc, _countof(input_element_desc));
 	// ピクセルシェーダーオブジェクトの生成
-	const char* cso_name_ps{ "shaders/sprite_particle_ins_ps.cso" };
+	const char* cso_name_ps{ "shaders/sprite_particle_ps.cso" };
 	create_ps_from_cso(graphics.get_device().Get(), cso_name_ps, pixel_shader.GetAddressOf());
 	// 画像ファイルのロードとシェーダーリソースビューオブジェクト(ID3D11ShaderResourceView)の生成
 	load_texture_from_file(graphics.get_device().Get(), L"./resources/Effects/Textures/Particle02.png", shader_resource_view.GetAddressOf(), &texture2d_desc);
@@ -124,7 +128,6 @@ void SpriteEmitter::create_com_object(int max_particles)
 void SpriteEmitter::play(DirectX::XMFLOAT3 pos)
 {
 	active = true;
-	life_timer = 0;
 }
 
 //==============================================================
@@ -142,6 +145,7 @@ void SpriteEmitter::emit(float elapsed_time)
 		int p_size = static_cast<int>(particles.size());
 		if (p_size < max_particles)
 		{
+			//particle_init_param = {};
 			particle_init_param.transition.position = position;
 			particle_init_param.transition.velocity = emit_dir;
 			for (int i = 0; i < burst_num; i++)
@@ -152,6 +156,11 @@ void SpriteEmitter::emit(float elapsed_time)
 			emit_timer = 0;
 		}
 	}
+}
+void SpriteEmitter::start()
+{
+	position = get_game_object()->get_component<Transform>()->get_position();
+
 }
 //==============================================================
 // 
@@ -165,7 +174,6 @@ void SpriteEmitter::update(float elapsed_time)
 	{
 		p->update(elapsed_time);
 	}
-
 	//エミッターの更新
 	{
 		//エミッターの寿命更新、パーティクルの寿命処理
@@ -192,7 +200,7 @@ static DirectX::XMFLOAT3 ang = { 0,0,0 };
 //パーティクルの描画
 // 
 //==============================================================
-void SpriteEmitter::render(Camera& camera)
+void SpriteEmitter::render(Camera* camera)
 {
 	ReplaceBufferContents(instance_data.Get(), sizeof(Instance) * this->max_particles, CPU_instance_data.get());
 	Graphics& graphics = Graphics::instance();
@@ -207,7 +215,7 @@ void SpriteEmitter::render(Camera& camera)
 		for (int i = 0; i < particles.size(); i++)
 		{
 
-			particles.at(i).get()->look_at_camera(camera);
+			particles.at(i).get()->look_at_camera(*camera);
 			particles.at(i).get()->set_angle(ang);
 			CPU_instance_data[i].position = particles.at(i).get()->get_position();
 			CPU_instance_data[i].quaternion = particles.at(i).get()->get_orientation();
@@ -301,6 +309,7 @@ void SpriteEmitter::debug_gui(string id)
 	if (display_imgui)
 	{
 		ImGui::Begin(id.c_str());
+		ImGui::Text(get_name());
 		if (ImGui::Button("play"))
 		{
 			play(position);
