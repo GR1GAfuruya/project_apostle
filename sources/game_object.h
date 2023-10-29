@@ -52,5 +52,6 @@ public:
 private:
 	std::string name;
 	std::vector<std::shared_ptr<Component>> components;
+	
 };
 

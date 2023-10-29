@@ -6,7 +6,8 @@ class Transform :public Component
 public:
 	Transform() : position(0, 0, 0 )
 				, orientation(0,0,0,1)
-				, scale(1,1,1){};
+				, scale(1,1,1)
+				, transform(){};
 
 	virtual ~Transform(){};
 

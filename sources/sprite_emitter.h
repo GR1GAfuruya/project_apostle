@@ -2,8 +2,9 @@
 #include "particle.h"
 #include "material.h"
 #include "camera.h"
+#include "component.h"
 //#include "data_file.h"
-class SpriteEmitter
+class SpriteEmitter :public Component
 {
 public:
 	//==============================================================
@@ -55,17 +56,18 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	SpriteEmitter(InitParam param, int max_particles);
+	SpriteEmitter(int max_particles);
 	~SpriteEmitter();
 
 	void play(DirectX::XMFLOAT3 pos);
 
 
 	void emit(float elapsed_time);
+	void start()override;
 
 	void update(float elapsed_time);
 
-	void render(Camera& camera);
+	void render(Camera* camera);
 
 	void debug_gui(string id);
 
@@ -84,7 +86,7 @@ public:
 	float get_duration() { return duration; }
 	bool get_active() { return active; }
 
-
+	const char* get_name() const override { return "SpriteEmitter"; }
 	InitParam init_param;
 private:
 	// 頂点フォーマット
@@ -124,7 +126,7 @@ private:
 	//射出方向
 	DirectX::XMFLOAT3 emit_dir = { 0,0,0 };
 	//速度
-	DirectX::XMFLOAT3 velocity;
+	DirectX::XMFLOAT3 velocity = { 0,0,0 };
 
 	//前回パーティクルを生成してからの時間
 	float emit_timer = 0;
@@ -135,19 +137,19 @@ private:
 	//ループ再生するかどうか
 	bool is_loop = false;
 	//生成し続ける時間
-	float duration;
+	float duration = 0;
 	// 1秒間に何発発生するか
-	float emit_rate;
+	float emit_rate = 1;
 	// 発生間隔
-	float emit_span;
+	float emit_span = 1;
 	// 現在の発生カウント
-	int emit_count;
+	int emit_count =0;
 	//一度に放出する数
 	int burst_num = 1;
 	//時間
 	float timer = 0;
 	//生成開始時間
-	float emit_start_time;
+	float emit_start_time = 0;
 	//画像位置
 	DirectX::XMFLOAT2 texpos = {  };
 	//画像サイズ

@@ -107,11 +107,11 @@ public:
 	struct Param
 	{
 		//ˆÊ’uŒn
-		Translation transition;
+		Translation transition = {};
 		//‰ñ“]
-		Rotation rotate;
+		Rotation rotate = {};
 		//‘å‚«‚³
-		Scaling scaling;
+		Scaling scaling = {};
 
 		DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
 		//F
@@ -119,7 +119,7 @@ public:
 		//Šp“x
 		DirectX::XMFLOAT3 init_angle = { 0,0,0 };
 		//¶¬‚³‚ê‚Ä‚©‚ç‚ÌŠÔ
-		float time;
+		float time = 0;
 		//õ–½
 		float life_time = 10;
 
