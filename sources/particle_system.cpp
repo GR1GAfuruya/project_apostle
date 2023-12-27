@@ -1,7 +1,14 @@
 #include "particle_system.h"
-
-ParticleSystem::ParticleSystem()
+#include "effect_manager.h"
+#include "sprite_emitter.h"
+ParticleSystem::ParticleSystem(const char* file_path)
 {
+	shared_ptr<GameObject> effect = EffectManager::instance().create();
+	effect->transform.set_position(position);
+	SpriteEmitter::Param param;
+	effect->add_component<SpriteEmitter>(param,100/*事前に保存しておいた最大パーティクル数を入力*/);
+	//エミッターの登録
+	emitters.push_back(move(effect));
 
 }
 
@@ -10,30 +17,36 @@ ParticleSystem::~ParticleSystem()
 	emitters.clear();
 }
 
-void ParticleSystem::Play(DirectX::XMFLOAT3 pos)
+void ParticleSystem::Launch(DirectX::XMFLOAT3 pos)
 {
 	position = pos;
+	active = true;
+
 }
 
 void ParticleSystem::update(float elapsed_time)
 {
-	//エミッターによるパーティクルの発生
-	for (auto& e : emitters)
+	if (active)
 	{
-		e->update(elapsed_time);
+		time += elapsed_time;
+
+		//エミッターによるパーティクルの発生
+		for (auto& e : emitters)
+		{
+			if (time > e->get_component<SpriteEmitter>()->param.emit_start_time)
+			{
+				e->get_component<SpriteEmitter>()->play(position);
+			}
+		}
 	}
 }
 
-void ParticleSystem::render(Camera& camera)
+
+void ParticleSystem::on_gui()
 {
-	//エミッターの描画関数実行（中でパーティクルの描画処理が行われている）
-	for (auto& e : emitters)
-	{
-		e->render(camera);
-	}
 }
 
-void ParticleSystem::register_emitter(std::unique_ptr<Emitter> e)
+void ParticleSystem::register_emitter(std::shared_ptr<GameObject> e)
 {
 	//エミッターの登録
 	emitters.push_back(move(e));

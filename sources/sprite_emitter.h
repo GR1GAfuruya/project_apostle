@@ -13,7 +13,7 @@ public:
 	// 
 	//==============================================================
 
-	struct InitParam
+	struct Param
 	{
 		//位置
 		DirectX::XMFLOAT3 position = { 0,0,0 };
@@ -21,6 +21,7 @@ public:
 		DirectX::XMFLOAT3 emit_dir = { 0,0,0 };
 		//期間
 		float duration = 5;
+		float init_speed = 5;
 		//ループ再生するかどうか
 		bool is_loop = false;
 		//生成し続ける時間
@@ -56,8 +57,8 @@ public:
 	// public関数
 	// 
 	//==============================================================
-	SpriteEmitter(int max_particles);
-	~SpriteEmitter();
+	SpriteEmitter(Param init_param, int max_particles);
+	~SpriteEmitter()override;
 
 	void play(DirectX::XMFLOAT3 pos);
 
@@ -65,11 +66,11 @@ public:
 	void emit(float elapsed_time);
 	void start()override;
 
-	void update(float elapsed_time);
+	void update(float elapsed_time) override;
 
 	void render(Camera* camera);
 
-	void debug_gui(string id);
+	void on_gui()override;
 
 	//==============================================================
 	// 
@@ -79,21 +80,21 @@ public:
 
 	//Setter
 	inline void set_position(DirectX::XMFLOAT3 p) { position = p; }
-	inline void set_emit_span(float span) { emit_span = span; }
-	inline void set_is_loop(bool loop) { is_loop = loop; }
+	inline void set_emit_span(float span) { param.emit_span = span; }
+	inline void set_is_loop(bool loop) { param.is_loop = loop; }
 	//Getter
 	DirectX::XMFLOAT3 get_position() { return position; }
-	float get_duration() { return duration; }
+	float get_duration() { return param.duration; }
 	bool get_active() { return active; }
 
 	const char* get_name() const override { return "SpriteEmitter"; }
-	InitParam init_param;
+	Param param;
 private:
 	// 頂点フォーマット
 	struct vertex
 	{
 		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT4 color;
+		
 		DirectX::XMFLOAT2 texcoord;
 	};
 
@@ -103,6 +104,7 @@ private:
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 scale;
 		DirectX::XMFLOAT2 tip_texcoord;
+		DirectX::XMFLOAT4 color;
 	};
 
 	struct OBJECT_CONSTANTS
@@ -112,7 +114,14 @@ private:
 
 	void position_update(float elapsed_time);
 	void life_update(float elapsed_time);
+	//姿勢更新
+	void orientation_update(float elapsed_time);
+
 	void remove_update();
+
+	void particle_start_functions();
+
+	void particle_update_functions(float elapsed_time, Particles& p);
 
 	void ReplaceBufferContents(ID3D11Buffer* buffer, size_t bufferSize, const void* data);
 
@@ -121,6 +130,9 @@ private:
 	DirectX::XMFLOAT3 position = { 0,0,0 };
 	//姿勢
 	DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
+	//角度
+	DirectX::XMFLOAT3 rotation = { 0,0,0 };
+
 	//大きさ
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
 	//射出方向
@@ -134,22 +146,10 @@ private:
 	float life_timer = 1;
 	//アクティブ状態か
 	bool active = false;
-	//ループ再生するかどうか
-	bool is_loop = false;
-	//生成し続ける時間
-	float duration = 0;
-	// 1秒間に何発発生するか
-	float emit_rate = 1;
-	// 発生間隔
-	float emit_span = 1;
 	// 現在の発生カウント
 	int emit_count =0;
-	//一度に放出する数
-	int burst_num = 1;
 	//時間
 	float timer = 0;
-	//生成開始時間
-	float emit_start_time = 0;
 	//画像位置
 	DirectX::XMFLOAT2 texpos = {  };
 	//画像サイズ

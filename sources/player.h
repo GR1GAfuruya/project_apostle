@@ -87,6 +87,9 @@ private:
 
 	};
 
+	const float JUST_GURD_TIME = 3.0f;
+
+
 	struct PlayerParam
 	{
 		//基底クラスのパラメーター
@@ -123,7 +126,19 @@ private:
 		}
 	};
 
+	struct ShieldParam
+	{
+		bool is_shield;//ガード状態か
+		bool shieldable;//ガード可能状態か
+		bool is_break_shield;//シールドが破壊状態か
+		float shield_time;
+		float just_gurd_time;
+		float recast_shield_time;
+		float shield_hp;//耐久
+		float recast_rate;
+		float SHIELD_HP_MAX = 50;
 
+	};
 private:
 	//==============================================================
 	// 
@@ -151,6 +166,8 @@ private:
 	void transition_r_attack_combo3_state();//コンボ2-3
 	void transition_r_attack_dodge_back_state();//後方に回避しながら魔法
 
+	void transition_guard_state();//防御
+
 
 	//********各ステートのアップデート**********//r_はルートモーション付き
 	void update_idle_state(float elapsed_time, Camera* camera);
@@ -170,7 +187,10 @@ private:
 	void update_r_attack_combo2_state(float elapsed_time, Camera* camera);//コンボ2-2
 	void update_r_attack_combo3_state(float elapsed_time, Camera* camera);//コンボ2-3
 	void update_r_attack_dodge_back_state(float elapsed_time, Camera* camera);//後方に回避しながら魔法
+	void update_guard_state(float elapsed_time, Camera* camera);//防御
 
+
+	void update_guard_system(float elapsed_time);
 	//更新関数の関数ポインタの定義
 	typedef void (Player::* ActUpdate)(float elapsed_time, Camera* camera);
 
@@ -195,11 +215,17 @@ private:
 	void on_dead() override;
 	//ダメージを受けた時の処理
 	void on_damaged(WINCE_TYPE type) override;
+	//ダメージを受ける処理
+	bool apply_damage(int damage, float invincible_time, WINCE_TYPE type)override;
 	//ルートモーション
 	void root_motion(DirectX::XMFLOAT3 dir, float speed);
 	void root_motion_manual(DirectX::XMFLOAT3 dir, float speed);
 	//少し浮遊する
 	bool floating();
+
+	void input_gurd();
+
+	bool judge_gurd();
 
 	//----------<ファイル>------------//
 	void load_data_file();
@@ -213,7 +239,7 @@ private:
 	//関数ポインタの宣言
 	ActUpdate p_update = &Player::update_idle_state;
 
-
+	ShieldParam shield_param;
 	PlayerParam param;
 	State state;
 

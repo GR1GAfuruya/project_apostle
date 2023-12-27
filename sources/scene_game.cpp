@@ -223,7 +223,8 @@ void SceneGame::render(float elapsed_time)
 
 #if USE_IMGUI
 		camera->debug_gui();
-		imgui_menu_bar("Game", "scene_game", display_imgui);
+
+		imgui_menu_bar("emitter", "effect", display_imgui);
 		if (display_imgui)
 		{
 			if (ImGui::Button("back_title"))

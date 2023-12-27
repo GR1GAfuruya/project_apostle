@@ -124,11 +124,15 @@ void Player::update(float elapsed_time, Camera* camera)
 	{
 		camera->set_lock_on();
 	}
+	//ガード入力
+	input_gurd();
 
 	//プレイヤーの正面情報を更新
 	forward = Math::get_posture_forward(orientation);
 	//無敵時間の更新
 	update_invicible_timer(elapsed_time);
+	//シールド更新
+	update_guard_system(elapsed_time);
 	for (auto& se : slash_efects)
 	{
 		se->update(elapsed_time);
@@ -491,6 +495,42 @@ void Player::calc_attack_vs_enemy(Capsule collider, AddDamageFunc damaged_func, 
 }
 //==============================================================
 // 
+//ガード更新
+// 
+//==============================================================
+
+void Player::update_guard_system(float elapsed_time)
+{
+
+	if (shield_param.is_shield)
+	{
+		shield_param.shield_time += elapsed_time;
+	}
+	//シールドが割れた際の処理
+	if (shield_param.shield_hp < 0)
+	{
+		shield_param.is_shield = false;
+		shield_param.shieldable = false;
+		shield_param.is_break_shield = true;
+	}
+	//シールド破壊時
+	if (shield_param.is_break_shield)
+	{
+		//ガードHPがMAXに行くまで回復
+		if (shield_param.shield_hp < shield_param.SHIELD_HP_MAX)
+		{
+			shield_param.shield_hp += shield_param.recast_rate * elapsed_time;
+		}
+		else
+		{
+			shield_param.shieldable = true;
+			shield_param.is_break_shield = false;
+		}
+	}
+}
+
+//==============================================================
+// 
 //着地処理
 // 
 //==============================================================
@@ -538,6 +578,43 @@ void Player::on_damaged(WINCE_TYPE type)
 
 }
 
+bool Player::apply_damage(int damage, float invincible_time, WINCE_TYPE type)
+{
+	//ダメージが0の場合は健康状態を変更する必要がない
+	if (damage == 0)return false;
+
+	//死亡している場合は健康状態を変更しない
+	if (health <= 0)return false;
+
+
+	if (invincible_timer > 0.0f)return false;
+
+	//ガード判定
+	if (judge_gurd())
+	{
+		shield_param.shield_hp -= damage;
+	}
+
+
+	//無敵時間設定
+	invincible_timer = invincible_time;
+	//ダメージ処理
+	health -= damage;
+
+	//死亡通知
+	if (health <= 0)
+	{
+		on_dead();
+	}
+	else//ダメージ通知
+	{
+		on_damaged(type);
+	}
+
+	//健康状態が変更した場合はtrueを返す
+	return true;
+}
+
 //==============================================================
 // 
 //ルートモーション
@@ -569,6 +646,43 @@ bool Player::floating()
 		return true;
 	}
 	//浮遊中でない
+	return false;
+}
+
+void Player::input_gurd()
+{
+	if (game_pad->get_button_down() & GamePad::BTN_LEFT_SHOULDER)
+	{
+		if (shield_param.shieldable)
+		{
+			shield_param.is_shield = true;
+			//transition_guard_state();
+		}
+		else
+		{
+
+		}
+	}
+	else
+	{
+		shield_param.is_shield = false;
+		shield_param.shield_time = false;
+	}
+}
+
+bool Player::judge_gurd()
+{
+	if (shield_param.is_shield)
+	{
+		//ジャストガード判定
+		if (shield_param.shield_time < JUST_GURD_TIME)
+		{
+			//ジャストガード成功
+			invincible_timer = 0.2f;
+			return true;
+		}
+		return true;
+	}
 	return false;
 }
 

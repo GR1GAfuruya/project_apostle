@@ -104,7 +104,7 @@ public:
 	//ÕŒ‚‚ğ—^‚¦‚é
 	void add_impulse(const DirectX::XMFLOAT3& impulse);
 	//ƒ_ƒ[ƒW‚ğ—^‚¦‚é
-	bool apply_damage(int damage, float invincibleTime, WINCE_TYPE type);
+	virtual bool apply_damage(int damage, float invincibleTime, WINCE_TYPE type);
 
 protected:
 

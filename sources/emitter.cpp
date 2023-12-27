@@ -50,10 +50,10 @@ void Emitter::emit(float elapsed_time)
 			if (p_size < max_particles)
 			{
 				Particles::Param init_param;
-				init_param.transition.position = position;
+				init_param.transition.position = transform.get_position();
 				init_param.life_time = 0.5;
 				init_param.scaling.scale = { 1,1,1 };
-				init_param.transition.velocity = emit_dir;
+				init_param.transition.velocity = Math::get_posture_up(transform.get_orientation());
 				for (int i = 0; i < burst_num; i++)
 				{
 					particles.emplace_back(make_unique<Particles>(init_param));
@@ -81,7 +81,7 @@ void Emitter::update(float elapsed_time)
 	if (!active) return;
 	//エミッターの位置更新
 	position_update(elapsed_time);
-
+	
 	//エミット時間処理
 	emit(elapsed_time);
 }
@@ -116,8 +116,6 @@ void Emitter::debug_gui(string id)
 	if (display_imgui)
 	{
 		ImGui::Begin(id.c_str());
-		ImGui::DragFloat3("position", &position.x, 0.1f);
-		ImGui::DragFloat3("emit_dir", &emit_dir.x, 0.1f);
 		ImGui::DragFloat("duration", &duration, 0.1f);
 		ImGui::DragFloat("life_timer", &life_timer, 0.1f);
 		ImGui::DragFloat("emit_timer", &emit_timer, 0.1f);
@@ -139,7 +137,7 @@ void Emitter::debug_gui(string id)
 void Emitter::position_update(float elapsed_time)
 {
 	//位置更新
-	position += velocity;
+	transform.set_position(transform.get_position() + velocity);
 }
 
 void Emitter::life_update(float elapsed_time)

@@ -11,15 +11,15 @@
 //コンストラクタ
 // 
 //==============================================================
-SpriteEmitter::SpriteEmitter(int max_particles)
+SpriteEmitter::SpriteEmitter(Param init_param, int max_particles)
 	: max_vertices(max_particles * 4)
 {
 	this->max_particles = max_particles;
-	emit_span = 1;
+	param = init_param;
+	param.emit_span = 1;
 	active = false;
 	create_com_object(max_particles);
 	
-	active = true;
 	life_timer = 0;
 	position = { 0,0,0 };
 }
@@ -96,8 +96,6 @@ void SpriteEmitter::create_com_object(int max_particles)
 	{
 	  { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 		D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	  { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
-		D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	  { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
 	   D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,  0 },
 	   { "I_ROTATION", 0,DXGI_FORMAT_R32G32B32A32_FLOAT, 1,
@@ -108,6 +106,9 @@ void SpriteEmitter::create_com_object(int max_particles)
 		D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA,    1 },
 		{ "I_TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1,
 	   D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA,  1 },
+		  { "I_COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,
+		D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+
 
 	};
 	// 頂点シェーダーオブジェクトの生成
@@ -117,6 +118,7 @@ void SpriteEmitter::create_com_object(int max_particles)
 	const char* cso_name_ps{ "shaders/sprite_particle_ps.cso" };
 	create_ps_from_cso(graphics.get_device().Get(), cso_name_ps, pixel_shader.GetAddressOf());
 	// 画像ファイルのロードとシェーダーリソースビューオブジェクト(ID3D11ShaderResourceView)の生成
+	wchar_t* tex = L".aaa";
 	load_texture_from_file(graphics.get_device().Get(), L"./resources/Effects/Textures/Particle02.png", shader_resource_view.GetAddressOf(), &texture2d_desc);
 	//load_texture_from_file(graphics.get_device().Get(), L"./resources/Effects/DemoEffect/Textures/HitEffect.png", shader_resource_view.GetAddressOf(), &texture2d_desc);
 }
@@ -127,7 +129,10 @@ void SpriteEmitter::create_com_object(int max_particles)
 //==============================================================
 void SpriteEmitter::play(DirectX::XMFLOAT3 pos)
 {
+	//すでに再生中なら処理しない
+	if (active) return;
 	active = true;
+	position = pos;
 }
 
 //==============================================================
@@ -140,15 +145,14 @@ void SpriteEmitter::emit(float elapsed_time)
 	//エミット処理
 	emit_timer += elapsed_time;
 
-	if (emit_timer >= emit_span)
+	if (emit_timer >= param.emit_span)
 	{
 		int p_size = static_cast<int>(particles.size());
 		if (p_size < max_particles)
 		{
-			//particle_init_param = {};
-			particle_init_param.transition.position = position;
-			particle_init_param.transition.velocity = emit_dir;
-			for (int i = 0; i < burst_num; i++)
+			particle_start_functions();
+			//エミッターの設定に基づいてparticleを作成
+			for (int i = 0; i < param.burst_num; i++)
 			{
 				particles.emplace_back(make_unique<Particles>(particle_init_param));
 			}
@@ -159,7 +163,7 @@ void SpriteEmitter::emit(float elapsed_time)
 }
 void SpriteEmitter::start()
 {
-	position = get_game_object()->get_component<Transform>()->get_position();
+	//position = get_game_object()->get_component<Transform>()->get_position();
 
 }
 //==============================================================
@@ -172,6 +176,9 @@ void SpriteEmitter::update(float elapsed_time)
 	//パーティクルの更新
 	for (auto& p : particles)
 	{
+		//各種設定によるパーティクルの更新
+		particle_update_functions(elapsed_time, *p);
+		//particleの更新
 		p->update(elapsed_time);
 	}
 	//エミッターの更新
@@ -184,13 +191,15 @@ void SpriteEmitter::update(float elapsed_time)
 		if (!active) return;
 		//エミッターの位置更新
 		position_update(elapsed_time);
+		//エミッターの姿勢更新
+		orientation_update(elapsed_time);
 
 		//エミット時間処理
 		emit(elapsed_time);
 
 		//画像サイズ設定
-		texsize.x = texture2d_desc.Width / init_param.TileX;
-		texsize.y = texture2d_desc.Height / init_param.TileY;
+		texsize.x = texture2d_desc.Width / static_cast<float>(param.TileX);
+		texsize.y = texture2d_desc.Height / static_cast<float>(param.TileY);
 	}
 }
 
@@ -220,44 +229,41 @@ void SpriteEmitter::render(Camera* camera)
 			CPU_instance_data[i].position = particles.at(i).get()->get_position();
 			CPU_instance_data[i].quaternion = particles.at(i).get()->get_orientation();
 			CPU_instance_data[i].scale = particles.at(i).get()->get_scale();
+			CPU_instance_data[i].color = particles.at(i).get()->get_color();
 			//スプライトシーとアニメーション
-			int tile_num = static_cast<int>(init_param.TileX * init_param.TileY * particles.at(i).get()->get_life_rate() * animation_rate);
-			int total_tile_num = init_param.TileX * init_param.TileY - 1;
+			int tile_num = static_cast<int>(param.TileX * param.TileY * particles.at(i).get()->get_life_rate() * animation_rate);
+			int total_tile_num = param.TileX * param.TileY - 1;
 			if (tile_num > total_tile_num) tile_num = total_tile_num;
-			texpos.x = static_cast<int>(tile_num % init_param.TileX) * texsize.x;
-			texpos.y = static_cast<int>(tile_num / init_param.TileX) * texsize.y;
+			texpos.x = static_cast<int>(tile_num % param.TileX) * texsize.x;
+			texpos.y = static_cast<int>(tile_num / param.TileX) * texsize.y;
 
 			float u0{ texpos.x / texture2d_desc.Width };
 			float v0{ texpos.y / texture2d_desc.Height };
 			CPU_instance_data[i].tip_texcoord = { u0, v0 };
 			const DirectX::XMFLOAT4 color = particles.at(i)->get_color();
 
-			float u1 = 1.0f / init_param.TileX;
-			float v1 = 1.0f / init_param.TileY;
+			float u1 = 1.0f / param.TileX;
+			float v1 = 1.0f / param.TileY;
 
 			// 左上
 			vertices.at(0 + active_count * 4).position = { -1.0f, 1.0f, 1.0f };
 			vertices.at(0 + active_count * 4).texcoord.x = 0;
 			vertices.at(0 + active_count * 4).texcoord.y = 0;
-			vertices.at(0 + active_count * 4).color = color;
 
 			// 右上
 			vertices.at(1 + active_count * 4).position = { 1.0f, 1.0f, 1.0f };
 			vertices.at(1 + active_count * 4).texcoord.x = u1;
 			vertices.at(1 + active_count * 4).texcoord.y = 0;
-			vertices.at(1 + active_count * 4).color = color;
 
 			// 左下
 			vertices.at(2 + active_count * 4).position = { -1.0f, -1.0f, 1.0f };
 			vertices.at(2 + active_count * 4).texcoord.x = 0;
 			vertices.at(2 + active_count * 4).texcoord.y = v1;
-			vertices.at(2 + active_count * 4).color = color;
 
 			// 右下
 			vertices.at(3 + active_count * 4).position = { 1.0f, -1.0f, 1.0f };
 			vertices.at(3 + active_count * 4).texcoord.x = u1;
 			vertices.at(3 + active_count * 4).texcoord.y = v1;
-			vertices.at(3 + active_count * 4).color = color;
 
 			active_count++;
 		}
@@ -302,41 +308,35 @@ void SpriteEmitter::render(Camera* camera)
 //デバッグGUI
 // 
 //==============================================================
-void SpriteEmitter::debug_gui(string id)
+void SpriteEmitter::on_gui()
 {
 	imgui_menu_bar("effect", "emitter", display_imgui);
 #if USE_IMGUI
 	if (display_imgui)
 	{
-		ImGui::Begin(id.c_str());
+		ImGui::PushID(ImGui::GetID("emitter"));
+		ImGui::Begin("WindowName##unique_id");
 		ImGui::Text(get_name());
-		if (ImGui::Button("play"))
-		{
-			play(position);
-		}
 		ImGui::DragFloat3("position", &position.x, 0.1f);
 		ImGui::DragFloat3("emit_dir", &emit_dir.x, 0.01f);
-		ImGui::DragFloat("duration", &duration, 0.1f);
+		ImGui::DragFloat("duration", &param.duration, 0.1f);
 		ImGui::DragFloat("life_timer", &life_timer, 0.1f);
 		ImGui::DragFloat("particle_life_timer", &particle_init_param.life_time, 0.1f);
-		ImGui::DragFloat3("random_pos", &particle_init_param.transition.random_position.x, 0.01f);
-		ImGui::DragFloat3("random_velocity", &particle_init_param.transition.random_velocity.x, 0.01f);
 		ImGui::DragFloat3("acceleration", &particle_init_param.transition.acceleration.x, 0.01f);
-		ImGui::DragFloat3("random_acceleration", &particle_init_param.transition.random_acceleration.x, 0.01f);
 		ImGui::DragFloat4("color", &particle_init_param.color.x, 0.1f);
 		ImGui::DragFloat2("scale", &particle_init_param.scaling.scale.x, 0.1f);
 		if (particles.size() > 0)
 		{
-			int tile_num = static_cast<int>(init_param.TileX * init_param.TileY * particles.at(0).get()->get_life_rate() * animation_rate);
+			int tile_num = static_cast<int>(param.TileX * param.TileY * particles.at(0).get()->get_life_rate() * animation_rate);
 			ImGui::DragInt("tile_num", &tile_num, 1, 1);
 			float liferate = particles.at(0).get()->get_life_rate();
 			ImGui::DragFloat("liferate", &liferate, 0.1f);
 		}
-		ImGui::DragInt("burst_num", &burst_num, 0.1f);
+		ImGui::DragInt("burst_num", &param.burst_num, 0.1f);
 		ImGui::DragFloat("emit_timer", &emit_timer, 0.1f);
-		ImGui::DragFloat("emit_span", &emit_span, 0.01f, 0.001);
-		ImGui::DragInt("TileX", &init_param.TileX, 1, 1);
-		ImGui::DragInt("TileY", &init_param.TileY, 1, 1);
+		ImGui::DragFloat("emit_span", &param.emit_span, 0.01f, 0.001f);
+		ImGui::DragInt("TileX", &param.TileX, 1, 1);
+		ImGui::DragInt("TileY", &param.TileY, 1, 1);
 
 
 		ImGui::DragFloat("animation_rate", &animation_rate, 0.1f, 0);
@@ -350,6 +350,7 @@ void SpriteEmitter::debug_gui(string id)
 		//	ImGui::DragInt("vertex_num", &v_num);
 		ImGui::Checkbox("active", &active);
 		ImGui::End();
+		ImGui::PopID();
 
 	}
 #endif // USE_IMGUI
@@ -388,9 +389,9 @@ void SpriteEmitter::life_update(float elapsed_time)
 	}
 
 	//ライフが切れたらアクティブ状態を着る
-	if (life_timer > duration)
+	if (life_timer > param.duration)
 	{
-		if (is_loop)
+		if (param.is_loop)
 		{
 			life_timer = 0.0f;
 		}
@@ -399,7 +400,7 @@ void SpriteEmitter::life_update(float elapsed_time)
 			active = false;
 		}
 	}
-	//パーティクルがアクティブじゃなくなったらリムーブのコンテナに放り込む
+	//パーティクルがアクティブでなくなったらリムーブのコンテナに放り込む
 	for (auto& p : particles)
 	{
 		if (!p->get_is_active())
@@ -408,6 +409,18 @@ void SpriteEmitter::life_update(float elapsed_time)
 		}
 	}
 	std::erase(particles, nullptr);
+}
+void SpriteEmitter::orientation_update(float elapsed_time)
+{
+	DirectX::XMFLOAT3 Axis;
+	Axis = Math::get_posture_right(orientation);
+	orientation = Math::rot_quaternion(orientation, Axis, rotation.x);
+
+	Axis = Math::get_posture_up(orientation);
+	orientation = Math::rot_quaternion(orientation, Axis, rotation.y);
+
+	Axis = Math::get_posture_forward(orientation);
+	orientation = Math::rot_quaternion(orientation, Axis, rotation.z);
 }
 //==============================================================
 // 
@@ -418,6 +431,16 @@ void SpriteEmitter::remove_update()
 {
 	//破壊処理
 	removes.clear();
+}
+
+void SpriteEmitter::particle_start_functions()
+{
+	particle_init_param.transition.position = position;
+	particle_init_param.transition.velocity = param.init_speed * Math::get_posture_up(orientation);
+}
+
+void SpriteEmitter::particle_update_functions(float elapsed_time, Particles& p)
+{
 }
 
 void SpriteEmitter::ReplaceBufferContents(ID3D11Buffer* buffer, size_t bufferSize, const void* data)

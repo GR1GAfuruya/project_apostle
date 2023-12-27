@@ -2,22 +2,32 @@
 #include "particle.h"
 #include "material.h"
 #include "camera.h"
-class Emitter
+#include "component.h"
+class Emitter :public Component
 {
 public:
 	Emitter(int max_particles);
-	~Emitter();
+	virtual ~Emitter();
+	virtual const char* get_name() const override { return "Emitter"; }
 
-	void play(DirectX::XMFLOAT3 pos);
+	virtual void play(DirectX::XMFLOAT3 pos);
 
+	virtual void start() {}
 
-	void emit(float elapsed_time);
+	virtual void emit(float elapsed_time);
 
-	void update(float elapsed_time);
+	virtual void update(float elapsed_time);
 
-	void render(Camera& camera);
+	virtual void render(Camera& camera);
 
-	void debug_gui(string id);
+	virtual void debug_gui(string id);
+
+protected:
+	virtual void emitter_update(float elapsed_time) {}
+
+	virtual void particle_spawn(float elapsed_time) {}
+
+	virtual void particle_update(float elapsed_time){}
 
 	//==============================================================
 	// 
@@ -26,17 +36,15 @@ public:
 	//==============================================================
 
 	//Setter
-	inline void set_position(DirectX::XMFLOAT3 p) { position = p; }
 	inline void set_emit_span(float span) { emit_span = span; }
 	inline void set_is_loop(bool loop) { is_loop = loop; }
-	//Getter
-	DirectX::XMFLOAT3 get_position() { return position; }
+
 	float get_duration() { return duration; }
 	bool get_active() { return active; }
 
 	// 頂点フォーマット
 
-	struct InitParam
+	struct Param
 	{
 		//位置
 		DirectX::XMFLOAT3 position = { 0,0,0 };
@@ -57,17 +65,40 @@ public:
 		//生成開始時間
 		float emit_start_time = 0;
 
-	};
+		int TileX = 1;
+		int TileY = 1;
+		int tile_num = 0;
 
-private:
+		template<class Archive>
+		void serialize(Archive& archive)
+		{
+			archive(
+				cereal::make_nvp("position", position),
+				cereal::make_nvp("emit_dir", emit_dir),
+				cereal::make_nvp("duration", duration),
+				cereal::make_nvp("emit_span", emit_span),
+				cereal::make_nvp("emit_start_time", emit_start_time)
+			);
+		}
+
+	};
+	//==============================================================
+	// 
+	//　パブリック変数
+	// 
+	//==============================================================
+public:
+	Transform transform;
+	Param param;
+	//==============================================================
+	// 
+	//　プロテクテッド変数
+	// 
+	//==============================================================
+protected:
 	void position_update(float elapsed_time);
 	void life_update(float elapsed_time);
 	void remove_update();
-
-	//位置
-	DirectX::XMFLOAT3 position = { 0,0,0 };
-	//射出方向
-	DirectX::XMFLOAT3 emit_dir = { 0,0,0 };
 	//速度
 	DirectX::XMFLOAT3 velocity;
 
