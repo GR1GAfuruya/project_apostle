@@ -1,12 +1,12 @@
 struct InstancedVertex
 {
     float3 position : POSITION;
-    float4 color : COLOR;
     float2 texcoord : TEXCOORD;
     float4 InstRotation : I_ROTATION; // Orientation quaternion (per instance)
     float3 InstPosition : I_POSITION;
     float3 InstScale : I_SCALE; // Position and scale (per instance)
     float2 tip_texcoord : I_TEXCOORD;
+    float4 InstColor : I_COLOR;
 };
 
 struct VS_OUT

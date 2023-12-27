@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include "graphics.h"
 #include "camera.h"
+#include "transform.h"
 //前方宣言
 class Component;
 
@@ -20,7 +21,7 @@ public:
 	virtual void update(float elapsed_time);
 	virtual void render(Camera* camera);
 	virtual void on_gui();
-
+	virtual void update_transform();
 	// コンポーネント追加
 	template<class T, class... Args>
 	std::shared_ptr<T> add_component(Args... args)
@@ -48,7 +49,7 @@ public:
 	// 名前の設定
 	void set_name(const char* name) { this->name = name; }
 
-
+	Transform transform;
 private:
 	std::string name;
 	std::vector<std::shared_ptr<Component>> components;

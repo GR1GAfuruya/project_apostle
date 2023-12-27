@@ -4,6 +4,7 @@
 #include <vector>
 #include "constant.h"
 #include "camera.h"
+#include "transform.h"
 class Particles
 {
 public:
@@ -17,27 +18,10 @@ public:
 	{
 		//位置
 		DirectX::XMFLOAT3 position = { 0,0,0 };
-		DirectX::XMFLOAT3 random_position = { 0,0,0 };
-
 		//速度
 		DirectX::XMFLOAT3 velocity = { 0,0,0 };
-		DirectX::XMFLOAT3 random_velocity = { 0,0,0 };
-
 		//加速度
 		DirectX::XMFLOAT3 acceleration = { 0,0,0 };
-		DirectX::XMFLOAT3 random_acceleration = { 0,0,0 };
-
-		template<class Archive>
-		void serialize(Archive& archive)
-		{
-			archive(
-				cereal::make_nvp("random_position", random_position),
-				cereal::make_nvp("velocity", velocity),
-				cereal::make_nvp("random_velocity", random_velocity),
-				cereal::make_nvp("acceleration", acceleration),
-				cereal::make_nvp("random_acceleration", random_acceleration)
-			);
-		}
 
 
 	};
@@ -46,27 +30,12 @@ public:
 	{
 		//位置
 		DirectX::XMFLOAT3 scale = { 1,1,0 };
-		DirectX::XMFLOAT3 random_scale = { 0,0,0 };
 
 		//速度
 		DirectX::XMFLOAT3 velocity = { 0,0,0 };
-		DirectX::XMFLOAT3 random_velocity = { 0,0,0 };
 
 		//加速度
 		DirectX::XMFLOAT3 acceleration = { 0,0,0 };
-		DirectX::XMFLOAT3 random_acceleration = { 0,0,0 };
-
-		template<class Archive>
-		void serialize(Archive& archive)
-		{
-			archive(
-				cereal::make_nvp("scale", scale),
-				cereal::make_nvp("random_scale", random_scale),
-				cereal::make_nvp("random_velocity", random_velocity),
-				cereal::make_nvp("acceleration", acceleration),
-				cereal::make_nvp("random_acceleration", random_acceleration)
-			);
-		}
 
 
 	};
@@ -75,33 +44,17 @@ public:
 	{
 		//角度
 		DirectX::XMFLOAT3 rotation = { 0,0,0 };
-		DirectX::XMFLOAT3 random_rotation = { 0,0,0 };
 		//角速度
 		DirectX::XMFLOAT3 velocity = { 0,0,0 };
-		DirectX::XMFLOAT3 random_velocity = { 0,0,0 };
 
 		//角加速度
 		DirectX::XMFLOAT3 acceleration = { 0,0,0 };
-		DirectX::XMFLOAT3 random_acceleration = { 0,0,0 };
-
-		template<class Archive>
-		void serialize(Archive& archive)
-		{
-			archive(
-				cereal::make_nvp("rotation", rotation),
-				cereal::make_nvp("random_rotation", random_rotation),
-				cereal::make_nvp("random_velocity", random_velocity),
-				cereal::make_nvp("acceleration", acceleration),
-				cereal::make_nvp("random_acceleration", random_acceleration)
-			);
-		}
 	};
 
 	struct Color
 	{
 		//色
 		DirectX::XMFLOAT4 color = { 0,0,0,0 };
-		DirectX::XMFLOAT4 random_color = { 0,0,0,0 };
 	};
 
 	struct Param
@@ -178,6 +131,7 @@ public:
 
 	void look_at_camera(Camera& camera);
 
+	Param param;
 private:
 	//位置更新
 	void position_update(float elapsed_time);
@@ -186,7 +140,7 @@ private:
 	//寿命更新
 	void life_update(float elapsed_time);
 
-	Param param;
+	
 	bool is_active;
 
 	float age = 0;

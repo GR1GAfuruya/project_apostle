@@ -156,6 +156,12 @@ void Player::transition_r_attack_dodge_back_state()
 	state = State::SKILL;
 }
 
+void Player::transition_guard_state()
+{
+	p_update = &Player::update_guard_state;
+	shield_param.is_shield = true;
+}
+
 
 ///////////////////////////////////////////////////////
 //
@@ -577,6 +583,11 @@ void Player::update_r_attack_dodge_back_state(float elapsed_time, Camera* camera
 	float speed = model->root_defference_length_next_frame(root);
 	velocity = Math::get_posture_forward(orientation) * (speed * add_root_speed);
 }
+
+void Player::update_guard_state(float elapsed_time, Camera* camera)
+{
+}
+
 
 
 

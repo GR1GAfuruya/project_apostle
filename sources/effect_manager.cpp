@@ -60,12 +60,7 @@ void EffectManager::update_transform()
 {
 	for (std::shared_ptr<GameObject>& game_object : update_game_objects)
 	{
-		std::shared_ptr<Transform> transform = game_object->get_component<Transform>();
-		if (transform != nullptr)
-		{
-			transform->set_transform(Math::calc_world_matrix(transform->get_scale(),
-				transform->get_orientation(), transform->get_position()));
-		}
+		game_object->update_transform();
 	}
 }
 

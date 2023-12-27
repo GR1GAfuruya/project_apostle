@@ -21,7 +21,7 @@ VS_OUT main(InstancedVertex In)
     Out.position = mul(float4(In.position, 1), mul(world, view_projection));
     Out.world_position = mul(float4(In.position, 1), world);
     Out.texcoord = In.texcoord + In.tip_texcoord;
-    Out.color = In.color;
+    Out.color = In.InstColor;
 
        
     return Out;

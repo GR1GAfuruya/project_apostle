@@ -1,7 +1,6 @@
 #pragma once
-#include "component.h"
 
-class Transform :public Component
+class Transform
 {
 public:
 	Transform() : position(0, 0, 0 )
@@ -9,13 +8,13 @@ public:
 				, scale(1,1,1)
 				, transform(){};
 
-	virtual ~Transform(){};
+	 ~Transform(){};
 
-	const char* get_name() const override { return "Transform"; }
+	const char* get_name() const  { return "Transform"; }
 
-	void start()override {};
-	void update(float elapsed_time)override {};
-	void on_gui()override
+	void start() {};
+	void update(float elapsed_time) {};
+	void on_gui()
 	{
 		ImGui::Begin("transform");
 		ImGui::DragFloat3("position", &position.x);
@@ -28,11 +27,14 @@ public:
 	void set_orientation(DirectX::XMFLOAT4 orientation) { this->orientation = orientation; }
 	void set_scale(DirectX::XMFLOAT3 scale) { this->scale = scale; }
 	void set_transform(DirectX::XMFLOAT4X4 scale) { this->transform = transform; }
-	void set_parent_transform(std::shared_ptr<Transform> parent) { this->parent_transform = parent.get(); }
+	void set_parent_transform(std::shared_ptr<DirectX::XMFLOAT4X4> parent) { this->is_parent = true; this->parent_transform = parent; }
+	void set_is_parent(bool p) { this->is_parent = p; }
 	const DirectX::XMFLOAT3 get_position() const { return position; }
 	const DirectX::XMFLOAT4 get_orientation() const { return orientation; }
 	const DirectX::XMFLOAT3 get_scale() const { return scale; }
 	const DirectX::XMFLOAT4X4 get_transform() const { return transform; }
+	const std::shared_ptr<DirectX::XMFLOAT4X4> get_parent_transform() const { return parent_transform; }
+	const bool get_is_parent() const { return is_parent; }
 
 
 private:
@@ -40,5 +42,6 @@ private:
 	DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
 	DirectX::XMFLOAT4X4 transform = {};
-	Transform* parent_transform;
+	std::shared_ptr<DirectX::XMFLOAT4X4> parent_transform;
+	bool is_parent =false;
 };

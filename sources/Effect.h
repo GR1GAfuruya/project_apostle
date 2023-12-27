@@ -26,12 +26,7 @@ public:
 
 	void set_position(DirectX::XMFLOAT3 pos);
 
-	//void update(float elapsed_time);
-
-	//void render(Camera& camera);
-
 	void debug_gui(string id);
 private:
-
-	shared_ptr<GameObject> effect;
+	shared_ptr<GameObject> psrticle_system;
 };

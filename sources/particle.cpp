@@ -18,17 +18,6 @@ Particles::Particles(Param init_param)
 
 	//パラメーター初期化
 	param = init_param;
-	param.transition.position.x = param.transition.position.x + Noise::instance().random_fixed_range(param.transition.random_position.x);
-	param.transition.position.y = param.transition.position.y + Noise::instance().random_fixed_range(param.transition.random_position.y);
-	param.transition.position.z = param.transition.position.z + Noise::instance().random_fixed_range(param.transition.random_position.z);
-
-	param.transition.velocity.x = param.transition.velocity.x + Noise::instance().random_fixed_range(param.transition.random_velocity.x);
-	param.transition.velocity.y = param.transition.velocity.y + Noise::instance().random_fixed_range(param.transition.random_velocity.y);
-	param.transition.velocity.z = param.transition.velocity.z + Noise::instance().random_fixed_range(param.transition.random_velocity.z);
-
-	param.transition.acceleration.x = param.transition.acceleration.x + Noise::instance().random_fixed_range(param.transition.random_acceleration.x);
-	param.transition.acceleration.y = param.transition.acceleration.y + Noise::instance().random_fixed_range(param.transition.random_acceleration.y);
-	param.transition.acceleration.z = param.transition.acceleration.z + Noise::instance().random_fixed_range(param.transition.random_acceleration.z);
 
 
 }
