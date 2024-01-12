@@ -39,6 +39,9 @@ public:
 		int TileY = 1;
 		int tile_num = 0;
 
+		//パーティクルの初期パラメーター
+		Particles::Param particle_init_param;
+
 		template<class Archive>
 		void serialize(Archive& archive)
 		{
@@ -87,6 +90,8 @@ public:
 	float get_duration() { return param.duration; }
 	bool get_active() { return active; }
 
+	void change_main_texture();
+
 	const char* get_name() const override { return "SpriteEmitter"; }
 	Param param;
 private:
@@ -133,6 +138,12 @@ private:
 	//角度
 	DirectX::XMFLOAT3 rotation = { 0,0,0 };
 
+	DirectX::XMFLOAT4X4	transform = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+	};
 	//大きさ
 	DirectX::XMFLOAT3 scale = { 1,1,1 };
 	//射出方向
@@ -172,6 +183,7 @@ private:
 
 	D3D11_TEXTURE2D_DESC texture2d_desc;
 
+	std::unique_ptr<Constants<OBJECT_CONSTANTS>> constants;
 	const size_t max_vertices;
 	std::vector<vertex> vertices;
 	std::unique_ptr<Instance[]> CPU_instance_data;
@@ -183,7 +195,6 @@ private:
 	int max_particles;
 	//アクティブ状態のパーティクル数
 	int active_count;
-	//パーティクルの初期パラメーター
-	Particles::Param particle_init_param;
+	
 
 };

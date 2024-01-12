@@ -5,7 +5,7 @@
 #include "user.h"
 #include "texture.h"
 #include "graphics.h"
-#include "transform.h"
+#include "dialog.h"
 //==============================================================
 // 
 //コンストラクタ
@@ -19,7 +19,6 @@ SpriteEmitter::SpriteEmitter(Param init_param, int max_particles)
 	param.emit_span = 1;
 	active = false;
 	create_com_object(max_particles);
-	
 	life_timer = 0;
 	position = { 0,0,0 };
 }
@@ -118,9 +117,11 @@ void SpriteEmitter::create_com_object(int max_particles)
 	const char* cso_name_ps{ "shaders/sprite_particle_ps.cso" };
 	create_ps_from_cso(graphics.get_device().Get(), cso_name_ps, pixel_shader.GetAddressOf());
 	// 画像ファイルのロードとシェーダーリソースビューオブジェクト(ID3D11ShaderResourceView)の生成
-	wchar_t* tex = L".aaa";
+	//wchar_t filename[256] = { 0 };
 	load_texture_from_file(graphics.get_device().Get(), L"./resources/Effects/Textures/Particle02.png", shader_resource_view.GetAddressOf(), &texture2d_desc);
-	//load_texture_from_file(graphics.get_device().Get(), L"./resources/Effects/DemoEffect/Textures/HitEffect.png", shader_resource_view.GetAddressOf(), &texture2d_desc);
+	//load_texture_from_file(graphics.get_device().Get(), filename, shader_resource_view.GetAddressOf(), &texture2d_desc);
+	constants = std::make_unique<Constants<OBJECT_CONSTANTS>>(graphics.get_device().Get());
+
 }
 //==============================================================
 // 
@@ -132,7 +133,7 @@ void SpriteEmitter::play(DirectX::XMFLOAT3 pos)
 	//すでに再生中なら処理しない
 	if (active) return;
 	active = true;
-	position = pos;
+	//position = pos;
 }
 
 //==============================================================
@@ -154,7 +155,7 @@ void SpriteEmitter::emit(float elapsed_time)
 			//エミッターの設定に基づいてparticleを作成
 			for (int i = 0; i < param.burst_num; i++)
 			{
-				particles.emplace_back(make_unique<Particles>(particle_init_param));
+				particles.emplace_back(make_unique<Particles>(param.particle_init_param));
 			}
 			//タイマーリセット
 			emit_timer = 0;
@@ -267,6 +268,18 @@ void SpriteEmitter::render(Camera* camera)
 
 			active_count++;
 		}
+		DirectX::XMFLOAT4X4 parent_tra = get_game_object().get()->transform.get_transform();
+		transform = Math::calc_world_matrix(parent_tra, scale, orientation, position);
+
+		//transform = Math::calc_world_matrix(scale, orientation, position);
+		/*DirectX::XMFLOAT4X4	transform = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1
+		};*/
+		XMStoreFloat4x4(&constants->data.world, DirectX::XMLoadFloat4x4(&transform));
+		constants->bind(graphics.get_dc().Get(), 0, CB_FLAG::VS);
 
 		//---------＜描画に掛かる各種処理＞----------//
 		HRESULT hr{ S_OK };
@@ -316,15 +329,18 @@ void SpriteEmitter::on_gui()
 	{
 		ImGui::PushID(ImGui::GetID("emitter"));
 		ImGui::Begin("WindowName##unique_id");
+		ImGui::Text(get_game_object()->get_name().c_str());
 		ImGui::Text(get_name());
+		if (ImGui::Button("ChangeTexture")) { change_main_texture(); };
 		ImGui::DragFloat3("position", &position.x, 0.1f);
 		ImGui::DragFloat3("emit_dir", &emit_dir.x, 0.01f);
 		ImGui::DragFloat("duration", &param.duration, 0.1f);
 		ImGui::DragFloat("life_timer", &life_timer, 0.1f);
-		ImGui::DragFloat("particle_life_timer", &particle_init_param.life_time, 0.1f);
-		ImGui::DragFloat3("acceleration", &particle_init_param.transition.acceleration.x, 0.01f);
-		ImGui::DragFloat4("color", &particle_init_param.color.x, 0.1f);
-		ImGui::DragFloat2("scale", &particle_init_param.scaling.scale.x, 0.1f);
+		ImGui::DragFloat("particle_life_timer", &param.particle_init_param.life_time, 0.1f);
+		ImGui::DragFloat3("acceleration", &param.particle_init_param.transition.acceleration.x, 0.01f);
+		ImGui::DragFloat4("color", &param.particle_init_param.color.x, 0.1f);
+		ImGui::DragFloat2("scale", &param.particle_init_param.scaling.scale.x, 0.1f);
+		ImGui::DragFloat2("e_scale", &scale.x, 0.1f);
 		if (particles.size() > 0)
 		{
 			int tile_num = static_cast<int>(param.TileX * param.TileY * particles.at(0).get()->get_life_rate() * animation_rate);
@@ -349,12 +365,25 @@ void SpriteEmitter::on_gui()
 		ImGui::DragInt("particle_num", &p_num);
 		//	ImGui::DragInt("vertex_num", &v_num);
 		ImGui::Checkbox("active", &active);
+
 		ImGui::End();
 		ImGui::PopID();
 
 	}
 #endif // USE_IMGUI
 
+}
+void SpriteEmitter::change_main_texture()
+{
+	if (SUCCEEDED(CoInitialize(nullptr))) { 
+		Graphics& graphics = Graphics::instance();
+		auto path =move(file_select(nullptr).get());
+		if (path != nullptr)
+		{
+			load_texture_from_file(graphics.get_device().Get(), path, shader_resource_view.GetAddressOf(), &texture2d_desc);
+		}
+		CoUninitialize();
+	}
 }
 //==============================================================
 // 
@@ -373,6 +402,18 @@ void SpriteEmitter::position_update(float elapsed_time)
 //==============================================================
 void SpriteEmitter::life_update(float elapsed_time)
 {
+	//ライフが切れたらアクティブ状態を着る
+	if (life_timer > param.duration)
+	{
+		if (param.is_loop)
+		{
+			life_timer = 0.0f;
+		}
+		else
+		{
+			active = false;
+		}
+	}
 
 	if (active)
 	{
@@ -388,18 +429,6 @@ void SpriteEmitter::life_update(float elapsed_time)
 		//}
 	}
 
-	//ライフが切れたらアクティブ状態を着る
-	if (life_timer > param.duration)
-	{
-		if (param.is_loop)
-		{
-			life_timer = 0.0f;
-		}
-		else
-		{
-			active = false;
-		}
-	}
 	//パーティクルがアクティブでなくなったらリムーブのコンテナに放り込む
 	for (auto& p : particles)
 	{
@@ -435,8 +464,8 @@ void SpriteEmitter::remove_update()
 
 void SpriteEmitter::particle_start_functions()
 {
-	particle_init_param.transition.position = position;
-	particle_init_param.transition.velocity = param.init_speed * Math::get_posture_up(orientation);
+	param.particle_init_param.transition.position = position;
+	param.particle_init_param.transition.velocity = param.init_speed * Math::get_posture_up(orientation);
 }
 
 void SpriteEmitter::particle_update_functions(float elapsed_time, Particles& p)

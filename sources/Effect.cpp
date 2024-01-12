@@ -5,8 +5,9 @@
 Effect::Effect(const char* file_name)
 {
 	//effect = EffectManager::instance().create();
-	psrticle_system = EffectManager::instance().create();
-	psrticle_system->add_component<ParticleSystem>(file_name);
+	particle_system = EffectManager::instance().create();
+	particle_system->add_component<ParticleSystem>(file_name);
+	particle_system->set_name("effec");
 }
 
 Effect::~Effect()
@@ -15,21 +16,27 @@ Effect::~Effect()
 
 void Effect::play(DirectX::XMFLOAT3 pos)
 {
-	psrticle_system->get_component<ParticleSystem>()->Launch(pos);
+	particle_system->get_component<ParticleSystem>()->init();
+	particle_system->get_component<ParticleSystem>()->Launch(pos);
 
 }
 
 void Effect::stop()
 {
-	EffectManager::instance().remove(psrticle_system);
+	EffectManager::instance().remove(particle_system);
 }
 
 void Effect::set_position(DirectX::XMFLOAT3 pos)
 {
-	//effect->get_component<Transform>().get()->set_position(pos);
+	particle_system->transform.set_position(pos);
+}
+
+void Effect::set_scale(DirectX::XMFLOAT3 scale)
+{
+	particle_system->transform.set_scale(scale);
 }
 
 void Effect::debug_gui(string id)
 {
-	psrticle_system->get_component<ParticleSystem>().get()->on_gui();
+	particle_system->get_component<ParticleSystem>().get()->on_gui();
 }

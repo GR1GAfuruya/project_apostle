@@ -274,6 +274,9 @@
     <Filter Include="sources\Effects\Effect">
       <UniqueIdentifier>{582d0e01-9ec2-4952-b17c-e663b4ea82b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Editor">
+      <UniqueIdentifier>{d89a5215-f6ec-428b-acb7-2d609c09b897}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\framework.cpp">
@@ -584,6 +587,9 @@
     </ClCompile>
     <ClCompile Include="sources\effect.cpp">
       <Filter>sources\Effects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\dialog.cpp">
+      <Filter>sources\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -928,6 +934,9 @@
     </ClInclude>
     <ClInclude Include="sources\effect.h">
       <Filter>sources\Effects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\dialog.h">
+      <Filter>sources\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

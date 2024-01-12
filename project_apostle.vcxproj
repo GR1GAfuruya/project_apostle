@@ -215,6 +215,7 @@
     <ClCompile Include="sources\debug_figures.cpp" />
     <ClCompile Include="sources\debug_flag.cpp" />
     <ClCompile Include="sources\deferred_renderer.cpp" />
+    <ClCompile Include="sources\dialog.cpp" />
     <ClCompile Include="sources\effect.cpp" />
     <ClCompile Include="sources\effect_manager.cpp" />
     <ClCompile Include="sources\emitter.cpp" />
@@ -314,6 +315,7 @@
     <ClInclude Include="sources\component.h" />
     <ClInclude Include="sources\coordinate_convert.h" />
     <ClInclude Include="sources\damage_func.h" />
+    <ClInclude Include="sources\dialog.h" />
     <ClInclude Include="sources\effect.h" />
     <ClInclude Include="sources\effect_manager.h" />
     <ClInclude Include="sources\emitter.h" />
