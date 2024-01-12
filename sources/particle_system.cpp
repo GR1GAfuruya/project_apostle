@@ -24,6 +24,13 @@ void ParticleSystem::Launch(DirectX::XMFLOAT3 pos)
 
 }
 
+void ParticleSystem::init()
+{
+	time = 0;
+	active = false;
+
+}
+
 void ParticleSystem::update(float elapsed_time)
 {
 	if (active)

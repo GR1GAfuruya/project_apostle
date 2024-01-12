@@ -67,6 +67,13 @@ public:
 		Scaling scaling = {};
 
 		DirectX::XMFLOAT4 orientation = { 0,0,0,1 };
+
+		DirectX::XMFLOAT4X4	transform = {
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		};
 		//êF
 		DirectX::XMFLOAT4 color{ 1,1,1,1 };
 		//äpìx

@@ -7,7 +7,7 @@ public:
 	virtual ~ParticleSystem();
 
 	void Launch(DirectX::XMFLOAT3 pos);
-
+	void init();
 	void update(float elapsed_time);
 
 	const char* get_name() const { return "ParticleSystem"; }

@@ -113,8 +113,8 @@ void SceneGame::update(float elapsed_time)
 	StageManager::Instance().update(elapsed_time);
 
 	//**********ゲームオブジェクト更新**********//
-	EffectManager::instance().update(elapsed_time);
 	EffectManager::instance().update_transform();
+	EffectManager::instance().update(elapsed_time);
 
 	if (gamepad.get_button_down() & GamePad::BTN_B)
 	{
@@ -237,6 +237,13 @@ void SceneGame::render(float elapsed_time)
 			{
 				test_effect->play(player->get_position());
 			};
+			static DirectX::XMFLOAT3 effecPos{};
+			ImGui::DragFloat3("effecpos", &effecPos.x);
+			test_effect->set_position(effecPos);
+
+			static DirectX::XMFLOAT3 effecScale{};
+			ImGui::DragFloat3("effectScale", &effecScale.x);
+			test_effect->set_scale(effecScale);
 
 			if (ImGui::Button("effect_stop"))
 			{

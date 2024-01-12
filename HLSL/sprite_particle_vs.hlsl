@@ -15,8 +15,7 @@ VS_OUT main(InstancedVertex In)
         0, 0, 1, 0,
         0, 0, 0, 1);
 
-   
-    world = mul(C, calc_world_transform(In.InstScale, In.InstRotation, In.InstPosition));
+    world = mul(global_transform, mul(C, calc_world_transform(In.InstScale, In.InstRotation, In.InstPosition)));
     
     Out.position = mul(float4(In.position, 1), mul(world, view_projection));
     Out.world_position = mul(float4(In.position, 1), world);
